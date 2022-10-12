@@ -1,0 +1,51 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "autoDocstring.startOnNewLine": true,
+  "beautify.language": {
+    "html": ["htm", "html", "django-html"]
+  },
+  "editor.formatOnPaste": false,
+  "emmet.includeLanguages": {
+    "jinja-html": "html"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "files.associations": {
+    "**/*.html": "html",
+    "**/requirements{/**,*}.{txt,in}": "pip-requirements",
+    "**/templates/**/*": "django-txt",
+    "**/templates/**/*.html": "jinja-html"
+  },
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/__pycache__": true
+  },
+  "git.alwaysSignOff": true,
+  "git.enableCommitSigning": true,
+  "html.format.indentHandlebars": true,
+  "html.format.templating": true,
+  "python.analysis.extraPaths": ["section04", "ComplaintSystem"],
+  "python.analysis.stubPath": "/home/seapagan/stubs",
+  "python.formatting.blackArgs": ["--line-length=80"],
+  "python.formatting.provider": "black",
+  "python.languageServer": "Pylance",
+  "python.linting.flake8Args": ["--max-line-length=80"],
+  "python.linting.flake8Enabled": true,
+  "python.linting.pydocstyleArgs": ["--convention=google"],
+  "python.linting.pylintArgs": [],
+  "python.linting.pylintEnabled": false,
+  "python.linting.pylintUseMinimalCheckers": false,
+  "python.pythonPath": "/home/seapagan/.pyenv/versions/calendar/bin/python",
+  "python.sortImports.args": ["--profile", "black", "--src=${workspaceFolder}"],
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.promptToConfigure": false,
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*_test.py"],
+  "python.testing.unittestEnabled": false,
+  "testExplorer.addToEditorContextMenu": true,
+  // "python.analysis.typeCheckingMode": "basic",
+  "python.linting.mypyEnabled": false
+}

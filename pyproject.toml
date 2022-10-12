@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "calendar"
+version = "0.1.0"
+description = "Calendar API"
+authors = ["Grant Ramsay <seapagan@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+fastapi = "^0.85.0"
+uvicorn = {extras = ["standard"], version = "^0.18.3"}
+alembic = "^1.8.1"
+databases = "^0.6.1"
+SQLAlchemy = "^1.4.41"
+asyncpg = "^0.26.0"
+python-decouple = "^3.6"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+psycopg2 = "^2.9.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
