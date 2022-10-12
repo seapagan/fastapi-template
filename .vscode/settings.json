@@ -27,7 +27,7 @@
   "git.enableCommitSigning": true,
   "html.format.indentHandlebars": true,
   "html.format.templating": true,
-  "python.analysis.extraPaths": ["section04", "ComplaintSystem"],
+  "python.analysis.extraPaths": [],
   "python.analysis.stubPath": "/home/seapagan/stubs",
   "python.formatting.blackArgs": ["--line-length=80"],
   "python.formatting.provider": "black",
