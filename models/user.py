@@ -4,7 +4,7 @@ from sqlalchemy import Column, Enum, Integer, String, Table
 from db import metadata
 from models.enums import RoleType
 
-user = Table(
+User = Table(
     "users",
     metadata,
     Column("id", Integer, primary_key=True),

@@ -1,22 +1,21 @@
-"""Define the Authentication resources."""
+"""Define routes for Authentication."""
 from fastapi import APIRouter
+
+from managers.user import UserManager
+from schemas.request.user import UserLoginIn, UserRegisterIn
 
 router = APIRouter(tags=["Auth"])
 
 
-@router.post("/register/", status_code=201, name="register_a_new_user")
-async def register():
-    """Register a new User and return a JWT.
-
-    This JWT should then be passed as a Bearer Token to each new request.
-    """
-    return {"info": "Register a new user."}
+@router.post("/register/", status_code=201)
+async def register(user_data: UserRegisterIn):
+    """Route to Register a new User and return a token."""
+    token = await UserManager.register(user_data.dict())
+    return {"token": token}
 
 
-@router.post("/login/", name="login_an_existing_user")
-async def login():
-    """Login an existing user and return a JWT.
-
-    This JWT should then be passed as a Bearer Token to each new request.
-    """
-    return {"info": "Login an existing user."}
+@router.post("/login/")
+async def login(user_data: UserLoginIn):
+    """Route to Login an existing User."""
+    token = await UserManager.login(user_data.dict())
+    return {"token": token}

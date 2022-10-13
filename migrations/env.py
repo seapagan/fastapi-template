@@ -5,8 +5,8 @@ from alembic import context
 from decouple import config as cfg
 from sqlalchemy import engine_from_config, pool
 
-import models
 from db import metadata
+from models import user
 
 DATABASE_URL = (
     f"postgresql://{cfg('DB_USER')}:{cfg('DB_PASSWORD')}@"
