@@ -7,7 +7,6 @@ from db import database
 from resources.routes import api_router
 
 app = FastAPI(
-    swagger_ui_parameters={"defaultModelsExpandDepth": 0},
     title="Calendar API",
     description="A Full-featured API for creating and managing a calendar.",
     redoc_url=None,
@@ -50,6 +49,7 @@ async def custom_swagger_ui_html():
         openapi_url=app.openapi_url,
         title=f"{app.title} | Documentation",
         oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
+        swagger_ui_parameters={"defaultModelsExpandDepth": 0},
         swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js",
         swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css",
     )
