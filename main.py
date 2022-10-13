@@ -1,5 +1,6 @@
 """Main file for the Calendar API."""
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from db import database
 from resources.routes import api_router
@@ -21,11 +22,7 @@ app = FastAPI(
 
 app.include_router(api_router)
 
-
-@app.get("/")
-def root():
-    """Return a response for the Root path."""
-    return {"info": "Calendar API initialized."}
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.on_event("startup")
