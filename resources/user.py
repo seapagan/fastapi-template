@@ -1,5 +1,5 @@
 """Routes for User listing and control."""
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends
 
@@ -15,7 +15,7 @@ router = APIRouter(tags=["Users"])
 @router.get(
     "/users/",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    response_model=List[UserResponse],
+    response_model=Union[UserResponse, List[UserResponse]],
 )
 async def get_users(user_id: Optional[int] = None):
     """Get all users or a specific user by their ID."""

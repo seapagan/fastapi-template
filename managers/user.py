@@ -84,14 +84,14 @@ class UserManager:
     @staticmethod
     async def get_user_by_email(email):
         """Return a specific user by their email address."""
-        return await database.fetch_all(
+        return await database.fetch_one(
             User.select().where(User.c.email == email)
         )
 
     @staticmethod
     async def get_user_by_id(user_id):
         """Return a specific user by their email address."""
-        return await database.fetch_all(
+        return await database.fetch_one(
             User.select().where(User.c.id == user_id)
         )
 
