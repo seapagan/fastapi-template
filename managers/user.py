@@ -48,7 +48,7 @@ class UserManager:
 
     @staticmethod
     async def delete_user(user_id):
-        """Delete the User with sepcified ID."""
+        """Delete the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
         )
