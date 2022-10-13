@@ -33,3 +33,13 @@ async def get_users(user_id: Optional[int] = None):
 async def make_admin(user_id: int):
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id)
+
+
+@router.delete(
+    "/users/{user_id}/",
+    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    status_code=204,
+)
+async def delete_user(user_id: int):
+    """Delete the specified User by user_id."""
+    await UserManager.delete_user(user_id)

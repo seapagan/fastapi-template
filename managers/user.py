@@ -47,6 +47,16 @@ class UserManager:
         return AuthManager.encode_token(user_do)
 
     @staticmethod
+    async def delete_user(user_id):
+        """Delete the User with sepcified ID."""
+        check_user = await database.fetch_one(
+            User.select().where(User.c.id == user_id)
+        )
+        if not check_user:
+            raise HTTPException(404, "User does not exist")
+        await database.execute(User.delete().where(User.c.id == user_id))
+
+    @staticmethod
     async def get_all_users():
         """Return all Users in the database."""
         return await database.fetch_all(User.select())
@@ -57,6 +67,11 @@ class UserManager:
         return await database.fetch_all(
             User.select().where(User.c.email == email)
         )
+
+    @staticmethod
+    async def get_user_by_id(id_):
+        """Return a specific user by their email address."""
+        return await database.fetch_all(User.select().where(User.c.id == id_))
 
     @staticmethod
     async def change_role(role: RoleType, user_id):
