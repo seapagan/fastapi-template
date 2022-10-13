@@ -8,8 +8,8 @@ from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from db import database
-from models import user
 from models.enums import RoleType
+from models.user import User
 
 
 class AuthManager:
@@ -42,7 +42,7 @@ class CustomHTTPBearer(HTTPBearer):
                 res.credentials, config("SECRET_KEY"), algorithms=["HS256"]
             )
             user_data = await database.fetch_one(
-                user.select().where(user.c.id == payload["sub"])
+                User.select().where(User.c.id == payload["sub"])
             )
             request.state.user = user_data
             return user_data
