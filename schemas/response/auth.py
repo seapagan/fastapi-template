@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 
 
-class TokenOut(BaseModel):
+class TokenResponse(BaseModel):
     """Response Schema for Register/Login routes.
 
     This simply returns a JWT token.
