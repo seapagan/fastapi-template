@@ -57,6 +57,26 @@ class UserManager:
         await database.execute(User.delete().where(User.c.id == user_id))
 
     @staticmethod
+    async def update_user(user_id: int, user_data):
+        """Update the User with specified ID."""
+        check_user = await database.fetch_one(
+            User.select().where(User.c.id == user_id)
+        )
+        if not check_user:
+            raise HTTPException(404, "User does not exist")
+        await database.execute(
+            User.update()
+            .where(User.c.id == user_id)
+            .values(
+                email=user_data.email,
+                first_name=user_data.first_name,
+                last_name=user_data.last_name,
+                password=user_data.password,
+            )
+        )
+
+    # --------------------------- helper functions --------------------------- #
+    @staticmethod
     async def get_all_users():
         """Return all Users in the database."""
         return await database.fetch_all(User.select())
@@ -69,9 +89,11 @@ class UserManager:
         )
 
     @staticmethod
-    async def get_user_by_id(id_):
+    async def get_user_by_id(user_id):
         """Return a specific user by their email address."""
-        return await database.fetch_all(User.select().where(User.c.id == id_))
+        return await database.fetch_all(
+            User.select().where(User.c.id == user_id)
+        )
 
     @staticmethod
     async def change_role(role: RoleType, user_id):
