@@ -47,7 +47,7 @@ class CustomHTTPBearer(HTTPBearer):
             request.state.user = user_data
             return user_data
         except jwt.ExpiredSignatureError as exc:
-            raise HTTPException(401, "That token is Expired") from exc
+            raise HTTPException(401, "That token has Expired") from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(401, "That token is Invalid") from exc
 
