@@ -4,7 +4,20 @@ from fastapi import FastAPI
 from db import database
 from resources.routes import api_router
 
-app = FastAPI(swagger_ui_parameters={"defaultModelsExpandDepth": 0})
+app = FastAPI(
+    swagger_ui_parameters={"defaultModelsExpandDepth": 0},
+    title="Calendar API",
+    description="A Full-featured API for creating and managing a calendar.",
+    redoc_url=None,
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    contact={
+        "name": "Grant Ramsay",
+        "url": "https://www.gnramsay.com",
+    },
+)
 
 app.include_router(api_router)
 
