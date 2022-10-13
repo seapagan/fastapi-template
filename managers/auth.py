@@ -24,9 +24,9 @@ class AuthManager:
                 "exp": datetime.utcnow() + timedelta(minutes=120),
             }
             return jwt.encode(payload, config("SECRET_KEY"), algorithm="HS256")
-        except Exception as ex:
+        except Exception as exc:
             # log the exception
-            raise ex
+            raise HTTPException(401, "Unable to generate the JWT") from exc
 
 
 class CustomHTTPBearer(HTTPBearer):
