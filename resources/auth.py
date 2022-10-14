@@ -1,5 +1,5 @@
 """Define routes for Authentication."""
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from managers.user import UserManager
 from schemas.request.user import UserLoginRequest, UserRegisterRequest
@@ -10,7 +10,7 @@ router = APIRouter(tags=["Authentication"])
 
 @router.post(
     "/register/",
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     name="register_a_new_user",
     response_model=TokenResponse,
 )
@@ -25,7 +25,10 @@ async def register(user_data: UserRegisterRequest):
 
 
 @router.post(
-    "/login/", name="login_an_existing_user", response_model=TokenResponse
+    "/login/",
+    name="login_an_existing_user",
+    response_model=TokenResponse,
+    status_code=status.HTTP_200_OK,
 )
 async def login(user_data: UserLoginRequest):
     """Login an existing User and return a JWT token.

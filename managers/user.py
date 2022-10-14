@@ -1,7 +1,7 @@
 """Define the User manager."""
 
 from asyncpg import UniqueViolationError
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from passlib.context import CryptContext
 
 from db import database
@@ -24,7 +24,8 @@ class UserManager:
             id_ = await database.execute(User.insert().values(**user_data))
         except UniqueViolationError as exc:
             raise HTTPException(
-                400, "User with this email already exists"
+                status.HTTP_400_BAD_REQUEST,
+                "User with this email already exists",
             ) from exc
 
         user_do = await database.fetch_one(
@@ -42,7 +43,9 @@ class UserManager:
         if not user_do or not pwd_context.verify(
             user_data["password"], user_do["password"]
         ):
-            raise HTTPException(400, "Wrong email or password")
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, "Wrong email or password"
+            )
 
         return AuthManager.encode_token(user_do)
 
@@ -53,7 +56,9 @@ class UserManager:
             User.select().where(User.c.id == user_id)
         )
         if not check_user:
-            raise HTTPException(404, "User does not exist")
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, "User does not exist"
+            )
         await database.execute(User.delete().where(User.c.id == user_id))
 
     @staticmethod
@@ -63,7 +68,9 @@ class UserManager:
             User.select().where(User.c.id == user_id)
         )
         if not check_user:
-            raise HTTPException(404, "User does not exist")
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, "User does not exist"
+            )
         await database.execute(
             User.update()
             .where(User.c.id == user_id)

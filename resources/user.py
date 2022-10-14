@@ -1,7 +1,7 @@
 """Routes for User listing and control."""
 from typing import List, Optional, Union
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from managers.auth import is_admin, oauth2_schema
 from managers.user import UserManager
@@ -27,7 +27,7 @@ async def get_users(user_id: Optional[int] = None):
 @router.put(
     "/users/{user_id}/make-admin",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    status_code=204,
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def make_admin(user_id: int):
     """Make the User with this ID an Admin."""
@@ -37,7 +37,7 @@ async def make_admin(user_id: int):
 @router.put(
     "/users/{user_id}",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     response_model=UserResponse,
 )
 async def edit_user(user_id: int, user_data: UserEditRequest):
@@ -49,7 +49,7 @@ async def edit_user(user_id: int, user_data: UserEditRequest):
 @router.delete(
     "/users/{user_id}/",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    status_code=204,
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(user_id: int):
     """Delete the specified User by user_id."""

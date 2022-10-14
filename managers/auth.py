@@ -4,7 +4,7 @@ from typing import Optional
 
 import jwt
 from decouple import config
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from db import database
@@ -26,7 +26,9 @@ class AuthManager:
             return jwt.encode(payload, config("SECRET_KEY"), algorithm="HS256")
         except Exception as exc:
             # log the exception
-            raise HTTPException(401, "Unable to generate the JWT") from exc
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "Unable to generate the JWT"
+            ) from exc
 
 
 class CustomHTTPBearer(HTTPBearer):
@@ -47,9 +49,13 @@ class CustomHTTPBearer(HTTPBearer):
             request.state.user = user_data
             return user_data
         except jwt.ExpiredSignatureError as exc:
-            raise HTTPException(401, "That token has Expired") from exc
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token has Expired"
+            ) from exc
         except jwt.InvalidTokenError as exc:
-            raise HTTPException(401, "That token is Invalid") from exc
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+            ) from exc
 
 
 oauth2_schema = CustomHTTPBearer()
@@ -58,4 +64,4 @@ oauth2_schema = CustomHTTPBearer()
 def is_admin(request: Request):
     """Return true if the user is an Admin."""
     if request.state.user["role"] != RoleType.admin:
-        raise HTTPException(403, "Forbidden")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
