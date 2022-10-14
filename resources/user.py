@@ -9,11 +9,11 @@ from models.enums import RoleType
 from schemas.request.user import UserChangePasswordRequest, UserEditRequest
 from schemas.response.user import UserResponse
 
-router = APIRouter(tags=["Users"])
+router = APIRouter(tags=["Users"], prefix="/users")
 
 
 @router.get(
-    "/users/",
+    "/",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     response_model=Union[UserResponse, List[UserResponse]],
 )
@@ -25,7 +25,7 @@ async def get_users(user_id: Optional[int] = None):
 
 
 @router.put(
-    "/users/{user_id}/make-admin",
+    "/{user_id}/make-admin",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
@@ -35,7 +35,17 @@ async def make_admin(user_id: int):
 
 
 @router.put(
-    "/users/{user_id}",
+    "/{user_id}/password",
+    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def change_password(user_id: int, user_data: UserChangePasswordRequest):
+    """Change the password for the specified user."""
+    await UserManager.change_password(user_id, user_data)
+
+
+@router.put(
+    "/{user_id}",
     dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
     status_code=status.HTTP_200_OK,
     response_model=UserResponse,
@@ -46,18 +56,8 @@ async def edit_user(user_id: int, user_data: UserEditRequest):
     return await UserManager.get_user_by_id(user_id)
 
 
-@router.put(
-    "/users/{user_id}/password",
-    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-async def change_password(user_id: int, user_data: UserChangePasswordRequest):
-    """Change the password for the specified user."""
-    await UserManager.change_password(user_id, user_data)
-
-
 @router.delete(
-    "/users/{user_id}/",
+    "/{user_id}",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
