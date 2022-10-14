@@ -1,11 +1,13 @@
 """Setup the Database and support functions.."""
 import databases
 import sqlalchemy
-from decouple import config
+
+from config import get_settings
 
 DATABASE_URL = (
-    f"postgresql://{config('DB_USER')}:{config('DB_PASSWORD')}@"
-    f"{config('DB_ADDRESS')}:{config('DB_PORT')}/{config('DB_NAME')}"
+    f"postgresql://{get_settings().db_user}:{get_settings().db_password}@"
+    f"{get_settings().db_address}:{get_settings().db_port}/"
+    f"{get_settings().db_name}"
 )
 
 database = databases.Database(DATABASE_URL)
