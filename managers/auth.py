@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import jwt
-from decouple import config
 from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from config import get_settings
 from db import database
 from models.enums import RoleType
 from models.user import User
@@ -23,7 +23,9 @@ class AuthManager:
                 "sub": user["id"],
                 "exp": datetime.utcnow() + timedelta(minutes=120),
             }
-            return jwt.encode(payload, config("SECRET_KEY"), algorithm="HS256")
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
         except Exception as exc:
             # log the exception
             raise HTTPException(
@@ -37,11 +39,12 @@ class CustomHTTPBearer(HTTPBearer):
     async def __call__(
         self, request: Request
     ) -> Optional[HTTPAuthorizationCredentials]:
+        """Override the default __call__ function."""
         res = await super().__call__(request)
 
         try:
             payload = jwt.decode(
-                res.credentials, config("SECRET_KEY"), algorithms=["HS256"]
+                res.credentials, get_settings().secret_key, algorithms=["HS256"]
             )
             user_data = await database.fetch_one(
                 User.select().where(User.c.id == payload["sub"])
@@ -64,4 +67,15 @@ oauth2_schema = CustomHTTPBearer()
 def is_admin(request: Request):
     """Return true if the user is an Admin."""
     if request.state.user["role"] != RoleType.admin:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
+
+
+def can_edit_user(request: Request):
+    """Check if the user can edit this resource.
+
+    True if they own the resource or are Admin
+    """
+    if request.state.user["role"] != RoleType.admin and request.state.user[
+        "id"
+    ] != int(request.path_params["user_id"]):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
