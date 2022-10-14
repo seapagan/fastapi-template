@@ -24,7 +24,7 @@ class AuthManager:
                 "exp": datetime.utcnow() + timedelta(minutes=120),
             }
             return jwt.encode(
-                payload, get_settings.secret_key, algorithm="HS256"
+                payload, get_settings().secret_key, algorithm="HS256"
             )
         except Exception as exc:
             # log the exception
@@ -67,4 +67,15 @@ oauth2_schema = CustomHTTPBearer()
 def is_admin(request: Request):
     """Return true if the user is an Admin."""
     if request.state.user["role"] != RoleType.admin:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
+
+
+def can_edit_user(request: Request):
+    """Check if the user can edit this resource.
+
+    True if they own the resource or are Admin
+    """
+    if request.state.user["role"] != RoleType.admin and request.state.user[
+        "id"
+    ] != int(request.path_params["user_id"]):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
