@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, status
 from managers.auth import can_edit_user, is_admin, oauth2_schema
 from managers.user import UserManager
 from models.enums import RoleType
-from schemas.request.user import UserEditRequest
+from schemas.request.user import UserChangePasswordRequest, UserEditRequest
 from schemas.response.user import UserResponse
 
 router = APIRouter(tags=["Users"])
@@ -44,6 +44,16 @@ async def edit_user(user_id: int, user_data: UserEditRequest):
     """Update the specified User's data."""
     await UserManager.update_user(user_id, user_data)
     return await UserManager.get_user_by_id(user_id)
+
+
+@router.put(
+    "/users/{user_id}/password",
+    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def change_password(user_id: int, user_data: UserChangePasswordRequest):
+    """Change the password for the specified user."""
+    await UserManager.change_password(user_id, user_data)
 
 
 @router.delete(

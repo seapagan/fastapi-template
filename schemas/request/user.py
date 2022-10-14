@@ -1,5 +1,5 @@
 """Define Schemas used by the User routes."""
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from schemas.base import UserBase
 
@@ -30,3 +30,9 @@ class UserEditRequest(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class UserChangePasswordRequest(BaseModel):
+    """Request Schema for changing a user's password."""
+
+    password: str = Field(example="My S3cur3 P@ssw0rd")

@@ -82,6 +82,22 @@ class UserManager:
             )
         )
 
+    @staticmethod
+    async def change_password(user_id: int, user_data):
+        """Change the specified user's Password."""
+        check_user = await database.fetch_one(
+            User.select().where(User.c.id == user_id)
+        )
+        if not check_user:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, "User does not exist"
+            )
+        await database.execute(
+            User.update()
+            .where(User.c.id == user_id)
+            .values(password=pwd_context.hash(user_data.password))
+        )
+
     # --------------------------- helper functions --------------------------- #
     @staticmethod
     async def get_all_users():
