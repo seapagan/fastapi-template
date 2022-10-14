@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, status
 
-from managers.auth import is_admin, oauth2_schema
+from managers.auth import can_edit_user, is_admin, oauth2_schema
 from managers.user import UserManager
 from models.enums import RoleType
 from schemas.request.user import UserEditRequest
@@ -36,7 +36,7 @@ async def make_admin(user_id: int):
 
 @router.put(
     "/users/{user_id}",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
     status_code=status.HTTP_200_OK,
     response_model=UserResponse,
 )

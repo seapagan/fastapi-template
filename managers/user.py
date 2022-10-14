@@ -78,7 +78,7 @@ class UserManager:
                 email=user_data.email,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
-                password=user_data.password,
+                password=pwd_context.hash(user_data.password),
             )
         )
 
