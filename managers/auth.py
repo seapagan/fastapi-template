@@ -49,6 +49,12 @@ class CustomHTTPBearer(HTTPBearer):
             user_data = await database.fetch_one(
                 User.select().where(User.c.id == payload["sub"])
             )
+            # block a banned user
+            if user_data.banned:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                )
+
             request.state.user = user_data
             return user_data
         except jwt.ExpiredSignatureError as exc:
@@ -65,7 +71,7 @@ oauth2_schema = CustomHTTPBearer()
 
 
 def is_admin(request: Request):
-    """Return true if the user is an Admin."""
+    """Block if user is not an Admin."""
     if request.state.user["role"] != RoleType.admin:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
@@ -79,3 +85,9 @@ def can_edit_user(request: Request):
         "id"
     ] != int(request.path_params["user_id"]):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
+
+
+def is_banned(request: Request):
+    """Dont let banned users access the route."""
+    if request.state.user["banned"]:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Banned!")
