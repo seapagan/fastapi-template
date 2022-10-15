@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
+from rich import print
 
 from db import database
 from resources.routes import api_router
@@ -29,7 +30,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.on_event("startup")
 async def startup():
     """Connect to the database on startup."""
-    await database.connect()
+    try:
+        await database.connect()
+    except Exception as exc:
+        print(f"\n[red]ERROR: Have you set up your .env file?? ({exc})\n")
 
 
 @app.on_event("shutdown")
