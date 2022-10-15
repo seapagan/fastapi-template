@@ -1,7 +1,7 @@
 """Example data for Schemas."""
 
 
-class DummyUser:
+class ExampleUser:
     """Define a dummy user for Schema examples."""
 
     id = 25
