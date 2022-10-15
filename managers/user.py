@@ -20,6 +20,7 @@ class UserManager:
     async def register(user_data):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
+        user_data["banned"] = False
         try:
             id_ = await database.execute(User.insert().values(**user_data))
         except UniqueViolationError as exc:
