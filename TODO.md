@@ -7,3 +7,5 @@
   in user.~~
 - ~~admin can ban/unban a user.~~
 - ~~user can get their own user details~~
+- Add certain users that will not time-expire (or much longer time) for eg for
+  owner or premium access.
