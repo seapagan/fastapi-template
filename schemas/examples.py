@@ -7,7 +7,7 @@ class ExampleUser:
     id = 25
     first_name = "John"
     last_name = "Doe"
-    email = "user2@example.com"
+    email = "user@example.com"
     password = "My S3cur3 P@ssw0rd"
     role = "user"
     banned = False

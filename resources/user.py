@@ -7,7 +7,7 @@ from managers.auth import can_edit_user, is_admin, oauth2_schema
 from managers.user import UserManager
 from models.enums import RoleType
 from schemas.request.user import UserChangePasswordRequest, UserEditRequest
-from schemas.response.user import UserResponse
+from schemas.response.user import MyUserResponse, UserResponse
 
 router = APIRouter(tags=["Users"], prefix="/users")
 
@@ -22,6 +22,18 @@ async def get_users(user_id: Optional[int] = None):
     if user_id:
         return await UserManager.get_user_by_id(user_id)
     return await UserManager.get_all_users()
+
+
+@router.get(
+    "/me",
+    dependencies=[Depends(oauth2_schema)],
+    response_model=MyUserResponse,
+    name="get_my_user_data",
+)
+async def get_my_user(request: Request):
+    """Get the current user's data only."""
+    my_user = request.state.user.id
+    return await UserManager.get_user_by_id(my_user)
 
 
 @router.post(
