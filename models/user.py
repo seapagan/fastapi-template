@@ -1,5 +1,5 @@
 """Define the Users model."""
-from sqlalchemy import Column, Enum, Integer, String, Table
+from sqlalchemy import Boolean, Column, Enum, Integer, String, Table
 
 from db import metadata
 from models.enums import RoleType
@@ -18,4 +18,5 @@ User = Table(
         nullable=False,
         server_default=RoleType.user.name,
     ),
+    Column("banned", Boolean, default=False),
 )

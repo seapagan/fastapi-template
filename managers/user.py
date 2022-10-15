@@ -20,6 +20,7 @@ class UserManager:
     async def register(user_data):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
+        user_data["banned"] = False
         try:
             id_ = await database.execute(User.insert().values(**user_data))
         except UniqueViolationError as exc:
@@ -96,6 +97,17 @@ class UserManager:
             User.update()
             .where(User.c.id == user_id)
             .values(password=pwd_context.hash(user_data.password))
+        )
+
+    @staticmethod
+    async def set_ban_status(user_id: int, state: bool, my_id: int):
+        """Ban or un-ban the specified user based on supplied status."""
+        if my_id == user_id:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, "You cannot ban/unban yourself!"
+            )
+        await database.execute(
+            User.update().where(User.c.id == user_id).values(banned=state)
         )
 
     # --------------------------- helper functions --------------------------- #

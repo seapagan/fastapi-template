@@ -1,7 +1,7 @@
 """Routes for User listing and control."""
 from typing import List, Optional, Union
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 
 from managers.auth import can_edit_user, is_admin, oauth2_schema
 from managers.user import UserManager
@@ -24,7 +24,7 @@ async def get_users(user_id: Optional[int] = None):
     return await UserManager.get_all_users()
 
 
-@router.put(
+@router.post(
     "/{user_id}/make-admin",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
@@ -34,7 +34,7 @@ async def make_admin(user_id: int):
     await UserManager.change_role(RoleType.admin, user_id)
 
 
-@router.put(
+@router.post(
     "/{user_id}/password",
     dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
     status_code=status.HTTP_204_NO_CONTENT,
@@ -42,6 +42,26 @@ async def make_admin(user_id: int):
 async def change_password(user_id: int, user_data: UserChangePasswordRequest):
     """Change the password for the specified user."""
     await UserManager.change_password(user_id, user_data)
+
+
+@router.post(
+    "/{user_id}/ban",
+    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def ban_user(request: Request, user_id: int):
+    """Ban the specific user Id."""
+    await UserManager.set_ban_status(user_id, True, request.state.user.id)
+
+
+@router.post(
+    "/{user_id}/unban",
+    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def unban_user(request: Request, user_id: int):
+    """Ban the specific user Id."""
+    await UserManager.set_ban_status(user_id, False, request.state.user.id)
 
 
 @router.put(
