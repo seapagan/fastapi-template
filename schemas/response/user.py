@@ -3,13 +3,14 @@ from pydantic import Field
 
 from models.enums import RoleType
 from schemas.base import UserBase
+from schemas.examples import DummyUser
 
 
 class UserResponse(UserBase):
     """Response Schema for a User."""
 
-    id: int = Field(example=23)
-    first_name: str = Field(example="John")
-    last_name: str = Field(example="Doe")
-    role: RoleType = Field(example="user")
-    banned: bool = Field(example=False)
+    id: int = Field(DummyUser.id)
+    first_name: str = Field(example=DummyUser.first_name)
+    last_name: str = Field(example=DummyUser.last_name)
+    role: RoleType = Field(example=DummyUser.role)
+    banned: bool = Field(example=DummyUser.banned)
