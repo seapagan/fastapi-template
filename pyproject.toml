@@ -19,6 +19,7 @@ passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 psycopg2 = "^2.9.4"
 PyJWT = "^2.5.0"
 Jinja2 = "^3.1.2"
+rich = "^12.6.0"
 
 
 [build-system]
