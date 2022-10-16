@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from rich import print
 
 from db import database
+from resources import config_error
 from resources.routes import api_router
 
 app = FastAPI(
@@ -23,7 +24,6 @@ app = FastAPI(
 )
 
 app.include_router(api_router)
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -33,7 +33,10 @@ async def startup():
     try:
         await database.connect()
     except Exception as exc:
-        print(f"\n[red]ERROR: Have you set up your .env file?? ({exc})\n")
+        print(f"\n[red]ERROR: Have you set up your .env file?? ({exc})")
+        print("[blue]Clearing routes and enabling error page.\n")
+        app.routes.clear()
+        app.include_router(config_error.router)
 
 
 @app.on_event("shutdown")
