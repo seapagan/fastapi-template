@@ -34,7 +34,7 @@ async def startup():
         await database.connect()
     except Exception as exc:
         print(f"\n[red]ERROR: Have you set up your .env file?? ({exc})")
-        print("[blue]Clearing routes and enabling error page.\n")
+        print("[blue]Clearing routes and enabling error mesage.\n")
         app.routes.clear()
         app.include_router(config_error.router)
 
