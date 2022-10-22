@@ -33,7 +33,9 @@ which you can then Clone and start working on.
 
 It is assumed that you have at least some knowledge of
 [FastAPI](https://fastapi.tiangolo.com/) to use this template, there are very
-good basic and advanced User Guides on the FastAPI website.
+good [Basic](https://fastapi.tiangolo.com/tutorial/) and
+[Advanced](https://fastapi.tiangolo.com/advanced/) User Guides on the FastAPI
+website .
 
 ## Configuration
 
