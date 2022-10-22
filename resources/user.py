@@ -18,7 +18,14 @@ router = APIRouter(tags=["Users"], prefix="/users")
     response_model=Union[UserResponse, List[UserResponse]],
 )
 async def get_users(user_id: Optional[int] = None):
-    """Get all users or a specific user by their ID."""
+    """Get all users or a specific user by their ID.
+
+    To get a specific User data, the requesting user must match the user_id, or
+    be an Admin.
+
+    user_id id optional, and if ommitted then all Users are returned. This is
+    only allowed for Admins.
+    """
     if user_id:
         return await UserManager.get_user_by_id(user_id)
     return await UserManager.get_all_users()
@@ -52,7 +59,10 @@ async def make_admin(user_id: int):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def change_password(user_id: int, user_data: UserChangePasswordRequest):
-    """Change the password for the specified user."""
+    """Change the password for the specified user.
+
+    Can only be done by an Admin, or the specific user that matches the user_id.
+    """
     await UserManager.change_password(user_id, user_data)
 
 
@@ -62,7 +72,10 @@ async def change_password(user_id: int, user_data: UserChangePasswordRequest):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def ban_user(request: Request, user_id: int):
-    """Ban the specific user Id."""
+    """Ban the specific user Id.
+
+    Admins only. The Admin cannot ban their own ID!
+    """
     await UserManager.set_ban_status(user_id, True, request.state.user.id)
 
 
@@ -72,7 +85,10 @@ async def ban_user(request: Request, user_id: int):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def unban_user(request: Request, user_id: int):
-    """Ban the specific user Id."""
+    """Ban the specific user Id.
+
+    Admins only.
+    """
     await UserManager.set_ban_status(user_id, False, request.state.user.id)
 
 
@@ -83,7 +99,10 @@ async def unban_user(request: Request, user_id: int):
     response_model=UserResponse,
 )
 async def edit_user(user_id: int, user_data: UserEditRequest):
-    """Update the specified User's data."""
+    """Update the specified User's data.
+
+    Available for the specific requesting User, or an Admin.
+    """
     await UserManager.update_user(user_id, user_data)
     return await UserManager.get_user_by_id(user_id)
 
@@ -94,5 +113,8 @@ async def edit_user(user_id: int, user_data: UserEditRequest):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(user_id: int):
-    """Delete the specified User by user_id."""
+    """Delete the specified User by user_id.
+
+    Admin only.
+    """
     await UserManager.delete_user(user_id)
