@@ -46,6 +46,6 @@
   "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*_test.py"],
   "python.testing.unittestEnabled": false,
   "testExplorer.addToEditorContextMenu": true,
-  // "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.typeCheckingMode": "basic",
   "python.linting.mypyEnabled": false
 }

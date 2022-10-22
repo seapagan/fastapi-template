@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     db_password = "Sup3rS3cr3tP455w0rd"
     db_address = "localhost"
     db_port = "5432"
-    db_name = "calendar-api"
+    db_name = "api-template"
 
     secret_key = "32DigitsofSecretNembers"
 
