@@ -23,7 +23,7 @@ async def get_users(user_id: Optional[int] = None):
     To get a specific User data, the requesting user must match the user_id, or
     be an Admin.
 
-    user_id id optional, and if ommitted then all Users are returned. This is
+    user_id is optional, and if omitted then all Users are returned. This is
     only allowed for Admins.
     """
     if user_id:

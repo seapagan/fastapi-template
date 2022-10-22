@@ -229,7 +229,7 @@ running API for interactive Swagger (OpenAPI) Documentation.
 > To get a specific User data, the requesting user must match the user_id, or
 > be an Admin.
 >
-> user_id id optional, and if ommitted then all Users are returned. This is
+> user_id is optional, and if omitted then all Users are returned. This is
 > only allowed for Admins.
 
 ### **`GET`** _/users/me_
@@ -288,3 +288,4 @@ running API for interactive Swagger (OpenAPI) Documentation.
 The route table above was automatically generated from an `openapi.json` file by
 my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
 out for your own API documentation! 😊
+�
