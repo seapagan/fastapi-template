@@ -16,8 +16,8 @@ Thank You 😊
   - [Install required Dependencies](#install-required-dependencies)
   - [Migrate the Database](#migrate-the-database)
   - [Run a development Server](#run-a-development-server)
-- [Contributing](#contributing)
 - [Deploying to Production](#deploying-to-production)
+- [Contributing](#contributing)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
   - [**`GET`** _/users/_](#get-users)
@@ -141,19 +141,6 @@ uvicorn main:app --reload
 The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
 
-## Contributing
-
-Please **do** feel free to open an Issue for any errors or missing dependencies
-you find, or even a Pull Request with solutions 😎
-
-Likewise, I am very open to new feature Pull Requests!
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
 ## Deploying to Production
 
 There are quite a few ways to deploy a FastAPI app to production. There is a
@@ -175,6 +162,19 @@ or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
 > dependencies, setup your `.env` file (or use Environment variables if your
 > hosting provider uses these - for example Vercel or Heroku) and set up and
 > migrate your Database, exactly the same as for Develpment as desctribed above.
+
+## Contributing
+
+Please **do** feel free to open an Issue for any bugs or issues you find, or
+even a Pull Request with solutions 😎
+
+Likewise, I am very open to new feature Pull Requests!
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
 
 ## Project Organization
 
