@@ -266,3 +266,7 @@ running API for interactive Swagger (OpenAPI) Documentation.
 > This token should be sent as a Bearer token for each access to a protected
 > route.
 <!-- openapi-schema-end -->
+
+The route table above was automatically generated from an `openapi.json` file by
+my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
+out for your own API documentation! 😊
