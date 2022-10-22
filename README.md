@@ -1,8 +1,8 @@
 # FastAPI Application Template <!-- omit in toc -->
 
 This is a template Repository for starting a new
-[FastAPI]([https://](https://fastapi.tiangolo.com/)) project with Authentication
-and Users, with Authorization already baked-in.
+[FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
+with Authorization already baked-in.
 
 - [How to use](#how-to-use)
 - [Configuration](#configuration)
@@ -11,6 +11,7 @@ and Users, with Authorization already baked-in.
   - [Install required Dependencies](#install-required-dependencies)
   - [Migrate the Database](#migrate-the-database)
   - [Run a development Server](#run-a-development-server)
+- [Deploying to Production](#deploying-to-production)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
   - [**`GET`** _/users/_](#get-users)
@@ -29,6 +30,10 @@ and Users, with Authorization already baked-in.
 Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.
+
+It is assumed that you have at least some knowledge of
+[FastAPI](https://fastapi.tiangolo.com/) to use this template, there are very
+good basic and advanced User Guides on the FastAPI website.
 
 ## Configuration
 
@@ -92,7 +97,7 @@ normal:
 pip install -r requirements.txt
 ```
 
-I definately recommend using Poetry if you can thoughs, it makes dealing with
+I definately recommend using Poetry if you can though, it makes dealing with
 updates and conflicts very easy.
 
 ### Migrate the Database
@@ -112,6 +117,9 @@ alembic revision -m "<My commit message>"
 alembic upgrade head
 ```
 
+Check out the [Alembic](https://github.com/sqlalchemy/alembic) repository for
+more information on how to use (for example how to revert migrations).
+
 ### Run a development Server
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
@@ -124,6 +132,23 @@ uvicorn main:app --reload
 
 The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
+
+## Deploying to Production
+
+There are quite a few ways to deploy a FastAPI app to production. There is a
+very good discussion about this on the FastAPI [Deployment
+Guide](https://fastapi.tiangolo.com/deployment/) which covers using Uvicorn,
+Gunicorn and Containers.
+
+My Personal preference is to serve with Gunicorn, using uvicorn workers behind
+an Nginx proxy, though this does require you having your own server. There is a
+pretty decent tutorial on this at
+[Vultr](https://www.vultr.com/docs/how-to-deploy-fastapi-applications-with-gunicorn-and-nginx-on-ubuntu-20-04/).
+For deploying to AWS Lambda with API Gateway, there is a really excellent Medium
+post (and it's followup)
+[Here](https://medium.com/towards-data-science/fastapi-aws-robust-api-part-1-f67ae47390f9),
+or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
+[testdriven.io](https://testdriven.io/blog/fastapi-elastic-beanstalk/)
 
 ## Project Organization
 
