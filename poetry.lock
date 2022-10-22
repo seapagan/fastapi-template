@@ -115,7 +115,7 @@ sqlite = ["aiosqlite"]
 
 [[package]]
 name = "fastapi"
-version = "0.85.0"
+version = "0.85.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -537,7 +537,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "fe8299ed84b5078cd975c3ae0a12c4633f8b4df96df21eebe0472a82ed897d1e"
+content-hash = "8360e62a764d2dbcfe26ecc98f880a7b9cfd7ae75eaa3231f77d2f75675191ef"
 
 [metadata.files]
 alembic = [
@@ -616,8 +616,8 @@ databases = [
     {file = "databases-0.6.1.tar.gz", hash = "sha256:0a69c6983a27e10a5b75ffa094486f1febadd9d5a8db016e69b8c2f6a354dc30"},
 ]
 fastapi = [
-    {file = "fastapi-0.85.0-py3-none-any.whl", hash = "sha256:1803d962f169dc9f8dde54a64b22eb16f6d81573f54401971f90f0a67234a8b4"},
-    {file = "fastapi-0.85.0.tar.gz", hash = "sha256:bb219cfafd0d2ccf8f32310c9a257a06b0210bd8e2a03706a6f5a9f9f1416878"},
+    {file = "fastapi-0.85.1-py3-none-any.whl", hash = "sha256:de3166b6b1163dc22da4dc4ebdc3192fcbac7700dd1870a1afa44de636a636b5"},
+    {file = "fastapi-0.85.1.tar.gz", hash = "sha256:1facd097189682a4ff11cbd01334a992e51b56be663b2bd50c2c09523624f144"},
 ]
 greenlet = [
     {file = "greenlet-1.1.3.post0-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:949c9061b8c6d3e6e439466a9be1e787208dec6246f4ec5fffe9677b4c19fcc3"},
