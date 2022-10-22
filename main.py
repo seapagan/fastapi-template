@@ -9,8 +9,8 @@ from resources import config_error
 from resources.routes import api_router
 
 app = FastAPI(
-    title="Calendar API",
-    description="A Full-featured API for creating and managing a calendar.",
+    title="API Template",
+    description="A template for a clean API, with JTW Auth and User control baked in.",
     redoc_url=None,
     docs_url=None,  # we customize this ourselves
     license_info={
