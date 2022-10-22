@@ -225,6 +225,12 @@ running API for interactive Swagger (OpenAPI) Documentation.
 ### **`GET`** _/users/_
 
 > Get Users : _Get all users or a specific user by their ID._
+>
+> To get a specific User data, the requesting user must match the user_id, or
+> be an Admin.
+>
+> user_id id optional, and if ommitted then all Users are returned. This is
+> only allowed for Admins.
 
 ### **`GET`** _/users/me_
 
@@ -237,22 +243,32 @@ running API for interactive Swagger (OpenAPI) Documentation.
 ### **`POST`** _/users/{user_id}/password_
 
 > Change Password : _Change the password for the specified user._
+>
+> Can only be done by an Admin, or the specific user that matches the user_id.
 
 ### **`POST`** _/users/{user_id}/ban_
 
 > Ban User : _Ban the specific user Id._
+>
+> Admins only. The Admin cannot ban their own ID!
 
 ### **`POST`** _/users/{user_id}/unban_
 
 > Unban User : _Ban the specific user Id._
+>
+> Admins only.
 
 ### **`PUT`** _/users/{user_id}_
 
 > Edit User : _Update the specified User's data._
+>
+> Available for the specific requesting User, or an Admin.
 
 ### **`DELETE`** _/users/{user_id}_
 
 > Delete User : _Delete the specified User by user_id._
+>
+> Admin only.
 
 ### **`POST`** _/register/_
 
