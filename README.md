@@ -6,7 +6,20 @@ and Users, with Authorization already baked-in.
 
 - [How to use](#how-to-use)
 - [Setup](#setup)
-- [Routes](#routes)
+- [Development](#development)
+- [Project Organization](#project-organization)
+  - [Project Root ('/')](#project-root-)
+- [Provided Routes](#provided-routes)
+  - [**`GET`** _/users/_](#get-users)
+  - [**`GET`** _/users/me_](#get-usersme)
+  - [**`POST`** _/users/{user_id}/make-admin_](#post-usersuser_idmake-admin)
+  - [**`POST`** _/users/{user_id}/password_](#post-usersuser_idpassword)
+  - [**`POST`** _/users/{user_id}/ban_](#post-usersuser_idban)
+  - [**`POST`** _/users/{user_id}/unban_](#post-usersuser_idunban)
+  - [**`PUT`** _/users/{user_id}_](#put-usersuser_id)
+  - [**`DELETE`** _/users/{user_id}_](#delete-usersuser_id)
+  - [**`POST`** _/register/_](#post-register)
+  - [**`POST`** _/login/_](#post-login)
 
 ## How to use
 
@@ -38,9 +51,57 @@ disable all routes, print an error to the console, and return a a 500 status
 code with a clear JSON message for all routes. This saves the ugly default
 "Internal Server Error" from being displayed.
 
-## Routes
+## Development
+
+The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
+when you install the project dependencies. This can be used for testing the API
+during development :
+
+```bash
+uvicorn main:app --reload
+```
+
+The above command starts the server running on <http://localhost:8000>, and it
+will automatically reload when it detects any changes as you develop.
+
+## Project Organization
+
+This project has been deliberately laid out in a specific way. To avoid long
+complicated files which are difficult to debug, functionality is separated out
+in files and modules depending on the specific functionality.
+
+### Project Root ('/')
+
+[main.py](main.py) - The main controlling file, this should be as clean and short as
+possible with all functionality moved out to modules.
+
+[db.py](db.py) - This configures the database, and should generally not need to be
+touched.
+
+[config.py](config.py) - Handles the API settings and defaults. If you add more settings
+(for example in the `.env` file) you should also add them here with suitable
+defaults.
+
+[commands/](/commands) - This directory can hold any commands you need to write - for example
+populating a database, create a superuser or other housekeeping tasks.
+
+[managers/](/managers) - This directory contains individual files for each 'group' of
+functionality. They contain a Class that should take care of the actual work
+needed for the routes. Check out the [auth.py](managers/auth.py) and
+[user.py](managers/user.py)
+
+[migrations/](/migrations) - We use
+[Alembic](https://github.com/sqlalchemy/alembic) to handle the database
+migrations. Check out their pages for more info. See instructions under
+[Development](#development) for more info.
+
+## Provided Routes
 
 By default, this template comes with routes for Authentication and User control.
+These can be tweaked if required, and form a base for you to add your own
+api-specific routes.
+For full info and to test the routes, you can go to the `/docs` path on a
+running API for interactive Swagger (OpenAPI) Documentation.
 
 <!-- openapi-schema -->
 
