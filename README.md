@@ -150,6 +150,11 @@ post (and it's followup)
 or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
 [testdriven.io](https://testdriven.io/blog/fastapi-elastic-beanstalk/)
 
+> Remember:  you still need to set up a virtual environment, install all the
+> dependencies, setup your `.env` file (or use Environment variables if your
+> hosting provider uses these - for example Vercel or Heroku) and set up and
+> migrate your Database, exactly the same as for Develpment as desctribed above.
+
 ## Project Organization
 
 This project has been deliberately laid out in a specific way. To avoid long
