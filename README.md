@@ -4,6 +4,11 @@ This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
 with Authorization already baked-in.
 
+This template is free to use but I do request accreditation. If you do use it in
+one of your applications, please put a small note in your readme stating that
+you based your project on this Template, with a link back to this repository.
+Thank You 😊
+
 - [How to use](#how-to-use)
 - [Configuration](#configuration)
 - [Development](#development)
@@ -11,6 +16,7 @@ with Authorization already baked-in.
   - [Install required Dependencies](#install-required-dependencies)
   - [Migrate the Database](#migrate-the-database)
   - [Run a development Server](#run-a-development-server)
+- [Contributing](#contributing)
 - [Deploying to Production](#deploying-to-production)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
@@ -134,6 +140,19 @@ uvicorn main:app --reload
 
 The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
+
+## Contributing
+
+Please **do** feel free to open an Issue for any errors or missing dependencies
+you find, or even a Pull Request with solutions 😎
+
+Likewise, I am very open to new feature Pull Requests!
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
 
 ## Deploying to Production
 
