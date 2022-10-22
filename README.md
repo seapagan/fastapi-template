@@ -5,8 +5,12 @@ This is a template Repository for starting a new
 and Users, with Authorization already baked-in.
 
 - [How to use](#how-to-use)
-- [Setup](#setup)
+- [Configuration](#configuration)
 - [Development](#development)
+  - [Set up a Virtual Environment](#set-up-a-virtual-environment)
+  - [Install required Dependencies](#install-required-dependencies)
+  - [Migrate the Database](#migrate-the-database)
+  - [Run a development Server](#run-a-development-server)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
   - [**`GET`** _/users/_](#get-users)
@@ -26,7 +30,7 @@ Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.
 
-## Setup
+## Configuration
 
 Database (and other) settings can be read from environment variables or from a
 `.env` file in the project root. By default, these are only used for the
@@ -51,6 +55,64 @@ code with a clear JSON message for all routes. This saves the ugly default
 "Internal Server Error" from being displayed.
 
 ## Development
+
+### Set up a Virtual Environment
+
+It is always a good idea to set up dedicated Virtual Environment when you are
+developing a Python application. If you use Poetry, this will be done
+automatically for you when you run `poetry install`.
+
+Otherwise, [Pyenv](https://github.com/pyenv/pyenv) has a
+[virtualenv](https://github.com/pyenv/pyenv-virtualenv) plugin which is very
+easy to use.
+
+Also, check out this
+[freeCodeCamp](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)
+tutorial or a similar
+[RealPython](https://realpython.com/python-virtual-environments-a-primer/) one
+for some great info. If you are going this (oldschool!) way, I'd recommend using
+[Virtualenv](https://virtualenv.pypa.io/en/latest/) instead of the built in
+`venv` tool (which is a subset of this).
+
+### Install required Dependencies
+
+The project has been set up using [Poetry](https://python-poetry.org/) to
+organize and install dependencies. If you have Poetry installed, simply run the
+following to install all that is needed.
+
+```bash
+poetry install
+```
+
+If you do not (or cannot) have Poetry installed, I have provided an
+auto-generated `requirements.txt` in the project root which you can use as
+normal:
+
+```bash
+pip install -r requirements.txt
+```
+
+I definately recommend using Poetry if you can thoughs, it makes dealing with
+updates and conflicts very easy.
+
+### Migrate the Database
+
+Make sure you have [configured](#configuration) the database. Then run the
+following command to setup the database:
+
+```bash
+alembic upgrade head
+```
+
+Everytime you add or edit a model, create a new migration then run the upgrade
+as shown below:
+
+```bash
+alembic revision -m "<My commit message>"
+alembic upgrade head
+```
+
+### Run a development Server
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
@@ -113,7 +175,7 @@ defined as [Pydantic](https://pydantic-docs.helpmanual.io/) Classes.
 [static/](/static) - Any static files used by HTML templates for example CSS or
 JS files.
 
-[templates](/templates) - Any HTML templates. We have one by default - used
+[templates/](/templates) - Any HTML templates. We have one by default - used
 only when the root of the API is accessed using a Web Browser (otherwise a
 simple informational JSON response is returned). You can edit the template in
 [index.html](templates/index.html) for your own API.
