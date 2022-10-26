@@ -46,6 +46,8 @@ following advantages to starting your own from scratch :
   open for future functionality.
 - Database and Secrets automatically read from Environment variables or a `.env`
   file if that is provided.
+- User email is validated for correct format on creation (however no checks are
+  performed to ensure the email or domain actually exists).
 
 The template **Requires Python 3.7+**
 
