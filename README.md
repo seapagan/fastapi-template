@@ -15,6 +15,7 @@ Thank You 😊
   - [Set up a Virtual Environment](#set-up-a-virtual-environment)
   - [Install required Dependencies](#install-required-dependencies)
   - [Migrate the Database](#migrate-the-database)
+  - [Add a user (optional)](#add-a-user-optional)
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
 - [Contributing](#contributing)
@@ -127,6 +128,43 @@ alembic upgrade head
 
 Check out the [Alembic](https://github.com/sqlalchemy/alembic) repository for
 more information on how to use (for example how to revert migrations).
+
+### Add a user (optional)
+
+It is possible to add Users to the database using the API itself, but you cannot
+create an Admin user this way, unless you aready have an existing Admin user in
+the database.
+
+This template includes a command-line utility to create a new user and
+optionally make them Admin at the same time:
+
+```bash
+template-admin create
+```
+
+You will be asked for the new user's email etc, and if this should be an
+Admin user (default is to be a standard non-admin User). These values can be
+added from the command line too, for automated use, see the built in help for
+details :
+
+```console
+$ template-admin create --help
+
+Usage: template-admin create [OPTIONS]
+
+  Create a new user.
+
+  Values are either taken from the command line options, or interactively for
+  any that are missing.
+
+Options:
+  -e, --email TEXT       [required]
+  -f, --first_name TEXT  [required]
+  -l, --last_name TEXT   [required]
+  -p, --password TEXT    [required]
+  -a, --admin TEXT       [required]
+  --help                 Show this message and exit.
+```
 
 ### Run a development Server
 
