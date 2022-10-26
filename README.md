@@ -4,11 +4,7 @@ This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
 with Authorization already baked-in.
 
-This template is free to use but I do request accreditation. If you do use it in
-one of your applications, please put a small note in your readme stating that
-you based your project on this Template, with a link back to this repository.
-Thank You 😊
-
+- [Functionality](#functionality)
 - [How to use](#how-to-use)
 - [Configuration](#configuration)
 - [Development](#development)
@@ -18,6 +14,7 @@ Thank You 😊
   - [Add a user (optional)](#add-a-user-optional)
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
+- [Who is Using this Template?](#who-is-using-this-template)
 - [Contributing](#contributing)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
@@ -31,6 +28,36 @@ Thank You 😊
   - [**`DELETE`** _/users/{user_id}_](#delete-usersuser_id)
   - [**`POST`** _/register/_](#post-register)
   - [**`POST`** _/login/_](#post-login)
+
+## Functionality
+
+This template is a ready-to-use boilerplate for a FastAPI project. It has the
+following advantages to starting your own from scratch :
+
+- Baked-in User database and management. Routes are provided to add/edit/delete
+  or ban Users.
+- Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
+  (unless you want to!). All database usage is Asynchronous.
+- Register and Login routes provided, both of which return a JWT token to be
+  used in all future requests. JWT Token expires 120 minutes after issue.
+- JWT-based security as a Bearer Token to control access to all your routes.
+- A clean layout to help structure your project.
+- Command line admin tool. At the moment this only allows adding a user but is
+  open for future functionality.
+- Database and Secrets automatically read from Environment variables or a `.env`
+  file if that is provided.
+
+The template **Requires Python 3.7+**
+
+This template is free to use but I would request some accreditation. If you do
+use it in one of your applications, please put a small note in your readme
+stating that you based your project on this Template, with a link back to this
+repository. Thank You 😊 For those who let me know they are using this Template,
+I'll add links back to your project in this documentation.
+
+If this template saves you time/effort/money, or you just wish to show your
+appreciation for my work, why not [Buy me a
+Coffee!](https://www.buymeacoffee.com/seapagan) 😃
 
 ## How to use
 
@@ -61,6 +88,14 @@ DB_NAME=my_database_name
 # generate your own super secret key here, used by the JWT functions.
 # 32 characters or longer, definately change the below!!
 SECRET_KEY=123456
+```
+
+To generate a good secret key you can use the below command on Linux or Mac:
+
+```console
+$ openssl rand -base64 32
+xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=
+
 ```
 
 If the database is not configured or cannot be reached, the Application will
@@ -200,6 +235,11 @@ or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
 > dependencies, setup your `.env` file (or use Environment variables if your
 > hosting provider uses these - for example Vercel or Heroku) and set up and
 > migrate your Database, exactly the same as for Develpment as desctribed above.
+
+## Who is Using this Template?
+
+Meh, at the moment probably no-one except me 😆. If you do use this in one of your own
+projects, drop me a message and I'll add your profile and project links here 😃
 
 ## Contributing
 
