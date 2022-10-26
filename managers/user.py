@@ -1,6 +1,7 @@
 """Define the User manager."""
 
 from asyncpg import UniqueViolationError
+from email_validator import EmailNotValidError, validate_email
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
 
@@ -21,13 +22,23 @@ class UserManager:
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
+
         try:
+            email_validation = validate_email(
+                user_data["email"], check_deliverability=False
+            )
+            user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
-        except UniqueViolationError as exc:
+        except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
-                "User with this email already exists",
-            ) from exc
+                "A User with this email already exists",
+            ) from err
+        except EmailNotValidError as err:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "This email address is not valid",
+            ) from err
 
         user_do = await database.fetch_one(
             User.select().where(User.c.id == id_)
@@ -58,7 +69,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "User does not exist"
+                status.HTTP_404_NOT_FOUND, "This User does not exist"
             )
         await database.execute(User.delete().where(User.c.id == user_id))
 
@@ -70,7 +81,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "User does not exist"
+                status.HTTP_404_NOT_FOUND, "This User does not exist"
             )
         await database.execute(
             User.update()
