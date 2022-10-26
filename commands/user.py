@@ -1,6 +1,7 @@
 """Add a user from the command line, optionally make superuser."""
 import asyncclick as click
 from fastapi import HTTPException
+from rich import print
 
 from db import database
 from managers.user import UserManager
@@ -76,11 +77,11 @@ async def create(email, first_name, last_name, password, admin):
         await database.connect()
         await UserManager.register(user_data)
         await database.disconnect()
-        print(f'\nUser {user_data["email"]} added succesfully.\n')
+        print(f'\n[green]User {user_data["email"]} [bold]added succesfully.\n')
     except HTTPException as e:
-        print(f"\nERROR adding User : {e.detail}\n")
+        print(f"\n[red]ERROR adding User : [bold]{e.detail}\n")
     except Exception as e:
-        print(f"\nERROR adding User : {e}\n")
+        print(f"\n[red]ERROR adding User : [bold]{e}\n")
 
 
 # Add the commands to the group.
