@@ -32,7 +32,7 @@ class UserManager:
         except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
-                "User with this email already exists",
+                "A User with this email already exists",
             ) from err
         except EmailNotValidError as err:
             raise HTTPException(
@@ -69,7 +69,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "User does not exist"
+                status.HTTP_404_NOT_FOUND, "This User does not exist"
             )
         await database.execute(User.delete().where(User.c.id == user_id))
 
@@ -81,7 +81,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "User does not exist"
+                status.HTTP_404_NOT_FOUND, "This User does not exist"
             )
         await database.execute(
             User.update()

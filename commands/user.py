@@ -77,11 +77,14 @@ async def create(email, first_name, last_name, password, admin):
         await database.connect()
         await UserManager.register(user_data)
         await database.disconnect()
-        print(f'\n[green]User {user_data["email"]} [bold]added succesfully.\n')
+        print(
+            f"\n[green]-> User [bold]{user_data['email']}[/bold] "
+            "added succesfully.\n"
+        )
     except HTTPException as e:
-        print(f"\n[red]ERROR adding User : [bold]{e.detail}\n")
+        print(f"\n[red]-> ERROR adding User : [bold]{e.detail}\n")
     except Exception as e:
-        print(f"\n[red]ERROR adding User : [bold]{e}\n")
+        print(f"\n[red]-> ERROR adding User : [bold]{e}\n")
 
 
 # Add the commands to the group.
