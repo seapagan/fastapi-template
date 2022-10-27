@@ -48,6 +48,7 @@ following advantages to starting your own from scratch :
   file if that is provided.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
+- Control permitted CORS Origin through Environment variables.
 
 The template **Requires Python 3.7+**
 
@@ -90,7 +91,16 @@ DB_NAME=my_database_name
 # generate your own super secret key here, used by the JWT functions.
 # 32 characters or longer, definately change the below!!
 SECRET_KEY=123456
+
+# List of origins that can access this API, separated by a comma, eg:
+# CORS_ORIGINS=http://localhost,https://www.gnramsay.com
+# If you want all origins to access (the default), use * or leave commented:
+CORS_ORIGINS=*
 ```
+
+For a **PUBLIC API** (unless its going through an API gateway!), set
+`CORS_ORIGINS=*`, otherwise list the domains (**and ports**) required. If you
+use an API gateway of some nature, that will probably need to be listed.
 
 To generate a good secret key you can use the below command on Linux or Mac:
 
