@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     base_url: str = "http://localhost:8000"
 
+    cors_origins: str = "*"
+
     # Setup the Postgresql database.
     db_user = "my_db_username"
     db_password = "Sup3rS3cr3tP455w0rd"
