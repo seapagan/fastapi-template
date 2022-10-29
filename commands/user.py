@@ -8,12 +8,9 @@ from managers.user import UserManager
 from models.enums import RoleType
 
 
-@click.group()
+@click.group(name="user")
 def user_commands():
-    """Add a new User to the Database.
-
-    Optionally, make this a Super-user.
-    """
+    """Add or modify users."""
 
 
 @click.command()
