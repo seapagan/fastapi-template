@@ -10,7 +10,7 @@ custom_metadata = MetadataBase(
     description="A Clean API template with JTW Auth and User control baked in.",
     repository="https://github.com/seapagan/fastapi-template",
     license_info={
-        "name": "MIT License",
+        "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
     },
     contact={
