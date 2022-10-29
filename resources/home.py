@@ -27,6 +27,8 @@ def root_path(
         return templates.TemplateResponse("index.html", context)
 
     return {
-        "info": "Seapagan's Calendar API (c)2022",
-        "website": "https://github.com/seapagan/calendar-api",
+        "info": (
+            f"{get_settings().contact['name']}'s {get_settings().api_title}"
+        ),
+        "repository": get_settings().repository,
     }
