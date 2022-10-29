@@ -7,14 +7,14 @@ from config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="API Template",
-    description="A Clean API template with JTW Auth and User control baked in.",
+    description="Run 'api-admin custom metadata' to change this information.",
     repository="https://github.com/seapagan/fastapi-template",
     license_info={
-        "name": "MIT",
+        "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT",
     },
     contact={
-        "name": "Grant Ramsay",
+        "name": "Grant Ramsay (seapagan)",
         "url": "https://www.gnramsay.com",
     },
 )

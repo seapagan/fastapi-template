@@ -7,7 +7,7 @@ from commands import custom, user
 
 @click.group()
 def control():
-    """Configution tools for the API Template.
+    """Configuration tools for the API Template.
 
     Commands to help with User control and customize the API Metadata (Title,
     Description, Author and more) for your own Application.

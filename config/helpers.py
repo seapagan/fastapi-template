@@ -25,3 +25,26 @@ LICENCES = [
     {"name": "CDDL", "url": "https://opensource.org/licenses/CDDL-1.0"},
     {"name": "EPL", "url": "https://opensource.org/licenses/EPL-2.0"},
 ]
+
+template = """\"\"\"This file contains Custom Metadata for your API Project.
+
+Be aware, this will be re-generated any time you run the
+'api-admin custom metadata' command!
+\"\"\"
+from config.helpers import MetadataBase
+
+custom_metadata = MetadataBase(
+    title="{{ title }}",
+    description="{{ desc }}",
+    repository="{{ repo }}",
+    license_info={
+        "name": "{{ license.name }} License",
+        "url": "{{ license.url }}",
+    },
+    contact={
+        "name": "{{ author }}",
+        "url": "{{ website }}",
+    },
+)
+
+"""

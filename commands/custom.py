@@ -7,31 +7,7 @@ import asyncclick as click
 from jinja2 import Template
 from rich import print
 
-from config.helpers import LICENCES
-from config.metadata import custom_metadata
-
-template = """\"\"\"This file contains Custom Metadata for your API Project.
-
-Be aware, this will be re-generated any time you run the
-'api-admin custom metadata' command!
-\"\"\"
-from config.structure import MetadataBase
-
-custom_metadata = MetadataBase(
-    title="{{ title }}",
-    description="{{ desc }}",
-    repository="{{ repo }}",
-    license_info={
-        "name": "{{ license.name }}",
-        "url": "{{ license.url }}",
-    },
-    contact={
-        "name": "{{ author }}",
-        "url": "{{ website }}",
-    },
-)
-
-"""
+from config.helpers import LICENCES, template
 
 
 def get_config_path():
@@ -40,13 +16,46 @@ def get_config_path():
     return script_dir / "config" / "metadata.py"
 
 
+def init():
+    """Create a default metadata file, overwrite any existing."""
+    data = {
+        "title": "API Template",
+        "desc": "Run 'api-admin custom metadata' to change this information.",
+        "repo": "https://github.com/seapagan/fastapi-template",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT",
+        },
+        "author": "Grant Ramsay (seapagan)",
+        "website": "https://www.gnramsay.com",
+    }
+
+    out = Template(template).render(data)
+    try:
+        with open(get_config_path(), "w") as f:
+            f.write(out)
+    except Exception as e:
+        print(f"Cannot Write the metadata : {e}")
+
+
+try:
+    from config.metadata import custom_metadata
+except ModuleNotFoundError:
+    print(
+        "[red]The metadata file could not be found, it may have been deleted.\n"
+        "Recreating with defaults, please re-run the command."
+    )
+    init()
+    quit(1)
+
+
 def get_licenses():
     """Return a list of possible Open-source Licence types."""
     return [licence["name"] for licence in LICENCES]
 
 
 def get_case_insensitive_dict(choice):
-    """return the dictionary with specified key, case insensitive.
+    """Return the dictionary with specified key, case insensitive.
 
     We already know the key exists, however it may have wrong case.
     """
