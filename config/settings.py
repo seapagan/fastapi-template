@@ -3,6 +3,8 @@ from functools import lru_cache
 
 from pydantic import BaseSettings
 
+from .metadata import custom_metadata
+
 
 class Settings(BaseSettings):
     """Main Settings class.
@@ -24,7 +26,15 @@ class Settings(BaseSettings):
     db_port = "5432"
     db_name = "api-template"
 
+    # JTW secret Key
     secret_key = "32DigitsofSecretNembers"
+
+    # Custom Metadata
+    api_title = custom_metadata.title
+    api_description = custom_metadata.description
+    repository = custom_metadata.repository
+    contact = custom_metadata.contact
+    license_info = custom_metadata.license_info
 
     class Config:
         """Override the default variables from an .env file, if it exsits."""

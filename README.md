@@ -284,8 +284,9 @@ possible with all functionality moved out to modules.
 [db.py](db.py) - This configures the database, and should generally not need to be
 touched.
 
-[config.py](config.py) - Handles the API settings and defaults. If you add more settings
-(for example in the `.env` file) you should also add them here with suitable
+[config/](/config) - Handles the API settings and defaults, also the Metadata
+customization. If you add more settings (for example in the `.env` file) you
+should also add them to the [settings.py](config/settings.py) with suitable
 defaults.
 
 [commands/](/commands) - This directory can hold any commands you need to write - for example
