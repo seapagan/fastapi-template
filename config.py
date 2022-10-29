@@ -7,8 +7,10 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     """Main Settings class.
 
-    This allows to set some defaults, that will be overwritten from the .env
+    This allows to set some defaults, that can be overwritten from the .env
     file if it exists.
+    Do NOT put passwords and similar in here, use the .env file instead, it will
+    not be stored in the Git repository.
     """
 
     base_url: str = "http://localhost:8000"

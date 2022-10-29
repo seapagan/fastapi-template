@@ -82,6 +82,13 @@ Database setup and JWT Secret Key. See the [.env.example](.env.example) file for
 how to use.
 
 ```ini
+# The Base API Url. This is where your API wil be served from, and can be read
+# in the application code. It has no effect on the running of the applciation
+# but is an easy way to build a path for API responses. Defaults to
+# http://localhost:8000
+BASE_URL=http://localhost:8000
+
+# Database Settings These must be changed to match your setup.
 DB_USER=dbuser
 DB_PASSWORD=my_secret_passw0rd
 DB_ADDRESS=localhost
