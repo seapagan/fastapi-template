@@ -193,18 +193,17 @@ This template includes a command-line utility to create a new user and
 optionally make them Admin at the same time:
 
 ```bash
-template-admin create
+./api-admin user create
 ```
 
 You will be asked for the new user's email etc, and if this should be an
 Admin user (default is to be a standard non-admin User). These values can be
-added from the command line too, for automated use, see the built in help for
+added from the command line too, for automated use. See the built in help for
 details :
 
 ```console
-$ template-admin create --help
-
-Usage: template-admin create [OPTIONS]
+$ ./api-admin user create --help
+Usage: api-admin user create [OPTIONS]
 
   Create a new user.
 
