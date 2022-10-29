@@ -5,7 +5,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from rich import print
 
-from config import get_settings
+from config.settings import get_settings
 from db import database
 from resources import config_error
 from resources.routes import api_router
