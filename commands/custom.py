@@ -7,6 +7,7 @@ import asyncclick as click
 from jinja2 import Template
 from rich import print
 
+from config.helpers import LICENCES
 from config.metadata import custom_metadata
 
 template = """\"\"\"This file contains Custom Metadata for your API Project.
@@ -21,8 +22,8 @@ custom_metadata = MetadataBase(
     description="{{ desc }}",
     repository="{{ repo }}",
     license_info={
-        "name": "{{ license }}",
-        "url": "https://opensource.org/licenses/MIT",
+        "name": "{{ license.name }}",
+        "url": "{{ license.url }}",
     },
     contact={
         "name": "{{ author }}",
@@ -37,6 +38,38 @@ def get_config_path():
     """Return the full path of the custom config file."""
     script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
     return script_dir / "config" / "metadata.py"
+
+
+def get_licenses():
+    """Return a list of possible Open-source Licence types."""
+    return [licence["name"] for licence in LICENCES]
+
+
+def get_case_insensitive_dict(choice):
+    """return the dictionary with specified key, case insensitive.
+
+    We already know the key exists, however it may have wrong case.
+    """
+    for item in LICENCES:
+        if item["name"].lower() == choice.lower():
+            return item
+
+
+def choose_license():
+    """Select a licence from a fixed list."""
+    license_list = get_licenses()
+    license_strings = ", ".join(license_list)
+    choice = ""
+
+    while choice.strip().lower() not in [lic.lower() for lic in license_list]:
+        choice = click.prompt(
+            f"\nChoose a license from the following options.\n"
+            f"{license_strings}\nYour Choice of License?",
+            type=str,
+            default=custom_metadata.license_info["name"],
+        )
+
+    return get_case_insensitive_dict(choice)
 
 
 @click.group(name="custom")
@@ -69,13 +102,9 @@ def metadata():
             type=str,
             default=custom_metadata.repository,
         ),
-        "license": click.prompt(
-            "How is it Licensed?",
-            type=str,
-            default=custom_metadata.license_info["name"],
-        ),
+        "license": choose_license(),
         "author": click.prompt(
-            "Author name or handle",
+            "\nAuthor name or handle",
             type=str,
             default=custom_metadata.contact["name"],
         ),
@@ -85,21 +114,23 @@ def metadata():
             default=custom_metadata.contact["url"],
         ),
     }
-
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
     print(f"[green]Description : [/green]{data['desc']}")
     print(f"[green]Repository  : [/green]{data['repo']}")
-    print(f"[green]License     : [/green]{data['license']}")
+    print(f"[green]License     : [/green]{data['license']['name']}")
     print(f"[green]Author      : [/green]{data['author']}")
     print(f"[green]Website     : [/green]{data['website']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         print("\n[green]-> Writing to file .... ", end="")
         out = Template(template).render(data)
-        with open(get_config_path(), "w") as f:
-            f.write(out)
-            print("Done!")
+        try:
+            with open(get_config_path(), "w") as f:
+                f.write(out)
+                print("[green][bold]Done!")
+        except Exception as e:
+            print(f"Cannot Write the metadata : {e}")
 
 
 customize_group.add_command(metadata)
