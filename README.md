@@ -167,6 +167,12 @@ pip install -r requirements.txt
 I definately recommend using Poetry if you can though, it makes dealing with
 updates and conflicts very easy.
 
+If using poetry you now need to activate the VirtualEnv:
+
+```bash
+poetry shell
+```
+
 ### Migrate the Database
 
 Make sure you have [configured](#configuration) the database. Then run the
