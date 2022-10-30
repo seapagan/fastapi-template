@@ -9,3 +9,4 @@
 - ~~user can get their own user details~~
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
+- Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
