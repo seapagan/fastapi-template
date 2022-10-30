@@ -14,8 +14,8 @@ custom_metadata = MetadataBase(
         "url": "https://opensource.org/licenses/MIT",
     },
     contact={
-        "name": "Grant Ramsay (seapagan)",
+        "name": "Grant Ramsay",
         "url": "https://www.gnramsay.com",
     },
-    email= "seapagan@gmail.com",
+    email="seapagan@gmail.com",
 )

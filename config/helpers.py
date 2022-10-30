@@ -46,7 +46,7 @@ custom_metadata = MetadataBase(
         "name": "{{ author }}",
         "url": "{{ website }}",
     },
-    email= "{{ email }}",
+    email="{{ email }}",
 )
 
 """

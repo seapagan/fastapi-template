@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 
 import asyncclick as click
+import tomli
+import tomli_w
 from jinja2 import Template
 from rich import print
 
@@ -14,6 +16,12 @@ def get_config_path():
     """Return the full path of the custom config file."""
     script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
     return script_dir / "config" / "metadata.py"
+
+
+def get_toml_path():
+    """Return the full path of the pyproject.toml."""
+    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
+    return script_dir / "pyproject.toml"
 
 
 def init():
@@ -138,14 +146,30 @@ def metadata():
     print(f"[green]Website     : [/green]{data['website']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):
-        print("\n[green]-> Writing to file .... ", end="")
+        # write the metadata
+        print("\n[green]-> Writing out Metadata .... ", end="")
         out = Template(template).render(data)
         try:
             with open(get_config_path(), "w") as f:
                 f.write(out)
-                print("[green][bold]Done!")
         except Exception as e:
             print(f"Cannot Write the metadata : {e}")
+            quit(3)
+
+        # update the pyproject.toml file
+        try:
+            with open(get_toml_path(), "rb") as f:
+                config = tomli.load(f)
+                config["tool"]["poetry"]["name"] = data["title"]
+                config["tool"]["poetry"]["description"] = data["desc"]
+                config["tool"]["poetry"]["authors"] = [
+                    f"{data['author']} <{data['email']}>"
+                ]
+            with open(get_toml_path(), "wb") as f:
+                tomli_w.dump(config, f)
+        except Exception as e:
+            print(f"Cannot update the pyproject.toml file : {e}")
+            quit(3)
 
 
 customize_group.add_command(metadata)
