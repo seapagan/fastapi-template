@@ -220,7 +220,7 @@ You can change the values in this dictionary as needed. You should also change
 the name, description and authors in the [pyproject.toml](pyproject.toml) file.
 
 For the License URL, you can find a list in the
-[helpers.py](https://github.com/seapagan/fastapi-template/blob/cli-config/config/helpers.py#L18)
+[helpers.py](config/helpers.py#L18)
 
 #### Using the provided configuration tool
 
