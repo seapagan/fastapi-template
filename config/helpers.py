@@ -11,6 +11,7 @@ class MetadataBase:
     repository: str
     contact: dict[str, str]
     license_info: dict[str, str]
+    email: str
 
 
 # List of acceptable Opensource Licenses with a link to their text.
@@ -38,13 +39,14 @@ custom_metadata = MetadataBase(
     description="{{ desc }}",
     repository="{{ repo }}",
     license_info={
-        "name": "{{ license.name }} License",
+        "name": "{{ license.name }}",
         "url": "{{ license.url }}",
     },
     contact={
         "name": "{{ author }}",
         "url": "{{ website }}",
     },
+    email= "{{ email }}",
 )
 
 """

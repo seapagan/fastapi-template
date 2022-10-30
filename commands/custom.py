@@ -117,6 +117,11 @@ def metadata():
             type=str,
             default=custom_metadata.contact["name"],
         ),
+        "email": click.prompt(
+            "\nContact Email address",
+            type=str,
+            default=custom_metadata.email,
+        ),
         "website": click.prompt(
             "Author Website",
             type=str,
@@ -129,6 +134,7 @@ def metadata():
     print(f"[green]Repository  : [/green]{data['repo']}")
     print(f"[green]License     : [/green]{data['license']['name']}")
     print(f"[green]Author      : [/green]{data['author']}")
+    print(f"[green]Email       : [/green]{data['email']}")
     print(f"[green]Website     : [/green]{data['website']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):

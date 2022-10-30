@@ -10,11 +10,12 @@ custom_metadata = MetadataBase(
     description="Run 'api-admin custom metadata' to change this information.",
     repository="https://github.com/seapagan/fastapi-template",
     license_info={
-        "name": "MIT License",
+        "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
     },
     contact={
         "name": "Grant Ramsay (seapagan)",
         "url": "https://www.gnramsay.com",
     },
+    email= "seapagan@gmail.com",
 )
