@@ -410,8 +410,8 @@ in files and modules depending on the specific functionality.
 [main.py](main.py) - The main controlling file, this should be as clean and
 short as possible with all functionality moved out to modules.
 
-[db.py](db.py) - This configures the database, and should generally not need to
-be touched.
+[database/](/database) - This module controls database setup and configuration,
+and should generally not need to be touched.
 
 [config/](/config) - Handles the API settings and defaults, also the Metadata
 customization. If you add more settings (for example in the `.env` file) you

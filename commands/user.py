@@ -3,7 +3,7 @@ import asyncclick as click
 from fastapi import HTTPException
 from rich import print
 
-from db import database
+from database.db import database
 from managers.user import UserManager
 from models.enums import RoleType
 
