@@ -37,5 +37,4 @@ def dev(port: int, host: str, reload: bool) -> None:
         f"uvicorn main:app --port={port} --host={host} "
         f"{'--reload' if reload else ''}"
     )
-    print(cmd_line)
     subprocess.call(cmd_line, shell=True)

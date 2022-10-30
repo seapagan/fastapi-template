@@ -325,7 +325,7 @@ api-admin dev
 ```
 
 This will by default run the server on <http://localhost:8000>, and reload after
-ny change to the source code. You can add options to change this
+any change to the source code. You can add options to change this
 
 ```console
 $ api-admin dev --help
@@ -415,9 +415,8 @@ should also add them to the [settings.py](config/settings.py) or
 depoloyment independent) settings should go ing the `metadata` file, while
 secrets (or deployment specific) should go in the `settings` and `.env` files
 
-[commands/](/commands) - This directory can hold any commands you need to write
-
-- for example populating a database, create a superuser or other housekeeping
+[commands/](/commands) - This directory can hold any commands you need to write,
+for example populating a database, create a superuser or other housekeeping
 tasks.
 
 [managers/](/managers) - This directory contains individual files for each
@@ -532,4 +531,3 @@ running API for interactive Swagger (OpenAPI) Documentation.
 The route table above was automatically generated from an `openapi.json` file by
 my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
 out for your own API documentation! 😊
-�
