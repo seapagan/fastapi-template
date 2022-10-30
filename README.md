@@ -39,17 +39,20 @@ This template is a ready-to-use boilerplate for a FastAPI project. It has the
 following advantages to starting your own from scratch :
 
 - Baked-in User database and management. Routes are provided to add/edit/delete
-  or ban Users.
+  or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
 - A clean layout to help structure your project.
-- Command line admin tool. At the moment this only allows adding a user but is
-  open for future functionality.
-- Database and Secrets automatically read from Environment variables or a `.env`
-  file if that is provided.
+- **A command-line admin tool**. This allows to configure the project metadata
+  very easily, add users (and make admin), and run a development server. This
+  can easily be modified to add your own functionality (for example bulk add
+  data) since it is based on the excellent
+  [asyncclick](https://github.com/python-trio/asyncclick) library.
+- Database and Secrets are automatically read from Environment variables or a
+  `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.
@@ -59,8 +62,10 @@ The template **Requires Python 3.7+**
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
 stating that you based your project on this Template, with a link back to this
-repository. Thank You 😊 For those who let me know they are using this Template,
-I'll add links back to your project in this documentation.
+repository. Thank You 😊
+
+For those who let me know they are using this Template, I'll add links back to
+your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
 appreciation for my work, why not [Buy me a
@@ -152,7 +157,7 @@ The project has been set up using [Poetry](https://python-poetry.org/) to
 organize and install dependencies. If you have Poetry installed, simply run the
 following to install all that is needed.
 
-```bash
+```console
 poetry install
 ```
 
@@ -160,26 +165,32 @@ If you do not (or cannot) have Poetry installed, I have provided an
 auto-generated `requirements.txt` in the project root which you can use as
 normal:
 
-```bash
+```console
 pip install -r requirements.txt
 ```
 
 I definately recommend using Poetry if you can though, it makes dealing with
 updates and conflicts very easy.
 
+If using poetry you now need to activate the VirtualEnv:
+
+```console
+poetry shell
+```
+
 ### Migrate the Database
 
 Make sure you have [configured](#configuration) the database. Then run the
 following command to setup the database:
 
-```bash
+```console
 alembic upgrade head
 ```
 
 Everytime you add or edit a model, create a new migration then run the upgrade
 as shown below:
 
-```bash
+```console
 alembic revision -m "<My commit message>"
 alembic upgrade head
 ```
@@ -281,7 +292,7 @@ the database.
 This template includes a command-line utility to create a new user and
 optionally make them Admin at the same time:
 
-```bash
+```console
 ./api-admin user create
 ```
 
@@ -312,14 +323,43 @@ Options:
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
-during development :
+during development. There is a built-in command to run this easily :
 
-```bash
+```console
+api-admin dev
+```
+
+This will by default run the server on <http://localhost:8000>, and reload after
+any change to the source code. You can add options to change this
+
+```console
+$ api-admin dev --help
+
+Usage: api-admin dev [OPTIONS]
+
+  Run a development server from the command line.
+
+  This will auto-refresh on any changes to the source in real-time.
+
+Options:
+  -h, --host TEXT       Define the interface to run the server on.  [default:
+                        localhost]
+  -p, --port INTEGER    Define the port to run the server on  [default: 8000]
+  -r, --reload BOOLEAN  [default: True]
+  --help                Show this message and exit.
+```
+
+If you need more control, you can run `uvicorn` directly :
+
+```console
 uvicorn main:app --reload
 ```
 
 The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
+
+**Note: Neither of these are suitable to host a project in production, see the
+next section for information.**
 
 ## Deploying to Production
 
@@ -380,9 +420,8 @@ should also add them to the [settings.py](config/settings.py) or
 depoloyment independent) settings should go ing the `metadata` file, while
 secrets (or deployment specific) should go in the `settings` and `.env` files
 
-[commands/](/commands) - This directory can hold any commands you need to write
-
-- for example populating a database, create a superuser or other housekeeping
+[commands/](/commands) - This directory can hold any commands you need to write,
+for example populating a database, create a superuser or other housekeeping
 tasks.
 
 [managers/](/managers) - This directory contains individual files for each
@@ -497,4 +536,3 @@ running API for interactive Swagger (OpenAPI) Documentation.
 The route table above was automatically generated from an `openapi.json` file by
 my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
 out for your own API documentation! 😊
-�
