@@ -152,7 +152,7 @@ The project has been set up using [Poetry](https://python-poetry.org/) to
 organize and install dependencies. If you have Poetry installed, simply run the
 following to install all that is needed.
 
-```bash
+```console
 poetry install
 ```
 
@@ -160,7 +160,7 @@ If you do not (or cannot) have Poetry installed, I have provided an
 auto-generated `requirements.txt` in the project root which you can use as
 normal:
 
-```bash
+```console
 pip install -r requirements.txt
 ```
 
@@ -169,7 +169,7 @@ updates and conflicts very easy.
 
 If using poetry you now need to activate the VirtualEnv:
 
-```bash
+```console
 poetry shell
 ```
 
@@ -178,14 +178,14 @@ poetry shell
 Make sure you have [configured](#configuration) the database. Then run the
 following command to setup the database:
 
-```bash
+```console
 alembic upgrade head
 ```
 
 Everytime you add or edit a model, create a new migration then run the upgrade
 as shown below:
 
-```bash
+```console
 alembic revision -m "<My commit message>"
 alembic upgrade head
 ```
@@ -287,7 +287,7 @@ the database.
 This template includes a command-line utility to create a new user and
 optionally make them Admin at the same time:
 
-```bash
+```console
 ./api-admin user create
 ```
 
@@ -318,14 +318,43 @@ Options:
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
-during development :
+during development. There is a built-in command to run this easily :
 
-```bash
+```console
+api-admin dev
+```
+
+This will by default run the server on <http://localhost:8000>, and reload after
+ny change to the source code. You can add options to change this
+
+```console
+$ api-admin dev --help
+
+Usage: api-admin dev [OPTIONS]
+
+  Run a development server from the command line.
+
+  This will auto-refresh on any changes to the source in real-time.
+
+Options:
+  -h, --host TEXT       Define the interface to run the server on.  [default:
+                        localhost]
+  -p, --port INTEGER    Define the port to run the server on  [default: 8000]
+  -r, --reload BOOLEAN  [default: True]
+  --help                Show this message and exit.
+```
+
+If you need more control, you can run `uvicorn` directly :
+
+```console
 uvicorn main:app --reload
 ```
 
 The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
+
+**Note: Neither of these are suitable to host a project in production, see the
+next section for information.**
 
 ## Deploying to Production
 
