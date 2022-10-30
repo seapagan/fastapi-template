@@ -39,17 +39,20 @@ This template is a ready-to-use boilerplate for a FastAPI project. It has the
 following advantages to starting your own from scratch :
 
 - Baked-in User database and management. Routes are provided to add/edit/delete
-  or ban Users.
+  or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
 - A clean layout to help structure your project.
-- Command line admin tool. At the moment this only allows adding a user but is
-  open for future functionality.
-- Database and Secrets automatically read from Environment variables or a `.env`
-  file if that is provided.
+- **A command-line admin tool**. This allows to configure the project metadata
+  very easily, add users (and make admin), and run a development server. This
+  can easily be modified to add your own functionality (for example bulk add
+  data) since it is based on the excellent
+  [asyncclick](https://github.com/python-trio/asyncclick) library.
+- Database and Secrets are automatically read from Environment variables or a
+  `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.
@@ -59,8 +62,10 @@ The template **Requires Python 3.7+**
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
 stating that you based your project on this Template, with a link back to this
-repository. Thank You 😊 For those who let me know they are using this Template,
-I'll add links back to your project in this documentation.
+repository. Thank You 😊
+
+For those who let me know they are using this Template, I'll add links back to
+your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
 appreciation for my work, why not [Buy me a
