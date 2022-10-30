@@ -11,6 +11,10 @@ with Authorization already baked-in.
   - [Set up a Virtual Environment](#set-up-a-virtual-environment)
   - [Install required Dependencies](#install-required-dependencies)
   - [Migrate the Database](#migrate-the-database)
+  - [Customize the Metadata](#customize-the-metadata)
+    - [Manually](#manually)
+    - [Using the provided configuration tool](#using-the-provided-configuration-tool)
+    - [Funding Link](#funding-link)
   - [Add a user (optional)](#add-a-user-optional)
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
@@ -183,6 +187,88 @@ alembic upgrade head
 Check out the [Alembic](https://github.com/sqlalchemy/alembic) repository for
 more information on how to use (for example how to revert migrations).
 
+### Customize the Metadata
+
+By default the Template Title, Description, Author and similar is set to my
+details. Changing this is very easy though, and there are 2 ways you can do.
+
+#### Manually
+
+Metadata is stored in the [config/metadata.py](config/metadata.py) file and this
+can be edited by hand if desired:
+
+```python
+from config.helpers import MetadataBase
+
+custom_metadata = MetadataBase(
+    title="API Template",
+    description="Run 'api-admin custom metadata' to change this information.",
+    repository="https://github.com/seapagan/fastapi-template",
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    contact={
+        "name": "Grant Ramsay",
+        "url": "https://www.gnramsay.com",
+    },
+    email="seapagan@gmail.com",
+)
+```
+
+You can change the values in this dictionary as needed. You should also change
+the name, description and authors in the [pyproject.toml](pyproject.toml) file.
+
+#### Using the provided configuration tool
+
+The `api-admin` command can also do this for you, asking for the values at the
+command line and automatically updating both files:
+
+```console
+$ api-admin custom metadata
+
+API-Template : Customize application Metadata
+
+Enter your API title [API Template]:
+Enter the description [Run 'api-admin custom metadata' to change this information.]:
+URL to your Repository [https://github.com/seapagan/fastapi-template]:
+
+Choose a license from the following options.
+Apache2, BSD3, BSD2, GPL, LGPL, MIT, MPL2, CDDL, EPL
+Your Choice of License? [MIT]:
+
+Author name or handle [Grant Ramsay]:
+Contact Email address [seapagan@gmail.com]:
+Author Website [https://www.gnramsay.com]:
+
+You have entered the following data:
+Title       : API Template
+Description : Run 'api-admin custom metadata' to change this information.
+Repository  : https://github.com/seapagan/fastapi-template
+License     : MIT
+Author      : Grant Ramsay
+Email       : seapagan@gmail.com
+Website     : https://www.gnramsay.com
+
+Is this Correct? [Y/n]: y
+
+-> Writing out Metadata .... Done!
+```
+
+This will also put in the correct License URL link automatically.
+
+#### Funding Link
+
+The template does include a [.github/FUNDING.yml](.github/FUNDING.yml) file
+which contains a link to my [Buy Me A
+Coffee](https://www.buymeacoffee.com/seapagan) page. You can edit or delete this
+as you will or replace with your own details. If you really appreciate the
+Template, feel free to leave my details there in addition to your own, though
+this is entirely optional 😊
+
+The funding file allows your GitHub visitors to sponsor or tip you as a thanks
+for your work.
+
 ### Add a user (optional)
 
 It is possible to add Users to the database using the API itself, but you cannot
@@ -278,23 +364,27 @@ This project has been deliberately laid out in a specific way. To avoid long
 complicated files which are difficult to debug, functionality is separated out
 in files and modules depending on the specific functionality.
 
-[main.py](main.py) - The main controlling file, this should be as clean and short as
-possible with all functionality moved out to modules.
+[main.py](main.py) - The main controlling file, this should be as clean and
+short as possible with all functionality moved out to modules.
 
-[db.py](db.py) - This configures the database, and should generally not need to be
-touched.
+[db.py](db.py) - This configures the database, and should generally not need to
+be touched.
 
 [config/](/config) - Handles the API settings and defaults, also the Metadata
 customization. If you add more settings (for example in the `.env` file) you
-should also add them to the [settings.py](config/settings.py) with suitable
-defaults.
+should also add them to the [settings.py](config/settings.py) or
+[metadata.py](config/metadata.py) with suitable defaults. Non-secret (or
+depoloyment independent) settings should go ing the `metadata` file, while
+secrets (or deployment specific) should go in the `settings` and `.env` files
 
-[commands/](/commands) - This directory can hold any commands you need to write - for example
-populating a database, create a superuser or other housekeeping tasks.
+[commands/](/commands) - This directory can hold any commands you need to write
 
-[managers/](/managers) - This directory contains individual files for each 'group' of
-functionality. They contain a Class that should take care of the actual work
-needed for the routes. Check out the [auth.py](managers/auth.py) and
+- for example populating a database, create a superuser or other housekeeping
+tasks.
+
+[managers/](/managers) - This directory contains individual files for each
+'group' of functionality. They contain a Class that should take care of the
+actual work needed for the routes. Check out the [auth.py](managers/auth.py) and
 [user.py](managers/user.py)
 
 [migrations/](/migrations) - We use

@@ -126,7 +126,7 @@ def metadata():
             default=custom_metadata.contact["name"],
         ),
         "email": click.prompt(
-            "\nContact Email address",
+            "Contact Email address",
             type=str,
             default=custom_metadata.email,
         ),
@@ -170,6 +170,7 @@ def metadata():
         except Exception as e:
             print(f"Cannot update the pyproject.toml file : {e}")
             quit(3)
+        print("Done!")
 
 
 customize_group.add_command(metadata)
