@@ -4,6 +4,8 @@ from typing import Union
 from fastapi import APIRouter, Header, Request
 from fastapi.templating import Jinja2Templates
 
+from config.settings import get_settings
+
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
@@ -13,10 +15,20 @@ def root_path(
     request: Request, accept: Union[str, None] = Header(default="text/html")
 ):
     """Display an HTML template for a browser, JSON response otherwise."""
-    if accept.split(",")[0] == "text/html":
-        return templates.TemplateResponse("index.html", {"request": request})
+    if accept and accept.split(",")[0] == "text/html":
+        context = {
+            "request": request,
+            "title": get_settings().api_title,
+            "description": get_settings().api_description,
+            "repository": get_settings().repository,
+            "author": get_settings().contact["name"],
+            "website": get_settings().contact["url"],
+        }
+        return templates.TemplateResponse("index.html", context)
 
     return {
-        "info": "Seapagan's Calendar API (c)2022",
-        "website": "https://github.com/seapagan/calendar-api",
+        "info": (
+            f"{get_settings().contact['name']}'s {get_settings().api_title}"
+        ),
+        "repository": get_settings().repository,
     }

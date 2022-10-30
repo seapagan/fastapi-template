@@ -1,0 +1,21 @@
+#! /bin/env python
+"""Run administrative tasks for the Template system."""
+import asyncclick as click
+
+from commands import custom, user
+
+
+@click.group()
+def control():
+    """Configuration tools for the API Template.
+
+    Commands to help with User control and customize the API Metadata (Title,
+    Description, Author and more) for your own Application.
+    """
+
+
+control.add_command(user.user_commands)
+control.add_command(custom.customize_group)
+
+if __name__ == "__main__":
+    control(_anyio_backend="asyncio")

@@ -12,19 +12,20 @@
     />
     <link href="static/site.css" rel="stylesheet" />
     <base target="_blank" />
-    <title>API Template by Seapagan</title>
+    <title>{{ title }}</title>
   </head>
 
   <body>
     <header>
-      <h1>API template with Auth and Users baked in.</h1>
+      <h1>{{ title }}</h1>
+      <h2>{{ description }}</h2>
     </header>
     <main>
       <p>This service is an API, there is nothing to see here ;)</p>
       <p>
         Go to the
         <a
-          href="https://github.com/seapagan/calendar-api"
+          href="{{ repository }}"
           rel="noopener noreferrer"
           >GitHub</a
         >
@@ -38,8 +39,8 @@
     </main>
     <footer>
       &copy;
-      <a href="https://www.gnramsay.com" rel="noopener noreferrer"
-        >Grant Ramsay</a
+      <a href="{{ website }}" rel="noopener noreferrer"
+        >{{ author }}</a
       >
       2022
     </footer>

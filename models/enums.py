@@ -1,9 +1,9 @@
 # pylint: disable=invalid-name
 """Define Enums for this project."""
-import enum
+from enum import Enum
 
 
-class RoleType(enum.Enum):
+class RoleType(Enum):
     """Contains the different Role types Users can have."""
 
     user = "user"

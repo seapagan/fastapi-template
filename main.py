@@ -5,24 +5,18 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from rich import print
 
-from config import get_settings
+from config.settings import get_settings
 from db import database
 from resources import config_error
 from resources.routes import api_router
 
 app = FastAPI(
-    title="API Template",
-    description="A Clean API template with JTW Auth and User control baked in.",
+    title=get_settings().api_title,
+    description=get_settings().api_description,
     redoc_url=None,
     docs_url=None,  # we customize this ourselves
-    license_info={
-        "name": "MIT License",
-        "url": "https://opensource.org/licenses/MIT",
-    },
-    contact={
-        "name": "Grant Ramsay",
-        "url": "https://www.gnramsay.com",
-    },
+    license_info=get_settings().license_info,
+    contact=get_settings().contact,
 )
 
 app.include_router(api_router)

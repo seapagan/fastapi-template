@@ -1,7 +1,0 @@
-#! /bin/env python
-"""Run administrative tasks for the Template system."""
-
-from commands.user import user_commands
-
-if __name__ == "__main__":
-    user_commands(_anyio_backend="asyncio")
