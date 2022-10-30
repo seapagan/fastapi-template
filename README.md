@@ -15,7 +15,7 @@ with Authorization already baked-in.
     - [Manually](#manually)
     - [Using the provided configuration tool](#using-the-provided-configuration-tool)
     - [Funding Link](#funding-link)
-  - [Add a user (optional)](#add-a-user-optional)
+  - [Add a user](#add-a-user)
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
 - [Who is Using this Template?](#who-is-using-this-template)
@@ -269,7 +269,7 @@ this is entirely optional 😊
 The funding file allows your GitHub visitors to sponsor or tip you as a thanks
 for your work.
 
-### Add a user (optional)
+### Add a user
 
 It is possible to add Users to the database using the API itself, but you cannot
 create an Admin user this way, unless you aready have an existing Admin user in
