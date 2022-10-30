@@ -7,7 +7,7 @@ from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from config.settings import get_settings
-from db import database
+from database.db import database
 from models.enums import RoleType
 from models.user import User
 

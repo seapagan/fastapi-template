@@ -5,7 +5,7 @@ from email_validator import EmailNotValidError, validate_email
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
 
-from db import database
+from database.db import database
 from models.enums import RoleType
 from models.user import User
 

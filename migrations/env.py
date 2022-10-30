@@ -5,7 +5,7 @@ from alembic import context
 from decouple import config as cfg
 from sqlalchemy import engine_from_config, pool
 
-from db import metadata
+from database.db import metadata
 from models import user
 
 DATABASE_URL = (

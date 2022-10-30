@@ -1,7 +1,7 @@
 """Define the Users model."""
 from sqlalchemy import Boolean, Column, Enum, Integer, String, Table
 
-from db import metadata
+from database.db import metadata
 from models.enums import RoleType
 
 User = Table(
