@@ -2,9 +2,10 @@
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
-from fastapi import HTTPException, status
+from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 
+from config.settings import get_settings
 from database.db import database
 from models.enums import RoleType
 from models.user import User
@@ -19,7 +20,7 @@ class UserManager:
     """Class to Manage the User."""
 
     @staticmethod
-    async def register(user_data):
+    async def register(user_data, background_tasks: BackgroundTasks):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
@@ -31,10 +32,11 @@ class UserManager:
             user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
             email = EmailManager()
-            await email.simple_send(
+            email.background_send(
+                background_tasks,
                 email_to="seapagan@gmail.com",
-                subject="test mail",
-                msg="This is a test email message.",
+                subject=f"Welcome to the {get_settings().api_title} API!",
+                msg="This is a (background) test email message.",
             )
         except UniqueViolationError as err:
             raise HTTPException(

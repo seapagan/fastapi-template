@@ -1,5 +1,5 @@
 """Define routes for Authentication."""
-from fastapi import APIRouter, status
+from fastapi import APIRouter, BackgroundTasks, status
 
 from managers.user import UserManager
 from schemas.request.user import UserLoginRequest, UserRegisterRequest
@@ -14,13 +14,17 @@ router = APIRouter(tags=["Authentication"])
     name="register_a_new_user",
     response_model=TokenResponse,
 )
-async def register(user_data: UserRegisterRequest):
+async def register(
+    background_tasks: BackgroundTasks, user_data: UserRegisterRequest
+):
     """Register a new User and return a JWT token.
 
     This token should be sent as a Bearer token for each access to a protected
     route.
     """
-    token = await UserManager.register(user_data.dict())
+    token = await UserManager.register(
+        user_data.dict(), background_tasks=background_tasks
+    )
     return {"token": token}
 
 

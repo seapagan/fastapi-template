@@ -1,9 +1,13 @@
 """Define the Email Manager."""
+from pathlib import Path
+
+from fastapi import BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 
 from config.settings import get_settings
+from schemas.email import EmailSchema
 
 
 class EmailManager:
@@ -25,6 +29,7 @@ class EmailManager:
             MAIL_SSL_TLS=get_settings().mail_ssl_tls,
             USE_CREDENTIALS=get_settings().mail_use_credentials,
             VALIDATE_CERTS=get_settings().mail_validate_certs,
+            TEMPLATE_FOLDER=Path(__file__).parent / ".." / "templates/email",
         )
 
     async def simple_send(self, email_to, subject: str, msg: str):
@@ -41,3 +46,17 @@ class EmailManager:
         return JSONResponse(
             status_code=200, content={"message": "email has been sent"}
         )
+
+    def background_send(
+        self, backgroundtasks: BackgroundTasks, email_to, subject: str, msg: str
+    ):
+        """Send an email in the background."""
+        message = MessageSchema(
+            subject=subject,
+            recipients=[email_to],
+            body=msg,
+            subtype=MessageType.html,
+        )
+
+        fm = FastMail(self.conf)
+        backgroundtasks.add_task(fm.send_message, message)
