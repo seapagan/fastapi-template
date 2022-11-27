@@ -32,11 +32,15 @@ class UserManager:
             user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
             email = EmailManager()
-            email.background_send(
+            email.template_send(
                 background_tasks,
                 email_to="seapagan@gmail.com",
                 subject=f"Welcome to the {get_settings().api_title} API!",
-                msg="This is a (background) test email message.",
+                context={
+                    "application": f"{get_settings().api_title}",
+                    "user": user_data["email"],
+                },
+                template_name="welcome.html",
             )
         except UniqueViolationError as err:
             raise HTTPException(

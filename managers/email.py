@@ -7,7 +7,6 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 
 from config.settings import get_settings
-from schemas.email import EmailSchema
 
 
 class EmailManager:
@@ -60,3 +59,24 @@ class EmailManager:
 
         fm = FastMail(self.conf)
         backgroundtasks.add_task(fm.send_message, message)
+
+    def template_send(
+        self,
+        backgroundtasks: BackgroundTasks,
+        email_to,
+        subject: str,
+        context: dict,
+        template_name: str,
+    ):
+        """Send an email using a Jinja Template."""
+        message = MessageSchema(
+            subject=subject,
+            recipients=[email_to],
+            subtype=MessageType.html,
+            template_body=context,
+        )
+        fm = FastMail(self.conf)
+        # await fm.send_message(message, template_name="welcome.html")
+        backgroundtasks.add_task(
+            fm.send_message, message, template_name=template_name
+        )
