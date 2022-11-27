@@ -1,0 +1,10 @@
+"""Define email Connection Schema."""
+from typing import List
+
+from pydantic import BaseModel, EmailStr
+
+
+class EmailSchema(BaseModel):
+    """Define the Email Schema."""
+
+    email: List[EmailStr]

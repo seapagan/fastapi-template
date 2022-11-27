@@ -10,6 +10,7 @@ from models.enums import RoleType
 from models.user import User
 
 from .auth import AuthManager
+from .email import EmailManager
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -29,6 +30,12 @@ class UserManager:
             )
             user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
+            email = EmailManager()
+            await email.simple_send(
+                email_to="seapagan@gmail.com",
+                subject="test mail",
+                msg="This is a test email message.",
+            )
         except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
