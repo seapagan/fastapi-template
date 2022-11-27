@@ -10,4 +10,7 @@
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
-- Semd emails on signup, login, change password etc.
+- Add refresh token functionality to refresh an expired token.
+- Send email for register, login, pw change etc.
+- Confirm registrations with a link sent by email.
+
