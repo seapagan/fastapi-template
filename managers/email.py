@@ -18,7 +18,7 @@ class EmailManager:
             MAIL_USERNAME=get_settings().mail_username,
             MAIL_PASSWORD=get_settings().mail_password,
             MAIL_FROM=EmailStr(get_settings().mail_from),
-            MAIL_PORT=get_settings().mail_ssl_tls,
+            MAIL_PORT=get_settings().mail_port,
             MAIL_SERVER=get_settings().mail_server,
             MAIL_FROM_NAME=get_settings().mail_from_name,
             MAIL_STARTTLS=get_settings().mail_starttls,
