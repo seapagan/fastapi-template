@@ -19,6 +19,7 @@ with Authorization already baked-in.
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
 - [Who is Using this Template?](#who-is-using-this-template)
+- [Planned Functionality](#planned-functionality)
 - [Contributing](#contributing)
 - [Project Organization](#project-organization)
 - [Provided Routes](#provided-routes)
@@ -387,6 +388,10 @@ or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
 
 Meh, at the moment probably no-one except me 😆. If you do use this in one of your own
 projects, drop me a message and I'll add your profile and project links here 😃
+
+## Planned Functionality
+
+See the [TODO.md](TODO.md) file for plans.
 
 ## Contributing
 
