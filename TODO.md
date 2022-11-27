@@ -11,6 +11,9 @@
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
 - Add refresh token functionality to refresh an expired token.
-- Send email for register, login, pw change etc.
 - Confirm registrations with a link sent by email.
-
+- Send an email to the user when they:
+  - [x] Register
+  - [ ] Log in
+  - [ ] Add a link
+  - [ ] Change their password
