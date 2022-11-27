@@ -34,7 +34,7 @@ class UserManager:
             email = EmailManager()
             email.template_send(
                 background_tasks,
-                email_to="seapagan@gmail.com",
+                email_to=user_data["email"],
                 subject=f"Welcome to the {get_settings().api_title} API!",
                 context={
                     "application": f"{get_settings().api_title}",
