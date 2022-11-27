@@ -1,4 +1,17 @@
 [[package]]
+name = "aiosmtpd"
+version = "1.4.2"
+description = "aiosmtpd - asyncio based SMTP server"
+category = "dev"
+optional = false
+python-versions = "~=3.6"
+
+[package.dependencies]
+atpublic = "*"
+attrs = "*"
+typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
+
+[[package]]
 name = "aiosmtplib"
 version = "1.1.7"
 description = "asyncio SMTP client"
@@ -72,6 +85,28 @@ typing-extensions = {version = ">=3.7.4.3", markers = "python_version < \"3.8\""
 dev = ["Cython (>=0.29.24,<0.30.0)", "Sphinx (>=4.1.2,<4.2.0)", "flake8 (>=5.0.4,<5.1.0)", "pytest (>=6.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "uvloop (>=0.15.3)"]
 docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)"]
 test = ["flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
+
+[[package]]
+name = "atpublic"
+version = "3.1.1"
+description = "Keep all y'all's __all__'s in sync"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
+name = "attrs"
+version = "22.1.0"
+description = "Classes Without Boilerplate"
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[package.extras]
+dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
+docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
+tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "bcrypt"
@@ -691,9 +726,13 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2a72ca5bfb534ce6858695bf805a9b6c0ec87a939f51308853104f597d6a04fc"
+content-hash = "1a0cbd3859a152736dbe9c3217040c80c4cc580d0c1f8e237ca8317dd0fd6734"
 
 [metadata.files]
+aiosmtpd = [
+    {file = "aiosmtpd-1.4.2-py3-none-any.whl", hash = "sha256:314f70b74cb8474882cef396b186fbfad8660c7b52be5c1937f3c31df14232a4"},
+    {file = "aiosmtpd-1.4.2.tar.gz", hash = "sha256:aa891d010d2097274189078c6ce2a59a167f3fb2e974e028b572a61e92e1549c"},
+]
 aiosmtplib = [
     {file = "aiosmtplib-1.1.7-py3-none-any.whl", hash = "sha256:c1403e70fce769643820cb2c5bf0bd4f7ea83a01c60e854c81a6f5d7ccff2656"},
     {file = "aiosmtplib-1.1.7.tar.gz", hash = "sha256:5810657a86b19476c93fa280c499ca3ef88ce26f2b74dae202989ae06377d107"},
@@ -747,6 +786,14 @@ asyncpg = [
     {file = "asyncpg-0.27.0-cp39-cp39-win32.whl", hash = "sha256:8934577e1ed13f7d2d9cea3cc016cc6f95c19faedea2c2b56a6f94f257cea672"},
     {file = "asyncpg-0.27.0-cp39-cp39-win_amd64.whl", hash = "sha256:1b6499de06fe035cf2fa932ec5617ed3f37d4ebbf663b655922e105a484a6af9"},
     {file = "asyncpg-0.27.0.tar.gz", hash = "sha256:720986d9a4705dd8a40fdf172036f5ae787225036a7eb46e704c45aa8f62c054"},
+]
+atpublic = [
+    {file = "atpublic-3.1.1-py3-none-any.whl", hash = "sha256:37f714748e77b8a7b34d59b7b485fd452a0d5906be52cb1bd28d29a2bd84f295"},
+    {file = "atpublic-3.1.1.tar.gz", hash = "sha256:3098ee12d0107cc5009d61f4e80e5edcfac4cda2bdaa04644af75827cb121b18"},
+]
+attrs = [
+    {file = "attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
+    {file = "attrs-22.1.0.tar.gz", hash = "sha256:29adc2665447e5191d0e7c568fde78b21f9672d344281d0c6e1ab085429b22b6"},
 ]
 bcrypt = [
     {file = "bcrypt-4.0.1-cp36-abi3-macosx_10_10_universal2.whl", hash = "sha256:b1023030aec778185a6c16cf70f359cbb6e0c289fd564a7cfa29e727a1c38f8f"},

@@ -12,7 +12,7 @@ class EmailManager:
     def __init__(self):
         """Initialize the EmailManager.
 
-        Define the configution instance.
+        Define the configuration instance.
         """
         self.conf = ConnectionConfig(
             MAIL_USERNAME=get_settings().mail_username,
