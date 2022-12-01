@@ -1,6 +1,7 @@
 """Define routes for Authentication."""
 from fastapi import APIRouter, BackgroundTasks, status
 
+from managers.auth import AuthManager
 from managers.user import UserManager
 from schemas.request.auth import TokenRefreshRequest
 from schemas.request.user import UserLoginRequest, UserRegisterRequest
@@ -52,5 +53,5 @@ async def login(user_data: UserLoginRequest):
 )
 async def refresh(refresh_token: TokenRefreshRequest):
     """Return a new JWT, given a valid Refresh token."""
-    token = await UserManager.refresh(refresh_token)
+    token = await AuthManager.refresh(refresh_token)
     return {"token": token}

@@ -10,6 +10,7 @@ from config.settings import get_settings
 from database.db import database
 from models.enums import RoleType
 from models.user import User
+from schemas.request.auth import TokenRefreshRequest
 
 
 class AuthManager:
@@ -48,6 +49,36 @@ class AuthManager:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 "Unable to generate the Refresh Token",
+            ) from exc
+
+    @staticmethod
+    async def refresh(refresh_token: TokenRefreshRequest):
+        """Refresh an expired JWT token, given a valid Refresh token."""
+        try:
+            payload = jwt.decode(
+                refresh_token.refresh,
+                get_settings().secret_key,
+                algorithms=["HS256"],
+            )
+            user_data = await database.fetch_one(
+                User.select().where(User.c.id == payload["sub"])
+            )
+
+            # block a banned user
+            if user_data.banned:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                )
+            new_token = AuthManager.encode_token(user_data)
+            return new_token
+
+        except jwt.ExpiredSignatureError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token has Expired"
+            ) from exc
+        except jwt.InvalidTokenError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
             ) from exc
 
 
