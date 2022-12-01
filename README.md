@@ -536,7 +536,6 @@ running API for interactive Swagger (OpenAPI) Documentation.
 > Edit User : _Update the specified User's data._
 >
 > Available for the specific requesting User, or an Admin.
-
 ### **`DELETE`** _/users/{user_id}_
 
 > Delete User : _Delete the specified User by user_id._
@@ -545,23 +544,35 @@ running API for interactive Swagger (OpenAPI) Documentation.
 
 ### **`POST`** _/register/_
 
-> Register A New User : _Register a new User and return a JWT token._
+> Register A New User : _Register a new User and return a JWT token plus a Refresh Token._
 >
-> This token should be sent as a Bearer token for each access to a protected
-> route.
+> The JWT token should be sent as a Bearer token for each access to a
+> protected route. It will expire after 120 minutes.
+>
+> When the JWT expires, the Refresh Token can be sent using the '/refresh'
+> endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+> cannot be refreshed.
 
 ### **`POST`** _/login/_
 
-> Login An Existing User : _Login an existing User and return a JWT token._
+> Login An Existing User : _Login an existing User and return a JWT token plus a Refresh Token._
 >
-> This token should be sent as a Bearer token for each access to a protected
-> route.
+> The JWT token should be sent as a Bearer token for each access to a
+> protected route. It will expire after 120 minutes.
+>
+> When the JWT expires, the Refresh Token can be sent using the '/refresh'
+> endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+> cannot be refreshed.
 
 ### **`POST`** _/refresh/_
 
 > Refresh An Expired Token : _Return a new JWT, given a valid Refresh token._
+>
+> The Refresh token will not be updated at this time, it will still expire 30
+> days after original issue. At that time the User will need to login again.
 <!-- openapi-schema-end -->
 
 The route table above was automatically generated from an `openapi.json` file by
 my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
 out for your own API documentation! 😊
+
