@@ -15,6 +15,7 @@ with Authorization already baked-in.
     - [Manually](#manually)
     - [Using the provided configuration tool](#using-the-provided-configuration-tool)
     - [Funding Link](#funding-link)
+  - [Customize the HTML templates](#customize-the-html-templates)
   - [Add a user](#add-a-user)
   - [Run a development Server](#run-a-development-server)
 - [Deploying to Production](#deploying-to-production)
@@ -25,12 +26,12 @@ with Authorization already baked-in.
 - [Provided Routes](#provided-routes)
   - [**`GET`** _/users/_](#get-users)
   - [**`GET`** _/users/me_](#get-usersme)
-  - [**`POST`** _/users/{user_id}/make-admin_](#post-usersuser_idmake-admin)
-  - [**`POST`** _/users/{user_id}/password_](#post-usersuser_idpassword)
-  - [**`POST`** _/users/{user_id}/ban_](#post-usersuser_idban)
-  - [**`POST`** _/users/{user_id}/unban_](#post-usersuser_idunban)
-  - [**`PUT`** _/users/{user_id}_](#put-usersuser_id)
-  - [**`DELETE`** _/users/{user_id}_](#delete-usersuser_id)
+  - [**`POST`** _/users/{user\_id}/make-admin_](#post-usersuser_idmake-admin)
+  - [**`POST`** _/users/{user\_id}/password_](#post-usersuser_idpassword)
+  - [**`POST`** _/users/{user\_id}/ban_](#post-usersuser_idban)
+  - [**`POST`** _/users/{user\_id}/unban_](#post-usersuser_idunban)
+  - [**`PUT`** _/users/{user\_id}_](#put-usersuser_id)
+  - [**`DELETE`** _/users/{user\_id}_](#delete-usersuser_id)
   - [**`POST`** _/register/_](#post-register)
   - [**`POST`** _/login/_](#post-login)
 
@@ -57,6 +58,9 @@ following advantages to starting your own from scratch :
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.
+- Manager class set up to send emails to users, and by default an email is sent
+  when new users register. The content is set by a template (currently a
+  placeholder until the registration confirmation system is implemented).
 
 The template **Requires Python 3.7+**
 
@@ -283,6 +287,21 @@ this is entirely optional 😊
 
 The funding file allows your GitHub visitors to sponsor or tip you as a thanks
 for your work.
+
+### Customize the HTML templates
+
+There are several HTML templates used at this time, all are stored in the
+[templates](templates/) folder or a subfolder of this.
+
+- [index.html](templates/index.html) - This template is shown when the root of the API is visited using
+a web browser instead of an API call. Use it to display vasic details about your
+API and usage instructions, point to the documentation etc. The default output
+is below for an example:
+![Default Index Page](static/images/html_index.png)
+
+- [email/](/email) - this folder contains HTML Email templates, **currently only
+basic placeholders**.
+  - `welcome.html`. This is sent to a new User when they sign up
 
 ### Add a user
 

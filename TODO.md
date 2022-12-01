@@ -18,3 +18,5 @@
   - [ ] Change their password or update their profile
   - [ ] To a user when they are banned/unbanned
   - [ ] To a user and admin(s) when an account is deleted
+- Update current and future email templates with actual content, and change
+  their markup to latest best practices.
