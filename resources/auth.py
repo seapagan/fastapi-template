@@ -22,10 +22,10 @@ async def register(
     This token should be sent as a Bearer token for each access to a protected
     route.
     """
-    token = await UserManager.register(
+    token, refresh = await UserManager.register(
         user_data.dict(), background_tasks=background_tasks
     )
-    return {"token": token}
+    return {"token": token, "refresh": refresh}
 
 
 @router.post(
@@ -40,5 +40,5 @@ async def login(user_data: UserLoginRequest):
     This token should be sent as a Bearer token for each access to a protected
     route.
     """
-    token = await UserManager.login(user_data.dict())
-    return {"token": token}
+    token, refresh = await UserManager.login(user_data.dict())
+    return {"token": token, "refresh": refresh}

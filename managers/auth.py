@@ -32,6 +32,24 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, "Unable to generate the JWT"
             ) from exc
 
+    @staticmethod
+    def encode_refresh_token(user):
+        """Create and return a JTW token."""
+        try:
+            payload = {
+                "sub": user["id"],
+                "exp": datetime.utcnow() + timedelta(minutes=60 * 24 * 30),
+            }
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
+        except Exception as exc:
+            # log the exception
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                "Unable to generate the Refresh Token",
+            ) from exc
+
 
 class CustomHTTPBearer(HTTPBearer):
     """Our own custom HTTPBearer class."""

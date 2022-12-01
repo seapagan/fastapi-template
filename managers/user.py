@@ -60,7 +60,10 @@ class UserManager:
             User.select().where(User.c.id == id_)
         )
 
-        return AuthManager.encode_token(user_do)
+        token = AuthManager.encode_token(user_do)
+        refresh = AuthManager.encode_refresh_token(user_do)
+
+        return token, refresh
 
     @staticmethod
     async def login(user_data):
@@ -75,7 +78,10 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, "Wrong email or password"
             )
 
-        return AuthManager.encode_token(user_do)
+        token = AuthManager.encode_token(user_do)
+        refresh = AuthManager.encode_refresh_token(user_do)
+
+        return token, refresh
 
     @staticmethod
     async def delete_user(user_id):
