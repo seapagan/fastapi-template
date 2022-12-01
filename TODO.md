@@ -1,7 +1,5 @@
 # TODO List
 
-## User
-
 - ~~Allow user to edit their own data (currently just admin)~~
 - ~~Dedicated 'change password' route, only change password of the current logged
   in user.~~
@@ -23,3 +21,5 @@
   - [ ] To a user and admin(s) when an account is deleted
 - Update current and future email templates with actual content, and change
   their markup to latest best practices.
+- Add an option to the command line to bump the version number in API docs and
+  the TOML file.
