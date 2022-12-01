@@ -1,4 +1,5 @@
 """Define the Autorization Manager."""
+import enum
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -11,6 +12,15 @@ from database.db import database
 from models.enums import RoleType
 from models.user import User
 from schemas.request.auth import TokenRefreshRequest
+
+
+class ErrorMessages(enum.Enum):
+    """Error strings for different circumstances."""
+
+    CANT_GENERATE_JWT = "Unable to generate the JWT"
+    CANT_GENERATE_REFRESH = "Unable to generate the Refresh Token"
+    INVALID_TOKEN = "That token is Invalid"
+    EXPIRED_TOKEN = "That token has Expired"
 
 
 class AuthManager:
@@ -30,7 +40,7 @@ class AuthManager:
         except Exception as exc:
             # log the exception
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "Unable to generate the JWT"
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.CANT_GENERATE_JWT
             ) from exc
 
     @staticmethod
@@ -48,7 +58,7 @@ class AuthManager:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
-                "Unable to generate the Refresh Token",
+                ErrorMessages.CANT_GENERATE_REFRESH,
             ) from exc
 
     @staticmethod
@@ -67,18 +77,18 @@ class AuthManager:
             # block a banned user
             if user_data.banned:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
                 )
             new_token = AuthManager.encode_token(user_data)
             return new_token
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "That token has Expired"
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
             ) from exc
 
 
@@ -101,18 +111,18 @@ class CustomHTTPBearer(HTTPBearer):
             # block a banned user
             if user_data.banned:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
                 )
 
             request.state.user = user_data
             return user_data
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "That token has Expired"
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
             ) from exc
 
 
