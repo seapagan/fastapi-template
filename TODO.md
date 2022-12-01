@@ -15,5 +15,6 @@
 - Send an email to the user when they:
   - [x] Register
   - [ ] Log in
-  - [ ] Add a link
-  - [ ] Change their password
+  - [ ] Change their password or update their profile
+  - [ ] To a user when they are banned/unbanned
+  - [ ] To a user and admin(s) when an account is deleted
