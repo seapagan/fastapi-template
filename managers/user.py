@@ -2,14 +2,17 @@
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
-from fastapi import HTTPException, status
+from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 
+from config.settings import get_settings
 from database.db import database
 from models.enums import RoleType
 from models.user import User
+from schemas.email import EmailTemplateSchema
 
 from .auth import AuthManager
+from .email import EmailManager
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -18,7 +21,7 @@ class UserManager:
     """Class to Manage the User."""
 
     @staticmethod
-    async def register(user_data):
+    async def register(user_data, background_tasks: BackgroundTasks):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
@@ -29,6 +32,19 @@ class UserManager:
             )
             user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
+            email = EmailManager()
+            email.template_send(
+                background_tasks,
+                EmailTemplateSchema(
+                    recipients=[user_data["email"]],
+                    subject=f"Welcome to {get_settings().api_title}!",
+                    body={
+                        "application": f"{get_settings().api_title}",
+                        "user": user_data["email"],
+                    },
+                    template_name="welcome.html",
+                ),
+            )
         except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
