@@ -9,6 +9,7 @@ from config.settings import get_settings
 from database.db import database
 from models.enums import RoleType
 from models.user import User
+from schemas.email import EmailTemplateSchema
 
 from .auth import AuthManager
 from .email import EmailManager
@@ -34,13 +35,15 @@ class UserManager:
             email = EmailManager()
             email.template_send(
                 background_tasks,
-                email_to=user_data["email"],
-                subject=f"Welcome to the {get_settings().api_title} API!",
-                context={
-                    "application": f"{get_settings().api_title}",
-                    "user": user_data["email"],
-                },
-                template_name="welcome.html",
+                EmailTemplateSchema(
+                    recipients=[user_data["email"]],
+                    subject=f"Welcome to {get_settings().api_title}!",
+                    body={
+                        "application": f"{get_settings().api_title}",
+                        "user": user_data["email"],
+                    },
+                    template_name="welcome.html",
+                ),
             )
         except UniqueViolationError as err:
             raise HTTPException(

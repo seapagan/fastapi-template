@@ -7,6 +7,7 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 
 from config.settings import get_settings
+from schemas.email import EmailSchema, EmailTemplateSchema
 
 
 class EmailManager:
@@ -31,12 +32,12 @@ class EmailManager:
             TEMPLATE_FOLDER=Path(__file__).parent / ".." / "templates/email",
         )
 
-    async def simple_send(self, email_to, subject: str, msg: str):
+    async def simple_send(self, email_data: EmailSchema):
         """Send a plain email with a subject and message."""
         message = MessageSchema(
-            subject=subject,
-            recipients=[email_to],
-            body=msg,
+            subject=email_data.subject,
+            recipients=email_data.recipients,
+            body=email_data.body,
             subtype=MessageType.html,
         )
 
@@ -47,13 +48,13 @@ class EmailManager:
         )
 
     def background_send(
-        self, backgroundtasks: BackgroundTasks, email_to, subject: str, msg: str
+        self, backgroundtasks: BackgroundTasks, email_data: EmailSchema
     ):
         """Send an email in the background."""
         message = MessageSchema(
-            subject=subject,
-            recipients=[email_to],
-            body=msg,
+            subject=email_data.subject,
+            recipients=email_data.recipients,
+            body=email_data.body,
             subtype=MessageType.html,
         )
 
@@ -61,22 +62,17 @@ class EmailManager:
         backgroundtasks.add_task(fm.send_message, message)
 
     def template_send(
-        self,
-        backgroundtasks: BackgroundTasks,
-        email_to,
-        subject: str,
-        context: dict,
-        template_name: str,
+        self, backgroundtasks: BackgroundTasks, email_data: EmailTemplateSchema
     ):
         """Send an email using a Jinja Template."""
         message = MessageSchema(
-            subject=subject,
-            recipients=[email_to],
+            subject=email_data.subject,
+            recipients=email_data.recipients,
             subtype=MessageType.html,
-            template_body=context,
+            template_body=email_data.body,
         )
         fm = FastMail(self.conf)
         # await fm.send_message(message, template_name="welcome.html")
         backgroundtasks.add_task(
-            fm.send_message, message, template_name=template_name
+            fm.send_message, message, template_name=email_data.template_name
         )
