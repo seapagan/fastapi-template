@@ -34,6 +34,7 @@ with Authorization already baked-in.
   - [**`DELETE`** _/users/{user\_id}_](#delete-usersuser_id)
   - [**`POST`** _/register/_](#post-register)
   - [**`POST`** _/login/_](#post-login)
+  - [**`POST`** _/refresh/_](#post-refresh)
 
 ## Functionality
 
@@ -44,9 +45,15 @@ following advantages to starting your own from scratch :
   or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
+  [Alembic](https://github.com/sqlalchemy/alembic) is used to control database
+  migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
+- A `Refresh Token` with 30 day expiry is sent at time of register or login
+  (never again). This will enable easy re-authentication when the JWT expires
+  without needing to send username or password again, and should be done
+  automatically by the Front-End.
 - A clean layout to help structure your project.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
@@ -544,17 +551,32 @@ running API for interactive Swagger (OpenAPI) Documentation.
 
 ### **`POST`** _/register/_
 
-> Register A New User : _Register a new User and return a JWT token._
+> Register A New User : _Register a new User and return a JWT token plus a Refresh Token._
 >
-> This token should be sent as a Bearer token for each access to a protected
-> route.
+> The JWT token should be sent as a Bearer token for each access to a
+> protected route. It will expire after 120 minutes.
+>
+> When the JWT expires, the Refresh Token can be sent using the '/refresh'
+> endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+> cannot be refreshed.
 
 ### **`POST`** _/login/_
 
-> Login An Existing User : _Login an existing User and return a JWT token._
+> Login An Existing User : _Login an existing User and return a JWT token plus a Refresh Token._
 >
-> This token should be sent as a Bearer token for each access to a protected
-> route.
+> The JWT token should be sent as a Bearer token for each access to a
+> protected route. It will expire after 120 minutes.
+>
+> When the JWT expires, the Refresh Token can be sent using the '/refresh'
+> endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+> cannot be refreshed.
+
+### **`POST`** _/refresh/_
+
+> Refresh An Expired Token : _Return a new JWT, given a valid Refresh token._
+>
+> The Refresh token will not be updated at this time, it will still expire 30
+> days after original issue. At that time the User will need to login again.
 <!-- openapi-schema-end -->
 
 The route table above was automatically generated from an `openapi.json` file by

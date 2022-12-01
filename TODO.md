@@ -1,7 +1,5 @@
 # TODO List
 
-## User
-
 - ~~Allow user to edit their own data (currently just admin)~~
 - ~~Dedicated 'change password' route, only change password of the current logged
   in user.~~
@@ -10,7 +8,10 @@
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
-- Add refresh token functionality to refresh an expired token.
+- ~~Add refresh token functionality to refresh an expired token.~~
+- Add a `logout` route to immediately invalidate the users token and refresh
+  token. This will need a database to be kept of invalidated tokens (which can
+  periodically be auto-purged of tokens that would be time-expired anyway.)
 - Confirm registrations with a link sent by email.
 - Send an email to the user when they:
   - [x] Register
@@ -20,3 +21,5 @@
   - [ ] To a user and admin(s) when an account is deleted
 - Update current and future email templates with actual content, and change
   their markup to latest best practices.
+- Add an option to the command line to bump the version number in API docs and
+  the TOML file.

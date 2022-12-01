@@ -72,7 +72,6 @@ class EmailManager:
             template_body=email_data.body,
         )
         fm = FastMail(self.conf)
-        # await fm.send_message(message, template_name="welcome.html")
         backgroundtasks.add_task(
             fm.send_message, message, template_name=email_data.template_name
         )

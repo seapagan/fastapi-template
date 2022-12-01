@@ -17,6 +17,16 @@ from .email import EmailManager
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+class ErrorMessages:
+    """Define text error responses."""
+
+    EMAIL_EXISTS = "A User with this email already exists"
+    EMAIL_INVALID = "This email address is not valid"
+    AUTH_INVALID = "Wrong email or password"
+    USER_INVALID = "This User does not exist"
+    CANT_SELF_BAN = "You cannot ban/unban yourself!"
+
+
 class UserManager:
     """Class to Manage the User."""
 
@@ -48,19 +58,22 @@ class UserManager:
         except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
-                "A User with this email already exists",
+                ErrorMessages.EMAIL_EXISTS,
             ) from err
         except EmailNotValidError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
-                "This email address is not valid",
+                ErrorMessages.EMAIL_INVALID,
             ) from err
 
         user_do = await database.fetch_one(
             User.select().where(User.c.id == id_)
         )
 
-        return AuthManager.encode_token(user_do)
+        token = AuthManager.encode_token(user_do)
+        refresh = AuthManager.encode_refresh_token(user_do)
+
+        return token, refresh
 
     @staticmethod
     async def login(user_data):
@@ -72,10 +85,13 @@ class UserManager:
             user_data["password"], user_do["password"]
         ):
             raise HTTPException(
-                status.HTTP_400_BAD_REQUEST, "Wrong email or password"
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
             )
 
-        return AuthManager.encode_token(user_do)
+        token = AuthManager.encode_token(user_do)
+        refresh = AuthManager.encode_refresh_token(user_do)
+
+        return token, refresh
 
     @staticmethod
     async def delete_user(user_id):
@@ -85,7 +101,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "This User does not exist"
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await database.execute(User.delete().where(User.c.id == user_id))
 
@@ -97,7 +113,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "This User does not exist"
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await database.execute(
             User.update()
@@ -118,7 +134,7 @@ class UserManager:
         )
         if not check_user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, "User does not exist"
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await database.execute(
             User.update()
@@ -131,7 +147,7 @@ class UserManager:
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:
             raise HTTPException(
-                status.HTTP_400_BAD_REQUEST, "You cannot ban/unban yourself!"
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.CANT_SELF_BAN
             )
         await database.execute(
             User.update().where(User.c.id == user_id).values(banned=state)
