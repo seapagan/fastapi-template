@@ -34,6 +34,7 @@ with Authorization already baked-in.
   - [**`DELETE`** _/users/{user\_id}_](#delete-usersuser_id)
   - [**`POST`** _/register/_](#post-register)
   - [**`POST`** _/login/_](#post-login)
+  - [**`POST`** _/refresh/_](#post-refresh)
 
 ## Functionality
 
@@ -555,6 +556,10 @@ running API for interactive Swagger (OpenAPI) Documentation.
 >
 > This token should be sent as a Bearer token for each access to a protected
 > route.
+
+### **`POST`** _/refresh/_
+
+> Refresh An Expired Token : _Return a new JWT, given a valid Refresh token._
 <!-- openapi-schema-end -->
 
 The route table above was automatically generated from an `openapi.json` file by
