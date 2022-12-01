@@ -1,5 +1,4 @@
 """Define the Autorization Manager."""
-import enum
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -14,7 +13,7 @@ from models.user import User
 from schemas.request.auth import TokenRefreshRequest
 
 
-class ErrorMessages(enum.Enum):
+class ErrorMessages:
     """Error strings for different circumstances."""
 
     CANT_GENERATE_JWT = "Unable to generate the JWT"

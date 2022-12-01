@@ -1,5 +1,4 @@
 """Define the User manager."""
-import enum
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -18,7 +17,7 @@ from .email import EmailManager
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class ErrorMessages(enum.Enum):
+class ErrorMessages:
     """Define text error responses."""
 
     EMAIL_EXISTS = "A User with this email already exists"
