@@ -19,10 +19,14 @@ router = APIRouter(tags=["Authentication"])
 async def register(
     background_tasks: BackgroundTasks, user_data: UserRegisterRequest
 ):
-    """Register a new User and return a JWT token.
+    """Register a new User and return a JWT token plus a Refresh Token.
 
-    This token should be sent as a Bearer token for each access to a protected
-    route.
+    The JWT token should be sent as a Bearer token for each access to a
+    protected route. It will expire after 120 minutes.
+
+    When the JWT expires, the Refresh Token can be sent using the '/refresh'
+    endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+    cannot be refreshed.
     """
     token, refresh = await UserManager.register(
         user_data.dict(), background_tasks=background_tasks
@@ -37,10 +41,14 @@ async def register(
     status_code=status.HTTP_200_OK,
 )
 async def login(user_data: UserLoginRequest):
-    """Login an existing User and return a JWT token.
+    """Login an existing User and return a JWT token plus a Refresh Token.
 
-    This token should be sent as a Bearer token for each access to a protected
-    route.
+    The JWT token should be sent as a Bearer token for each access to a
+    protected route. It will expire after 120 minutes.
+
+    When the JWT expires, the Refresh Token can be sent using the '/refresh'
+    endpoint to return a new JWT Token. The Refresh token will last 30 days, and
+    cannot be refreshed.
     """
     token, refresh = await UserManager.login(user_data.dict())
     return {"token": token, "refresh": refresh}
@@ -52,6 +60,10 @@ async def login(user_data: UserLoginRequest):
     response_model=TokenRefreshResponse,
 )
 async def refresh(refresh_token: TokenRefreshRequest):
-    """Return a new JWT, given a valid Refresh token."""
+    """Return a new JWT, given a valid Refresh token.
+
+    The Refresh token will not be updated at this time, it will still expire 30
+    days after original issue. At that time the User will need to login again.
+    """
     token = await AuthManager.refresh(refresh_token)
     return {"token": token}
