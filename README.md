@@ -45,9 +45,15 @@ following advantages to starting your own from scratch :
   or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
+  [Alembic](https://github.com/sqlalchemy/alembic) is used to control database
+  migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
+- A `Refresh Token` with 30 day expiry is sent at time of register or login
+  (never again). This will enable easy re-authentication when the JWT expires
+  without needing to send username or password again, and should be done
+  automatically by the Front-End.
 - A clean layout to help structure your project.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
@@ -536,6 +542,7 @@ running API for interactive Swagger (OpenAPI) Documentation.
 > Edit User : _Update the specified User's data._
 >
 > Available for the specific requesting User, or an Admin.
+
 ### **`DELETE`** _/users/{user_id}_
 
 > Delete User : _Delete the specified User by user_id._
@@ -575,4 +582,3 @@ running API for interactive Swagger (OpenAPI) Documentation.
 The route table above was automatically generated from an `openapi.json` file by
 my [openapi-readme](https://pypi.org/project/openapi-readme/) project. Check it
 out for your own API documentation! 😊
-
