@@ -11,6 +11,9 @@
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
 - Add refresh token functionality to refresh an expired token.
+- Add a `logout` route to immediately invalidate the users token and refresh
+  token. This will need a database to be kept of invalidated tokens (which can
+  periodically be auto-purged of tokens that would be time-expired anyway.)
 - Confirm registrations with a link sent by email.
 - Send an email to the user when they:
   - [x] Register
