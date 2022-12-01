@@ -10,3 +10,9 @@ class TokenResponse(BaseModel):
 
     token: str
     refresh: str
+
+
+class TokenRefreshResponse(BaseModel):
+    """Return a new JWT only, after a refresh request."""
+
+    token: str

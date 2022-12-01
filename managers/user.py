@@ -1,5 +1,6 @@
 """Define the User manager."""
 
+import jwt
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
@@ -10,6 +11,7 @@ from database.db import database
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
+from schemas.request.auth import TokenRefreshRequest
 
 from .auth import AuthManager
 from .email import EmailManager
@@ -82,6 +84,36 @@ class UserManager:
         refresh = AuthManager.encode_refresh_token(user_do)
 
         return token, refresh
+
+    @staticmethod
+    async def refresh(refresh_token: TokenRefreshRequest):
+        """Refresh an expired JWT token, given a valid Refresh token."""
+        try:
+            payload = jwt.decode(
+                refresh_token.refresh,
+                get_settings().secret_key,
+                algorithms=["HS256"],
+            )
+            user_data = await database.fetch_one(
+                User.select().where(User.c.id == payload["sub"])
+            )
+
+            # block a banned user
+            if user_data.banned:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+                )
+            new_token = AuthManager.encode_token(user_data)
+            return new_token
+
+        except jwt.ExpiredSignatureError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token has Expired"
+            ) from exc
+        except jwt.InvalidTokenError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, "That token is Invalid"
+            ) from exc
 
     @staticmethod
     async def delete_user(user_id):

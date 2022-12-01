@@ -2,8 +2,9 @@
 from fastapi import APIRouter, BackgroundTasks, status
 
 from managers.user import UserManager
+from schemas.request.auth import TokenRefreshRequest
 from schemas.request.user import UserLoginRequest, UserRegisterRequest
-from schemas.response.auth import TokenResponse
+from schemas.response.auth import TokenRefreshResponse, TokenResponse
 
 router = APIRouter(tags=["Authentication"])
 
@@ -42,3 +43,14 @@ async def login(user_data: UserLoginRequest):
     """
     token, refresh = await UserManager.login(user_data.dict())
     return {"token": token, "refresh": refresh}
+
+
+@router.post(
+    "/refresh/",
+    name="refresh_an_expired_token",
+    response_model=TokenRefreshResponse,
+)
+async def refresh(refresh_token: TokenRefreshRequest):
+    """Return a new JWT, given a valid Refresh token."""
+    token = await UserManager.refresh(refresh_token)
+    return {"token": token}
