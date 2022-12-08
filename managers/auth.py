@@ -3,13 +3,15 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import jwt
-from fastapi import HTTPException, Request, status
+from fastapi import BackgroundTasks, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from config.settings import get_settings
 from database.db import database
+from managers.email import EmailManager
 from models.enums import RoleType
 from models.user import User
+from schemas.email import EmailTemplateSchema
 from schemas.request.auth import TokenRefreshRequest
 
 
@@ -23,6 +25,8 @@ class ErrorMessages:
     EXPIRED_TOKEN = "That token has Expired"
     VERIFICATION_SUCCESS = "User succesfully Verified"
     NO_USER = "User not Found"
+    ALREADY_VALIDATED = "You are already validated"
+    VALIDATION_RESENT = "Validation email re-sent"
 
 
 class AuthManager:
@@ -171,6 +175,50 @@ class AuthManager:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
             ) from exc
+
+    @staticmethod
+    async def resend_verify_code(background_tasks: BackgroundTasks, user: int):
+        """Resend the user a verification email."""
+        user_data = await database.fetch_one(
+            User.select().where(User.c.id == user)
+        )
+
+        if not user_data:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.NO_USER
+            )
+
+        # block a banned user
+        if user_data.banned:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+            )
+
+        if user_data.verified:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                ErrorMessages.ALREADY_VALIDATED,
+            )
+
+        print(user_data["email"])
+
+        email = EmailManager()
+        email.template_send(
+            background_tasks,
+            EmailTemplateSchema(
+                recipients=[user_data["email"]],
+                subject=f"Welcome to {get_settings().api_title}!",
+                body={
+                    "application": f"{get_settings().api_title}",
+                    "user": user_data["email"],
+                    "base_url": get_settings().base_url,
+                    "verification": AuthManager.encode_verify_token(user_data),
+                },
+                template_name="welcome.html",
+            ),
+        )
+
+        raise HTTPException(status.HTTP_200_OK, ErrorMessages.VALIDATION_RESENT)
 
 
 class CustomHTTPBearer(HTTPBearer):

@@ -77,3 +77,13 @@ async def verify(code: str = ""):
     """
     response = await AuthManager.verify(code)
     return response
+
+
+@router.get("/resend/", status_code=status.HTTP_200_OK)
+async def resend_verify_code(background_tasks: BackgroundTasks, user: int):
+    """Re-send a verification code to the specified user.
+
+    Can be used in the event that the original code expires.
+    """
+    response = await AuthManager.resend_verify_code(background_tasks, user)
+    return response
