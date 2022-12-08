@@ -19,4 +19,5 @@ User = Table(
         server_default=RoleType.user.name,
     ),
     Column("banned", Boolean, default=False),
+    Column("verified", Boolean, default=False),
 )
