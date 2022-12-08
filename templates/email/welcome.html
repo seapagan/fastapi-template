@@ -1,1 +1,5 @@
 <p>Hello <strong>{{ user }}</strong>, welcome to <strong>{{ application }}</strong>!</p>
+
+<p>Click the link below to <strong>verify your Email address</strong>. You will be unable to acces the API before doing this.</p>
+
+<a href="{{ base_url }}/verify?code={{ verification }}">{{ base_url }}/verify?code={{ verification }}</a>

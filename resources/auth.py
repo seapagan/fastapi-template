@@ -67,3 +67,13 @@ async def refresh(refresh_token: TokenRefreshRequest):
     """
     token = await AuthManager.refresh(refresh_token)
     return {"token": token}
+
+
+@router.get("/verify/", status_code=status.HTTP_200_OK)
+async def verify(code: str = ""):
+    """Verify a new user.
+
+    The code is sent to  new user by email, which must then be validated here.
+    """
+    response = await AuthManager.verify(code)
+    return response
