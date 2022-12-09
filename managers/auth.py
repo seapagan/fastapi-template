@@ -15,7 +15,7 @@ from schemas.email import EmailTemplateSchema
 from schemas.request.auth import TokenRefreshRequest
 
 
-class ErrorMessages:
+class ResponseMessages:
     """Error strings for different circumstances."""
 
     CANT_GENERATE_JWT = "Unable to generate the JWT"
@@ -46,7 +46,7 @@ class AuthManager:
         except Exception as exc:
             # log the exception
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.CANT_GENERATE_JWT
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.CANT_GENERATE_JWT
             ) from exc
 
     @staticmethod
@@ -64,7 +64,7 @@ class AuthManager:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
-                ErrorMessages.CANT_GENERATE_REFRESH,
+                ResponseMessages.CANT_GENERATE_REFRESH,
             ) from exc
 
     @staticmethod
@@ -83,7 +83,7 @@ class AuthManager:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
-                ErrorMessages.CANT_GENERATE_VERIFY,
+                ResponseMessages.CANT_GENERATE_VERIFY,
             ) from exc
 
     @staticmethod
@@ -101,24 +101,24 @@ class AuthManager:
 
             if not user_data:
                 raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ErrorMessages.NO_USER
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
                 )
 
             # block a banned user
             if user_data.banned:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
             new_token = AuthManager.encode_token(user_data)
             return new_token
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.EXPIRED_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
 
     @staticmethod
@@ -136,24 +136,24 @@ class AuthManager:
 
             if not user_data:
                 raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ErrorMessages.NO_USER
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
                 )
 
             if payload["typ"] != "verify":
                 print(payload["typ"])
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             # block a banned user
             if user_data.banned:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             if user_data.verified:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             await database.execute(
@@ -164,20 +164,20 @@ class AuthManager:
                 )
             )
             raise HTTPException(
-                status.HTTP_200_OK, ErrorMessages.VERIFICATION_SUCCESS
+                status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
             )
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.EXPIRED_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
 
     @staticmethod
-    async def resend_verify_code(background_tasks: BackgroundTasks, user: int):
+    async def resend_verify_code(user: int, background_tasks: BackgroundTasks):
         """Resend the user a verification email."""
         user_data = await database.fetch_one(
             User.select().where(User.c.id == user)
@@ -185,19 +185,19 @@ class AuthManager:
 
         if not user_data:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, ErrorMessages.NO_USER
+                status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
             )
 
         # block a banned user
         if user_data.banned:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
 
         if user_data.verified:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
-                ErrorMessages.ALREADY_VALIDATED,
+                ResponseMessages.ALREADY_VALIDATED,
             )
 
         print(user_data["email"])
@@ -218,7 +218,9 @@ class AuthManager:
             ),
         )
 
-        raise HTTPException(status.HTTP_200_OK, ErrorMessages.VALIDATION_RESENT)
+        raise HTTPException(
+            status.HTTP_200_OK, ResponseMessages.VALIDATION_RESENT
+        )
 
 
 class CustomHTTPBearer(HTTPBearer):
@@ -237,25 +239,20 @@ class CustomHTTPBearer(HTTPBearer):
             user_data = await database.fetch_one(
                 User.select().where(User.c.id == payload["sub"])
             )
-            # block a banned user
+            # block a banned or unverified user
             if user_data.banned or not user_data.verified:
                 raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
-                )
-            # block a user that is not verified
-            if not user_data.verified:
-                raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
             request.state.user = user_data
             return user_data
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.EXPIRED_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, ErrorMessages.INVALID_TOKEN
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
 
 
