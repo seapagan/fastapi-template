@@ -5,10 +5,11 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi_mail import MessageSchema, MessageType
 
 from config.settings import get_settings
 from database.db import database
-from managers.email import EmailManager
+from managers.email import EmailManager, EmailSchema
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
@@ -105,7 +106,7 @@ class AuthManager:
                 )
 
             # block a banned user
-            if user_data.banned:
+            if user_data["banned"]:
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -146,12 +147,12 @@ class AuthManager:
                 )
 
             # block a banned user
-            if user_data.banned:
+            if user_data["banned"]:
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            if user_data.verified:
+            if user_data["verified"]:
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -189,18 +190,16 @@ class AuthManager:
             )
 
         # block a banned user
-        if user_data.banned:
+        if user_data["banned"]:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
 
-        if user_data.verified:
+        if user_data["verified"]:
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_400_BAD_REQUEST,
                 ResponseMessages.ALREADY_VALIDATED,
             )
-
-        print(user_data["email"])
 
         email = EmailManager()
         email.template_send(
@@ -217,6 +216,13 @@ class AuthManager:
                 template_name="welcome.html",
             ),
         )
+        # await email.simple_send(
+        #     EmailSchema(
+        #         recipients=[user_data["email"]],
+        #         subject=f"Welcome to {get_settings().api_title}!",
+        #         body="Test Email",
+        #     ),
+        # )
 
         raise HTTPException(
             status.HTTP_200_OK, ResponseMessages.VALIDATION_RESENT
@@ -240,7 +246,7 @@ class CustomHTTPBearer(HTTPBearer):
                 User.select().where(User.c.id == payload["sub"])
             )
             # block a banned or unverified user
-            if user_data.banned or not user_data.verified:
+            if user_data["banned"] or not user_data["verified"]:
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
