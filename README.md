@@ -67,7 +67,8 @@ following advantages to starting your own from scratch :
 - Control permitted CORS Origin through Environment variables.
 - Manager class set up to send emails to users, and by default an email is sent
   when new users register. The content is set by a template (currently a
-  placeholder until the registration confirmation system is implemented).
+  basic placeholder). This email has a link for the user to confirm their email
+  address - until this is done, the user cannot user the API.
 
 The template **Requires Python 3.7+**
 
