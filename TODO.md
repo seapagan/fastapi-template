@@ -13,6 +13,7 @@
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
 - ~~Confirm registrations with a link sent by email.~~
+- Allow to resend a registration email
 - Send an email to the user when they:
   - [x] Register
   - [ ] Log in
