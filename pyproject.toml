@@ -27,7 +27,7 @@ fastapi-mail = { extras = ["httpx"], version = "^1.2.0" }
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
-version = "^0.19.0"
+version = "^0.20.0"
 
 [tool.poetry.dependencies.passlib]
 extras = ["bcrypt"]
