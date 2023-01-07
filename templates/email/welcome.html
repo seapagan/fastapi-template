@@ -1,1 +1,14 @@
+{#
+  Template : 'welcome.html'
+  Purpose  : This is sent as an email when a new User registers.
+
+  This is a very basic template, with no attempt at styling. Note that for HTML
+  email, all styles must be INLINE.
+#}
+
 <p>Hello <strong>{{ user }}</strong>, welcome to <strong>{{ application }}</strong>!</p>
+<p>Please click the link below to <strong>verify your Email address</strong>. You will be unable to acces the API before doing this.</p>
+
+<a href="{{ base_url }}/verify?code={{ verification }}">{{ base_url }}/verify?code={{ verification }}</a>
+
+<p>This code will expire after 10 minutes.</p>

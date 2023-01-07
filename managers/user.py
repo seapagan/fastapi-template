@@ -25,6 +25,7 @@ class ErrorMessages:
     AUTH_INVALID = "Wrong email or password"
     USER_INVALID = "This User does not exist"
     CANT_SELF_BAN = "You cannot ban/unban yourself!"
+    NOT_VERIFIED = "You need to verify your Email before logging in"
 
 
 class UserManager:
@@ -35,6 +36,7 @@ class UserManager:
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
+        user_data["verified"] = False
 
         try:
             email_validation = validate_email(
@@ -42,19 +44,6 @@ class UserManager:
             )
             user_data["email"] = email_validation.email
             id_ = await database.execute(User.insert().values(**user_data))
-            email = EmailManager()
-            email.template_send(
-                background_tasks,
-                EmailTemplateSchema(
-                    recipients=[user_data["email"]],
-                    subject=f"Welcome to {get_settings().api_title}!",
-                    body={
-                        "application": f"{get_settings().api_title}",
-                        "user": user_data["email"],
-                    },
-                    template_name="welcome.html",
-                ),
-            )
         except UniqueViolationError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
@@ -70,6 +59,22 @@ class UserManager:
             User.select().where(User.c.id == id_)
         )
 
+        email = EmailManager()
+        email.template_send(
+            background_tasks,
+            EmailTemplateSchema(
+                recipients=[user_data["email"]],
+                subject=f"Welcome to {get_settings().api_title}!",
+                body={
+                    "application": f"{get_settings().api_title}",
+                    "user": user_data["email"],
+                    "base_url": get_settings().base_url,
+                    "verification": AuthManager.encode_verify_token(user_do),
+                },
+                template_name="welcome.html",
+            ),
+        )
+
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
 
@@ -81,11 +86,17 @@ class UserManager:
         user_do = await database.fetch_one(
             User.select().where(User.c.email == user_data["email"])
         )
+
         if not user_do or not pwd_context.verify(
             user_data["password"], user_do["password"]
         ):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+            )
+
+        if not user_do.verified:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
 
         token = AuthManager.encode_token(user_do)

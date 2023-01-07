@@ -67,3 +67,25 @@ async def refresh(refresh_token: TokenRefreshRequest):
     """
     token = await AuthManager.refresh(refresh_token)
     return {"token": token}
+
+
+@router.get("/verify/", status_code=status.HTTP_200_OK)
+async def verify(code: str = ""):
+    """Verify a new user.
+
+    The code is sent to  new user by email, which must then be validated here.
+    """
+    response = await AuthManager.verify(code)
+    return response
+
+
+# @router.get("/resend/", status_code=status.HTTP_200_OK)
+# async def resend_verify_code(background_tasks: BackgroundTasks, user: int):
+#     """Re-send a verification code to the specified user.
+
+#     Can be used in the event that the original code expires.
+#     """
+#     response = await AuthManager.resend_verify_code(
+#         user, background_tasks=background_tasks
+#     )
+#     return response
