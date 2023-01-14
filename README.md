@@ -305,6 +305,7 @@ There are several HTML templates used at this time, all are stored in the
 a web browser instead of an API call. Use it to display vasic details about your
 API and usage instructions, point to the documentation etc. The default output
 is below for an example:
+
 ![Default Index Page](static/images/html_index.png)
 
 - [email/](/templates/email) - this folder contains HTML Email templates, **currently only
