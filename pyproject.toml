@@ -35,7 +35,7 @@ version = "^1.7.4"
 
 [tool.poetry.group.dev.dependencies]
 openapi-readme = "^0.2.1"
-aiosmtpd = "^1.4.2"
+aiosmtpd = "^1.4.4"
 
 [build-system]
 requires = ["poetry-core"]
