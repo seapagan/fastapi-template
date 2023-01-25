@@ -75,13 +75,25 @@ def choose_license():
 
     while choice.strip().lower() not in [lic.lower() for lic in license_list]:
         choice = click.prompt(
-            f"\nChoose a license from the following options.\n"
+            f"\nChoose a license from the following options:\n"
             f"{license_strings}\nYour Choice of License?",
             type=str,
             default=custom_metadata.license_info["name"],
         )
 
     return get_case_insensitive_dict(choice)
+
+
+def choose_version(current_version):
+    """Change the version or reset it."""
+    choice = click.prompt(
+        "Version Number (use * to reset to '0.0.1')",
+        type=str,
+        default=current_version,
+    )
+    if choice == "*":
+        return "0.0.1"
+    return choice
 
 
 @click.group(name="custom")
@@ -101,8 +113,6 @@ def metadata():
     """
     print("\n[green]API-Template : Customize application Metadata\n")
 
-    version = get_api_version()
-
     data = {
         "title": click.prompt(
             "Enter your API title", type=str, default=custom_metadata.title
@@ -112,7 +122,7 @@ def metadata():
             type=str,
             default=custom_metadata.description,
         ),
-        "version": click.prompt("Version Number", type=str, default=version),
+        "version": choose_version(get_api_version()),
         "repo": click.prompt(
             "URL to your Repository",
             type=str,
