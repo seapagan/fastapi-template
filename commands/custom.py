@@ -141,6 +141,7 @@ def metadata():
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
     print(f"[green]Description : [/green]{data['desc']}")
+    print(f"[green]Version     : [/green]{data['version']}")
     print(f"[green]Repository  : [/green]{data['repo']}")
     print(f"[green]License     : [/green]{data['license']['name']}")
     print(f"[green]Author      : [/green]{data['author']}")
