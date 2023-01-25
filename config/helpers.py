@@ -9,7 +9,8 @@ import tomli
 
 def get_toml_path():
     """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
+    script_dir = Path(os.path.dirname(os.path.realpath(__name__)))
+
     return script_dir / "pyproject.toml"
 
 
