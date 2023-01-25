@@ -1,7 +1,6 @@
 """CLI functionality to customize the template."""
-import os
-import sys
-from pathlib import Path
+
+from datetime import date
 
 import asyncclick as click
 import tomli
@@ -9,19 +8,13 @@ import tomli_w
 from jinja2 import Template
 from rich import print
 
-from config.helpers import LICENCES, template
-
-
-def get_config_path():
-    """Return the full path of the custom config file."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "config" / "metadata.py"
-
-
-def get_toml_path():
-    """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "pyproject.toml"
+from config.helpers import (
+    LICENCES,
+    get_api_version,
+    get_config_path,
+    get_toml_path,
+    template,
+)
 
 
 def init():
@@ -36,6 +29,8 @@ def init():
         },
         "author": "Grant Ramsay (seapagan)",
         "website": "https://www.gnramsay.com",
+        "email": "seapagan@gmail.com",
+        "this_year": date.today().year,
     }
 
     out = Template(template).render(data)
@@ -80,13 +75,25 @@ def choose_license():
 
     while choice.strip().lower() not in [lic.lower() for lic in license_list]:
         choice = click.prompt(
-            f"\nChoose a license from the following options.\n"
+            f"\nChoose a license from the following options:\n"
             f"{license_strings}\nYour Choice of License?",
             type=str,
             default=custom_metadata.license_info["name"],
         )
 
     return get_case_insensitive_dict(choice)
+
+
+def choose_version(current_version):
+    """Change the version or reset it."""
+    choice = click.prompt(
+        "Version Number (use * to reset to '0.0.1')",
+        type=str,
+        default=current_version,
+    )
+    if choice == "*":
+        return "0.0.1"
+    return choice
 
 
 @click.group(name="custom")
@@ -105,6 +112,7 @@ def metadata():
     Documentation, Author details, Repository URL and more.
     """
     print("\n[green]API-Template : Customize application Metadata\n")
+
     data = {
         "title": click.prompt(
             "Enter your API title", type=str, default=custom_metadata.title
@@ -114,6 +122,7 @@ def metadata():
             type=str,
             default=custom_metadata.description,
         ),
+        "version": choose_version(get_api_version()),
         "repo": click.prompt(
             "URL to your Repository",
             type=str,
@@ -136,14 +145,19 @@ def metadata():
             default=custom_metadata.contact["url"],
         ),
     }
+
+    data["this_year"] = date.today().year
+
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
     print(f"[green]Description : [/green]{data['desc']}")
+    print(f"[green]Version     : [/green]{data['version']}")
     print(f"[green]Repository  : [/green]{data['repo']}")
     print(f"[green]License     : [/green]{data['license']['name']}")
     print(f"[green]Author      : [/green]{data['author']}")
     print(f"[green]Email       : [/green]{data['email']}")
     print(f"[green]Website     : [/green]{data['website']}")
+    print(f"[green](C) Year    : [/green]{data['this_year']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         # write the metadata
@@ -161,6 +175,7 @@ def metadata():
             with open(get_toml_path(), "rb") as f:
                 config = tomli.load(f)
                 config["tool"]["poetry"]["name"] = data["title"]
+                config["tool"]["poetry"]["version"] = data["version"]
                 config["tool"]["poetry"]["description"] = data["desc"]
                 config["tool"]["poetry"]["authors"] = [
                     f"{data['author']} <{data['email']}>"

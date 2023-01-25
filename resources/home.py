@@ -4,6 +4,7 @@ from typing import Union
 from fastapi import APIRouter, Header, Request
 from fastapi.templating import Jinja2Templates
 
+from config.helpers import get_api_version
 from config.settings import get_settings
 
 router = APIRouter()
@@ -23,6 +24,8 @@ def root_path(
             "repository": get_settings().repository,
             "author": get_settings().contact["name"],
             "website": get_settings().contact["url"],
+            "year": get_settings().year,
+            "version": get_api_version(),
         }
         return templates.TemplateResponse("index.html", context)
 
