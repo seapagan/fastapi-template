@@ -25,3 +25,4 @@
 - Add an option to the command line to bump the version number in API docs and
   the TOML file.
 - add verified status to user list for admins only.
+- allow CLI to verify unverified users.
