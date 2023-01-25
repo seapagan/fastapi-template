@@ -37,6 +37,8 @@ def init():
         },
         "author": "Grant Ramsay (seapagan)",
         "website": "https://www.gnramsay.com",
+        "email": "seapagan@gmail.com",
+        "this_year": date.today().year,
     }
 
     out = Template(template).render(data)
