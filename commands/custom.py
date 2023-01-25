@@ -1,8 +1,6 @@
 """CLI functionality to customize the template."""
-import os
-import sys
+
 from datetime import date
-from pathlib import Path
 
 import asyncclick as click
 import tomli
@@ -10,19 +8,13 @@ import tomli_w
 from jinja2 import Template
 from rich import print
 
-from config.helpers import LICENCES, template
-
-
-def get_config_path():
-    """Return the full path of the custom config file."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "config" / "metadata.py"
-
-
-def get_toml_path():
-    """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "pyproject.toml"
+from config.helpers import (
+    LICENCES,
+    get_api_version,
+    get_config_path,
+    get_toml_path,
+    template,
+)
 
 
 def init():
@@ -108,6 +100,9 @@ def metadata():
     Documentation, Author details, Repository URL and more.
     """
     print("\n[green]API-Template : Customize application Metadata\n")
+
+    version = get_api_version()
+
     data = {
         "title": click.prompt(
             "Enter your API title", type=str, default=custom_metadata.title
@@ -117,6 +112,7 @@ def metadata():
             type=str,
             default=custom_metadata.description,
         ),
+        "version": click.prompt("Version Number", type=str, default=version),
         "repo": click.prompt(
             "URL to your Repository",
             type=str,
@@ -168,6 +164,7 @@ def metadata():
             with open(get_toml_path(), "rb") as f:
                 config = tomli.load(f)
                 config["tool"]["poetry"]["name"] = data["title"]
+                config["tool"]["poetry"]["version"] = data["version"]
                 config["tool"]["poetry"]["description"] = data["desc"]
                 config["tool"]["poetry"]["authors"] = [
                     f"{data['author']} <{data['email']}>"
