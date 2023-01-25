@@ -78,6 +78,10 @@ class UserManager:
                         "application": f"{get_settings().api_title}",
                         "user": user_data["email"],
                         "base_url": get_settings().base_url,
+                        "name": (
+                            f"{user_data['first_name']} "
+                            f"{user_data['last_name']}"
+                        ),
                         "verification": AuthManager.encode_verify_token(
                             user_do
                         ),

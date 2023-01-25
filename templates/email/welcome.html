@@ -6,9 +6,10 @@
   email, all styles must be INLINE.
 #}
 
-<p>Hello <strong>{{ user }}</strong>, welcome to <strong>{{ application }}</strong>!</p>
-<p>Please click the link below to <strong>verify your Email address</strong>. You will be unable to acces the API before doing this.</p>
+<p>Hello <strong>{{ name }}</strong>, Welcome to <strong>{{ application }}</strong>!</p>
+<p>Please click the link below to <strong>verify your Email address</strong>.
+You will be unable to access the API before doing this.</p>
 
-<a href="{{ base_url }}/verify?code={{ verification }}">{{ base_url }}/verify?code={{ verification }}</a>
+<a href="{{ base_url }}/verify?code={{ verification }}">Verify my Email!</a>
 
 <p>This code will expire after 10 minutes.</p>
