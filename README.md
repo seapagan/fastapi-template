@@ -233,10 +233,11 @@ custom_metadata = MetadataBase(
         "url": "https://opensource.org/licenses/MIT",
     },
     contact={
-        "name": "Grant Ramsay",
+        "name": "Grant Ramsay (seapagan)",
         "url": "https://www.gnramsay.com",
     },
     email="seapagan@gmail.com",
+    year="2023"
 )
 ```
 
@@ -258,24 +259,27 @@ API-Template : Customize application Metadata
 
 Enter your API title [API Template]:
 Enter the description [Run 'api-admin custom metadata' to change this information.]:
+Version Number (use * to reset to '0.0.1') [1.3.1]:
 URL to your Repository [https://github.com/seapagan/fastapi-template]:
 
-Choose a license from the following options.
+Choose a license from the following options:
 Apache2, BSD3, BSD2, GPL, LGPL, MIT, MPL2, CDDL, EPL
 Your Choice of License? [MIT]:
 
-Author name or handle [Grant Ramsay]:
+Author name or handle [Grant Ramsay (seapagan)]:
 Contact Email address [seapagan@gmail.com]:
 Author Website [https://www.gnramsay.com]:
 
 You have entered the following data:
 Title       : API Template
 Description : Run 'api-admin custom metadata' to change this information.
+Version     : 1.3.1
 Repository  : https://github.com/seapagan/fastapi-template
 License     : MIT
-Author      : Grant Ramsay
+Author      : Grant Ramsay (seapagan)
 Email       : seapagan@gmail.com
 Website     : https://www.gnramsay.com
+(C) Year    : 2023
 
 Is this Correct? [Y/n]: y
 
@@ -347,6 +351,9 @@ Options:
   -a, --admin TEXT       [required]
   --help                 Show this message and exit.
 ```
+
+Note that any user added manually this way will automatically be verified (no
+need for the confirmation email which will not be sent anyway.)
 
 ### Run a development Server
 
