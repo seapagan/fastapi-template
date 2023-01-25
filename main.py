@@ -17,7 +17,7 @@ app = FastAPI(
     docs_url=None,  # we customize this ourselves
     license_info=get_settings().license_info,
     contact=get_settings().contact,
-    version="1.2.0",
+    version="1.3.0",
 )
 
 app.include_router(api_router)
