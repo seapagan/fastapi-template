@@ -105,7 +105,7 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
             )
 
-        if not user_do.verified:
+        if not user_do["verified"]:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
