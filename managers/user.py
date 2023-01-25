@@ -40,7 +40,11 @@ class UserManager:
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
-        user_data["verified"] = False
+
+        if background_tasks:
+            user_data["verified"] = False
+        else:
+            user_data["verified"] = True
 
         try:
             email_validation = validate_email(
