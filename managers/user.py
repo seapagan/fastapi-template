@@ -67,8 +67,8 @@ class UserManager:
             User.select().where(User.c.id == id_)
         )
 
-        email = EmailManager()
         if background_tasks:
+            email = EmailManager()
             email.template_send(
                 background_tasks,
                 EmailTemplateSchema(
