@@ -1,6 +1,7 @@
 """CLI functionality to customize the template."""
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
 import asyncclick as click
@@ -136,6 +137,9 @@ def metadata():
             default=custom_metadata.contact["url"],
         ),
     }
+
+    data["this_year"] = date.today().year
+
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
     print(f"[green]Description : [/green]{data['desc']}")
@@ -144,6 +148,7 @@ def metadata():
     print(f"[green]Author      : [/green]{data['author']}")
     print(f"[green]Email       : [/green]{data['email']}")
     print(f"[green]Website     : [/green]{data['website']}")
+    print(f"[green](C) Year    : [/green]{data['this_year']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         # write the metadata

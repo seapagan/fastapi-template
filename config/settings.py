@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     repository = custom_metadata.repository
     contact = custom_metadata.contact
     license_info = custom_metadata.license_info
+    year = custom_metadata.year
 
     # email settings
     mail_username = "test_username"

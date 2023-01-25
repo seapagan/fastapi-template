@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class MetadataBase:
-    """This is the base Metadata class used for customizsation."""
+    """This is the base Metadata class used for customization."""
 
     title: str
     description: str
@@ -12,6 +12,7 @@ class MetadataBase:
     contact: dict[str, str]
     license_info: dict[str, str]
     email: str
+    year: str
 
 
 # List of acceptable Opensource Licenses with a link to their text.
@@ -47,6 +48,7 @@ custom_metadata = MetadataBase(
         "url": "{{ website }}",
     },
     email="{{ email }}",
+    year="{{ this_year }}"
 )
 
 """

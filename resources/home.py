@@ -23,6 +23,7 @@ def root_path(
             "repository": get_settings().repository,
             "author": get_settings().contact["name"],
             "website": get_settings().contact["url"],
+            "year": get_settings().year,
         }
         return templates.TemplateResponse("index.html", context)
 
