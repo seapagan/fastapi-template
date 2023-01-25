@@ -1,5 +1,7 @@
 """Define the User manager."""
 
+from typing import Union
+
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
@@ -32,7 +34,9 @@ class UserManager:
     """Class to Manage the User."""
 
     @staticmethod
-    async def register(user_data, background_tasks: BackgroundTasks):
+    async def register(
+        user_data, background_tasks: Union[BackgroundTasks, None] = None
+    ):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
@@ -60,20 +64,23 @@ class UserManager:
         )
 
         email = EmailManager()
-        email.template_send(
-            background_tasks,
-            EmailTemplateSchema(
-                recipients=[user_data["email"]],
-                subject=f"Welcome to {get_settings().api_title}!",
-                body={
-                    "application": f"{get_settings().api_title}",
-                    "user": user_data["email"],
-                    "base_url": get_settings().base_url,
-                    "verification": AuthManager.encode_verify_token(user_do),
-                },
-                template_name="welcome.html",
-            ),
-        )
+        if background_tasks:
+            email.template_send(
+                background_tasks,
+                EmailTemplateSchema(
+                    recipients=[user_data["email"]],
+                    subject=f"Welcome to {get_settings().api_title}!",
+                    body={
+                        "application": f"{get_settings().api_title}",
+                        "user": user_data["email"],
+                        "base_url": get_settings().base_url,
+                        "verification": AuthManager.encode_verify_token(
+                            user_do
+                        ),
+                    },
+                    template_name="welcome.html",
+                ),
+            )
 
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
