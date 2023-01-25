@@ -1,5 +1,7 @@
 """Define the User manager."""
 
+from typing import Union
+
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
@@ -32,11 +34,17 @@ class UserManager:
     """Class to Manage the User."""
 
     @staticmethod
-    async def register(user_data, background_tasks: BackgroundTasks):
+    async def register(
+        user_data, background_tasks: Union[BackgroundTasks, None] = None
+    ):
         """Register a new user."""
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
-        user_data["verified"] = False
+
+        if background_tasks:
+            user_data["verified"] = False
+        else:
+            user_data["verified"] = True
 
         try:
             email_validation = validate_email(
@@ -59,21 +67,28 @@ class UserManager:
             User.select().where(User.c.id == id_)
         )
 
-        email = EmailManager()
-        email.template_send(
-            background_tasks,
-            EmailTemplateSchema(
-                recipients=[user_data["email"]],
-                subject=f"Welcome to {get_settings().api_title}!",
-                body={
-                    "application": f"{get_settings().api_title}",
-                    "user": user_data["email"],
-                    "base_url": get_settings().base_url,
-                    "verification": AuthManager.encode_verify_token(user_do),
-                },
-                template_name="welcome.html",
-            ),
-        )
+        if background_tasks:
+            email = EmailManager()
+            email.template_send(
+                background_tasks,
+                EmailTemplateSchema(
+                    recipients=[user_data["email"]],
+                    subject=f"Welcome to {get_settings().api_title}!",
+                    body={
+                        "application": f"{get_settings().api_title}",
+                        "user": user_data["email"],
+                        "base_url": get_settings().base_url,
+                        "name": (
+                            f"{user_data['first_name']} "
+                            f"{user_data['last_name']}"
+                        ),
+                        "verification": AuthManager.encode_verify_token(
+                            user_do
+                        ),
+                    },
+                    template_name="welcome.html",
+                ),
+            )
 
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
@@ -94,7 +109,7 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
             )
 
-        if not user_do.verified:
+        if not user_do["verified"]:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
