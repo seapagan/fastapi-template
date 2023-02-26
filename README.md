@@ -312,7 +312,7 @@ is below for an example:
 
 ![Default Index Page](static/images/html_index.png)
 
-- [email/](/templates/email) - this folder contains HTML Email templates, **currently only
+- [email/](templates/email) - this folder contains HTML Email templates, **currently only
 basic placeholders**.
   - `welcome.html`. This is sent to a new User when they sign up
 
