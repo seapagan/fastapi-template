@@ -70,7 +70,7 @@ following advantages to starting your own from scratch :
   basic placeholder). This email has a link for the user to confirm their email
   address - until this is done, the user cannot user the API.
 
-The template **Requires Python 3.7+**
+The template **Requires Python 3.8.1+**
 
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme

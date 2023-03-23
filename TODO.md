@@ -26,3 +26,8 @@
   the TOML file.
 - add verified status to user list for admins only.
 - allow CLI to verify unverified users.
+
+## Auth
+
+- password recovery endpoint
+-
