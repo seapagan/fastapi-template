@@ -39,6 +39,12 @@ version = "^1.7.4"
 [tool.poetry.group.dev.dependencies]
 openapi-readme = "^0.2.1"
 aiosmtpd = "^1.4.4"
+flake8 = "^6.0.0"
+black = "^23.1.0"
+pep8-naming = "^0.13.3"
+pylint = "^2.17.1"
+flake8-docstrings = "^1.7.0"
+pydocstyle = "^6.3.0"
 
 [build-system]
 requires = ["poetry-core"]
