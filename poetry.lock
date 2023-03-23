@@ -358,14 +358,14 @@ test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==23.1.0)", "coverage[toml] (>=6
 
 [[package]]
 name = "fastapi-mail"
-version = "1.2.5"
+version = "1.2.6"
 description = "Simple lightweight mail library for FastApi"
 category = "main"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = [
-    {file = "fastapi_mail-1.2.5-py3-none-any.whl", hash = "sha256:6dc41bd47c2276145a5e6d7d8271082a78b19fc4d506883b277f6f0428c7fa9f"},
-    {file = "fastapi_mail-1.2.5.tar.gz", hash = "sha256:01ae8c221dd49d7b47ddab476766ecf720d7246e114a10b84d3e4fd9c3fc34d3"},
+    {file = "fastapi_mail-1.2.6-py3-none-any.whl", hash = "sha256:de435e5ab6691c59f7b11a0379cb3542e599ff6acfd3427eefa88e092361ba15"},
+    {file = "fastapi_mail-1.2.6.tar.gz", hash = "sha256:e775989cae5426ec7f5076fff52744a41b4bc3049fdfd95ce73c7b2c1805d62d"},
 ]
 
 [package.dependencies]
@@ -375,7 +375,7 @@ email-validator = ">=1.1,<2.0"
 httpx = {version = ">=0.23,<0.24", extras = ["httpx"], optional = true, markers = "extra == \"httpx\""}
 Jinja2 = ">=3.0,<4.0"
 pydantic = ">=1.8,<2.0"
-starlette = ">=0.19,<1.0"
+starlette = ">=0.24,<1.0"
 
 [package.extras]
 httpx = ["httpx[httpx] (>=0.23,<0.24)"]
@@ -1368,4 +1368,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "cc42d10d07a594da388fe638e2e9d9c5426f66486438cb3996cd19878f2375c3"
+content-hash = "371c382f7f43515f1775814e3e2bf1d3a2a775dcd25b48b328c5ce440734bab4"
