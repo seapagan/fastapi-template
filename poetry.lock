@@ -444,14 +444,14 @@ test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==23.1.0)", "coverage[toml] (>=6
 
 [[package]]
 name = "fastapi-mail"
-version = "1.2.6"
+version = "1.2.7"
 description = "Simple lightweight mail library for FastApi"
 category = "main"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = [
-    {file = "fastapi_mail-1.2.6-py3-none-any.whl", hash = "sha256:de435e5ab6691c59f7b11a0379cb3542e599ff6acfd3427eefa88e092361ba15"},
-    {file = "fastapi_mail-1.2.6.tar.gz", hash = "sha256:e775989cae5426ec7f5076fff52744a41b4bc3049fdfd95ce73c7b2c1805d62d"},
+    {file = "fastapi_mail-1.2.7-py3-none-any.whl", hash = "sha256:26acc4201551203c7aa86a91b7c022fee3fe0d08824f0924dc0004448910852b"},
+    {file = "fastapi_mail-1.2.7.tar.gz", hash = "sha256:22db99be0a842b0535d4cc01712a1677abcbb94fd11cca6bf5e8826139116b00"},
 ]
 
 [package.dependencies]
@@ -1811,4 +1811,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "d5ddc9b7bc3be0d2709dde7cd912021f573c9eb545f2a1148d22d9ce21abb86e"
+content-hash = "d2f46b1d5b0e6e1e9444a638a6e0eaa8abc844ea4e28c23c561cdedbb33bfe9e"
