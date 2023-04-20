@@ -1,10 +1,10 @@
 """CLI functionality to customize the template."""
-
 from datetime import date
 
 import asyncclick as click
 import tomli
 import tomli_w
+import typer
 from jinja2 import Template
 from rich import print
 
@@ -15,6 +15,8 @@ from config.helpers import (
     get_toml_path,
     template,
 )
+
+app = typer.Typer(no_args_is_help=True)
 
 
 def init():
@@ -96,15 +98,7 @@ def choose_version(current_version):
     return choice
 
 
-@click.group(name="custom")
-def customize_group():
-    """Customize the Template Strings and Metadata.
-
-    This allows to change the displayed app name, repository and more.
-    """
-
-
-@click.command()
+@app.command()
 def metadata():
     """Customize the Application Metadata.
 
@@ -186,6 +180,3 @@ def metadata():
             print(f"Cannot update the pyproject.toml file : {e}")
             quit(3)
         print("Done!")
-
-
-customize_group.add_command(metadata)

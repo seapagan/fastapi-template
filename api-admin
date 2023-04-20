@@ -8,8 +8,9 @@ app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 app.add_typer(dev.app, name="serve")
 app.add_typer(user.app, name="user", help="Add or modify users.")
-
-# control.add_command(custom.customize_group)
+app.add_typer(
+    custom.app, name="custom", help="Customize the Application Metadata."
+)
 
 if __name__ == "__main__":
     app()
