@@ -20,7 +20,6 @@ def ver(
         is_eager=True,
     )
 ):
-    """Display the version of the application."""
     if version:
         name, desc, _ = get_api_details()
         output = f"[bold]{name}[/bold] v{get_api_version()}\n{desc}"
