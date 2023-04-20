@@ -7,18 +7,8 @@ from commands import custom, dev, user
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 app.add_typer(dev.app, name="serve")
+app.add_typer(user.app, name="user", help="Add or modify users.")
 
-
-# @click.group()
-# def control():
-#     """Configuration tools for the API Template.
-
-#     Commands to help with User control and customize the API Metadata (Title,
-#     Description, Author and more) for your own Application.
-#     """
-
-
-# control.add_command(user.user_commands)
 # control.add_command(custom.customize_group)
 
 if __name__ == "__main__":
