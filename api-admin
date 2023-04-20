@@ -1,22 +1,25 @@
 #! /bin/env python
 """Run administrative tasks for the Template system."""
-import asyncclick as click
+import typer
 
 from commands import custom, dev, user
 
+app = typer.Typer(add_completion=False, no_args_is_help=True)
 
-@click.group()
-def control():
-    """Configuration tools for the API Template.
-
-    Commands to help with User control and customize the API Metadata (Title,
-    Description, Author and more) for your own Application.
-    """
+app.add_typer(dev.app, name="serve")
 
 
-control.add_command(dev.dev)
-control.add_command(user.user_commands)
-control.add_command(custom.customize_group)
+# @click.group()
+# def control():
+#     """Configuration tools for the API Template.
+
+#     Commands to help with User control and customize the API Metadata (Title,
+#     Description, Author and more) for your own Application.
+#     """
+
+
+# control.add_command(user.user_commands)
+# control.add_command(custom.customize_group)
 
 if __name__ == "__main__":
-    control(_anyio_backend="asyncio")
+    app()
