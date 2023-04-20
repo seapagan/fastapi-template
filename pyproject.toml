@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 fastapi = "^0.95.0"
-alembic = "^1.10.2"
+alembic = "^1.10.3"
 databases = "^0.7.0"
 SQLAlchemy = "^1.4.47"
 asyncpg = "^0.27.0"
