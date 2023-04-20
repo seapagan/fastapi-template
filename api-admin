@@ -1,22 +1,46 @@
 #! /bin/env python
 """Run administrative tasks for the Template system."""
-import asyncclick as click
+import typer
+from rich import print
+from rich.panel import Panel
 
 from commands import custom, dev, user
+from config.helpers import get_api_details, get_api_version
+
+app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 
-@click.group()
-def control():
-    """Configuration tools for the API Template.
+@app.callback(invoke_without_command=True)
+def ver(
+    version: bool = typer.Option(
+        False,
+        "--version",
+        "-v",
+        help="Show the version and exit.",
+        is_eager=True,
+    )
+):
+    """Display the version of the application."""
+    if version:
+        name, desc, _ = get_api_details()
+        output = f"[bold]{name}[/bold] v{get_api_version()}\n{desc}"
 
-    Commands to help with User control and customize the API Metadata (Title,
-    Description, Author and more) for your own Application.
-    """
+        print(
+            Panel(
+                output,
+                title="Version",
+                expand=False,
+                border_style="green",
+            )
+        )
+        raise typer.Exit()
 
 
-control.add_command(dev.dev)
-control.add_command(user.user_commands)
-control.add_command(custom.customize_group)
+app.add_typer(dev.app, name="serve")
+app.add_typer(user.app, name="user", help="Add or modify users.")
+app.add_typer(
+    custom.app, name="custom", help="Customize the Application Metadata."
+)
 
 if __name__ == "__main__":
-    control(_anyio_backend="asyncio")
+    app()

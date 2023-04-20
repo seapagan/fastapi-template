@@ -34,6 +34,22 @@ def get_api_version() -> str:
         quit(3)
 
 
+def get_api_details() -> tuple[str, str, str]:
+    """Return the API Name from the pyproject.toml file."""
+    try:
+        with open(get_toml_path(), "rb") as f:
+            config = tomli.load(f)
+            name = config["tool"]["poetry"]["name"]
+            desc = config["tool"]["poetry"]["description"]
+            authors = config["tool"]["poetry"]["authors"]
+
+            return (name, desc, authors)
+
+    except Exception as e:
+        print(f"Cannot read the pyproject.toml file : {e}")
+        quit(3)
+
+
 """Define the structure of the MetadataBase class."""
 
 
