@@ -9,12 +9,18 @@ app = typer.Typer()
 
 @app.callback(invoke_without_command=True)
 def serve(
-    port: int = typer.Option(8000, help="Define the port to run the server on"),
+    port: int = typer.Option(
+        8000, "--port", "-p", help="Define the port to run the server on"
+    ),
     host: str = typer.Option(
-        "localhost", help="Define the interface to run the server on."
+        "localhost",
+        "--host",
+        "-h",
+        help="Define the interface to run the server on.",
     ),
     reload: bool = typer.Option(
-        False, "--reload", help="Enable auto-reload on code changes"
+        True,
+        help="Enable auto-reload on code changes",
     ),
 ) -> None:
     """Run a development server from the command line.
