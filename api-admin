@@ -11,7 +11,7 @@ app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 
 @app.callback(invoke_without_command=True)
-def ver(
+def main(
     version: bool = typer.Option(
         False,
         "--version",
@@ -20,7 +20,7 @@ def ver(
         is_eager=True,
     )
 ):
-    """Return the version number then exit."""
+    """Run administrative tasks for the FastAPI Template system."""
     if version:
         name, desc, _ = get_api_details()
         output = f"[bold]{name}[/bold] v{get_api_version()}\n{desc}"
