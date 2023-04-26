@@ -238,6 +238,24 @@ alembic upgrade head
 Check out the [Alembic](https://github.com/sqlalchemy/alembic) repository for
 more information on how to use (for example how to revert migrations).
 
+Look at the built-in help for more details :
+
+```console
+$ ./api-admin db --help
+Usage: api-admin db [OPTIONS] COMMAND [ARGS]...
+
+ Control the Database.
+
+Options:
+  --help          Show this message and exit.
+
+Commands:
+  drop            Drop all tables and reset the Database
+  init            Re-Initialise the database using Alembic.
+  revision        Create a new revision.
+  upgrade         Apply the latest Database Migrations.
+```
+
 ### Customize the Metadata
 
 By default the Template Title, Description, Author and similar is set to my
