@@ -18,5 +18,5 @@ custom_metadata = MetadataBase(
         "url": "https://www.gnramsay.com",
     },
     email="seapagan@gmail.com",
-    year="2023"
+    year="2023",
 )
