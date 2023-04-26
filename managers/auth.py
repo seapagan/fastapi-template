@@ -5,11 +5,10 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from fastapi_mail import MessageSchema, MessageType
 
 from config.settings import get_settings
 from database.db import database
-from managers.email import EmailManager, EmailSchema
+from managers.email import EmailManager
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
