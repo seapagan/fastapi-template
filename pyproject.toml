@@ -24,6 +24,7 @@ email-validator = "^1.3.1"
 tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.7.0" }
+flake8-docstrings = "^1.7.0"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
@@ -44,7 +45,6 @@ flake8 = "^6.0.0"
 black = "^23.3.0"
 pep8-naming = "^0.13.3"
 pylint = "^2.17.3"
-flake8-docstrings = "^1.7.0"
 pydocstyle = "^6.3.0"
 pre-commit = "^3.2.2"
 flake8-pyproject = "^1.2.3"
@@ -56,6 +56,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.flake8]
 exclude = ['__init__.py', '.git', 'migrations/versions/*']
 max-line-length = 80
+docstring-convention = "google"
 
 [tool.bandit]
 exclude_dirs = ['config/settings.py', 'schemas/examples.py']
+
+[tool.pydocstyle]
+# add-ignore = ["D104"]
