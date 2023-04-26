@@ -211,14 +211,27 @@ Make sure you have [configured](#configuration) the database. Then run the
 following command to setup the database:
 
 ```console
-alembic upgrade head
+$ ./api-admin db init
 ```
 
-Everytime you add or edit a model, create a new migration then run the upgrade
-as shown below:
+(this is the same as running `alembic upgrade head`, though it will downgrade to
+the base structure and delete all data as well)
+
+Everytime you add or edit a model, create a new migration as shown below. You
+will be asked for a commit message. This will create and apply the migration in
+the same step:
 
 ```console
-alembic revision --autogenerate -m "<My commit message>"
+$ ./api-admin db revision
+Enter the commit message for the revision: Added email to the users model
+
+  Generating ..._added_email_to_the_users_model.py ...  done
+```
+
+This is the same as running the below commands, it is provided for ease of use:
+
+```console
+alembic revision --autogenerate -m "Commit message"
 alembic upgrade head
 ```
 
@@ -267,7 +280,7 @@ The `api-admin` command can also do this for you, asking for the values at the
 command line and automatically updating both files:
 
 ```console
-$ api-admin custom metadata
+$ ./api-admin custom metadata
 
 API-Template : Customize application Metadata
 
@@ -319,15 +332,15 @@ for your work.
 There are several HTML templates used at this time, all are stored in the
 [templates](templates/) folder or a subfolder of this.
 
-- [index.html](templates/index.html) - This template is shown when the root of the API is visited using
-a web browser instead of an API call. Use it to display vasic details about your
-API and usage instructions, point to the documentation etc. The default output
-is below for an example:
+- [index.html](templates/index.html) - This template is shown when the root of
+the API is visited using a web browser instead of an API call. Use it to display
+vasic details about your API and usage instructions, point to the documentation
+etc. The default output is below for an example:
 
 ![Default Index Page](static/images/html_index.png)
 
-- [email/](templates/email) - this folder contains HTML Email templates, **currently only
-basic placeholders**.
+- [email/](templates/email) - this folder contains HTML Email templates,
+**currently only basic placeholders**.
   - `welcome.html`. This is sent to a new User when they sign up
 
 ### Add a user
@@ -383,7 +396,7 @@ This will by default run the server on <http://localhost:8000>, and reload after
 any change to the source code. You can add options to change this
 
 ```console
-$ api-admin dev --help
+$ ./api-admin dev --help
 
 Usage: api-admin dev [OPTIONS]
 
@@ -435,8 +448,9 @@ or for AWS Elastic Beanstalk there is a very comprehensive tutorial at
 
 ## Who is Using this Template?
 
-Meh, at the moment probably no-one except me 😆. If you do use this in one of your own
-projects, drop me a message and I'll add your profile and project links here 😃
+Meh, at the moment probably no-one except me 😆. If you do use this in one of
+your own projects, drop me a message and I'll add your profile and project links
+here 😃
 
 ## Planned Functionality
 
@@ -574,7 +588,8 @@ running API for interactive Swagger (OpenAPI) Documentation.
 
 ### **`POST`** _/register/_
 
-> Register A New User : _Register a new User and return a JWT token plus a Refresh Token._
+> Register A New User : _Register a new User and return a JWT token plus a
+> Refresh Token._
 >
 > The JWT token should be sent as a Bearer token for each access to a
 > protected route. It will expire after 120 minutes.
@@ -585,7 +600,8 @@ running API for interactive Swagger (OpenAPI) Documentation.
 
 ### **`POST`** _/login/_
 
-> Login An Existing User : _Login an existing User and return a JWT token plus a Refresh Token._
+> Login An Existing User : _Login an existing User and return a JWT token plus a
+> Refresh Token._
 >
 > The JWT token should be sent as a Bearer token for each access to a
 > protected route. It will expire after 120 minutes.
