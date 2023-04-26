@@ -55,5 +55,5 @@ Add Quota functionality.
 
 Add integration for a proper Frontend (ie React, Vue, etc) by having a config
 value to point the the location of this instead of using the default
-`templates/index.html`. Look at how to integrate API configuration  values with
+`templates/index.html`. Look at how to integrate API configuration values with
 this front end.
