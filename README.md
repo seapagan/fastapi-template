@@ -10,6 +10,7 @@ with Authorization already baked-in.
 - [Development](#development)
   - [Set up a Virtual Environment](#set-up-a-virtual-environment)
   - [Install required Dependencies](#install-required-dependencies)
+  - [Install Git Pre-Commit hooks](#install-git-pre-commit-hooks)
   - [Migrate the Database](#migrate-the-database)
   - [Customize the Metadata](#customize-the-metadata)
     - [Manually](#manually)
@@ -191,6 +192,19 @@ If using poetry you now need to activate the VirtualEnv:
 poetry shell
 ```
 
+### Install Git Pre-Commit hooks
+
+This stage is **optional but recommended** (however it is compulsory if you are
+submitting a **Pull Request**).
+
+```console
+$ pre-commit install
+pre-commit installed at .git/hooks/pre-commit
+```
+
+This will ensure that all code meets the required linting standard before being
+committed.
+
 ### Migrate the Database
 
 Make sure you have [configured](#configuration) the database. Then run the
@@ -204,7 +218,7 @@ Everytime you add or edit a model, create a new migration then run the upgrade
 as shown below:
 
 ```console
-alembic revision -m "<My commit message>"
+alembic revision --autogenerate -m "<My commit message>"
 alembic upgrade head
 ```
 
