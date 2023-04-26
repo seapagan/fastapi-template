@@ -423,7 +423,7 @@ Usage: api-admin serve [OPTIONS]
   This will auto-refresh on any changes to the source in real-time.
 
 Options:
-  -port    -p   INTEGER   Define the port to run the server on  [default: 8000]
+  --port   -p   INTEGER   Define the port to run the server on  [default: 8000]
   --host   -h   TEXT      Define the interface to run the server on.  [default:
                           localhost]
   --reload --no-reload    Enable auto-reload on code changes [default: True]
