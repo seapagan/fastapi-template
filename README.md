@@ -211,14 +211,27 @@ Make sure you have [configured](#configuration) the database. Then run the
 following command to setup the database:
 
 ```console
-$ apiadmin db init
+$ ./api-admin db init
 ```
 
-Everytime you add or edit a model, create a new migration then run the upgrade
-as shown below:
+(this is the same as running `alembic upgrade head`, though it will downgrade to
+the base structure and delete all data as well)
+
+Everytime you add or edit a model, create a new migration as shown below. You
+will be asked for a commit message. This will create and apply the migration in
+the same step:
 
 ```console
-alembic revision --autogenerate -m "<My commit message>"
+$ ./api-admin db revision
+Enter the commit message for the revision: Added email to the users model
+
+  Generating ..._added_email_to_the_users_model.py ...  done
+```
+
+This is the same as running the below commands, it is provided for ease of use:
+
+```console
+alembic revision --autogenerate -m "Commit message"
 alembic upgrade head
 ```
 
@@ -267,7 +280,7 @@ The `api-admin` command can also do this for you, asking for the values at the
 command line and automatically updating both files:
 
 ```console
-$ api-admin custom metadata
+$ ./api-admin custom metadata
 
 API-Template : Customize application Metadata
 
@@ -383,7 +396,7 @@ This will by default run the server on <http://localhost:8000>, and reload after
 any change to the source code. You can add options to change this
 
 ```console
-$ api-admin dev --help
+$ ./api-admin dev --help
 
 Usage: api-admin dev [OPTIONS]
 
