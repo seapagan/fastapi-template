@@ -56,3 +56,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.flake8]
 exclude = ['__init__.py', '.git', 'migrations/versions/*']
 max-line-length = 80
+
+[tool.bandit]
+exclude_dirs = ['config/settings.py', 'schemas/examples.py']

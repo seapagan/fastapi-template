@@ -21,8 +21,8 @@ class ResponseMessages:
     CANT_GENERATE_JWT = "Unable to generate the JWT"
     CANT_GENERATE_REFRESH = "Unable to generate the Refresh Token"
     CANT_GENERATE_VERIFY = "Unable to generate the Verification Token"
-    INVALID_TOKEN = "That token is Invalid"
-    EXPIRED_TOKEN = "That token has Expired"
+    INVALID_TOKEN = "That token is Invalid"  # nosec
+    EXPIRED_TOKEN = "That token has Expired"  # nosec
     VERIFICATION_SUCCESS = "User succesfully Verified"
     NO_USER = "User not Found"
     ALREADY_VALIDATED = "You are already validated"

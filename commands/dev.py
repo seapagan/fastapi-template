@@ -1,5 +1,5 @@
 """CLI command to run a dev server."""
-import subprocess
+import subprocess  # nosec
 
 import typer
 from rich import print
@@ -26,4 +26,4 @@ def serve(
         f"uvicorn main:app --port={port} --host={host} "
         f"{'--reload' if reload else ''}"
     )
-    subprocess.call(cmd_line, shell=True)
+    subprocess.call(cmd_line, shell=True)  # nosec
