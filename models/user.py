@@ -21,3 +21,10 @@ User = Table(
     Column("banned", Boolean, default=False),
     Column("verified", Boolean, default=False),
 )
+
+TokenBlacklist = Table(
+    "token_blacklist",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("token", String(120), nullable=False),
+)
