@@ -39,7 +39,7 @@ extras = ["bcrypt"]
 version = "^1.7.4"
 
 [tool.poetry.group.dev.dependencies]
-openapi-readme = "^0.2.1"
+openapi-readme = "^0.2.3"
 aiosmtpd = "^1.4.4"
 flake8 = "^6.0.0"
 black = "^23.3.0"

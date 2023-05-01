@@ -1013,20 +1013,20 @@ setuptools = "*"
 
 [[package]]
 name = "openapi-readme"
-version = "0.2.2"
+version = "0.2.3"
 description = "Generate Markdown from an openapi JSON file."
 category = "dev"
 optional = false
 python-versions = ">=3.8.1,<4.0.0"
 files = [
-    {file = "openapi_readme-0.2.2-py3-none-any.whl", hash = "sha256:486843d2d2f783fa5dcb990e876f874f1b8f97790df44dd2fdb39f5171915f2f"},
-    {file = "openapi_readme-0.2.2.tar.gz", hash = "sha256:b11a96d37f9fb2f363ae2634b7980ebaa019a5c51bf7c5ea260da8d70442a04e"},
+    {file = "openapi_readme-0.2.3-py3-none-any.whl", hash = "sha256:922ed2cfacc5149490bdc3b2dc1c5f2cee51c05a789b1e6716b431f3ac042290"},
+    {file = "openapi_readme-0.2.3.tar.gz", hash = "sha256:650ab0097e9c95c4861cb459e7a643a378e0f922d1ff021214dc270a298733ad"},
 ]
 
 [package.dependencies]
 pydantic = ">=1.10.2,<2.0.0"
 single-source = ">=0.3.0,<0.4.0"
-typer = {version = ">=0.6.1,<0.8.0", extras = ["all"]}
+typer = {version = ">=0.6.1,<0.9.0", extras = ["all"]}
 
 [[package]]
 name = "packaging"
@@ -1961,4 +1961,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "e5e5e780960f5ef8654c604ed1fe63f18e593cd76441650fb8bd1efd72b6c3d7"
+content-hash = "8223b8dcc74d2ea071895ff46a2d8eeea2b298e4cb658c465afe5dd9e40b2904"
