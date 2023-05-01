@@ -1013,20 +1013,20 @@ setuptools = "*"
 
 [[package]]
 name = "openapi-readme"
-version = "0.2.2"
+version = "0.2.3"
 description = "Generate Markdown from an openapi JSON file."
 category = "dev"
 optional = false
 python-versions = ">=3.8.1,<4.0.0"
 files = [
-    {file = "openapi_readme-0.2.2-py3-none-any.whl", hash = "sha256:486843d2d2f783fa5dcb990e876f874f1b8f97790df44dd2fdb39f5171915f2f"},
-    {file = "openapi_readme-0.2.2.tar.gz", hash = "sha256:b11a96d37f9fb2f363ae2634b7980ebaa019a5c51bf7c5ea260da8d70442a04e"},
+    {file = "openapi_readme-0.2.3-py3-none-any.whl", hash = "sha256:922ed2cfacc5149490bdc3b2dc1c5f2cee51c05a789b1e6716b431f3ac042290"},
+    {file = "openapi_readme-0.2.3.tar.gz", hash = "sha256:650ab0097e9c95c4861cb459e7a643a378e0f922d1ff021214dc270a298733ad"},
 ]
 
 [package.dependencies]
 pydantic = ">=1.10.2,<2.0.0"
 single-source = ">=0.3.0,<0.4.0"
-typer = {version = ">=0.6.1,<0.8.0", extras = ["all"]}
+typer = {version = ">=0.6.1,<0.9.0", extras = ["all"]}
 
 [[package]]
 name = "packaging"
@@ -1616,27 +1616,27 @@ files = [
 
 [[package]]
 name = "typer"
-version = "0.7.0"
+version = "0.8.0"
 description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "typer-0.7.0-py3-none-any.whl", hash = "sha256:b5e704f4e48ec263de1c0b3a2387cd405a13767d2f907f44c1a08cbad96f606d"},
-    {file = "typer-0.7.0.tar.gz", hash = "sha256:ff797846578a9f2a201b53442aedeb543319466870fbe1c701eab66dd7681165"},
+    {file = "typer-0.8.0-py3-none-any.whl", hash = "sha256:07dd96b7961d11da53be3f9b9cd0eb76f413d5ef06df7942cb2f85bd03dd2633"},
+    {file = "typer-0.8.0.tar.gz", hash = "sha256:7442b3a4369c8352b8bb684d04558b278b80fa92ae5d5760eb42c2f27c71f044"},
 ]
 
 [package.dependencies]
 click = ">=7.1.1,<9.0.0"
 colorama = {version = ">=0.4.3,<0.5.0", optional = true, markers = "extra == \"all\""}
-rich = {version = ">=10.11.0,<13.0.0", optional = true, markers = "extra == \"all\""}
+rich = {version = ">=10.11.0,<14.0.0", optional = true, markers = "extra == \"all\""}
 shellingham = {version = ">=1.3.0,<2.0.0", optional = true, markers = "extra == \"all\""}
 
 [package.extras]
-all = ["colorama (>=0.4.3,<0.5.0)", "rich (>=10.11.0,<13.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
+all = ["colorama (>=0.4.3,<0.5.0)", "rich (>=10.11.0,<14.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
 dev = ["autoflake (>=1.3.1,<2.0.0)", "flake8 (>=3.8.3,<4.0.0)", "pre-commit (>=2.17.0,<3.0.0)"]
 doc = ["cairosvg (>=2.5.2,<3.0.0)", "mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-material (>=8.1.4,<9.0.0)", "pillow (>=9.3.0,<10.0.0)"]
-test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pytest (>=4.4.0,<8.0.0)", "pytest-cov (>=2.10.0,<5.0.0)", "pytest-sugar (>=0.9.4,<0.10.0)", "pytest-xdist (>=1.32.0,<4.0.0)", "rich (>=10.11.0,<13.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
+test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pytest (>=4.4.0,<8.0.0)", "pytest-cov (>=2.10.0,<5.0.0)", "pytest-sugar (>=0.9.4,<0.10.0)", "pytest-xdist (>=1.32.0,<4.0.0)", "rich (>=10.11.0,<14.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
 
 [[package]]
 name = "typing-extensions"
@@ -1961,4 +1961,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "e5e5e780960f5ef8654c604ed1fe63f18e593cd76441650fb8bd1efd72b6c3d7"
+content-hash = "b546ff7afd79e3efe8d6325b42bb3aa8482d9f4827ffea5d6fdf8e34e425223f"
