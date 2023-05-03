@@ -37,7 +37,7 @@
 
 ## CLI
 
-- option to remove the customization functionality from the CLI. Useful once you 
+- option to remove the customization functionality from the CLI. Useful once you
   have customized the template and don't want to give the end-user the ability to
   change it easily.
 
