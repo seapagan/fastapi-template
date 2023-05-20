@@ -567,28 +567,28 @@
 <p>The <a href="https://www.uvicorn.org/">uvicorn</a> ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
 during development. There is a built-in command to run this easily :</p>
-<pre><code class="language-console">api-admin serve
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">api-admin serve</span>
+</code></pre></div>
 <p>This will by default run the server on <a href="http://localhost:8000">http://localhost:8000</a>, and reload after
 any change to the source code. You can add options to change this</p>
-<pre><code class="language-console">$ ./api-admin serve --help
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>serve<span class="w"> </span>--help
 
-Usage: api-admin serve [OPTIONS]
+<span class="go">Usage: api-admin serve [OPTIONS]</span>
 
-  Run a development server from the command line.
+<span class="go">  Run a development server from the command line.</span>
 
-  This will auto-refresh on any changes to the source in real-time.
+<span class="go">  This will auto-refresh on any changes to the source in real-time.</span>
 
-Options:
-  --port   -p   INTEGER   Define the port to run the server on  [default: 8000]
-  --host   -h   TEXT      Define the interface to run the server on.  [default:
-                          localhost]
-  --reload --no-reload    Enable auto-reload on code changes [default: True]
-  --help                  Show this message and exit.
-</code></pre>
+<span class="go">Options:</span>
+<span class="go">  --port   -p   INTEGER   Define the port to run the server on  [default: 8000]</span>
+<span class="go">  --host   -h   TEXT      Define the interface to run the server on.  [default:</span>
+<span class="go">                          localhost]</span>
+<span class="go">  --reload --no-reload    Enable auto-reload on code changes [default: True]</span>
+<span class="go">  --help                  Show this message and exit.</span>
+</code></pre></div>
 <p>If you need more control, you can run <code>uvicorn</code> directly :</p>
-<pre><code class="language-console">uvicorn main:app --reload
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">uvicorn main:app --reload</span>
+</code></pre></div>
 <p>The above command starts the server running on <a href="http://localhost:8000">http://localhost:8000</a>, and it
 will automatically reload when it detects any changes as you develop.</p>
 <p><strong>Note: Neither of these are suitable to host a project in production, see the

@@ -568,36 +568,35 @@
 <code>.env</code> file in the project root. By default, these are only used for the
 Database setup and JWT Secret Key. See the <a href=".env.example">.env.example</a> file for
 how to use.</p>
-<pre><code class="language-ini"># The Base API Url. This is where your API wil be served from, and can be read
-# in the application code. It has no effect on the running of the applciation
-# but is an easy way to build a path for API responses. Defaults to
-# http://localhost:8000
-BASE_URL=http://localhost:8000
+<div class="highlight"><pre><span></span><code><span class="c1"># The Base API Url. This is where your API wil be served from, and can be read</span>
+<span class="c1"># in the application code. It has no effect on the running of the applciation</span>
+<span class="c1"># but is an easy way to build a path for API responses. Defaults to</span>
+<span class="c1"># http://localhost:8000</span>
+<span class="na">BASE_URL</span><span class="o">=</span><span class="s">http://localhost:8000</span>
 
-# Database Settings These must be changed to match your setup.
-DB_USER=dbuser
-DB_PASSWORD=my_secret_passw0rd
-DB_ADDRESS=localhost
-DB_PORT=5432
-DB_NAME=my_database_name
+<span class="c1"># Database Settings These must be changed to match your setup.</span>
+<span class="na">DB_USER</span><span class="o">=</span><span class="s">dbuser</span>
+<span class="na">DB_PASSWORD</span><span class="o">=</span><span class="s">my_secret_passw0rd</span>
+<span class="na">DB_ADDRESS</span><span class="o">=</span><span class="s">localhost</span>
+<span class="na">DB_PORT</span><span class="o">=</span><span class="s">5432</span>
+<span class="na">DB_NAME</span><span class="o">=</span><span class="s">my_database_name</span>
 
-# generate your own super secret key here, used by the JWT functions.
-# 32 characters or longer, definately change the below!!
-SECRET_KEY=123456
+<span class="c1"># generate your own super secret key here, used by the JWT functions.</span>
+<span class="c1"># 32 characters or longer, definately change the below!!</span>
+<span class="na">SECRET_KEY</span><span class="o">=</span><span class="s">123456</span>
 
-# List of origins that can access this API, separated by a comma, eg:
-# CORS_ORIGINS=http://localhost,https://www.gnramsay.com
-# If you want all origins to access (the default), use * or leave commented:
-CORS_ORIGINS=*
-</code></pre>
+<span class="c1"># List of origins that can access this API, separated by a comma, eg:</span>
+<span class="c1"># CORS_ORIGINS=http://localhost,https://www.gnramsay.com</span>
+<span class="c1"># If you want all origins to access (the default), use * or leave commented:</span>
+<span class="na">CORS_ORIGINS</span><span class="o">=</span><span class="s">*</span>
+</code></pre></div>
 <p>For a <strong>PUBLIC API</strong> (unless its going through an API gateway!), set
 <code>CORS_ORIGINS=*</code>, otherwise list the domains (<strong>and ports</strong>) required. If you
 use an API gateway of some nature, that will probably need to be listed.</p>
 <p>To generate a good secret key you can use the below command on Linux or Mac:</p>
-<pre><code class="language-console">$ openssl rand -base64 32
-xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=
-
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>rand<span class="w"> </span>-base64<span class="w"> </span><span class="m">32</span>
+<span class="go">xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=</span>
+</code></pre></div>
 <p>If the database is not configured or cannot be reached, the Application will
 disable all routes, print an error to the console, and return a a 500 status
 code with a clear JSON message for all routes. This saves the ugly default

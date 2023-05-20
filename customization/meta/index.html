@@ -609,24 +609,24 @@ details. Changing this is very easy though, and there are 2 ways you can do.</p>
 <h4 id="manually">Manually</h4>
 <p>Metadata is stored in the <a href="config/metadata.py">config/metadata.py</a> file and this
 can be edited by hand if desired:</p>
-<pre><code class="language-python">from config.helpers import MetadataBase
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">config.helpers</span> <span class="kn">import</span> <span class="n">MetadataBase</span>
 
-custom_metadata = MetadataBase(
-    title=&quot;API Template&quot;,
-    description=&quot;Run 'api-admin custom metadata' to change this information.&quot;,
-    repository=&quot;https://github.com/seapagan/fastapi-template&quot;,
-    license_info={
-        &quot;name&quot;: &quot;MIT&quot;,
-        &quot;url&quot;: &quot;https://opensource.org/licenses/MIT&quot;,
-    },
-    contact={
-        &quot;name&quot;: &quot;Grant Ramsay (seapagan)&quot;,
-        &quot;url&quot;: &quot;https://www.gnramsay.com&quot;,
-    },
-    email=&quot;seapagan@gmail.com&quot;,
-    year=&quot;2023&quot;
-)
-</code></pre>
+<span class="n">custom_metadata</span> <span class="o">=</span> <span class="n">MetadataBase</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;API Template&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Run &#39;api-admin custom metadata&#39; to change this information.&quot;</span><span class="p">,</span>
+    <span class="n">repository</span><span class="o">=</span><span class="s2">&quot;https://github.com/seapagan/fastapi-template&quot;</span><span class="p">,</span>
+    <span class="n">license_info</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://opensource.org/licenses/MIT&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">contact</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Grant Ramsay (seapagan)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.gnramsay.com&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">email</span><span class="o">=</span><span class="s2">&quot;seapagan@gmail.com&quot;</span><span class="p">,</span>
+    <span class="n">year</span><span class="o">=</span><span class="s2">&quot;2023&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
 <p>You can change the values in this dictionary as needed. You should also change
 the name, description and authors in the <a href="pyproject.toml">pyproject.toml</a> file.</p>
 <p>For the License URL, you can find a list in the
@@ -634,38 +634,38 @@ the name, description and authors in the <a href="pyproject.toml">pyproject.toml
 <h4 id="using-the-provided-configuration-tool">Using the provided configuration tool</h4>
 <p>The <code>api-admin</code> command can also do this for you, asking for the values at the
 command line and automatically updating both files:</p>
-<pre><code class="language-console">$ ./api-admin custom metadata
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>custom<span class="w"> </span>metadata
 
-API-Template : Customize application Metadata
+<span class="go">API-Template : Customize application Metadata</span>
 
-Enter your API title [API Template]:
-Enter the description [Run 'api-admin custom metadata' to change this information.]:
-Version Number (use * to reset to '0.0.1') [1.3.1]:
-URL to your Repository [https://github.com/seapagan/fastapi-template]:
+<span class="go">Enter your API title [API Template]:</span>
+<span class="go">Enter the description [Run &#39;api-admin custom metadata&#39; to change this information.]:</span>
+<span class="go">Version Number (use * to reset to &#39;0.0.1&#39;) [1.3.1]:</span>
+<span class="go">URL to your Repository [https://github.com/seapagan/fastapi-template]:</span>
 
-Choose a license from the following options:
-Apache2, BSD3, BSD2, GPL, LGPL, MIT, MPL2, CDDL, EPL
-Your Choice of License? [MIT]:
+<span class="go">Choose a license from the following options:</span>
+<span class="go">Apache2, BSD3, BSD2, GPL, LGPL, MIT, MPL2, CDDL, EPL</span>
+<span class="go">Your Choice of License? [MIT]:</span>
 
-Author name or handle [Grant Ramsay (seapagan)]:
-Contact Email address [seapagan@gmail.com]:
-Author Website [https://www.gnramsay.com]:
+<span class="go">Author name or handle [Grant Ramsay (seapagan)]:</span>
+<span class="go">Contact Email address [seapagan@gmail.com]:</span>
+<span class="go">Author Website [https://www.gnramsay.com]:</span>
 
-You have entered the following data:
-Title       : API Template
-Description : Run 'api-admin custom metadata' to change this information.
-Version     : 1.3.1
-Repository  : https://github.com/seapagan/fastapi-template
-License     : MIT
-Author      : Grant Ramsay (seapagan)
-Email       : seapagan@gmail.com
-Website     : https://www.gnramsay.com
-(C) Year    : 2023
+<span class="go">You have entered the following data:</span>
+<span class="go">Title       : API Template</span>
+<span class="go">Description : Run &#39;api-admin custom metadata&#39; to change this information.</span>
+<span class="go">Version     : 1.3.1</span>
+<span class="go">Repository  : https://github.com/seapagan/fastapi-template</span>
+<span class="go">License     : MIT</span>
+<span class="go">Author      : Grant Ramsay (seapagan)</span>
+<span class="go">Email       : seapagan@gmail.com</span>
+<span class="go">Website     : https://www.gnramsay.com</span>
+<span class="gp gp-VirtualEnv">(C)</span> <span class="go">Year    : 2023</span>
 
-Is this Correct? [Y/n]: y
+<span class="go">Is this Correct? [Y/n]: y</span>
 
--&gt; Writing out Metadata .... Done!
-</code></pre>
+<span class="go">-&gt; Writing out Metadata .... Done!</span>
+</code></pre></div>
 <p>This will also put in the correct License URL link automatically.</p>
 
 

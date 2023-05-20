@@ -623,62 +623,62 @@ for some great info. If you are going this (oldschool!) way, I'd recommend using
 <p>The project has been set up using <a href="https://python-poetry.org/">Poetry</a> to
 organize and install dependencies. If you have Poetry installed, simply run the
 following to install all that is needed.</p>
-<pre><code class="language-console">poetry install
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">poetry install</span>
+</code></pre></div>
 <p>If you do not (or cannot) have Poetry installed, I have provided an
 auto-generated <code>requirements.txt</code> in the project root which you can use as
 normal:</p>
-<pre><code class="language-console">pip install -r requirements.txt
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">pip install -r requirements.txt</span>
+</code></pre></div>
 <p>I definately recommend using Poetry if you can though, it makes dealing with
 updates and conflicts very easy.</p>
 <p>If using poetry you now need to activate the VirtualEnv:</p>
-<pre><code class="language-console">poetry shell
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">poetry shell</span>
+</code></pre></div>
 <h2 id="install-git-pre-commit-hooks">Install Git Pre-Commit hooks</h2>
 <p>This stage is <strong>optional but recommended</strong> (however it is compulsory if you are
 submitting a <strong>Pull Request</strong>).</p>
-<pre><code class="language-console">$ pre-commit install
-pre-commit installed at .git/hooks/pre-commit
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pre-commit<span class="w"> </span>install
+<span class="go">pre-commit installed at .git/hooks/pre-commit</span>
+</code></pre></div>
 <p>This will ensure that all code meets the required linting standard before being
 committed.</p>
 <h2 id="migrate-the-database">Migrate the Database</h2>
 <p>Make sure you have <a href="#configuration">configured</a> the database. Then run the
 following command to setup the database:</p>
-<pre><code class="language-console">$ ./api-admin db init
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>db<span class="w"> </span>init
+</code></pre></div>
 <p>(this is the same as running <code>alembic upgrade head</code>, though it will downgrade to
 the base structure and delete all data as well)</p>
 <p>Everytime you add or edit a model, create a new migration as shown below. You
 will be asked for a commit message. This will create and apply the migration in
 the same step:</p>
-<pre><code class="language-console">$ ./api-admin db revision
-Enter the commit message for the revision: Added email to the users model
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>db<span class="w"> </span>revision
+<span class="go">Enter the commit message for the revision: Added email to the users model</span>
 
-  Generating ..._added_email_to_the_users_model.py ...  done
-</code></pre>
+<span class="go">  Generating ..._added_email_to_the_users_model.py ...  done</span>
+</code></pre></div>
 <p>This is the same as running the below commands, it is provided for ease of use:</p>
-<pre><code class="language-console">alembic revision --autogenerate -m &quot;Commit message&quot;
-alembic upgrade head
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="go">alembic revision --autogenerate -m &quot;Commit message&quot;</span>
+<span class="go">alembic upgrade head</span>
+</code></pre></div>
 <p>Check out the <a href="https://github.com/sqlalchemy/alembic">Alembic</a> repository for
 more information on how to use (for example how to revert migrations).</p>
 <p>Look at the built-in help for more details :</p>
-<pre><code class="language-console">$ ./api-admin db --help
-Usage: api-admin db [OPTIONS] COMMAND [ARGS]...
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>db<span class="w"> </span>--help
+<span class="go">Usage: api-admin db [OPTIONS] COMMAND [ARGS]...</span>
 
- Control the Database.
+<span class="go"> Control the Database.</span>
 
-Options:
-  --help          Show this message and exit.
+<span class="go">Options:</span>
+<span class="go">  --help          Show this message and exit.</span>
 
-Commands:
-  drop            Drop all tables and reset the Database
-  init            Re-Initialise the database using Alembic.
-  revision        Create a new revision.
-  upgrade         Apply the latest Database Migrations.
-</code></pre>
+<span class="go">Commands:</span>
+<span class="go">  drop            Drop all tables and reset the Database</span>
+<span class="go">  init            Re-Initialise the database using Alembic.</span>
+<span class="go">  revision        Create a new revision.</span>
+<span class="go">  upgrade         Apply the latest Database Migrations.</span>
+</code></pre></div>
 
 
 
