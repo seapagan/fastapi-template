@@ -61,6 +61,8 @@ pytest-xdist = "^3.2.1"
 pytest-sugar = "^0.9.7"
 pytest-randomly = "^3.12.0"
 pytest-reverse = "^1.5.0"
+pymdown-extensions = "^10.0.1"
+pygments = "^2.15.1"
 
 [build-system]
 requires = ["poetry-core"]
