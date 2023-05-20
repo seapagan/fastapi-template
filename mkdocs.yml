@@ -12,6 +12,10 @@ repo_name: seapagan/fastapi-template
 
 markdown_extensions:
   - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      linenums: false
+      auto_title: false
 
 nav:
   - FastAPI Template: index.md
