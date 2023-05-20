@@ -1,5 +1,7 @@
 # TODO List
 
+## General
+
 - ~~Allow user to edit their own data (currently just admin)~~
 - ~~Dedicated 'change password' route, only change password of the current
   logged in user.~~
@@ -43,9 +45,12 @@
 
 ## Documentation
 
-Add proper documentation with examples showing how to use the User & Auth system
-in custom code, link to example projects and perhaps create a YouTube video
-showing an example custom project based on this template?
+- Add proper documentation with examples showing how to use the User & Auth
+  system in custom code, link to example projects and perhaps create a YouTube
+  video showing an example custom project based on this template?
+- Fix code highlighting
+- Fix importing other markdown files from the Github repository (for example
+  TODO.md, BUGS.md etc)
 
 ## Quotas
 
