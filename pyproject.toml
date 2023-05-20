@@ -28,7 +28,7 @@ flake8-docstrings = "^1.7.0"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
-version = "^1.2.7"
+version = "^1.2.8"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
