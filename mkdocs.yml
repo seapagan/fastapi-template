@@ -1,1 +1,11 @@
 site_name: FastAPI Template
+
+theme:
+  name: material
+
+plugins:
+  - mkdocstrings
+  - search
+
+repo_url: https://github.com/seapagan/fastapi-template
+repo_name: seapagan/fastapi-template
