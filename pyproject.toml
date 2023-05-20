@@ -32,7 +32,7 @@ version = "^1.2.8"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
-version = "^0.21.1"
+version = "^0.22.0"
 
 [tool.poetry.dependencies.passlib]
 extras = ["bcrypt"]
