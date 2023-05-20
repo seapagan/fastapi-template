@@ -2,20 +2,13 @@
 
 ## General
 
-- ~~Allow user to edit their own data (currently just admin)~~
-- ~~Dedicated 'change password' route, only change password of the current
-  logged in user.~~
-- ~~admin can ban/unban a user.~~
 - add time-limited bans (configurable)
-- ~~user can get their own user details~~
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
-- ~~Add refresh token functionality to refresh an expired token.~~
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
-- ~~Confirm registrations with a link sent by email.~~
 - Allow to resend a registration email
 - Send an email to the user when they:
   - [x] Register
@@ -48,9 +41,7 @@
 - Add proper documentation with examples showing how to use the User & Auth
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?
-- Fix code highlighting
-- Fix importing other markdown files from the Github repository (for example
-  TODO.md, BUGS.md etc)
+- fix relative links to local files in the markdown
 
 ## Quotas
 
