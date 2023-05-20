@@ -9,3 +9,24 @@ plugins:
 
 repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
+
+markdown_extensions:
+  - pymdownx.snippets
+
+nav:
+  - FastAPI Template: index.md
+  - Usage:
+      - Installation: usage/installation.md
+      - Configuration: usage/configuration.md
+      - Development: usage/development.md
+      - Add a User: usage/add-user.md
+      - Run a Server: usage/dev-server.md
+  - Customization:
+      - Metadata: customization/meta.md
+      - Templates: customization/templates.md
+  - Deployment: deployment/deployment.md
+  - Future Plans: future.md
+  - Known Issues: known-issues.md
+  - Contributing: contributing.md
+  - Project Organization: project-organization.md
+  - API Reference: reference/api.md
