@@ -1,5 +1,9 @@
 # Welcome to FastAPI-Template
 
+!!! note
+    This documentation is Alpha status and undergoing improvement.
+!!!
+
 ## Features
 
 This template is a ready-to-use boilerplate for a FastAPI project. It has the
