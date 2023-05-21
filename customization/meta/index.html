@@ -263,9 +263,36 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../usage/configuration/" class="md-nav__link">
-        Configuration
+      <a href="../../usage/configuration/dot-env/" class="md-nav__link">
+        Environment File
       </a>
     </li>
   
@@ -278,9 +305,30 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/development/" class="md-nav__link">
-        Development
+      <a href="../../usage/configuration/setup/" class="md-nav__link">
+        Install Dependencies
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/configuration/database/" class="md-nav__link">
+        Setup Database
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -450,8 +498,68 @@
   
   
     <li class="md-nav__item">
+      <a href="../../how-to-guides/" class="md-nav__link">
+        How-to Guides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project-organization/" class="md-nav__link">
+        Project Organization
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/deployment/" class="md-nav__link">
         Deployment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/api/" class="md-nav__link">
+        API Reference
       </a>
     </li>
   
@@ -497,36 +605,6 @@
     <li class="md-nav__item">
       <a href="../../contributing/" class="md-nav__link">
         Contributing
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../project-organization/" class="md-nav__link">
-        Project Organization
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/api/" class="md-nav__link">
-        API Reference
       </a>
     </li>
   
@@ -606,8 +684,8 @@
 <h2 id="customize-the-metadata">Customize the Metadata</h2>
 <p>By default the Template Title, Description, Author and similar is set to my
 details. Changing this is very easy though, and there are 2 ways you can do.</p>
-<h4 id="manually">Manually</h4>
-<p>Metadata is stored in the <a href="config/metadata.py">config/metadata.py</a> file and this
+<h3 id="manually">Manually</h3>
+<p>Metadata is stored in the <code>config/metadata.py</code> file and this
 can be edited by hand if desired:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">config.helpers</span> <span class="kn">import</span> <span class="n">MetadataBase</span>
 
@@ -628,10 +706,10 @@ can be edited by hand if desired:</p>
 <span class="p">)</span>
 </code></pre></div>
 <p>You can change the values in this dictionary as needed. You should also change
-the name, description and authors in the <a href="pyproject.toml">pyproject.toml</a> file.</p>
+the name, description and authors in the <code>pyproject.toml</code> file.</p>
 <p>For the License URL, you can find a list in the
-<a href="config/helpers.py#L18">helpers.py</a></p>
-<h4 id="using-the-provided-configuration-tool">Using the provided configuration tool</h4>
+<code>config/helpers.py</code></p>
+<h3 id="using-the-provided-configuration-tool">Using the provided configuration tool</h3>
 <p>The <code>api-admin</code> command can also do this for you, asking for the values at the
 command line and automatically updating both files:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>custom<span class="w"> </span>metadata

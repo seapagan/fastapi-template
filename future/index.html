@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../deployment/deployment/">
+        <link rel="prev" href="../reference/api/">
       
       
         <link rel="next" href="../known-issues/">
@@ -263,9 +263,36 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../usage/configuration/" class="md-nav__link">
-        Configuration
+      <a href="../usage/configuration/dot-env/" class="md-nav__link">
+        Environment File
       </a>
     </li>
   
@@ -278,9 +305,30 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/development/" class="md-nav__link">
-        Development
+      <a href="../usage/configuration/setup/" class="md-nav__link">
+        Install Dependencies
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/configuration/database/" class="md-nav__link">
+        Setup Database
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -391,8 +439,68 @@
   
   
     <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        How-to Guides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project-organization/" class="md-nav__link">
+        Project Organization
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../deployment/deployment/" class="md-nav__link">
         Deployment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/api/" class="md-nav__link">
+        API Reference
       </a>
     </li>
   
@@ -519,36 +627,6 @@
   
 
     
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../project-organization/" class="md-nav__link">
-        Project Organization
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/api/" class="md-nav__link">
-        API Reference
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -646,12 +724,8 @@
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)</li>
 <li>Allow to resend a registration email</li>
-<li>Send an email to the user when they:</li>
-<li>[x] Register</li>
-<li>[ ] Log in</li>
-<li>[ ] Change their password or update their profile</li>
-<li>[ ] To a user when they are banned/unbanned</li>
-<li>[ ] To a user and admin(s) when an account is deleted</li>
+<li>Send an email to the <strong>User</strong> when they change their password or update their
+  profile, are Banned/Unbanned and to <strong>Admins</strong> when important events happen.</li>
 <li>Update current and future email templates with actual content, and change
   their markup to latest best practices.</li>
 <li>Add an option to the command line to bump the version number in API docs and

@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../contributing/">
+        <link rel="prev" href="../how-to-guides/">
       
       
-        <link rel="next" href="../reference/api/">
+        <link rel="next" href="../tutorials/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
@@ -263,9 +263,36 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../usage/configuration/" class="md-nav__link">
-        Configuration
+      <a href="../usage/configuration/dot-env/" class="md-nav__link">
+        Environment File
       </a>
     </li>
   
@@ -278,9 +305,30 @@
   
   
     <li class="md-nav__item">
-      <a href="../usage/development/" class="md-nav__link">
-        Development
+      <a href="../usage/configuration/setup/" class="md-nav__link">
+        Install Dependencies
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/configuration/database/" class="md-nav__link">
+        Setup Database
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -391,8 +439,78 @@
   
   
     <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        How-to Guides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Project Organization
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../deployment/deployment/" class="md-nav__link">
         Deployment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/api/" class="md-nav__link">
+        API Reference
       </a>
     </li>
   
@@ -443,46 +561,6 @@
   
 
     
-      
-      
-      
-
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Project Organization
-      </a>
-      
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/api/" class="md-nav__link">
-        API Reference
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -523,48 +601,46 @@
 <p>This project has been deliberately laid out in a specific way. To avoid long
 complicated files which are difficult to debug, functionality is separated out
 in files and modules depending on the specific functionality.</p>
-<p><a href="main.py">main.py</a> - The main controlling file, this should be as clean and
-short as possible with all functionality moved out to modules.</p>
-<p><a href="database">database/</a> - This module controls database setup and configuration,
-and should generally not need to be touched.</p>
-<p><a href="config">config/</a> - Handles the API settings and defaults, also the Metadata
+<p><strong>main.py</strong> - The main controlling file, this should be as clean and short as
+possible with all functionality moved out to modules.</p>
+<p><strong>database/</strong> - This module controls database setup and configuration, and
+should generally not need to be touched.</p>
+<p><strong>config/</strong> - Handles the API settings and defaults, also the Metadata
 customization. If you add more settings (for example in the <code>.env</code> file) you
-should also add them to the <a href="config/settings.py">settings.py</a> or
-<a href="config/metadata.py">metadata.py</a> with suitable defaults. Non-secret (or
-depoloyment independent) settings should go ing the <code>metadata</code> file, while
-secrets (or deployment specific) should go in the <code>settings</code> and <code>.env</code> files</p>
-<p><a href="commands">commands/</a> - This directory can hold any commands you need to write,
+should also add them to the <code>config/settings.py</code> or <code>config/metadata.py</code> with
+suitable defaults. Non-secret (or depoloyment independent) settings should go
+in the <code>metadata</code> file, while secrets (or deployment specific) should go in the
+<code>settings</code> and <code>.env</code> files</p>
+<p><strong>commands/</strong> - This directory can hold any <strong>CLI</strong> commands you need to write,
 for example populating a database, create a superuser or other housekeeping
 tasks.</p>
-<p><a href="managers">managers/</a> - This directory contains individual files for each
+<p><strong>managers/</strong> - This directory contains individual files for each
 'group' of functionality. They contain a Class that should take care of the
-actual work needed for the routes. Check out the <a href="managers/auth.py">auth.py</a> and
-<a href="managers/user.py">user.py</a></p>
-<p><a href="migrations">migrations/</a> - We use
-<a href="https://github.com/sqlalchemy/alembic">Alembic</a> to handle the database
-migrations. Check out their pages for more info. See instructions under
-<a href="#development">Development</a> for more info.</p>
-<p><a href="models">models/</a> - Any database models used should be defined here along with
-supporting files (eq the <a href="models/enums.py">enums.py</a>) used here. Models are
-specified using the SQLAlchemy format, see <a href="models/user.py">user.py</a> for an
+actual work needed for the routes. Check out the <code>managers/auth.py</code> and
+<code>managers/user.py</code></p>
+<p><strong>migrations/</strong> - We use <a href="https://github.com/sqlalchemy/alembic">Alembic</a> to
+handle the database migrations. Check out their pages for more info. See
+instructions under <a href="/usage/configuration/dot-env">Development</a> for more info.</p>
+<p><strong>models/</strong> - Any database models used should be defined here along with
+supporting files (eq the <code>models/enums.py</code>) used here. Models are
+specified using the SQLAlchemy format, see <code>models/user.py</code> for an
 example.</p>
-<p><a href="resources">resources/</a> - Contains the actual Route resources used by your API.
+<p><strong>resources/</strong> - Contains the actual Route resources used by your API.
 Basically, each grouped set of routes should have its own file, which then
-should be imported into the <a href="resources/routes.py">routes.py</a> file. That file is
+should be imported into the <code>resources/routes.py</code> file. That file is
 automatically imported into the main application, so there are no more changes
-needed. Check out the routes in <a href="resources/user.py">user.py</a> for a good example.
-Note that the routes contain minimal actual logic, instead they call the
-required functionality from the Manager (<a href="managers/user.py">UserManager</a> in this
-case).</p>
-<p><a href="schemas">schemas/</a> - Contains all <code>request</code> and <code>response</code> schemas used in the
+needed. Check out the routes in <code>resources/user.py</code> for a good example. Note
+that the routes contain minimal actual logic, instead they call the required
+functionality from the Manager (UserManager in <code>managers/user.py</code> in this case).</p>
+<p><strong>schemas/</strong> - Contains all <code>request</code> and <code>response</code> schemas used in the
 application, as usual with a separate file for each group. The Schemas are
 defined as <a href="https://pydantic-docs.helpmanual.io/">Pydantic</a> Classes.</p>
-<p><a href="static">static/</a> - Any static files used by HTML templates for example CSS or
+<p><strong>static/</strong> - Any static files used by HTML templates for example CSS or
 JS files.</p>
-<p><a href="templates">templates/</a> - Any HTML templates. We have one by default - used
-only when the root of the API is accessed using a Web Browser (otherwise a
-simple informational JSON response is returned). You can edit the template in
-<a href="templates/index.html">index.html</a> for your own API.</p>
+<p><strong>templates/</strong> - Any HTML templates. We have one by default - used only when the
+root of the API is accessed using a Web Browser (otherwise a simple
+informational JSON response is returned). You can edit the template in
+<code>templates/index.html</code> for your own API.</p>
 
 
 

@@ -12,7 +12,7 @@
         <link rel="prev" href="../meta/">
       
       
-        <link rel="next" href="../../deployment/deployment/">
+        <link rel="next" href="../../how-to-guides/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
@@ -263,9 +263,36 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../usage/configuration/" class="md-nav__link">
-        Configuration
+      <a href="../../usage/configuration/dot-env/" class="md-nav__link">
+        Environment File
       </a>
     </li>
   
@@ -278,9 +305,30 @@
   
   
     <li class="md-nav__item">
-      <a href="../../usage/development/" class="md-nav__link">
-        Development
+      <a href="../../usage/configuration/setup/" class="md-nav__link">
+        Install Dependencies
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/configuration/database/" class="md-nav__link">
+        Setup Database
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -430,8 +478,68 @@
   
   
     <li class="md-nav__item">
+      <a href="../../how-to-guides/" class="md-nav__link">
+        How-to Guides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project-organization/" class="md-nav__link">
+        Project Organization
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../deployment/deployment/" class="md-nav__link">
         Deployment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/api/" class="md-nav__link">
+        API Reference
       </a>
     </li>
   
@@ -477,36 +585,6 @@
     <li class="md-nav__item">
       <a href="../../contributing/" class="md-nav__link">
         Contributing
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../project-organization/" class="md-nav__link">
-        Project Organization
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/api/" class="md-nav__link">
-        API Reference
       </a>
     </li>
   
@@ -565,17 +643,18 @@
 
 <h2 id="customize-the-templates">Customize the Templates</h2>
 <p>There are several HTML templates used at this time, all are stored in the
-<a href="templates/">templates</a> folder or a subfolder of this.</p>
+<code>templates/</code> folder or a subfolder of this.</p>
 <ul>
-<li><a href="templates/index.html">index.html</a> - This template is shown when the root of
+<li><code>templates/index.html</code> - This template is shown when the root of
 the API is visited using a web browser instead of an API call. Use it to display
 vasic details about your API and usage instructions, point to the documentation
 etc. The default output is below for an example:</li>
 </ul>
-<p><img alt="Default Index Page" src="static/images/html_index.png" /></p>
+<p><img alt="Default Index
+Page" src="https://github.com/seapagan/fastapi-template/raw/main/static/images/html_index.png" /></p>
 <ul>
-<li><a href="templates/email">email/</a> - this folder contains HTML Email templates,
-<strong>currently only basic placeholders</strong>.</li>
+<li><code>templates/email</code> - this folder contains HTML Email templates, <strong>currently
+only basic placeholders</strong>.</li>
 <li><code>welcome.html</code>. This is sent to a new User when they sign up</li>
 </ul>
 
