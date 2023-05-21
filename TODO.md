@@ -1,5 +1,11 @@
 # TODO List
 
+## Add Testing
+
+- Both Unit and Integration testing need to be added to this Repo. The integration
+testing is under way for a derivative project of this and will be back-ported
+when it is in a suitable state.
+
 ## General
 
 - add time-limited bans (configurable)
