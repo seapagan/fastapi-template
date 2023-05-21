@@ -1,8 +1,7 @@
 # Welcome to FastAPI-Template
 
-!!! note
-    This documentation is Alpha status and undergoing improvement.
-!!!
+!!! warning "ALPHA Status!"
+    This documentation is currently **Alpha** status and I have much still to add.
 
 ## Features
 
