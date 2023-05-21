@@ -6,6 +6,7 @@ theme:
 plugins:
   - mkdocstrings
   - search
+  - swagger-ui-tag
 
 repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
@@ -38,6 +39,7 @@ nav:
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md
   - API Reference: reference/api.md
+  - Interactive API Docs: reference/swagger.md
   - Future Plans: future.md
   - Known Issues: known-issues.md
   - Contributing: contributing.md

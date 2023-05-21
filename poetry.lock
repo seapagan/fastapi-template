@@ -252,6 +252,25 @@ tests = ["pytest (>=3.2.1,!=3.3.0)"]
 typecheck = ["mypy"]
 
 [[package]]
+name = "beautifulsoup4"
+version = "4.12.2"
+description = "Screen-scraping library"
+category = "dev"
+optional = false
+python-versions = ">=3.6.0"
+files = [
+    {file = "beautifulsoup4-4.12.2-py3-none-any.whl", hash = "sha256:bd2520ca0d9d7d12694a53d44ac482d181b4ec1888909b035a3dbf40d0f57d4a"},
+    {file = "beautifulsoup4-4.12.2.tar.gz", hash = "sha256:492bbc69dca35d12daac71c4db1bfff0c876c00ef4a2ffacce226d4638eb72da"},
+]
+
+[package.dependencies]
+soupsieve = ">1.2"
+
+[package.extras]
+html5lib = ["html5lib"]
+lxml = ["lxml"]
+
+[[package]]
 name = "black"
 version = "23.3.0"
 description = "The uncompromising code formatter."
@@ -1425,6 +1444,21 @@ files = [
 ]
 
 [[package]]
+name = "mkdocs-swagger-ui-tag"
+version = "0.6.1"
+description = "A MkDocs plugin supports for add Swagger UI in page."
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mkdocs-swagger-ui-tag-0.6.1.tar.gz", hash = "sha256:141ac067d3213c63f0261557b25bb99af54827b80f0e208aff712e3c0aba44dc"},
+    {file = "mkdocs_swagger_ui_tag-0.6.1-py3-none-any.whl", hash = "sha256:07584dfb09d0784edf6442bd151857803ebee86c5b84821f4a8f4a583905b964"},
+]
+
+[package.dependencies]
+beautifulsoup4 = ">=4.11.1"
+
+[[package]]
 name = "mkdocstrings"
 version = "0.21.2"
 description = "Automatic documentation from sources, for MkDocs."
@@ -2331,6 +2365,18 @@ files = [
 ]
 
 [[package]]
+name = "soupsieve"
+version = "2.4.1"
+description = "A modern CSS selector implementation for Beautiful Soup."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "soupsieve-2.4.1-py3-none-any.whl", hash = "sha256:1c1bfee6819544a3447586c889157365a27e10d88cde3ad3da0cf0ddf646feb8"},
+    {file = "soupsieve-2.4.1.tar.gz", hash = "sha256:89d12b2d5dfcd2c9e8c22326da9d9aa9cb3dfab0a83a024f05704076ee8d35ea"},
+]
+
+[[package]]
 name = "sqlalchemy"
 version = "1.4.48"
 description = "Database Abstraction Library"
@@ -2895,4 +2941,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "a04266ba55ab7444dd6b5704e09d1813923244ec7804df3f20a2ef849a7d428f"
+content-hash = "bcd32afeb6d8075eaf3ed2c6ea08ed0782d6d030cdff90b0e9cd6ec71efec924"

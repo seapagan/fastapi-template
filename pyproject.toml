@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "API Template"
-version = "1.4.0"
+version = "1.4.1"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
@@ -25,7 +25,7 @@ tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 mkdocs = "^1.4.3"
-mkdocstrings = {extras = ["python"], version = "^0.21.2"}
+mkdocstrings = { extras = ["python"], version = "^0.21.2" }
 mkdocs-material = "^9.1.14"
 
 [tool.poetry.dependencies.fastapi-mail]
@@ -63,6 +63,7 @@ pytest-randomly = "^3.12.0"
 pytest-reverse = "^1.5.0"
 pymdown-extensions = "^10.0.1"
 pygments = "^2.15.1"
+mkdocs-swagger-ui-tag = "^0.6.1"
 
 [build-system]
 requires = ["poetry-core"]
