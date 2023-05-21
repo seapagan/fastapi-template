@@ -5,11 +5,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="../meta/" rel="prev"/>
-<link href="../../how-to-guides/" rel="next"/>
+<link href="../api/" rel="prev"/>
+<link href="../../future/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.4.3, mkdocs-material-9.1.14" name="generator"/>
-<title>Templates - FastAPI Template</title>
+<title>Interactive API Docs - FastAPI Template</title>
 <link href="../../assets/stylesheets/main.85bb2934.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#customize-the-templates">
+<a class="md-skip" href="#interactive-api-docs">
           Skip to content
         </a>
 </div>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Templates
+              Interactive API Docs
             
           </span>
 </div>
@@ -184,45 +184,27 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--active md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
 <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Customization
           <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_3">
 <span class="md-nav__icon md-icon"></span>
           Customization
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../meta/">
+<a class="md-nav__link" href="../../customization/meta/">
         Metadata
       </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
-          Templates
-          <span class="md-nav__icon md-icon"></span>
-</label>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../customization/templates/">
         Templates
       </a>
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#customize-the-templates">
-    Customize the Templates
-  </a>
-</li>
-</ul>
-</nav>
 </li>
 </ul>
 </nav>
@@ -248,12 +230,13 @@
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/api/">
+<a class="md-nav__link" href="../api/">
         API Reference
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/swagger/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
         Interactive API Docs
       </a>
 </li>
@@ -281,40 +264,22 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#customize-the-templates">
-    Customize the Templates
-  </a>
-</li>
-</ul>
 </nav>
 </div>
 </div>
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Templates</h1>
-<h2 id="customize-the-templates">Customize the Templates</h2>
-<p>There are several HTML templates used at this time, all are stored in the
-<code>templates/</code> folder or a subfolder of this.</p>
-<ul>
-<li><code>templates/index.html</code> - This template is shown when the root of
-the API is visited using a web browser instead of an API call. Use it to display
-vasic details about your API and usage instructions, point to the documentation
-etc. The default output is below for an example:</li>
-</ul>
-<p><img alt="Default Index
-Page" src="https://github.com/seapagan/fastapi-template/raw/main/static/images/html_index.png"/></p>
-<ul>
-<li><code>templates/email</code> - this folder contains HTML Email templates, <strong>currently
-only basic placeholders</strong>.</li>
-<li><code>welcome.html</code>. This is sent to a new User when they sign up</li>
-</ul>
+<h1 id="interactive-api-docs">Interactive API Docs</h1>
+<p>The interative API below is auto-generated from the OpenAPI specification for
+this API.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is not a real API or Database backing this, so the 'Try It Out'
+option is disabled. You can access a working version of this by installing
+the template and running the FastAPI server, then visiting the <code>/docs</code> path.</p>
+</div>
+<p><iframe class="swagger-ui-iframe" frameborder="0" id="81d05ad2" src="swagger-81d05ad2.html" style="overflow:hidden;width:100%;" width="100%"></iframe></p>
 </article>
 </div>
 </div>
@@ -355,7 +320,7 @@ only basic placeholders</strong>.</li>
                 iframe_id_list.push(iframes[i].getAttribute("id"))
             }
         
-            let ticking = true;
+            let ticking = false;
             
             document.addEventListener('scroll', function(e) {
                 if (!ticking) {
