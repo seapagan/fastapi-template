@@ -11,6 +11,7 @@ repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
 
 markdown_extensions:
+  - admonition
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.highlight:
