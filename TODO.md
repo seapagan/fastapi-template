@@ -42,6 +42,7 @@
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?
 - fix relative links to local files in the markdown
+- add commands to CLI to serve, build, publish to gh-pages etc
 
 ## Quotas
 
