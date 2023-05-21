@@ -6,7 +6,10 @@ theme:
 plugins:
   - mkdocstrings
   - search
-  - swagger-ui-tag
+  - swagger-ui-tag:
+      tryItOutEnabled: false
+      supportedSubmitMethods: []
+      defaultModelsExpandDepth: 0
 
 repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
