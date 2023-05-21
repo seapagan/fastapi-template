@@ -10,6 +10,8 @@ plugins:
 repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
 
+dev_addr: "127.0.0.1:9000"
+
 markdown_extensions:
   - admonition
   - pymdownx.snippets
