@@ -10,12 +10,8 @@
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
 - Allow to resend a registration email
-- Send an email to the user when they:
-  - [x] Register
-  - [ ] Log in
-  - [ ] Change their password or update their profile
-  - [ ] To a user when they are banned/unbanned
-  - [ ] To a user and admin(s) when an account is deleted
+- Send an email to the **User** when they change their password or update their
+  profile, are Banned/Unbanned and to **Admins** when important events happen.
 - Update current and future email templates with actual content, and change
   their markup to latest best practices.
 - Add an option to the command line to bump the version number in API docs and

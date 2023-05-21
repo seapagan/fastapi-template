@@ -3,9 +3,9 @@
 By default the Template Title, Description, Author and similar is set to my
 details. Changing this is very easy though, and there are 2 ways you can do.
 
-#### Manually
+### Manually
 
-Metadata is stored in the [config/metadata.py](config/metadata.py) file and this
+Metadata is stored in the `config/metadata.py` file and this
 can be edited by hand if desired:
 
 ```python
@@ -29,12 +29,12 @@ custom_metadata = MetadataBase(
 ```
 
 You can change the values in this dictionary as needed. You should also change
-the name, description and authors in the [pyproject.toml](pyproject.toml) file.
+the name, description and authors in the `pyproject.toml` file.
 
 For the License URL, you can find a list in the
-[helpers.py](config/helpers.py#L18)
+`config/helpers.py`
 
-#### Using the provided configuration tool
+### Using the provided configuration tool
 
 The `api-admin` command can also do this for you, asking for the values at the
 command line and automatically updating both files:
