@@ -1,20 +1,9 @@
-# FastAPI Application Template <!-- omit in toc -->
+# Welcome to FastAPI-Template
 
-This is a template Repository for starting a new
-[FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
-with Authorization already baked-in.
+!!! warning "ALPHA Status!"
+    This documentation is currently **Alpha** status and I have much still to add.
 
-Full documentation is now availiable on it's own page [here][doc]. Please visit
-this for full usage information, how-to's and more.
-
-- [Functionality](#functionality)
-- [Installation](#installation)
-- [Who is Using this Template?](#who-is-using-this-template)
-- [Planned Functionality](#planned-functionality)
-- [Known Bugs](#known-bugs)
-- [Contributing](#contributing)
-
-## Functionality
+## Features
 
 This template is a ready-to-use boilerplate for a FastAPI project. It has the
 following advantages to starting your own from scratch :
@@ -62,45 +51,13 @@ If this template saves you time/effort/money, or you just wish to show your
 appreciation for my work, why not [Buy me a
 Coffee!](https://www.buymeacoffee.com/seapagan) 😃
 
-## Installation
+## Funding Link
 
-Click the 'Use this template' button at the top of the Repository on GitHub.
-This will create a new repository in your personal GitHub account (Not a Fork)
-which you can then Clone and start working on.
+The template does include a `.github/FUNDING.yml` file which contains a link to
+my [Buy Me A Coffee](https://www.buymeacoffee.com/seapagan) page. You can edit
+or delete this as you will or replace with your own details. If you really
+appreciate the Template, feel free to leave my details there in addition to your
+own, though this is entirely optional 😊
 
-It is assumed that you have at least some knowledge of
-[FastAPI](https://fastapi.tiangolo.com/) to use this template, there are very
-good [Basic](https://fastapi.tiangolo.com/tutorial/) and
-[Advanced](https://fastapi.tiangolo.com/advanced/) User Guides on the FastAPI
-website .
-
-Visit our [Documentation Pages][doc] for usage, how-to's and more.
-
-## Who is Using this Template?
-
-Meh, at the moment probably no-one except me 😆. If you do use this in one of
-your own projects, drop me a message and I'll add your profile and project links
-here 😃.
-
-## Planned Functionality
-
-See the [TODO.md](TODO.md) file for plans.
-
-## Known Bugs
-
-See the [BUGS.md](BUGS.md) file for known bugs.
-
-## Contributing
-
-Please **do** feel free to open an Issue for any bugs or issues you find, or
-even a Pull Request with solutions 😎
-
-Likewise, I am very open to new feature Pull Requests!
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
-[doc]:https://seapagan.github.io/fastapi-template
+The funding file allows your GitHub visitors to sponsor or tip you as a thanks
+for your work.

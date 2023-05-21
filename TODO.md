@@ -1,26 +1,23 @@
 # TODO List
 
-- ~~Allow user to edit their own data (currently just admin)~~
-- ~~Dedicated 'change password' route, only change password of the current
-  logged in user.~~
-- ~~admin can ban/unban a user.~~
+## Add Testing
+
+- Both Unit and Integration testing need to be added to this Repo. The integration
+testing is under way for a derivative project of this and will be back-ported
+when it is in a suitable state.
+
+## General
+
 - add time-limited bans (configurable)
-- ~~user can get their own user details~~
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
 - Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
-- ~~Add refresh token functionality to refresh an expired token.~~
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
-- ~~Confirm registrations with a link sent by email.~~
 - Allow to resend a registration email
-- Send an email to the user when they:
-  - [x] Register
-  - [ ] Log in
-  - [ ] Change their password or update their profile
-  - [ ] To a user when they are banned/unbanned
-  - [ ] To a user and admin(s) when an account is deleted
+- Send an email to the **User** when they change their password or update their
+  profile, are Banned/Unbanned and to **Admins** when important events happen.
 - Update current and future email templates with actual content, and change
   their markup to latest best practices.
 - Add an option to the command line to bump the version number in API docs and
@@ -43,9 +40,11 @@
 
 ## Documentation
 
-Add proper documentation with examples showing how to use the User & Auth system
-in custom code, link to example projects and perhaps create a YouTube video
-showing an example custom project based on this template?
+- Add proper documentation with examples showing how to use the User & Auth
+  system in custom code, link to example projects and perhaps create a YouTube
+  video showing an example custom project based on this template?
+- fix relative links to local files in the markdown
+- add commands to CLI to serve, build, publish to gh-pages etc
 
 ## Quotas
 

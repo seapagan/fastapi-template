@@ -1,0 +1,48 @@
+site_name: FastAPI Template
+
+theme:
+  name: material
+
+plugins:
+  - mkdocstrings
+  - search
+  - swagger-ui-tag:
+      tryItOutEnabled: false
+      supportedSubmitMethods: []
+      defaultModelsExpandDepth: 0
+
+repo_url: https://github.com/seapagan/fastapi-template
+repo_name: seapagan/fastapi-template
+
+dev_addr: "127.0.0.1:9000"
+
+markdown_extensions:
+  - admonition
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      linenums: false
+      auto_title: false
+
+nav:
+  - FastAPI Template: index.md
+  - Usage:
+      - Installation: usage/installation.md
+      - Configuration:
+          - Environment File: usage/configuration/dot-env.md
+          - Install Dependencies: usage/configuration/setup.md
+          - Setup Database: usage/configuration/database.md
+      - Add a User: usage/add-user.md
+      - Run a Server: usage/dev-server.md
+  - Customization:
+      - Metadata: customization/meta.md
+      - Templates: customization/templates.md
+  - How-to Guides: how-to-guides.md
+  - Project Organization: project-organization.md
+  - Tutorials: tutorials.md
+  - Deployment: deployment/deployment.md
+  - API Reference: reference/api.md
+  - Interactive API Docs: reference/swagger.md
+  - Future Plans: future.md
+  - Known Issues: known-issues.md
+  - Contributing: contributing.md
