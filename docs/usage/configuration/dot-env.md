@@ -2,8 +2,10 @@
 
 Database (and other) settings can be read from environment variables or from a
 `.env` file in the project root. By default, these are only used for the
-Database setup and JWT Secret Key. See the [.env.example](.env.example) file for
-how to use.
+Database setup and JWT Secret Key. See the `.env.example` file for how to use.
+
+!!! info
+    The Database and User must already exist in your Postgres database!
 
 ```ini
 # The Base API Url. This is where your API wil be served from, and can be read

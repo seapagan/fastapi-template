@@ -53,12 +53,11 @@ Coffee!](https://www.buymeacoffee.com/seapagan) 😃
 
 ## Funding Link
 
-The template does include a [.github/FUNDING.yml](.github/FUNDING.yml) file
-which contains a link to my [Buy Me A
-Coffee](https://www.buymeacoffee.com/seapagan) page. You can edit or delete this
-as you will or replace with your own details. If you really appreciate the
-Template, feel free to leave my details there in addition to your own, though
-this is entirely optional 😊
+The template does include a `.github/FUNDING.yml` file which contains a link to
+my [Buy Me A Coffee](https://www.buymeacoffee.com/seapagan) page. You can edit
+or delete this as you will or replace with your own details. If you really
+appreciate the Template, feel free to leave my details there in addition to your
+own, though this is entirely optional 😊
 
 The funding file allows your GitHub visitors to sponsor or tip you as a thanks
 for your work.
