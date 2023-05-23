@@ -41,7 +41,7 @@ repos:
         args: ["--silent", "-c", "pyproject.toml", "-r"]
         additional_dependencies: ["bandit[toml]"]
   - repo: https://github.com/python-poetry/poetry
-    rev: "1.4.2"
+    rev: "1.5.0"
     hooks:
       - id: poetry-check
       # - id: poetry-lock
