@@ -100,3 +100,7 @@ filterwarnings = [
   "ignore:Deprecated API features detected:DeprecationWarning",
 ]
 mock_use_standalone_module = true
+
+[tool.coverage.run]
+# source = []
+omit = ["*/tests/*"]
