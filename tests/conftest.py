@@ -26,7 +26,7 @@ def db():
 
     Once the particular test is done, the database is dropped ready for the next
     test. This means that data from one test will not interfere with (or be
-    availible to) another.
+    available to) another.
     """
     engine = sqlalchemy.create_engine(
         DATABASE_URL, connect_args={"check_same_thread": False}
