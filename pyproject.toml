@@ -94,7 +94,9 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
+addopts = ["--cov", "--cov-report", "term-missing", "--cov-report", "html"]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:Deprecated API features detected:DeprecationWarning",
 ]
+mock_use_standalone_module = true
