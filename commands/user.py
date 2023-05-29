@@ -5,11 +5,12 @@ import typer
 from fastapi import HTTPException
 from rich import print
 
-from database.db import database
+from database.db import get_database
 from managers.user import UserManager
 from models.enums import RoleType
 
 app = typer.Typer(no_args_is_help=True)
+database = get_database()
 
 
 @app.command()
@@ -66,7 +67,7 @@ def create(
     async def create_user(user_data: dict):
         try:
             await database.connect()
-            await UserManager.register(user_data)
+            await UserManager.register(user_data, database)
             await database.disconnect()
             print(
                 f"\n[green]-> User [bold]{user_data['email']}[/bold] "

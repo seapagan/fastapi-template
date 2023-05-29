@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 import jwt
-from fastapi import BackgroundTasks, HTTPException, Request, status
+from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from config.settings import get_settings
-from database.db import database
+from database.db import get_database
 from managers.email import EmailManager
 from models.enums import RoleType
 from models.user import User
@@ -87,7 +87,7 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def refresh(refresh_token: TokenRefreshRequest):
+    async def refresh(refresh_token: TokenRefreshRequest, database):
         """Refresh an expired JWT token, given a valid Refresh token."""
         try:
             payload = jwt.decode(
@@ -122,7 +122,7 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def verify(code: str):
+    async def verify(code: str, database):
         """Verify a new User's Email using the token they were sent."""
         try:
             payload = jwt.decode(
@@ -177,7 +177,9 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def resend_verify_code(user: int, background_tasks: BackgroundTasks):
+    async def resend_verify_code(
+        user: int, background_tasks: BackgroundTasks, database
+    ):
         """Resend the user a verification email."""
         user_data = await database.fetch_one(
             User.select().where(User.c.id == user)
@@ -232,7 +234,7 @@ class CustomHTTPBearer(HTTPBearer):
     """Our own custom HTTPBearer class."""
 
     async def __call__(
-        self, request: Request
+        self, request: Request, db=Depends(get_database)
     ) -> Optional[HTTPAuthorizationCredentials]:
         """Override the default __call__ function."""
         res = await super().__call__(request)
@@ -241,7 +243,7 @@ class CustomHTTPBearer(HTTPBearer):
             payload = jwt.decode(
                 res.credentials, get_settings().secret_key, algorithms=["HS256"]
             )
-            user_data = await database.fetch_one(
+            user_data = await db.fetch_one(
                 User.select().where(User.c.id == payload["sub"])
             )
             # block a banned or unverified user

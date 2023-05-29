@@ -1,6 +1,6 @@
 """Define the User manager."""
 
-from typing import Union
+from typing import Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -8,7 +8,6 @@ from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 
 from config.settings import get_settings
-from database.db import database
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
@@ -28,6 +27,7 @@ class ErrorMessages:
     USER_INVALID = "This User does not exist"
     CANT_SELF_BAN = "You cannot ban/unban yourself!"
     NOT_VERIFIED = "You need to verify your Email before logging in"
+    EMPTY_FIELDS = "You must supply all fields and they cannot be empty"
 
 
 class UserManager:
@@ -35,9 +35,17 @@ class UserManager:
 
     @staticmethod
     async def register(
-        user_data, background_tasks: Union[BackgroundTasks, None] = None
+        user_data,
+        database,
+        background_tasks: Optional[BackgroundTasks] = None,
     ):
         """Register a new user."""
+        # make sure relevant fields are not empty
+        if not all(user_data.values()):
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.EMPTY_FIELDS
+            )
+
         user_data["password"] = pwd_context.hash(user_data["password"])
         user_data["banned"] = False
 
@@ -51,6 +59,7 @@ class UserManager:
                 user_data["email"], check_deliverability=False
             )
             user_data["email"] = email_validation.email
+
             id_ = await database.execute(User.insert().values(**user_data))
         except UniqueViolationError as err:
             raise HTTPException(
@@ -96,7 +105,7 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def login(user_data):
+    async def login(user_data, database):
         """Log in an existing User."""
         user_do = await database.fetch_one(
             User.select().where(User.c.email == user_data["email"])
@@ -120,7 +129,7 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def delete_user(user_id):
+    async def delete_user(user_id, database):
         """Delete the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -132,7 +141,7 @@ class UserManager:
         await database.execute(User.delete().where(User.c.id == user_id))
 
     @staticmethod
-    async def update_user(user_id: int, user_data):
+    async def update_user(user_id: int, user_data, database):
         """Update the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -145,15 +154,15 @@ class UserManager:
             User.update()
             .where(User.c.id == user_id)
             .values(
-                email=user_data.email,
-                first_name=user_data.first_name,
-                last_name=user_data.last_name,
-                password=pwd_context.hash(user_data.password),
+                email=user_data["email"],
+                first_name=user_data["first_name"],
+                last_name=user_data["last_name"],
+                password=pwd_context.hash(user_data["password"]),
             )
         )
 
     @staticmethod
-    async def change_password(user_id: int, user_data):
+    async def change_password(user_id: int, user_data, database):
         """Change the specified user's Password."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -165,11 +174,11 @@ class UserManager:
         await database.execute(
             User.update()
             .where(User.c.id == user_id)
-            .values(password=pwd_context.hash(user_data.password))
+            .values(password=pwd_context.hash(user_data["password"]))
         )
 
     @staticmethod
-    async def set_ban_status(user_id: int, state: bool, my_id: int):
+    async def set_ban_status(user_id: int, state: bool, my_id: int, database):
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:
             raise HTTPException(
@@ -181,26 +190,26 @@ class UserManager:
 
     # --------------------------- helper functions --------------------------- #
     @staticmethod
-    async def get_all_users():
+    async def get_all_users(database):
         """Return all Users in the database."""
         return await database.fetch_all(User.select())
 
     @staticmethod
-    async def get_user_by_email(email):
+    async def get_user_by_email(email, database):
         """Return a specific user by their email address."""
         return await database.fetch_one(
             User.select().where(User.c.email == email)
         )
 
     @staticmethod
-    async def get_user_by_id(user_id):
+    async def get_user_by_id(user_id, database):
         """Return a specific user by their email address."""
         return await database.fetch_one(
             User.select().where(User.c.id == user_id)
         )
 
     @staticmethod
-    async def change_role(role: RoleType, user_id):
+    async def change_role(role: RoleType, user_id, database):
         """Change the specified user's Role."""
         await database.execute(
             User.update().where(User.c.id == user_id).values(role=role)
