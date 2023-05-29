@@ -3,6 +3,7 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
 
+from database.db import get_database
 from managers.auth import can_edit_user, is_admin, oauth2_schema
 from managers.user import UserManager
 from models.enums import RoleType
@@ -17,7 +18,7 @@ router = APIRouter(tags=["Users"], prefix="/users")
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     response_model=Union[UserResponse, List[UserResponse]],
 )
-async def get_users(user_id: Optional[int] = None):
+async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     """Get all users or a specific user by their ID.
 
     To get a specific User data, the requesting user must match the user_id, or
@@ -27,8 +28,8 @@ async def get_users(user_id: Optional[int] = None):
     only allowed for Admins.
     """
     if user_id:
-        return await UserManager.get_user_by_id(user_id)
-    return await UserManager.get_all_users()
+        return await UserManager.get_user_by_id(user_id, db)
+    return await UserManager.get_all_users(db)
 
 
 @router.get(
@@ -37,10 +38,10 @@ async def get_users(user_id: Optional[int] = None):
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-async def get_my_user(request: Request):
+async def get_my_user(request: Request, db=Depends(get_database)):
     """Get the current user's data only."""
     my_user = request.state.user.id
-    return await UserManager.get_user_by_id(my_user)
+    return await UserManager.get_user_by_id(my_user, db)
 
 
 @router.post(
@@ -48,9 +49,9 @@ async def get_my_user(request: Request):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def make_admin(user_id: int):
+async def make_admin(user_id: int, db=Depends(get_database)):
     """Make the User with this ID an Admin."""
-    await UserManager.change_role(RoleType.admin, user_id)
+    await UserManager.change_role(RoleType.admin, user_id, db)
 
 
 @router.post(
@@ -58,12 +59,14 @@ async def make_admin(user_id: int):
     dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def change_password(user_id: int, user_data: UserChangePasswordRequest):
+async def change_password(
+    user_id: int, user_data: UserChangePasswordRequest, db=Depends(get_database)
+):
     """Change the password for the specified user.
 
     Can only be done by an Admin, or the specific user that matches the user_id.
     """
-    await UserManager.change_password(user_id, user_data)
+    await UserManager.change_password(user_id, user_data, db)
 
 
 @router.post(
@@ -71,12 +74,12 @@ async def change_password(user_id: int, user_data: UserChangePasswordRequest):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def ban_user(request: Request, user_id: int):
+async def ban_user(request: Request, user_id: int, db=Depends(get_database)):
     """Ban the specific user Id.
 
     Admins only. The Admin cannot ban their own ID!
     """
-    await UserManager.set_ban_status(user_id, True, request.state.user.id)
+    await UserManager.set_ban_status(user_id, True, request.state.user.id, db)
 
 
 @router.post(
@@ -84,12 +87,12 @@ async def ban_user(request: Request, user_id: int):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def unban_user(request: Request, user_id: int):
+async def unban_user(request: Request, user_id: int, db=Depends(get_database)):
     """Ban the specific user Id.
 
     Admins only.
     """
-    await UserManager.set_ban_status(user_id, False, request.state.user.id)
+    await UserManager.set_ban_status(user_id, False, request.state.user.id, db)
 
 
 @router.put(
@@ -98,13 +101,15 @@ async def unban_user(request: Request, user_id: int):
     status_code=status.HTTP_200_OK,
     response_model=UserResponse,
 )
-async def edit_user(user_id: int, user_data: UserEditRequest):
+async def edit_user(
+    user_id: int, user_data: UserEditRequest, db=Depends(get_database)
+):
     """Update the specified User's data.
 
     Available for the specific requesting User, or an Admin.
     """
-    await UserManager.update_user(user_id, user_data)
-    return await UserManager.get_user_by_id(user_id)
+    await UserManager.update_user(user_id, user_data, db)
+    return await UserManager.get_user_by_id(user_id, db)
 
 
 @router.delete(
@@ -112,9 +117,9 @@ async def edit_user(user_id: int, user_data: UserEditRequest):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_user(user_id: int):
+async def delete_user(user_id: int, db=Depends(get_database)):
     """Delete the specified User by user_id.
 
     Admin only.
     """
-    await UserManager.delete_user(user_id)
+    await UserManager.delete_user(user_id, db)

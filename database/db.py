@@ -12,3 +12,10 @@ DATABASE_URL = (
 
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
+
+
+async def get_database():
+    """Return the database connection as a Generator."""
+    await database.connect()
+    yield database
+    await database.disconnect()

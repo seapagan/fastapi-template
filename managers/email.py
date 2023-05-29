@@ -13,7 +13,7 @@ from schemas.email import EmailSchema, EmailTemplateSchema
 class EmailManager:
     """Class to manage all Email operations."""
 
-    def __init__(self):
+    def __init__(self, suppress_send: bool = False):
         """Initialize the EmailManager.
 
         Define the configuration instance.
@@ -30,6 +30,7 @@ class EmailManager:
             USE_CREDENTIALS=get_settings().mail_use_credentials,
             VALIDATE_CERTS=get_settings().mail_validate_certs,
             TEMPLATE_FOLDER=Path(__file__).parent / ".." / "templates/email",
+            SUPPRESS_SEND=1 if suppress_send else 0,
         )
 
     async def simple_send(self, email_data: EmailSchema):

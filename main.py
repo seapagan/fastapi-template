@@ -38,20 +38,24 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    """Connect to the database on startup."""
+    """Connect to the database on startup.
+
+    This is only to ensure that the database is available and configured
+    properly. We disconnect from the database immediately after.
+    """
     try:
         await database.connect()
+        print("[green]INFO:     [/green][bold]Database configuration Tested.")
     except Exception as exc:
-        print(f"\n[red]ERROR: Have you set up your .env file?? ({exc})")
-        print("[blue]Clearing routes and enabling error mesage.\n")
+        print(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
+        print(
+            "[yellow]WARNING:  [/yellow]Clearing routes and enabling "
+            "error message."
+        )
         app.routes.clear()
         app.include_router(config_error.router)
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    """Disconnect from the database on shutdown."""
-    await database.disconnect()
+    finally:
+        await database.disconnect()
 
 
 # --------------------- override the default Swagger docs -------------------- #
