@@ -110,9 +110,12 @@ class UserManager:
         user_do = await database.fetch_one(
             User.select().where(User.c.email == user_data["email"])
         )
-
-        if not user_do or not pwd_context.verify(
-            user_data["password"], user_do["password"]
+        if (
+            not user_do
+            or not pwd_context.verify(
+                user_data["password"], user_do["password"]
+            )
+            or user_do["banned"]
         ):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
