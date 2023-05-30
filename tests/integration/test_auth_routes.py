@@ -152,7 +152,7 @@ class TestAuthRoutes:
 
         response = test_app.post(self.register_path, json=post_body)
 
-        assert (response.status_code == 400) or (response.status_code == 422)
+        assert response.status_code in (400, 422)
 
         users_from_db = await get_db.fetch_all(User.select())
         assert len(users_from_db) == 0
@@ -198,8 +198,8 @@ class TestAuthRoutes:
 
         assert response.status_code == 200
         assert list(response.json().keys()) == ["token", "refresh"]
-        assert type(response.json()["token"]) is str
-        assert type(response.json()["refresh"]) is str
+        assert isinstance(response.json()["token"], str)
+        assert isinstance(response.json()["refresh"], str)
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
@@ -254,5 +254,4 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == 422
-        print(response.json())
         assert "value_error.missing" in str(response.json()["detail"])
