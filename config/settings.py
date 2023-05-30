@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     # JTW secret Key
     secret_key = "32DigitsofSecretNembers"
+    access_token_expire_minutes = 120
 
     # Custom Metadata
     api_title = custom_metadata.title
