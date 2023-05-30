@@ -245,7 +245,7 @@ class TestAuthRoutes:
     async def test_cant_login_with_missing_email_or_password(
         self, test_app, get_db, post_body
     ):
-        """Ensure the user cant login with wrong email or password."""
+        """Ensure the user cant login with missing email or password."""
         _ = await get_db.execute(User.insert(), values=self.test_user)
 
         response = test_app.post(
