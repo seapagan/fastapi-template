@@ -64,3 +64,4 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          name: codecov-python-${{ matrix.python-version }}
