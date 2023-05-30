@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 
 from database.db import get_database, metadata
 from main import app
-from models import user  # noqa F401
 
 DATABASE_URL = "sqlite:///./test.db"
 test_database = databases.Database(DATABASE_URL)
@@ -21,7 +20,7 @@ async def get_database_override():
 
 
 @pytest.fixture()
-def db():
+def get_db():
     """Fixture to create the test database.
 
     Once the particular test is done, the database is dropped ready for the next
