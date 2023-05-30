@@ -48,8 +48,8 @@ class TestAuthRoutes:
 
         assert response.status_code == 201
         assert list(response.json().keys()) == ["token", "refresh"]
-        assert type(response.json()["token"]) is str
-        assert type(response.json()["refresh"]) is str
+        assert isinstance(response.json()["token"], str)
+        assert isinstance(response.json()["refresh"], str)
 
         users_data = await get_db.fetch_one(User.select())
         assert users_data["email"] == post_body["email"]
@@ -152,7 +152,7 @@ class TestAuthRoutes:
 
         response = test_app.post(self.register_path, json=post_body)
 
-        assert response.status_code == 400 or 422
+        assert (response.status_code == 400) or (response.status_code == 422)
 
         users_from_db = await get_db.fetch_all(User.select())
         assert len(users_from_db) == 0
