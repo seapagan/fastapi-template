@@ -33,7 +33,7 @@ class EmailManager:
             SUPPRESS_SEND=1 if suppress_send else 0,
         )
 
-    async def simple_send(self, email_data: EmailSchema):
+    async def simple_send(self, email_data: EmailSchema) -> JSONResponse:
         """Send a plain email with a subject and message."""
         message = MessageSchema(
             subject=email_data.subject,
@@ -50,7 +50,7 @@ class EmailManager:
 
     def background_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailSchema
-    ):
+    ) -> None:
         """Send an email in the background."""
         message = MessageSchema(
             subject=email_data.subject,
