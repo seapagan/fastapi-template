@@ -1,6 +1,6 @@
 # FastAPI Application Template <!-- omit in toc -->
 
-[![CI](https://github.com/seapagan/fastapi-template/actions/workflows/CI.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/CI.yml)
+[![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)
 
 This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
