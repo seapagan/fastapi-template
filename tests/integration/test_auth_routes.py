@@ -26,6 +26,16 @@ class TestAuthRoutes:
         "verified": True,
     }
 
+    test_unverified_user = {
+        **test_user,
+        "verified": False,
+    }
+
+    test_banned_user = {
+        **test_user,
+        "banned": True,
+    }
+
     # ------------------------------------------------------------------------ #
     #                          test '/register' route                          #
     # ------------------------------------------------------------------------ #
@@ -255,3 +265,81 @@ class TestAuthRoutes:
 
         assert response.status_code == 422
         assert "value_error.missing" in str(response.json()["detail"])
+
+    @pytest.mark.asyncio()
+    async def test_cant_login_with_unverified_email(self, test_app, get_db):
+        """Ensure the user cant login with unverified email."""
+        _ = await get_db.execute(
+            User.insert(), values=self.test_unverified_user
+        )
+
+        response = test_app.post(
+            self.login_path,
+            json={
+                "email": self.test_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert (
+            response.json()["detail"]
+            == "You need to verify your Email before logging in"
+        )
+
+    @pytest.mark.asyncio()
+    async def test_cant_login_with_banned_user(self, test_app, get_db):
+        """Ensure the user cant login with banned user."""
+        _ = await get_db.execute(User.insert(), values=self.test_banned_user)
+
+        response = test_app.post(
+            self.login_path,
+            json={
+                "email": self.test_banned_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Wrong email or password"
+
+    @pytest.mark.asyncio()
+    async def test_refresh_token(self, test_app, get_db):
+        """Ensure the user can refresh the token."""
+        _ = await get_db.execute(User.insert(), values=self.test_user)
+
+        login_response = test_app.post(
+            self.login_path,
+            json={
+                "email": self.test_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        refresh_response = test_app.post(
+            "/refresh",
+            json={
+                "refresh": login_response.json()["refresh"],
+            },
+        )
+
+        assert refresh_response.status_code == 200
+        assert list(refresh_response.json().keys()) == ["token"]
+        assert isinstance(refresh_response.json()["token"], str)
+
+    @pytest.mark.asyncio()
+    async def test_cant_refresh_token_with_invalid_refresh_token(
+        self, test_app, get_db
+    ):
+        """Ensure the user cant refresh the token with invalid refresh token."""
+        _ = await get_db.execute(User.insert(), values=self.test_user)
+
+        refresh_response = test_app.post(
+            "/refresh",
+            json={
+                "refresh": "invalid_refresh_token",
+            },
+        )
+
+        assert refresh_response.status_code == 401
+        assert refresh_response.json()["detail"] == "That token is Invalid"
