@@ -6,7 +6,6 @@ import pytest
 from managers.user import UserManager
 
 
-@pytest.mark.skip(reason="wip")
 class TestUserManager:
     """Test the UserManager class."""
 
@@ -17,6 +16,7 @@ class TestUserManager:
         "last_name": "User",
     }
 
+    @pytest.mark.skip(reason="fails under SQLite")
     @pytest.mark.asyncio()
     async def test_create_duplicate_user(self, get_db):
         """Test creating a duplicate user."""
