@@ -4,10 +4,19 @@ import pytest
 import sqlalchemy
 from fastapi.testclient import TestClient
 
+# from config.settings import get_settings
 from database.db import get_database, metadata
 from main import app
 
 DATABASE_URL = "sqlite:///./test.db"
+
+# DATABASE_URL = (
+#     f"postgresql://{get_settings().test_db_user}:"
+#     f"{get_settings().test_db_password}@"
+#     f"{get_settings().test_db_address}:"
+#     f"{get_settings().test_db_port}/"
+#     f"{get_settings().test_db_name}"
+# )
 test_database = databases.Database(DATABASE_URL)
 
 
@@ -28,7 +37,8 @@ def get_db():
     available to) another.
     """
     engine = sqlalchemy.create_engine(
-        DATABASE_URL, connect_args={"check_same_thread": False}
+        # DATABASE_URL, connect_args={"check_same_thread": False}
+        DATABASE_URL
     )
     metadata.create_all(engine)
     app.dependency_overrides[get_database] = get_database_override
