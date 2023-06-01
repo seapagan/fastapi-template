@@ -99,6 +99,7 @@ addopts = ["--cov", "--cov-report", "term-missing", "--cov-report", "html"]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:Deprecated API features detected:DeprecationWarning",
+  "ignore::sqlalchemy.exc.RemovedIn20Warning"
 ]
 mock_use_standalone_module = true
 
