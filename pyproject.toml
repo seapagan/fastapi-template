@@ -25,7 +25,7 @@ tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 mkdocs = "^1.4.3"
-mkdocstrings = { extras = ["python"], version = "^0.21.2" }
+mkdocstrings = { extras = ["python"], version = "^0.22.0" }
 mkdocs-material = "^9.1.15"
 poetry = "^1.5.1"
 
