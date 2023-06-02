@@ -11,7 +11,7 @@ from config.settings import get_settings
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
-
+from sqlite3 import IntegrityError
 from .auth import AuthManager
 from .email import EmailManager
 
@@ -61,7 +61,7 @@ class UserManager:
             user_data["email"] = email_validation.email
 
             id_ = await database.execute(User.insert().values(**user_data))
-        except UniqueViolationError as err:
+        except (UniqueViolationError, IntegrityError) as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.EMAIL_EXISTS,
