@@ -2,7 +2,7 @@
 import subprocess  # nosec
 
 import typer
-from rich import print
+from rich import print  # pylint: disable=W0622
 
 app = typer.Typer()
 
