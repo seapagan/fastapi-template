@@ -1,5 +1,6 @@
 """Define the User manager."""
 
+from sqlite3 import IntegrityError
 from typing import Optional
 
 from asyncpg import UniqueViolationError
@@ -11,7 +12,7 @@ from config.settings import get_settings
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
-from sqlite3 import IntegrityError
+
 from .auth import AuthManager
 from .email import EmailManager
 

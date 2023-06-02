@@ -1,6 +1,6 @@
 """Test the UserManager class."""
-from fastapi import HTTPException
 import pytest
+from fastapi import HTTPException
 
 from managers.user import UserManager
 
