@@ -11,10 +11,10 @@ from rich import print  # pylint: disable=W0622
 
 from config.helpers import (
     LICENCES,
+    TEMPLATE,
     get_api_version,
     get_config_path,
     get_toml_path,
-    template,
 )
 
 app = typer.Typer(no_args_is_help=True)
@@ -36,7 +36,7 @@ def init():
         "this_year": date.today().year,
     }
 
-    out = Template(template).render(data)
+    out = Template(TEMPLATE).render(data)
     try:
         with open(get_config_path(), "w", encoding="UTF-8") as file:
             file.write(out)
@@ -158,7 +158,7 @@ def metadata():
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         # write the metadata
         print("\n[green]-> Writing out Metadata .... ", end="")
-        out = Template(template).render(data)
+        out = Template(TEMPLATE).render(data)
         try:
             with open(get_config_path(), "w", encoding="UTF-8") as file:
                 file.write(out)
