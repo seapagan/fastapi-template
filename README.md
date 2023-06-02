@@ -1,5 +1,6 @@
 # FastAPI Application Template <!-- omit in toc -->
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b43e79585f504640a10d7393285d9989)](https://app.codacy.com/gh/seapagan/fastapi-template?utm_source=github.com&utm_medium=referral&utm_content=seapagan/fastapi-template&utm_campaign=Badge_Grade)
 [![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/seapagan/fastapi-template/branch/main/graph/badge.svg?token=IORAMTCT0X)](https://codecov.io/gh/seapagan/fastapi-template)
 [![pages-build-deployment](https://github.com/seapagan/fastapi-template/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/pages/pages-build-deployment)
