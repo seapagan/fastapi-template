@@ -1,5 +1,8 @@
 # FastAPI Application Template <!-- omit in toc -->
 
+[![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/seapagan/fastapi-template/branch/main/graph/badge.svg?token=IORAMTCT0X)](https://codecov.io/gh/seapagan/fastapi-template)
+
 This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
 with Authorization already baked-in.
@@ -11,6 +14,8 @@ this for full usage information, how-to's and more.
 - [Installation](#installation)
 - [Who is Using this Template?](#who-is-using-this-template)
 - [Planned Functionality](#planned-functionality)
+- [Testing](#testing)
+- [Code Quality](#code-quality)
 - [Known Bugs](#known-bugs)
 - [Contributing](#contributing)
 
@@ -85,6 +90,25 @@ here 😃.
 ## Planned Functionality
 
 See the [TODO.md](TODO.md) file for plans.
+
+## Testing
+
+This project has a test suite for Integration and Unit tests. We use
+[pytest](https://docs.pytest.org) for this.
+
+These can be run from the checked out code with:
+
+```console
+$ pytest
+```
+
+Tests will also be run automatically by **GutHub** on every new commit pushed up
+to the remote repository.
+Code Coverage is also checked and noted after each test suite is run.
+
+## Code Quality
+
+`To be written`
 
 ## Known Bugs
 

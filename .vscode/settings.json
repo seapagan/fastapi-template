@@ -1,7 +1,7 @@
 {
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.organizeImports": true,
     }
   },
   "autoDocstring.startOnNewLine": true,
@@ -47,5 +47,6 @@
   "python.testing.unittestEnabled": false,
   "testExplorer.addToEditorContextMenu": true,
   "python.analysis.typeCheckingMode": "basic",
-  "python.linting.mypyEnabled": false
+  "python.linting.mypyEnabled": false,
+  "python.linting.enabled": true
 }

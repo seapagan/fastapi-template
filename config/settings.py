@@ -33,8 +33,16 @@ class Settings(BaseSettings):
     db_port = "5432"
     db_name = "api-template"
 
+    # Setup the TEST Postgresql database.
+    test_db_user = "my_db_username"
+    test_db_password = "Sup3rS3cr3tP455w0rd"
+    test_db_address = "localhost"
+    test_db_port = "5432"
+    test_db_name = "api-template-test"
+
     # JTW secret Key
     secret_key = "32DigitsofSecretNembers"
+    access_token_expire_minutes = 120
 
     # Custom Metadata
     api_title = custom_metadata.title

@@ -38,7 +38,8 @@ class AuthManager:
         try:
             payload = {
                 "sub": user["id"],
-                "exp": datetime.utcnow() + timedelta(minutes=120),
+                "exp": datetime.utcnow()
+                + timedelta(minutes=get_settings().access_token_expire_minutes),
             }
             return jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"

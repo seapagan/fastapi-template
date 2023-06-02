@@ -1,11 +1,13 @@
 """Define the User manager."""
 
-from typing import Optional
+from sqlite3 import IntegrityError
+from typing import Dict, List, Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
+from pydantic import EmailStr
 
 from config.settings import get_settings
 from models.enums import RoleType
@@ -28,6 +30,7 @@ class ErrorMessages:
     CANT_SELF_BAN = "You cannot ban/unban yourself!"
     NOT_VERIFIED = "You need to verify your Email before logging in"
     EMPTY_FIELDS = "You must supply all fields and they cannot be empty"
+    ALREADY_BANNED_OR_UNBANNED = "This User is already banned/unbanned"
 
 
 class UserManager:
@@ -35,7 +38,7 @@ class UserManager:
 
     @staticmethod
     async def register(
-        user_data,
+        user_data: Dict,
         database,
         background_tasks: Optional[BackgroundTasks] = None,
     ):
@@ -46,22 +49,26 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.EMPTY_FIELDS
             )
 
-        user_data["password"] = pwd_context.hash(user_data["password"])
-        user_data["banned"] = False
+        # create a new dictionary to return, otherwise the original is modified
+        # and can cause random testing issues
+        new_user = user_data.copy()
+
+        new_user["password"] = pwd_context.hash(user_data["password"])
+        new_user["banned"] = False
 
         if background_tasks:
-            user_data["verified"] = False
+            new_user["verified"] = False
         else:
-            user_data["verified"] = True
+            new_user["verified"] = True
 
         try:
             email_validation = validate_email(
-                user_data["email"], check_deliverability=False
+                new_user["email"], check_deliverability=False
             )
-            user_data["email"] = email_validation.email
+            new_user["email"] = email_validation.email
 
-            id_ = await database.execute(User.insert().values(**user_data))
-        except UniqueViolationError as err:
+            id_ = await database.execute(User.insert().values(**new_user))
+        except (UniqueViolationError, IntegrityError) as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.EMAIL_EXISTS,
@@ -81,15 +88,15 @@ class UserManager:
             email.template_send(
                 background_tasks,
                 EmailTemplateSchema(
-                    recipients=[user_data["email"]],
+                    recipients=[EmailStr(new_user["email"])],
                     subject=f"Welcome to {get_settings().api_title}!",
                     body={
                         "application": f"{get_settings().api_title}",
-                        "user": user_data["email"],
+                        "user": new_user["email"],
                         "base_url": get_settings().base_url,
                         "name": (
-                            f"{user_data['first_name']} "
-                            f"{user_data['last_name']}"
+                            f"{new_user['first_name']} "
+                            f"{new_user['last_name']}"
                         ),
                         "verification": AuthManager.encode_verify_token(
                             user_do
@@ -105,14 +112,17 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def login(user_data, database):
+    async def login(user_data: Dict, database):
         """Log in an existing User."""
         user_do = await database.fetch_one(
             User.select().where(User.c.email == user_data["email"])
         )
-
-        if not user_do or not pwd_context.verify(
-            user_data["password"], user_do["password"]
+        if (
+            not user_do
+            or not pwd_context.verify(
+                user_data["password"], user_do["password"]
+            )
+            or user_do["banned"]
         ):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
@@ -129,7 +139,7 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def delete_user(user_id, database):
+    async def delete_user(user_id: int, database):
         """Delete the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -184,13 +194,32 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.CANT_SELF_BAN
             )
+        check_user = await database.fetch_one(
+            User.select().where(User.c.id == user_id)
+        )
+        if not check_user:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
+        if check_user["banned"] == state:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.ALREADY_BANNED_OR_UNBANNED,
+            )
         await database.execute(
             User.update().where(User.c.id == user_id).values(banned=state)
         )
 
+    @staticmethod
+    async def change_role(role: RoleType, user_id: int, database):
+        """Change the specified user's Role."""
+        await database.execute(
+            User.update().where(User.c.id == user_id).values(role=role)
+        )
+
     # --------------------------- helper functions --------------------------- #
     @staticmethod
-    async def get_all_users(database):
+    async def get_all_users(database) -> List[Dict]:
         """Return all Users in the database."""
         return await database.fetch_all(User.select())
 
@@ -202,15 +231,8 @@ class UserManager:
         )
 
     @staticmethod
-    async def get_user_by_id(user_id, database):
+    async def get_user_by_id(user_id: int, database):
         """Return a specific user by their email address."""
         return await database.fetch_one(
             User.select().where(User.c.id == user_id)
-        )
-
-    @staticmethod
-    async def change_role(role: RoleType, user_id, database):
-        """Change the specified user's Role."""
-        await database.execute(
-            User.update().where(User.c.id == user_id).values(role=role)
         )
