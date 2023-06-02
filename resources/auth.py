@@ -64,7 +64,9 @@ async def login(user_data: UserLoginRequest, db=Depends(get_database)):
     name="refresh_an_expired_token",
     response_model=TokenRefreshResponse,
 )
-async def refresh(refresh_token: TokenRefreshRequest, db=Depends(get_database)):
+async def generate_refresh_token(
+    refresh_token: TokenRefreshRequest, db=Depends(get_database)
+):
     """Return a new JWT, given a valid Refresh token.
 
     The Refresh token will not be updated at this time, it will still expire 30

@@ -190,7 +190,9 @@ good-names=i,
            k,
            ex,
            Run,
-           _
+           _,
+           fm,
+           db
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -278,7 +280,7 @@ valid-metaclass-classmethod-first-arg=mcs
 
 # List of regular expressions of class ancestor names to ignore when counting
 # public methods (see R0903)
-exclude-too-few-public-methods=
+exclude-too-few-public-methods=/^Config/
 
 # List of qualified class names to ignore when counting class parents (see
 # R0901)
@@ -428,7 +430,8 @@ disable=raw-checker-failed,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        too-few-public-methods
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

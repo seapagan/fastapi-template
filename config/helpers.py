@@ -23,31 +23,31 @@ def get_config_path():
 def get_api_version() -> str:
     """Return the API version from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as f:
-            config = tomli.load(f)
+        with open(get_toml_path(), "rb") as file:
+            config = tomli.load(file)
             version = config["tool"]["poetry"]["version"]
 
             return version
 
-    except Exception as e:
-        print(f"Cannot read the pyproject.toml file : {e}")
-        quit(3)
+    except OSError as exc:
+        print(f"Cannot read the pyproject.toml file : {exc}")
+        sys.exit(2)
 
 
 def get_api_details() -> tuple[str, str, str]:
     """Return the API Name from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as f:
-            config = tomli.load(f)
+        with open(get_toml_path(), "rb") as file:
+            config = tomli.load(file)
             name = config["tool"]["poetry"]["name"]
             desc = config["tool"]["poetry"]["description"]
             authors = config["tool"]["poetry"]["authors"]
 
             return (name, desc, authors)
 
-    except Exception as e:
-        print(f"Cannot read the pyproject.toml file : {e}")
-        quit(3)
+    except OSError as exc:
+        print(f"Cannot read the pyproject.toml file : {exc}")
+        sys.exit(3)
 
 
 @dataclass
@@ -76,7 +76,7 @@ LICENCES = [
     {"name": "EPL", "url": "https://opensource.org/licenses/EPL-2.0"},
 ]
 
-template = """
+TEMPLATE = """
 \"\"\"This file contains Custom Metadata for your API Project.
 
 Be aware, this will be re-generated any time you run the

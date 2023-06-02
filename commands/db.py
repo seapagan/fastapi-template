@@ -3,7 +3,7 @@
 import typer
 from alembic import command
 from alembic.config import Config
-from rich import print
+from rich import print  # pylint: disable=W0622
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 

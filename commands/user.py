@@ -3,7 +3,7 @@ from asyncio import run as aiorun
 
 import typer
 from fastapi import HTTPException
-from rich import print
+from rich import print  # pylint: disable=W0622
 
 from database.db import get_database
 from managers.user import UserManager
@@ -66,17 +66,17 @@ def create(
 
     async def create_user(user_data: dict):
         try:
-            await database.connect()
+            await database.connect()  # type: ignore # pylint: disable=E1101
             await UserManager.register(user_data, database)
-            await database.disconnect()
+            await database.disconnect()  # type: ignore # pylint: disable=E1101
             print(
                 f"\n[green]-> User [bold]{user_data['email']}[/bold] "
                 "added succesfully.\n"
             )
-        except HTTPException as e:
-            print(f"\n[red]-> ERROR adding User : [bold]{e.detail}\n")
-        except Exception as e:
-            print(f"\n[red]-> ERROR adding User : [bold]{e}\n")
+        except HTTPException as err:
+            print(f"\n[red]-> ERROR adding User : [bold]{err.detail}\n")
+        except Exception as err:
+            print(f"\n[red]-> ERROR adding User : [bold]{err}\n")
 
     if admin:
         role_type = RoleType.admin

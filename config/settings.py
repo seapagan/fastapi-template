@@ -1,4 +1,5 @@
 """Control the app settings, including reading from a .env file."""
+import sys
 from functools import lru_cache
 
 from pydantic import BaseSettings
@@ -10,7 +11,7 @@ except ModuleNotFoundError:
         "The metadata file could not be found, it may have been deleted.\n"
         "Please run 'api-admin custom init' to regenerate defaults."
     )
-    quit(1)
+    sys.exit(1)
 
 
 class Settings(BaseSettings):

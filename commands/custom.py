@@ -1,4 +1,5 @@
 """CLI functionality to customize the template."""
+import sys
 from datetime import date
 
 import asyncclick as click
@@ -6,14 +7,14 @@ import tomli
 import tomli_w
 import typer
 from jinja2 import Template
-from rich import print
+from rich import print  # pylint: disable=W0622
 
 from config.helpers import (
     LICENCES,
+    TEMPLATE,
     get_api_version,
     get_config_path,
     get_toml_path,
-    template,
 )
 
 app = typer.Typer(no_args_is_help=True)
@@ -35,12 +36,12 @@ def init():
         "this_year": date.today().year,
     }
 
-    out = Template(template).render(data)
+    out = Template(TEMPLATE).render(data)
     try:
-        with open(get_config_path(), "w") as f:
-            f.write(out)
-    except Exception as e:
-        print(f"Cannot Write the metadata : {e}")
+        with open(get_config_path(), "w", encoding="UTF-8") as file:
+            file.write(out)
+    except OSError as err:
+        print(f"Cannot Write the metadata : {err}")
 
 
 try:
@@ -51,7 +52,7 @@ except ModuleNotFoundError:
         "Recreating with defaults, please re-run the command."
     )
     init()
-    quit(1)
+    sys.exit(1)
 
 
 def get_licenses():
@@ -67,6 +68,7 @@ def get_case_insensitive_dict(choice):
     for item in LICENCES:
         if item["name"].lower() == choice.lower():
             return item
+    return "Unknown"
 
 
 def choose_license():
@@ -156,27 +158,27 @@ def metadata():
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         # write the metadata
         print("\n[green]-> Writing out Metadata .... ", end="")
-        out = Template(template).render(data)
+        out = Template(TEMPLATE).render(data)
         try:
-            with open(get_config_path(), "w") as f:
-                f.write(out)
-        except Exception as e:
-            print(f"Cannot Write the metadata : {e}")
-            quit(3)
+            with open(get_config_path(), "w", encoding="UTF-8") as file:
+                file.write(out)
+        except OSError as err:
+            print(f"Cannot Write the metadata : {err}")
+            sys.exit(2)
 
         # update the pyproject.toml file
         try:
-            with open(get_toml_path(), "rb") as f:
-                config = tomli.load(f)
+            with open(get_toml_path(), "rb") as file:
+                config = tomli.load(file)
                 config["tool"]["poetry"]["name"] = data["title"]
                 config["tool"]["poetry"]["version"] = data["version"]
                 config["tool"]["poetry"]["description"] = data["desc"]
                 config["tool"]["poetry"]["authors"] = [
                     f"{data['author']} <{data['email']}>"
                 ]
-            with open(get_toml_path(), "wb") as f:
-                tomli_w.dump(config, f)
-        except Exception as e:
-            print(f"Cannot update the pyproject.toml file : {e}")
-            quit(3)
+            with open(get_toml_path(), "wb") as file:
+                tomli_w.dump(config, file)
+        except OSError as err:
+            print(f"Cannot update the pyproject.toml file : {err}")
+            sys.exit(3)
         print("Done!")
