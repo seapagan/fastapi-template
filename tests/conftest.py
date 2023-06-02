@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 # from config.settings import get_settings
 from database.db import get_database, metadata
 from main import app
+from managers.email import EmailManager
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -52,3 +53,12 @@ def test_app():
     """Fixture to yield a test client for the app."""
     client = TestClient(app)
     return client
+
+
+@pytest.fixture(scope="module")
+def email_manager():
+    """Fixture to return an EmailManager instance.
+
+    We disable actually sending mail by setting suppress_send to True.
+    """
+    return EmailManager(suppress_send=True)

@@ -5,17 +5,7 @@ import pytest
 from pydantic import EmailStr
 
 from config.settings import get_settings
-from managers.email import EmailManager
 from schemas.email import EmailSchema, EmailTemplateSchema
-
-
-@pytest.fixture(scope="module")
-def manager():
-    """Fixture to return an EmailManager instance.
-
-    We disable actually sending mail by setting suppress_send to True.
-    """
-    return EmailManager(suppress_send=True)
 
 
 class TestEmailManager:
@@ -32,25 +22,25 @@ class TestEmailManager:
         template_name="template.html", body={"name": "Test Name"}, **email_data
     )
 
-    def test_init(self, manager):
+    def test_init(self, email_manager):
         """Test the EmailManager constructor."""
-        assert manager.conf.MAIL_USERNAME == get_settings().mail_username
-        assert manager.conf.MAIL_PASSWORD == get_settings().mail_password
-        assert manager.conf.MAIL_FROM == get_settings().mail_from
-        assert manager.conf.SUPPRESS_SEND == 1
+        assert email_manager.conf.MAIL_USERNAME == get_settings().mail_username
+        assert email_manager.conf.MAIL_PASSWORD == get_settings().mail_password
+        assert email_manager.conf.MAIL_FROM == get_settings().mail_from
+        assert email_manager.conf.SUPPRESS_SEND == 1
 
     @pytest.mark.asyncio()
-    async def test_simple_send(self, manager):
+    async def test_simple_send(self, email_manager):
         """Test the simple_send method."""
-        response = await manager.simple_send(email_data=self.email_schema)
+        response = await email_manager.simple_send(email_data=self.email_schema)
 
         assert response.status_code == 200
         assert json.loads(response.body)["message"] == "email has been sent"
 
-    def test_background_send(self, manager, mocker):
+    def test_background_send(self, email_manager, mocker):
         """Test the background_send method."""
         mock_backgroundtasks = mocker.patch("managers.email.BackgroundTasks")
-        response = manager.background_send(
+        response = email_manager.background_send(
             mock_backgroundtasks, self.email_schema
         )
         assert response is None
@@ -58,10 +48,10 @@ class TestEmailManager:
         # TODO: investigate how to ensure the task is called with the correct
         # args mock_backgroundtasks.add_task.assert_called_once_with(...)
 
-    def test_template_send(self, manager, mocker):
+    def test_template_send(self, email_manager, mocker):
         """Test the template_send method."""
         mock_backgroundtasks = mocker.patch("managers.email.BackgroundTasks")
-        response = manager.template_send(
+        response = email_manager.template_send(
             mock_backgroundtasks, self.email_data_with_template
         )
         assert response is None

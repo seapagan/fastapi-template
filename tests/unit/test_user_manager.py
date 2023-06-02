@@ -10,7 +10,7 @@ from models.user import User
 
 
 @pytest.mark.asyncio()
-class TestUserManager:
+class TestUserManager:  # pylint: disable=too-many-public-methods
     """Test the UserManager class."""
 
     test_user = {
@@ -112,7 +112,6 @@ class TestUserManager:
     async def test_register_user_not_verified_when_background_tasks_specified(
         self,
         get_db,
-        mocker,
     ):
         """Test user is not verified when 'background_tasks' IS provided."""
         background_tasks = BackgroundTasks()
