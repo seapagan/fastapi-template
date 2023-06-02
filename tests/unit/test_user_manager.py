@@ -1,8 +1,10 @@
 """Test the UserManager class."""
+from typing import List
+
 import pytest
 from fastapi import BackgroundTasks, HTTPException
 
-from managers.user import UserManager, pwd_context
+from managers.user import ErrorMessages, UserManager, pwd_context
 from models.enums import RoleType
 from models.user import User
 
@@ -35,7 +37,7 @@ class TestUserManager:
 
     async def test_create_user_with_bad_email(self, get_db):
         """Ensure you cant create a user with a bad email."""
-        with pytest.raises(HTTPException, match="email address is not valid"):
+        with pytest.raises(HTTPException, match=ErrorMessages.EMAIL_INVALID):
             await UserManager.register(
                 {
                     "email": "testuser",
@@ -77,14 +79,14 @@ class TestUserManager:
     )
     async def test_create_user_missing_values(self, get_db, create_data):
         """Test creating a user with missing values."""
-        with pytest.raises(HTTPException, match="cannot be empty"):
+        with pytest.raises(HTTPException, match=ErrorMessages.EMPTY_FIELDS):
             await UserManager.register(create_data, get_db)
 
     async def test_create_duplicate_user(self, get_db):
         """Test creating a duplicate user."""
         await UserManager.register(self.test_user, get_db)
 
-        with pytest.raises(HTTPException, match="already exists"):
+        with pytest.raises(HTTPException, match=ErrorMessages.EMAIL_EXISTS):
             await UserManager.register(self.test_user, get_db)
 
     async def test_create_user_returns_tokens(self, get_db):
@@ -136,7 +138,7 @@ class TestUserManager:
 
     async def test_login_user_not_found(self, get_db):
         """Test logging in a user that doesn't exist."""
-        with pytest.raises(HTTPException, match="Wrong email or password"):
+        with pytest.raises(HTTPException, match=ErrorMessages.AUTH_INVALID):
             await UserManager.login(self.test_user, get_db)
 
     async def test_login_user_wrong_password(self, get_db):
@@ -144,7 +146,7 @@ class TestUserManager:
         await UserManager.register(self.test_user, get_db)
         bad_user = self.test_user.copy()
         bad_user["password"] = "wrongpassword"  # nosec
-        with pytest.raises(HTTPException, match="Wrong email or password"):
+        with pytest.raises(HTTPException, match=ErrorMessages.AUTH_INVALID):
             await UserManager.login(bad_user, get_db)
 
     async def test_login_user_not_verified(self, get_db):
@@ -157,14 +159,14 @@ class TestUserManager:
         await UserManager.register(
             self.test_user, get_db, background_tasks=background_tasks
         )
-        with pytest.raises(HTTPException, match="You need to verify"):
+        with pytest.raises(HTTPException, match=ErrorMessages.NOT_VERIFIED):
             await UserManager.login(self.test_user, get_db)
 
     async def test_login_user_banned(self, get_db):
         """Test logging in a user that is banned."""
         await UserManager.register(self.test_user, get_db)
         await UserManager.set_ban_status(1, True, 666, get_db)
-        with pytest.raises(HTTPException, match="Wrong email or password"):
+        with pytest.raises(HTTPException, match=ErrorMessages.AUTH_INVALID):
             await UserManager.login(self.test_user, get_db)
 
     # -------------------------- test delete method -------------------------- #
@@ -178,7 +180,7 @@ class TestUserManager:
 
     async def test_delete_user_not_found(self, get_db):
         """Test deleting a user that doesn't exist."""
-        with pytest.raises(HTTPException, match="does not exist"):
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
             await UserManager.delete_user(1, get_db)
 
     # -------------------------- test update method -------------------------- #
@@ -197,7 +199,7 @@ class TestUserManager:
 
     async def test_update_user_not_found(self, get_db):
         """Test updating a user that doesn't exist."""
-        with pytest.raises(HTTPException, match="does not exist"):
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
             await UserManager.update_user(1, self.test_user, get_db)
 
     # ------------------------ test changing password ------------------------ #
@@ -213,7 +215,7 @@ class TestUserManager:
 
     async def test_change_password_not_found(self, get_db):
         """Test changing a user's password that doesn't exist."""
-        with pytest.raises(HTTPException, match="does not exist"):
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
             await UserManager.change_password(
                 1, {"password": "newpassword"}, get_db
             )
@@ -244,7 +246,7 @@ class TestUserManager:
 
     async def test_ban_user_not_found(self, get_db):
         """Test we can't ban a user that doesn't exist."""
-        with pytest.raises(HTTPException, match="does not exist"):
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
             await UserManager.set_ban_status(1, True, 666, get_db)
 
     @pytest.mark.parametrize("state", [True, False])
@@ -254,13 +256,15 @@ class TestUserManager:
         if state:
             await UserManager.set_ban_status(1, state, 666, get_db)
 
-        with pytest.raises(HTTPException, match="already banned/unbanned"):
+        with pytest.raises(
+            HTTPException, match=ErrorMessages.ALREADY_BANNED_OR_UNBANNED
+        ):
             await UserManager.set_ban_status(1, state, 666, get_db)
 
     async def test_cant_ban_self(self, get_db):
         """Test we can't ban ourselves."""
         await UserManager.register(self.test_user, get_db)
-        with pytest.raises(HTTPException, match="cannot ban/unban yourself"):
+        with pytest.raises(HTTPException, match=ErrorMessages.CANT_SELF_BAN):
             await UserManager.set_ban_status(1, True, 1, get_db)
 
     # ------------------------- test change user role ------------------------ #
@@ -316,6 +320,7 @@ class TestUserManager:
 
         users = await UserManager.get_all_users(get_db)
 
+        assert isinstance(users, List)
         assert len(users) == 5
 
     async def test_get_all_users_empty(self, get_db):
