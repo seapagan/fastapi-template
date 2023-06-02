@@ -1,12 +1,13 @@
 """Define the User manager."""
 
 from sqlite3 import IntegrityError
-from typing import Optional
+from typing import Dict, Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
+from pydantic import EmailStr
 
 from config.settings import get_settings
 from models.enums import RoleType
@@ -36,7 +37,7 @@ class UserManager:
 
     @staticmethod
     async def register(
-        user_data,
+        user_data: Dict,
         database,
         background_tasks: Optional[BackgroundTasks] = None,
     ):
@@ -47,21 +48,25 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.EMPTY_FIELDS
             )
 
-        user_data["password"] = pwd_context.hash(user_data["password"])
-        user_data["banned"] = False
+        # create a new dictionary to return, otherwise the original is modified
+        # and can cause random testing issues
+        new_user = user_data.copy()
+
+        new_user["password"] = pwd_context.hash(user_data["password"])
+        new_user["banned"] = False
 
         if background_tasks:
-            user_data["verified"] = False
+            new_user["verified"] = False
         else:
-            user_data["verified"] = True
+            new_user["verified"] = True
 
         try:
             email_validation = validate_email(
-                user_data["email"], check_deliverability=False
+                new_user["email"], check_deliverability=False
             )
-            user_data["email"] = email_validation.email
+            new_user["email"] = email_validation.email
 
-            id_ = await database.execute(User.insert().values(**user_data))
+            id_ = await database.execute(User.insert().values(**new_user))
         except (UniqueViolationError, IntegrityError) as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
@@ -82,15 +87,15 @@ class UserManager:
             email.template_send(
                 background_tasks,
                 EmailTemplateSchema(
-                    recipients=[user_data["email"]],
+                    recipients=[EmailStr(new_user["email"])],
                     subject=f"Welcome to {get_settings().api_title}!",
                     body={
                         "application": f"{get_settings().api_title}",
-                        "user": user_data["email"],
+                        "user": new_user["email"],
                         "base_url": get_settings().base_url,
                         "name": (
-                            f"{user_data['first_name']} "
-                            f"{user_data['last_name']}"
+                            f"{new_user['first_name']} "
+                            f"{new_user['last_name']}"
                         ),
                         "verification": AuthManager.encode_verify_token(
                             user_do
