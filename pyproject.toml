@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "API Template"
-version = "1.4.1"
+version = "1.5.0"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
@@ -99,7 +99,7 @@ addopts = ["--cov", "--cov-report", "term-missing", "--cov-report", "html"]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:Deprecated API features detected:DeprecationWarning",
-  "ignore::sqlalchemy.exc.RemovedIn20Warning"
+  "ignore::sqlalchemy.exc.RemovedIn20Warning",
 ]
 mock_use_standalone_module = true
 
