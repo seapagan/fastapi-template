@@ -1,7 +1,7 @@
 """Define the User manager."""
 
 from sqlite3 import IntegrityError
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -30,6 +30,7 @@ class ErrorMessages:
     CANT_SELF_BAN = "You cannot ban/unban yourself!"
     NOT_VERIFIED = "You need to verify your Email before logging in"
     EMPTY_FIELDS = "You must supply all fields and they cannot be empty"
+    ALREADY_BANNED_OR_UNBANNED = "This User is already banned/unbanned"
 
 
 class UserManager:
@@ -111,7 +112,7 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def login(user_data, database):
+    async def login(user_data: Dict, database):
         """Log in an existing User."""
         user_do = await database.fetch_one(
             User.select().where(User.c.email == user_data["email"])
@@ -138,7 +139,7 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def delete_user(user_id, database):
+    async def delete_user(user_id: int, database):
         """Delete the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -193,13 +194,32 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.CANT_SELF_BAN
             )
+        check_user = await database.fetch_one(
+            User.select().where(User.c.id == user_id)
+        )
+        if not check_user:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
+        if check_user["banned"] == state:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.ALREADY_BANNED_OR_UNBANNED,
+            )
         await database.execute(
             User.update().where(User.c.id == user_id).values(banned=state)
         )
 
+    @staticmethod
+    async def change_role(role: RoleType, user_id: int, database):
+        """Change the specified user's Role."""
+        await database.execute(
+            User.update().where(User.c.id == user_id).values(role=role)
+        )
+
     # --------------------------- helper functions --------------------------- #
     @staticmethod
-    async def get_all_users(database):
+    async def get_all_users(database) -> List[Dict]:
         """Return all Users in the database."""
         return await database.fetch_all(User.select())
 
@@ -211,15 +231,8 @@ class UserManager:
         )
 
     @staticmethod
-    async def get_user_by_id(user_id, database):
+    async def get_user_by_id(user_id: int, database):
         """Return a specific user by their email address."""
         return await database.fetch_one(
             User.select().where(User.c.id == user_id)
-        )
-
-    @staticmethod
-    async def change_role(role: RoleType, user_id, database):
-        """Change the specified user's Role."""
-        await database.execute(
-            User.update().where(User.c.id == user_id).values(role=role)
         )
