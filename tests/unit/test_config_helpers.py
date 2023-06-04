@@ -1,0 +1,162 @@
+"""Test config/helpers.py."""
+from pathlib import Path
+from typing import List
+
+import pytest
+
+from config.helpers import (
+    LICENCES,
+    TEMPLATE,
+    get_api_details,
+    get_api_version,
+    get_config_path,
+    get_toml_path,
+)
+
+
+class TestConfigHelpers:
+    """Test the helpers used by the config module."""
+
+    mock_load_tomli = "config.helpers.tomli.load"
+
+    def test_get_toml_path(self, mocker):
+        """Test we get the correct toml path."""
+        mocker.patch(
+            "config.helpers.os.path.realpath",
+            return_value="/test/path/script.py",
+        )
+        assert get_toml_path() == Path("/test/path/pyproject.toml")
+
+    def test_get_config_path(self, mocker):
+        """Test we get the correct config path."""
+        mocker.patch(
+            "config.helpers.os.path.realpath",
+            return_value="/test/path/script.py",
+        )
+        assert get_config_path() == Path("/test/path/config/metadata.py")
+
+    def test_get_api_version(self, mocker):
+        """Test we get the API version."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={"tool": {"poetry": {"version": "1.2.3"}}},
+        )
+        assert get_api_version() == "1.2.3"
+
+    def test_get_api_version_missing_toml(self, mocker, capfd):
+        """Test we exit when the toml file is missing."""
+        mocker.patch(self.mock_load_tomli, side_effect=FileNotFoundError)
+        with pytest.raises(SystemExit, match="2"):
+            get_api_version()
+        out, _ = capfd.readouterr()
+        assert "Cannot read the pyproject.toml file" in out
+
+    def test_get_api_version_missing_version(self, mocker, capfd):
+        """Test we exit when the version is missing."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={"tool": {"poetry": {"version:": ""}}},
+        )
+        with pytest.raises(SystemExit, match="2"):
+            get_api_version()
+        out, _ = capfd.readouterr()
+        assert "Cannot find the API version in the pyproject.toml file" in out
+
+    def test_get_api_version_missing_key(self, mocker, capfd):
+        """Test we exit when the key is missing."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={"tool": {"poetry": {}}},
+        )
+        with pytest.raises(SystemExit, match="2"):
+            get_api_version()
+        out, _ = capfd.readouterr()
+        assert "Cannot find the API version in the pyproject.toml file" in out
+
+    def test_get_api_details(self, mocker, capfd):
+        """Test we get the API details."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={
+                "tool": {
+                    "poetry": {
+                        "name": "test_name",
+                        "description": "test_desc",
+                        "authors": ["test_authors"],
+                    }
+                }
+            },
+        )
+        details = get_api_details()
+
+        assert isinstance(details, tuple)
+        assert details == ("test_name", "test_desc", ["test_authors"])
+
+    def test_get_api_details_authors_is_list(self, mocker):
+        """Authors should be converted to a list if not already."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={
+                "tool": {
+                    "poetry": {
+                        "name": "test_name",
+                        "description": "test_desc",
+                        "authors": "test_authors",
+                    }
+                }
+            },
+        )
+        _, _, authors = get_api_details()
+        assert isinstance(authors, list)
+
+    @pytest.mark.parametrize(
+        "missing_keys",
+        [
+            {"description": "test_desc", "authors": ["test_authors"]},
+            {"name": "test_name", "authors": ["test_authors"]},
+            {"name": "test_name", "description": "test_desc"},
+        ],
+    )
+    def test_get_api_details_missing_key(self, mocker, capfd, missing_keys):
+        """We should return an Error if any details are missing."""
+        mocker.patch(
+            self.mock_load_tomli,
+            return_value={
+                "tool": {
+                    "poetry": missing_keys,
+                }
+            },
+        )
+        with pytest.raises(SystemExit, match="2"):
+            get_api_details()
+        out, _ = capfd.readouterr()
+        assert "Missing name/description or authors" in out
+
+    def test_get_api_details_missing_toml(self, mocker, capfd):
+        """Test we exit when the toml file is missing."""
+        mocker.patch(self.mock_load_tomli, side_effect=FileNotFoundError)
+        with pytest.raises(SystemExit, match="2"):
+            get_api_details()
+        out, _ = capfd.readouterr()
+        assert "Cannot read the pyproject.toml file" in out
+
+    def test_licences_structure(self):
+        """Test the licences structure."""
+        assert isinstance(LICENCES, List)
+
+        for licence in LICENCES:
+            assert isinstance(licence, dict)
+            assert [*licence] == ["name", "url"]
+
+            assert all(isinstance(value, str) for value in licence.values())
+
+    def test_template_structure(self):
+        """Test the template structure.
+
+        Just a basic test to ensure the template is a string and not empty.
+
+        I may look at testing the contained 'MetadataBase' class structure in
+        the future, since this is pretty important to get right.
+        """
+        assert isinstance(TEMPLATE, str)
+        assert TEMPLATE != ""
