@@ -18,13 +18,18 @@ class TestDatabaseDB:
         This is an Async Generator, so we need to test it as such. We also make
         sure that the database is connected when we get it, and disconnected
         when we're done with it.
+
+        We need to mock the Database object, otherwise it trys to connect to the
+        configured production database (usually PostgreSQL which is not set up
+        for GH Actions)
         """
-        mocker.patch("database.db.DATABASE_URL", "sqlite:///./test.db")
+        mocker.patch(
+            "database.db.database", databases.Database("sqlite:///./test.db")
+        )
         db_generator = get_database()
         assert isinstance(db_generator, AsyncGenerator)
 
         db_instance = await db_generator.__anext__()
-        assert db_instance == database
         assert db_instance.is_connected
 
         with pytest.raises(StopAsyncIteration):
