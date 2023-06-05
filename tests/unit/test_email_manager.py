@@ -8,6 +8,7 @@ from config.settings import get_settings
 from schemas.email import EmailSchema, EmailTemplateSchema
 
 
+@pytest.mark.unit()
 class TestEmailManager:
     """Test the EmailManager class."""
 

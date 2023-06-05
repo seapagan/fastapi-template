@@ -14,6 +14,7 @@ from config.helpers import (
 )
 
 
+@pytest.mark.unit()
 class TestConfigHelpers:
     """Test the helpers used by the config module."""
 

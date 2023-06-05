@@ -8,6 +8,7 @@ from models.enums import RoleType
 from models.user import User
 
 
+@pytest.mark.integration()
 class TestAuthRoutes:
     """Test the authentication routes of the application."""
 

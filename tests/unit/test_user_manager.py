@@ -9,6 +9,7 @@ from models.enums import RoleType
 from models.user import User
 
 
+@pytest.mark.unit()
 @pytest.mark.asyncio()
 class TestUserManager:  # pylint: disable=too-many-public-methods
     """Test the UserManager class."""

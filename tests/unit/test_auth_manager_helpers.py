@@ -13,6 +13,7 @@ def mock_req(mocker):
     return mocker.patch(request_mock_path)
 
 
+@pytest.mark.unit()
 class TestAuthManagerHelpers:
     """Test the AuthManager class."""
 
