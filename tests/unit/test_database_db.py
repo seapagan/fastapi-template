@@ -11,6 +11,7 @@ from database.db import database, get_database, metadata
 class TestDatabaseDB:
     """Test the database module."""
 
+    @pytest.mark.unit()
     @pytest.mark.asyncio()
     async def test_get_database(self, mocker):
         """Test the get_database function.

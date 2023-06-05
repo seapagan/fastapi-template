@@ -304,6 +304,10 @@ class TestAuthRoutes:
         assert response.status_code == 400
         assert response.json()["detail"] == "Wrong email or password"
 
+    # ------------------------------------------------------------------------ #
+    #                           test '/refresh' route                          #
+    # ------------------------------------------------------------------------ #
+
     @pytest.mark.asyncio()
     async def test_refresh_token(self, test_app, get_db):
         """Ensure the user can refresh the token."""
