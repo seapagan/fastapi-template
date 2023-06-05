@@ -12,13 +12,14 @@ class TestDatabaseDB:
     """Test the database module."""
 
     @pytest.mark.asyncio()
-    async def test_get_database(self):
+    async def test_get_database(self, mocker):
         """Test the get_database function.
 
         This is an Async Generator, so we need to test it as such. We also make
         sure that the database is connected when we get it, and disconnected
         when we're done with it.
         """
+        mocker.patch("database.db.DATABASE_URL", "sqlite:///./test.db")
         db_generator = get_database()
         assert isinstance(db_generator, AsyncGenerator)
 
