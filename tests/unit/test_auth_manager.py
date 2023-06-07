@@ -3,16 +3,28 @@ from datetime import datetime
 
 import jwt
 import pytest
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 
 from config.settings import get_settings
-from managers.auth import AuthManager
+from managers.auth import AuthManager, ResponseMessages
+from managers.user import UserManager
+from schemas.request.auth import TokenRefreshRequest
 
 
 @pytest.mark.unit()
 class TestAuthManager:
     """Test the AuthManager class methods."""
 
+    test_user = {
+        "email": "testuser@usertest.com",
+        "password": "test12345!",
+        "first_name": "Test",
+        "last_name": "User",
+    }
+
+    # ------------------------------------------------------------------------ #
+    #                           test encoding tokens                           #
+    # ------------------------------------------------------------------------ #
     def test_encode_token(self):
         """Ensure we can correctly encode a token."""
         time_now = datetime.utcnow()
@@ -30,12 +42,16 @@ class TestAuthManager:
 
     def test_encode_token_no_data(self):
         """Test the encode_token method with no data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
+        ):
             AuthManager.encode_token({})
 
     def test_encode_token_bad_data(self):
         """Test the encode_token method with bad data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
+        ):
             AuthManager.encode_token("bad_data")
 
     def test_encode_refresh_token(self):
@@ -56,12 +72,16 @@ class TestAuthManager:
 
     def test_encode_refresh_token_no_data(self):
         """Test the encode_refresh_token method with no data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
+        ):
             AuthManager.encode_refresh_token({})
 
     def test_encode_refresh_token_bad_data(self):
         """Test the encode_refresh_token method with bad data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
+        ):
             AuthManager.encode_refresh_token("bad_data")
 
     def test_encode_verify_token(self):
@@ -83,34 +103,231 @@ class TestAuthManager:
 
     def test_encode_verify_token_no_data(self):
         """Test the encode_verify_token method with no data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
+        ):
             AuthManager.encode_verify_token({})
 
     def test_encode_verify_token_bad_data(self):
         """Test the encode_verify_token method with bad data."""
-        with pytest.raises(HTTPException, match="Unable to generate"):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
+        ):
             AuthManager.encode_verify_token("bad_data")
 
-    def test_refresh(self, get_db, mocker):
+    # ------------------------------------------------------------------------ #
+    #                            test refresh token                            #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.asyncio()
+    async def test_refresh(self, get_db):
         """Test the refresh method returns a new token."""
-        pass
+        _, refresh = await UserManager.register(self.test_user, get_db)
+        new_token = await AuthManager.refresh(
+            TokenRefreshRequest(refresh=refresh), get_db
+        )
 
-    def test_refresh_bad_token(self, get_db, mocker):
+        assert isinstance(new_token, str)
+
+    @pytest.mark.asyncio()
+    async def test_refresh_bad_token(self, get_db):
         """Test the refresh method with a bad refresh token."""
-        pass
+        await UserManager.register(self.test_user, get_db)
+        new_token = None
+        with pytest.raises(HTTPException) as exc_info:
+            new_token = await AuthManager.refresh(
+                TokenRefreshRequest(refresh="horrible_bad_token"), get_db
+            )
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+        assert new_token is None
 
-    def test_refresh_expired_token(self, get_db, mocker):
+    @pytest.mark.asyncio()
+    async def test_refresh_expired_token(self, get_db, mocker):
         """Test the refresh method with an expired refresh token."""
-        pass
+        expired_refresh = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() - 1,
+                "typ": "refresh",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.refresh(
+                TokenRefreshRequest(refresh=expired_refresh), get_db
+            )
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.EXPIRED_TOKEN
 
-    def test_refresh_no_refresh_token(self, get_db, mocker):
+    @pytest.mark.asyncio()
+    async def test_refresh_wrong_token(self, get_db, mocker):
+        """Test the refresh method with the wrong token 'typ'."""
+        await UserManager.register(self.test_user, get_db)
+        wrong_token = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() + 10000,
+                "typ": "verify",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.refresh(
+                TokenRefreshRequest(refresh=wrong_token), get_db
+            )
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio()
+    async def test_refresh_empty_refresh_token(self, get_db):
         """Test the refresh method with no refresh token."""
-        pass
+        await UserManager.register(self.test_user, get_db)
+        new_token = None
+        with pytest.raises(HTTPException) as exc_info:
+            new_token = await AuthManager.refresh(
+                TokenRefreshRequest(refresh=""), get_db
+            )
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+        assert new_token is None
 
-    def test_refresh_no_user(self, get_db, mocker):
+    @pytest.mark.asyncio()
+    async def test_refresh_no_user(self, get_db):
         """Test the refresh method when user does not exist."""
-        pass
+        no_user_refresh = AuthManager.encode_refresh_token({"id": 999})
+        new_token = None
+        with pytest.raises(HTTPException) as exc_info:
+            new_token = await AuthManager.refresh(
+                TokenRefreshRequest(refresh=no_user_refresh), get_db
+            )
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == ResponseMessages.USER_NOT_FOUND
+        assert new_token is None
 
-    def test_refresh_banned_user(self, get_db, mocker):
+    @pytest.mark.asyncio()
+    async def test_refresh_banned_user(self, get_db):
         """Test the refresh method with a banned user."""
-        pass
+        await UserManager.register(self.test_user, get_db)
+        await UserManager.set_ban_status(1, True, 666, get_db)
+        banned_user_refresh = AuthManager.encode_refresh_token({"id": 1})
+        new_token = None
+        with pytest.raises(HTTPException) as exc_info:
+            new_token = await AuthManager.refresh(
+                TokenRefreshRequest(refresh=banned_user_refresh), get_db
+            )
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+        assert new_token is None
+
+    # ------------------------------------------------------------------------ #
+    #                             test verify token                            #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.asyncio()
+    async def test_verify(self, get_db):
+        """Test the verify method."""
+        background_tasks = BackgroundTasks()
+        await UserManager.register(self.test_user, get_db, background_tasks)
+        verify_token = AuthManager.encode_verify_token({"id": 1})
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(verify_token, get_db)
+        assert exc_info.value.status_code == 200
+        assert exc_info.value.detail == ResponseMessages.VERIFICATION_SUCCESS
+
+        user_data = await UserManager.get_user_by_id(1, get_db)
+        assert user_data.verified is True
+
+    @pytest.mark.asyncio()
+    async def test_verify_missing_user(self, get_db):
+        """Test the verify method with a missing user."""
+        verify_token = AuthManager.encode_verify_token({"id": 1})
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(verify_token, get_db)
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == ResponseMessages.USER_NOT_FOUND
+
+    @pytest.mark.asyncio()
+    async def test_verify_wrong_token(self, get_db):
+        """Test the verify method with a bad token type."""
+        background_tasks = BackgroundTasks()
+        await UserManager.register(self.test_user, get_db, background_tasks)
+        wrong_token = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() + 10000,
+                "typ": "refresh",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(wrong_token, get_db)
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio()
+    async def test_verify_banned_user(self, get_db):
+        """Test the verify method with a banned user."""
+        background_tasks = BackgroundTasks()
+        await UserManager.register(self.test_user, get_db, background_tasks)
+        await UserManager.set_ban_status(1, True, 666, get_db)
+        verify_token = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() + 10000,
+                "typ": "verify",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(verify_token, get_db)
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio()
+    async def test_verify_user_already_verified(self, get_db):
+        """Test the verify method with a banned user."""
+        await UserManager.register(self.test_user, get_db)
+        verify_token = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() + 10000,
+                "typ": "verify",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(verify_token, get_db)
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio()
+    async def test_verify_user_invalid_token(self, get_db):
+        """Test the verify method with an invalid token."""
+        background_tasks = BackgroundTasks()
+        await UserManager.register(self.test_user, get_db, background_tasks)
+
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify("very_bad_token", get_db)
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio()
+    async def test_verify_user_expired_token(self, get_db):
+        """Test the verify method with an expired token."""
+        expired_verify = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.utcnow().timestamp() - 1,
+                "typ": "verify",
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(expired_verify, get_db)
+        assert exc_info.value.status_code == 401
+        assert exc_info.value.detail == ResponseMessages.EXPIRED_TOKEN

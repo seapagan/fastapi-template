@@ -1,7 +1,7 @@
 """Define the User manager."""
 
 from sqlite3 import IntegrityError
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -41,7 +41,7 @@ class UserManager:
         user_data: Dict,
         database,
         background_tasks: Optional[BackgroundTasks] = None,
-    ):
+    ) -> Tuple[str, str]:
         """Register a new user."""
         # make sure relevant fields are not empty
         if not all(user_data.values()):

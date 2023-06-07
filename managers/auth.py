@@ -24,7 +24,7 @@ class ResponseMessages:
     INVALID_TOKEN = "That token is Invalid"  # nosec
     EXPIRED_TOKEN = "That token has Expired"  # nosec
     VERIFICATION_SUCCESS = "User succesfully Verified"
-    NO_USER = "User not Found"
+    USER_NOT_FOUND = "User not Found"
     ALREADY_VALIDATED = "You are already validated"
     VALIDATION_RESENT = "Validation email re-sent"
 
@@ -57,6 +57,7 @@ class AuthManager:
             payload = {
                 "sub": user["id"],
                 "exp": datetime.utcnow() + timedelta(minutes=60 * 24 * 30),
+                "typ": "refresh",
             }
             return jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
@@ -96,13 +97,19 @@ class AuthManager:
                 get_settings().secret_key,
                 algorithms=["HS256"],
             )
+
+            if payload["typ"] != "refresh":
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
             user_data = await database.fetch_one(
                 User.select().where(User.c.id == payload["sub"])
             )
 
             if not user_data:
                 raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             # block a banned user
@@ -137,11 +144,10 @@ class AuthManager:
 
             if not user_data:
                 raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             if payload["typ"] != "verify":
-                print(payload["typ"])
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -180,7 +186,7 @@ class AuthManager:
     @staticmethod
     async def resend_verify_code(
         user: int, background_tasks: BackgroundTasks, database
-    ):
+    ):  # pragma: no cover (code not used at this time)
         """Resend the user a verification email."""
         user_data = await database.fetch_one(
             User.select().where(User.c.id == user)
@@ -188,7 +194,7 @@ class AuthManager:
 
         if not user_data:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, ResponseMessages.NO_USER
+                status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
             )
 
         # block a banned user
