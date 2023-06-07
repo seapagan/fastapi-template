@@ -9,8 +9,11 @@ This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
 with Authorization already baked-in.
 
-Full documentation is now availiable on it's own page [here][doc]. Please visit
-this for full usage information, how-to's and more.
+<!-- Full documentation is now availiable on it's own page [here][doc]. Please visit
+this for full usage information, how-to's and more. -->
+Partial documentation is now availiable on it's own page [here][doc]. This is a
+work in progress, and when finished will include full usage information and
+how-to's.
 
 - [Functionality](#functionality)
 - [Installation](#installation)
