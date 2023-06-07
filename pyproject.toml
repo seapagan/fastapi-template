@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-fastapi = "^0.95.1"
+fastapi = "^0.96.0"
 alembic = "^1.11.1"
 databases = "^0.7.0"
 SQLAlchemy = "^1.4.48,<2.0"
