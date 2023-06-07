@@ -320,14 +320,41 @@ Database setup and JWT Secret Key. See the <code>.env.example</code> file for ho
 <span class="na">DB_PORT</span><span class="o">=</span><span class="s">5432</span>
 <span class="na">DB_NAME</span><span class="o">=</span><span class="s">my_database_name</span>
 
+<span class="c1"># TEST Database Settings These must be changed to match your setup. This is only</span>
+<span class="c1"># for using Postgresql as a Test database, however that functionality is not yet</span>
+<span class="c1"># configurable and SQLite is used by default for testing.</span>
+<span class="na">TEST_DB_USER</span><span class="o">=</span><span class="s">dbuser</span>
+<span class="na">TEST_DB_PASSWORD</span><span class="o">=</span><span class="s">my_secret_passw0rd</span>
+<span class="na">TEST_DB_ADDRESS</span><span class="o">=</span><span class="s">localhost</span>
+<span class="na">TEST_DB_PORT</span><span class="o">=</span><span class="s">5432</span>
+<span class="na">TEST_DB_NAME</span><span class="o">=</span><span class="s">my_database_name</span>
+
 <span class="c1"># generate your own super secret key here, used by the JWT functions.</span>
 <span class="c1"># 32 characters or longer, definately change the below!!</span>
 <span class="na">SECRET_KEY</span><span class="o">=</span><span class="s">123456</span>
+
+<span class="c1"># How many minutes before Bearer tokens expire?</span>
+<span class="na">ACCESS_TOKEN_EXPIRE_MINUTES</span><span class="o">=</span><span class="s">120</span>
 
 <span class="c1"># List of origins that can access this API, separated by a comma, eg:</span>
 <span class="c1"># CORS_ORIGINS=http://localhost,https://www.gnramsay.com</span>
 <span class="c1"># If you want all origins to access (the default), use * or leave commented:</span>
 <span class="na">CORS_ORIGINS</span><span class="o">=</span><span class="s">*</span>
+
+<span class="c1"># Email Settings</span>
+<span class="na">MAIL_USERNAME</span><span class="o">=</span><span class="s">emailuser</span>
+<span class="na">MAIL_PASSWORD</span><span class="o">=</span><span class="s">letmein</span>
+<span class="na">MAIL_FROM</span><span class="o">=</span><span class="s">my_api@provider.com</span>
+<span class="na">MAIL_PORT</span><span class="o">=</span><span class="s">587</span>
+<span class="na">MAIL_SERVER</span><span class="o">=</span><span class="s">smtp.mailserver.com</span>
+<span class="na">MAIL_FROM_NAME</span><span class="o">=</span><span class="s">"FastAPI Template"</span>
+
+<span class="c1"># Common Mail Settings, demending on your mail provider.</span>
+<span class="c1"># The below values work fine for GMail</span>
+<span class="na">MAIL_STARTTLS</span><span class="o">=</span><span class="s">True</span>
+<span class="na">MAIL_SSL_TLS</span><span class="o">=</span><span class="s">False</span>
+<span class="na">MAIL_USE_CREDENTIALS</span><span class="o">=</span><span class="s">True</span>
+<span class="na">MAIL_VALIDATE_CERTS</span><span class="o">=</span><span class="s">True</span>
 </code></pre></div>
 <p>For a <strong>PUBLIC API</strong> (unless its going through an API gateway!), set
 <code>CORS_ORIGINS=*</code>, otherwise list the domains (<strong>and ports</strong>) required. If you
