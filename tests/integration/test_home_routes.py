@@ -1,6 +1,8 @@
 """Test the home resource routes."""
+import pytest
 
 
+@pytest.mark.integration()
 class TestHomeRoutes:
     """Test the home resource routes."""
 

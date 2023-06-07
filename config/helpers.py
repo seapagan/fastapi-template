@@ -3,6 +3,7 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict, List
 
 import tomli
 
@@ -29,12 +30,16 @@ def get_api_version() -> str:
 
             return version
 
+    except KeyError as exc:
+        print(f"Cannot find the API version in the pyproject.toml file : {exc}")
+        sys.exit(2)
+
     except OSError as exc:
         print(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
 
 
-def get_api_details() -> tuple[str, str, str]:
+def get_api_details() -> tuple[str, str, List]:
     """Return the API Name from the pyproject.toml file."""
     try:
         with open(get_toml_path(), "rb") as file:
@@ -43,11 +48,21 @@ def get_api_details() -> tuple[str, str, str]:
             desc = config["tool"]["poetry"]["description"]
             authors = config["tool"]["poetry"]["authors"]
 
+            if not isinstance(authors, list):
+                authors = [authors]
+
             return (name, desc, authors)
+
+    except KeyError as exc:
+        print(
+            "Missing name/description or authors in the pyproject.toml file "
+            f": {exc}"
+        )
+        sys.exit(2)
 
     except OSError as exc:
         print(f"Cannot read the pyproject.toml file : {exc}")
-        sys.exit(3)
+        sys.exit(2)
 
 
 @dataclass
@@ -64,7 +79,7 @@ class MetadataBase:
 
 
 # List of acceptable Opensource Licenses with a link to their text.
-LICENCES = [
+LICENCES: List[Dict[str, str]] = [
     {"name": "Apache2", "url": "https://opensource.org/licenses/Apache-2.0"},
     {"name": "BSD3", "url": "https://opensource.org/licenses/BSD-3-Clause"},
     {"name": "BSD2", "url": "https://opensource.org/licenses/BSD-2-Clause"},
@@ -76,7 +91,7 @@ LICENCES = [
     {"name": "EPL", "url": "https://opensource.org/licenses/EPL-2.0"},
 ]
 
-TEMPLATE = """
+TEMPLATE: str = """
 \"\"\"This file contains Custom Metadata for your API Project.
 
 Be aware, this will be re-generated any time you run the

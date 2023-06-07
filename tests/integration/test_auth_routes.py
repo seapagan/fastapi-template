@@ -8,6 +8,7 @@ from models.enums import RoleType
 from models.user import User
 
 
+@pytest.mark.integration()
 class TestAuthRoutes:
     """Test the authentication routes of the application."""
 
@@ -302,6 +303,10 @@ class TestAuthRoutes:
 
         assert response.status_code == 400
         assert response.json()["detail"] == "Wrong email or password"
+
+    # ------------------------------------------------------------------------ #
+    #                           test '/refresh' route                          #
+    # ------------------------------------------------------------------------ #
 
     @pytest.mark.asyncio()
     async def test_refresh_token(self, test_app, get_db):

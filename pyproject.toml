@@ -102,6 +102,10 @@ filterwarnings = [
   "ignore::sqlalchemy.exc.RemovedIn20Warning",
 ]
 mock_use_standalone_module = true
+markers = [
+  "unit: Unit tests",
+  "integration: Integration tests",
+]
 
 [tool.coverage.run]
 # source = []

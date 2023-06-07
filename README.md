@@ -104,9 +104,12 @@ These can be run from the checked out code with:
 $ pytest
 ```
 
-Tests will also be run automatically by **GutHub** on every new commit pushed up
-to the remote repository.
-Code Coverage is also checked and noted after each test suite is run.
+It is possible to run either the Unit or Integration tests separately using
+`pytest -m unit` or `pytest -m integration`
+
+Full tests will be run automatically by **GitHub Actions** on every new commit
+pushed up to the remote repository. Code Coverage is also checked and noted
+after each test suite is run.
 
 ## Code Quality
 
