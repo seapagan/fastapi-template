@@ -4,7 +4,6 @@ import pytest
 import sqlalchemy
 from fastapi.testclient import TestClient
 
-# from config.settings import get_settings
 from database.db import get_database, metadata
 from main import app
 from managers.email import EmailManager

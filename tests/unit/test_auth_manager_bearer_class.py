@@ -1,19 +1,20 @@
 """Test the CustomHTTPBearer class in the auth_manager module."""
 from datetime import datetime
 
-import jwt
 import pytest
 import sqlalchemy
 from fastapi import BackgroundTasks, HTTPException
 
-from config.settings import get_settings
 from managers.auth import CustomHTTPBearer, ResponseMessages
 from managers.user import UserManager
+from tests.helpers import get_token
 
 
 @pytest.mark.unit()
 class TestCustomHTTPBearer:
     """Test the CustomHTTPBearer class."""
+
+    mock_request_path = "managers.auth.Request"
 
     test_user = {
         "email": "testuser@usertest.com",
@@ -26,7 +27,7 @@ class TestCustomHTTPBearer:
     async def test_custom_bearer_class(self, get_db, mocker):
         """Test with valid user and token."""
         token, _ = await UserManager.register(self.test_user, get_db)
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
 
         bearer = CustomHTTPBearer()
@@ -39,7 +40,7 @@ class TestCustomHTTPBearer:
     @pytest.mark.asyncio()
     async def test_custom_bearer_class_invalid_token(self, get_db, mocker):
         """Test with an invalid token."""
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": "Bearer badtoken"}
 
         bearer = CustomHTTPBearer()
@@ -52,7 +53,7 @@ class TestCustomHTTPBearer:
     @pytest.mark.asyncio()
     async def test_custom_bearer_class_empty_no_header(self, get_db, mocker):
         """Test with an empty token."""
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {}
 
         bearer = CustomHTTPBearer()
@@ -68,7 +69,7 @@ class TestCustomHTTPBearer:
         token, _ = await UserManager.register(self.test_user, get_db)
         await UserManager.set_ban_status(1, True, 666, get_db)
 
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
 
         bearer = CustomHTTPBearer()
@@ -87,7 +88,7 @@ class TestCustomHTTPBearer:
         )
         await UserManager.set_ban_status(1, True, 666, get_db)
 
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
 
         bearer = CustomHTTPBearer()
@@ -100,17 +101,11 @@ class TestCustomHTTPBearer:
     @pytest.mark.asyncio()
     async def test_custom_bearer_expired_token(self, get_db, mocker):
         """Test with an expired token."""
-        expired_token = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() - 1,
-                "typ": "verify",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        expired_token = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() - 1, typ="verify"
         )
 
-        mock_req = mocker.patch("managers.auth.Request")
+        mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {expired_token}"}
 
         bearer = CustomHTTPBearer()

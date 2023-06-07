@@ -9,6 +9,7 @@ from config.settings import get_settings
 from managers.auth import AuthManager, ResponseMessages
 from managers.user import UserManager
 from schemas.request.auth import TokenRefreshRequest
+from tests.helpers import get_token
 
 
 @pytest.mark.unit()
@@ -144,15 +145,10 @@ class TestAuthManager:
     @pytest.mark.asyncio()
     async def test_refresh_expired_token(self, get_db, mocker):
         """Test the refresh method with an expired refresh token."""
-        expired_refresh = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() - 1,
-                "typ": "refresh",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        expired_refresh = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() - 1, typ="refresh"
         )
+
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.refresh(
                 TokenRefreshRequest(refresh=expired_refresh), get_db
@@ -164,15 +160,10 @@ class TestAuthManager:
     async def test_refresh_wrong_token(self, get_db, mocker):
         """Test the refresh method with the wrong token 'typ'."""
         await UserManager.register(self.test_user, get_db)
-        wrong_token = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() + 10000,
-                "typ": "verify",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        wrong_token = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() + 10000, typ="verify"
         )
+
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.refresh(
                 TokenRefreshRequest(refresh=wrong_token), get_db
@@ -252,14 +243,8 @@ class TestAuthManager:
         """Test the verify method with a bad token type."""
         background_tasks = BackgroundTasks()
         await UserManager.register(self.test_user, get_db, background_tasks)
-        wrong_token = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() + 10000,
-                "typ": "refresh",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        wrong_token = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() + 10000, typ="refresh"
         )
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(wrong_token, get_db)
@@ -272,14 +257,8 @@ class TestAuthManager:
         background_tasks = BackgroundTasks()
         await UserManager.register(self.test_user, get_db, background_tasks)
         await UserManager.set_ban_status(1, True, 666, get_db)
-        verify_token = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() + 10000,
-                "typ": "verify",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        verify_token = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() + 10000, typ="verify"
         )
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, get_db)
@@ -290,14 +269,8 @@ class TestAuthManager:
     async def test_verify_user_already_verified(self, get_db):
         """Test the verify method with a banned user."""
         await UserManager.register(self.test_user, get_db)
-        verify_token = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() + 10000,
-                "typ": "verify",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        verify_token = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() + 10000, typ="verify"
         )
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, get_db)
@@ -318,14 +291,8 @@ class TestAuthManager:
     @pytest.mark.asyncio()
     async def test_verify_user_expired_token(self, get_db):
         """Test the verify method with an expired token."""
-        expired_verify = jwt.encode(
-            {
-                "sub": 1,
-                "exp": datetime.utcnow().timestamp() - 1,
-                "typ": "verify",
-            },
-            get_settings().secret_key,
-            algorithm="HS256",
+        expired_verify = get_token(
+            sub=1, exp=datetime.utcnow().timestamp() - 1, typ="verify"
         )
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(expired_verify, get_db)
