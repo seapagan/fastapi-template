@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 
 try:
     from .metadata import custom_metadata
-except ModuleNotFoundError:
+except ModuleNotFoundError:  # pragma: no cover
     print(
         "The metadata file could not be found, it may have been deleted.\n"
         "Please run 'api-admin custom init' to regenerate defaults."

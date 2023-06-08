@@ -3,6 +3,7 @@ from copy import deepcopy
 
 import pytest
 
+from managers.auth import AuthManager
 from managers.user import pwd_context
 from models.enums import RoleType
 from models.user import User
@@ -348,3 +349,20 @@ class TestAuthRoutes:
 
         assert refresh_response.status_code == 401
         assert refresh_response.json()["detail"] == "That token is Invalid"
+
+    # ------------------------------------------------------------------------ #
+    #                           test '/verify' route                           #
+    # ------------------------------------------------------------------------ #
+
+    @pytest.mark.asyncio()
+    async def test_verify_user(self, test_app, get_db):
+        """Test we can verify a user."""
+        _ = await get_db.execute(
+            User.insert(), values={**self.test_user, "verified": False}
+        )
+        verification_token = AuthManager.encode_verify_token({"id": 1})
+
+        response = test_app.get(f"/verify/?code={verification_token}")
+
+        assert response.status_code == 200
+        assert response.json()["detail"] == "User succesfully Verified"
