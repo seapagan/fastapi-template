@@ -37,8 +37,9 @@ def get_db():
     available to) another.
     """
     engine = sqlalchemy.create_engine(
-        # DATABASE_URL, connect_args={"check_same_thread": False}
-        DATABASE_URL
+        DATABASE_URL,
+        connect_args={"check_same_thread": False}
+        # DATABASE_URL
     )
     metadata.create_all(engine)
     app.dependency_overrides[get_database] = get_database_override
