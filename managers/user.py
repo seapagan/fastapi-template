@@ -13,6 +13,7 @@ from config.settings import get_settings
 from models.enums import RoleType
 from models.user import User
 from schemas.email import EmailTemplateSchema
+from schemas.request.user import UserChangePasswordRequest, UserEditRequest
 
 from .auth import AuthManager
 from .email import EmailManager
@@ -151,7 +152,7 @@ class UserManager:
         await database.execute(User.delete().where(User.c.id == user_id))
 
     @staticmethod
-    async def update_user(user_id: int, user_data, database):
+    async def update_user(user_id: int, user_data: UserEditRequest, database):
         """Update the User with specified ID."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -164,15 +165,17 @@ class UserManager:
             User.update()
             .where(User.c.id == user_id)
             .values(
-                email=user_data["email"],
-                first_name=user_data["first_name"],
-                last_name=user_data["last_name"],
-                password=pwd_context.hash(user_data["password"]),
+                email=user_data.email,
+                first_name=user_data.first_name,
+                last_name=user_data.last_name,
+                password=pwd_context.hash(user_data.password),
             )
         )
 
     @staticmethod
-    async def change_password(user_id: int, user_data, database):
+    async def change_password(
+        user_id: int, user_data: UserChangePasswordRequest, database
+    ):
         """Change the specified user's Password."""
         check_user = await database.fetch_one(
             User.select().where(User.c.id == user_id)
@@ -184,7 +187,7 @@ class UserManager:
         await database.execute(
             User.update()
             .where(User.c.id == user_id)
-            .values(password=pwd_context.hash(user_data["password"]))
+            .values(password=pwd_context.hash(user_data.password))
         )
 
     @staticmethod

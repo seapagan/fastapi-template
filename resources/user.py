@@ -99,7 +99,7 @@ async def unban_user(request: Request, user_id: int, db=Depends(get_database)):
     "/{user_id}",
     dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
     status_code=status.HTTP_200_OK,
-    response_model=UserResponse,
+    response_model=MyUserResponse,
 )
 async def edit_user(
     user_id: int, user_data: UserEditRequest, db=Depends(get_database)
