@@ -86,6 +86,30 @@ website .
 
 Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
+
+## Docker
+
+If you want to develop in docker with **autoreload** use this command without rebuilding the image:
+
+```console
+$ docker-compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
+```
+
+But if you modify poetry.lock or pyproject.toml (dependency updates) you have to **rebuild the image** (add `--build`) like:
+
+```console
+$ docker-compose run --build --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
+```
+:warning: For local use rename `.env.example` to `.env`.
+
+#### Testing
+
+Runing tests on Docker container is also possible:
+
+```console
+docker-compose run --rm api pytest
+```
+
 ## Who is Using this Template?
 
 Meh, at the moment probably no-one except me 😆. If you do use this in one of
