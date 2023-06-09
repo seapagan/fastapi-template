@@ -4,6 +4,7 @@ services:
   api:
     image: fastapi-template:dev
     build:
+      context: .
       target: dev
     volumes:
     - .:/app/src/

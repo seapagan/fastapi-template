@@ -94,8 +94,11 @@ If you want to develop in docker with **autoreload** use this command:
 docker-compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
-If you update any dependency you have to **rebuild the image** like,
-just add `--build` after `docker-compose run`
+If you update any dependency you have to **rebuild the image** like:
+
+```console
+docker-compose build
+```
 
 :warning: For local use rename `.env.example` to `.env`.
 
