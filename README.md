@@ -25,6 +25,7 @@ how-to's.
 - [Contributing](#contributing)
   - [Install Git Pre-Commit hooks](#install-git-pre-commit-hooks)
   - [Run pre-commit manually](#run-pre-commit-manually)
+  - [Contribute your work](#contribute-your-work)
 
 ## Functionality
 
@@ -151,6 +152,8 @@ You can run these checks manually on all files using the below command :
 ```console
 poe pre
 ```
+
+### Contribute your work
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
