@@ -1,4 +1,4 @@
-## Add a user
+# Add a user to the database
 
 It is possible to add Users to the database using the API itself, but you cannot
 create an Admin user this way, unless you already have an existing Admin user in
