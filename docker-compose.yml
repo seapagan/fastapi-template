@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  api:
+    image: fastapi-template:dev
+    build:
+      target: dev
+    volumes:
+    - .:/app/src/
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    networks:
+      - api-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - api-db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - api-network
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+volumes:
+  api-db-data:
+    name: api-db-data
+
+networks:
+  api-network:
+    name: fastapi-network
