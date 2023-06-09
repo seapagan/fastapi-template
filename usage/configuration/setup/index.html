@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#set-up-a-virtual-environment">
+<a class="md-skip" href="#install-dependencies">
           Skip to content
         </a>
 </div>
@@ -188,6 +188,11 @@
     Install Git Pre-Commit hooks
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#run-pre-commit-manually">
+    Run pre-commit manually
+  </a>
+</li>
 </ul>
 </nav>
 </li>
@@ -311,6 +316,11 @@
     Install Git Pre-Commit hooks
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#run-pre-commit-manually">
+    Run pre-commit manually
+  </a>
+</li>
 </ul>
 </nav>
 </div>
@@ -318,7 +328,7 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Install Dependencies</h1>
+<h1 id="install-dependencies">Install Dependencies</h1>
 <h2 id="set-up-a-virtual-environment">Set up a Virtual Environment</h2>
 <p>It is always a good idea to set up dedicated Virtual Environment when you are
 developing a Python application. If you use Poetry, this will be done
@@ -357,6 +367,10 @@ submitting a <strong>Pull Request</strong>).</p>
 </code></pre></div>
 <p>This will ensure that all code meets the required linting standard before being
 committed.</p>
+<h2 id="run-pre-commit-manually">Run pre-commit manually</h2>
+<p>You can run these checks manually on all files using the below command :</p>
+<div class="highlight"><pre><span></span><code><span class="go">poe pre</span>
+</code></pre></div>
 </article>
 </div>
 </div>

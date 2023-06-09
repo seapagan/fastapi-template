@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#migrate-the-database">
+<a class="md-skip" href="#setup-the-application-database">
           Skip to content
         </a>
 </div>
@@ -298,10 +298,10 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Setup Database</h1>
+<h1 id="setup-the-application-database">Setup the application database</h1>
 <h2 id="migrate-the-database">Migrate the Database</h2>
-<p>Make sure you have <a href="/usage/configuration/dot-env">configured</a> the database. Then run the
-following command to set it up, applying all the required migrations:</p>
+<p>Make sure you have <a href="/usage/configuration/dot-env">configured</a> the database. Then
+run the following command to set it up, applying all the required migrations:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>db<span class="w"> </span>init
 </code></pre></div>
 <p>(this is the same as running <code>alembic upgrade head</code>, though it will downgrade to
