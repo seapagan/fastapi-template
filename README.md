@@ -88,13 +88,13 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
 
-If you want to develop in docker with **autoreload** use this command:
+It is possible to use Docker with **autoreload**:
 
 ```console
 docker-compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
-If you update any dependency you have to **rebuild the image** like:
+In the case of dependency updates, **rebuild the image** is necessary:
 
 ```console
 docker-compose build
