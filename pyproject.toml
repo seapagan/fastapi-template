@@ -28,6 +28,7 @@ mkdocs = "^1.4.3"
 mkdocstrings = { extras = ["python"], version = "^0.22.0" }
 mkdocs-material = "^9.1.15"
 poetry = "^1.5.1"
+secweb = "^1.6.0"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
