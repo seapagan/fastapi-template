@@ -69,6 +69,7 @@ pymdown-extensions = "^10.0.1"
 pygments = "^2.15.1"
 mkdocs-swagger-ui-tag = "^0.6.1"
 mock = "^5.0.2"
+faker = "^18.10.1"
 
 [build-system]
 requires = ["poetry-core"]
