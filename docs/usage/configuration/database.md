@@ -1,7 +1,9 @@
+# Setup the application database
+
 ## Migrate the Database
 
-Make sure you have [configured](/usage/configuration/dot-env) the database. Then run the
-following command to set it up, applying all the required migrations:
+Make sure you have [configured](/usage/configuration/dot-env) the database. Then
+run the following command to set it up, applying all the required migrations:
 
 ```console
 $ ./api-admin db init
