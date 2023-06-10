@@ -1,5 +1,3 @@
-# How to install this project
-
 Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.

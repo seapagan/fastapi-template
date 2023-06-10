@@ -1,5 +1,3 @@
-# Install Dependencies
-
 ## Set up a Virtual Environment
 
 It is always a good idea to set up dedicated Virtual Environment when you are
@@ -57,11 +55,3 @@ pre-commit installed at .git/hooks/pre-commit
 
 This will ensure that all code meets the required linting standard before being
 committed.
-
-## Run pre-commit manually
-
-You can run these checks manually on all files using the below command :
-
-```console
-poe pre
-```

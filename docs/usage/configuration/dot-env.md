@@ -1,5 +1,3 @@
-# Environment Variables
-
 ## Set up the `.env` file
 
 Database (and other) settings can be read from environment variables or from a
