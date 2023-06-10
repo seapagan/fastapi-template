@@ -3173,17 +3173,6 @@ cryptography = ">=2.0"
 jeepney = ">=0.6"
 
 [[package]]
-name = "secweb"
-version = "1.6.0"
-description = "Secweb is a pack of security middlewares for fastApi and starlette servers it includes CSP, HSTS, and many more"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "Secweb-1.6.0-py3-none-any.whl", hash = "sha256:3d95c40d95c7c549a081eb92a26cad4ac998f25461d0d93ad81cd46f17760c6a"},
-    {file = "Secweb-1.6.0.tar.gz", hash = "sha256:7eaa7becf012b5b9a8e0b2b8d187129624986130ec4807069f6bdf19a4608381"},
-]
-
-[[package]]
 name = "setuptools"
 version = "67.8.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"

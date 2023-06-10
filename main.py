@@ -4,20 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
-from Secweb.CacheControl import CacheControl
-from Secweb.ClearSiteData import ClearSiteData
-from Secweb.CrossOriginEmbedderPolicy import CrossOriginEmbedderPolicy
-from Secweb.CrossOriginOpenerPolicy import CrossOriginOpenerPolicy
-from Secweb.CrossOriginResourcePolicy import CrossOriginResourcePolicy
-from Secweb.OriginAgentCluster import OriginAgentCluster
-from Secweb.ReferrerPolicy import ReferrerPolicy
-from Secweb.StrictTransportSecurity import HSTS
-from Secweb.XContentTypeOptions import XContentTypeOptions
-from Secweb.XDNSPrefetchControl import XDNSPrefetchControl
-from Secweb.XDownloadOptions import XDownloadOptions
-from Secweb.XFrameOptions import XFrame
-from Secweb.XPermittedCrossDomainPolicies import XPermittedCrossDomainPolicies
-from Secweb.xXSSProtection import xXSSProtection
 
 from config.helpers import get_api_version
 from config.settings import get_settings
@@ -48,43 +34,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(OriginAgentCluster)
-app.add_middleware(
-    ReferrerPolicy,
-    Option={"Referrer-Policy": "strict-origin-when-cross-origin"},
-)
-app.add_middleware(
-    HSTS, Option={"max-age": 31536000, "preload": True}
-)  # 1 year max-age
-app.add_middleware(XContentTypeOptions)
-app.add_middleware(
-    XDNSPrefetchControl, Option={"X-DNS-Prefetch-Control": "off"}
-)  # Disable DNS prefetching
-app.add_middleware(XDownloadOptions)
-app.add_middleware(XFrame, Option={"X-Frame-Options": "DENY"})
-app.add_middleware(
-    XPermittedCrossDomainPolicies,
-    Option={"X-Permitted-Cross-Domain-Policies": "none"},
-)
-app.add_middleware(
-    xXSSProtection, Option={"X-XSS-Protection": "1; mode=block"}
-)  # Enable XSS Protection
-app.add_middleware(
-    CrossOriginEmbedderPolicy,
-    Option={"Cross-Origin-Embedder-Policy": "require-corp"},
-)
-app.add_middleware(
-    CrossOriginOpenerPolicy,
-    Option={"Cross-Origin-Opener-Policy": "same-origin"},
-)
-app.add_middleware(
-    CrossOriginResourcePolicy,
-    Option={"Cross-Origin-Resource-Policy": "same-site"},
-)
-app.add_middleware(
-    ClearSiteData, Option={"cookies": True}, Routes=["/login", "/logout/{id}"]
-)
-app.add_middleware(CacheControl, Option={"no-store": True, "private": True})
 
 
 @app.on_event("startup")
