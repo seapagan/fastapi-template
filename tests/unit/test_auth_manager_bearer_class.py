@@ -49,7 +49,7 @@ class TestCustomHTTPBearer:
         assert exc.value.status_code == 401
         assert exc.value.detail == ResponseMessages.INVALID_TOKEN
 
-    async def test_custom_bearer_class_empty_no_header(self, get_db, mocker):
+    async def test_custom_bearer_class_no_auth_header(self, get_db, mocker):
         """Test with an empty token."""
         mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {}

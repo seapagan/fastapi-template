@@ -7,6 +7,7 @@ from fastapi import BackgroundTasks, HTTPException
 from managers.user import ErrorMessages, UserManager, pwd_context
 from models.enums import RoleType
 from models.user import User
+from schemas.request.user import UserChangePasswordRequest, UserEditRequest
 
 
 @pytest.mark.unit()
@@ -190,7 +191,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         edited_user = self.test_user.copy()
         edited_user["first_name"] = "Edited"
 
-        await UserManager.update_user(1, edited_user, get_db)
+        await UserManager.update_user(1, UserEditRequest(**edited_user), get_db)
         edited_user = await get_db.fetch_one(
             User.select().where(User.c.id == 1)
         )
@@ -200,14 +201,18 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_update_user_not_found(self, get_db):
         """Test updating a user that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.update_user(1, self.test_user, get_db)
+            await UserManager.update_user(
+                1, UserEditRequest(**self.test_user), get_db
+            )
 
     # ------------------------ test changing password ------------------------ #
     async def test_change_password(self, get_db):
         """Test changing a user's password."""
         await UserManager.register(self.test_user, get_db)
         await UserManager.change_password(
-            1, {"password": "newpassword"}, get_db
+            1,
+            UserChangePasswordRequest(password="updated_password"),  # nosec
+            get_db,
         )
 
         user = await get_db.fetch_one(User.select().where(User.c.id == 1))
@@ -217,7 +222,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         """Test changing a user's password that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
             await UserManager.change_password(
-                1, {"password": "newpassword"}, get_db
+                1,
+                UserChangePasswordRequest(password="updated_password"),  # nosec
+                get_db,
             )
 
     # -------------------------- test set ban status ------------------------- #
