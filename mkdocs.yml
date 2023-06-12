@@ -4,6 +4,7 @@ theme:
   name: material
   features:
     - navigation.footer
+    - navigation.expand
 
 extra:
   social:
