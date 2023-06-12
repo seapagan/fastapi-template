@@ -20,7 +20,7 @@ services:
 
   db:
     image: postgres:13.8-bullseye
-    hostname: postgres
+    hostname: ${DB_ADDRESS}
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}
@@ -28,7 +28,7 @@ services:
     volumes:
       - api-db-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 5433:${DB_PORT}
     networks:
       - api-network
     healthcheck:
