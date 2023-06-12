@@ -93,14 +93,24 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 It is possible to use Docker with **autoreload**:
 
+Using `docker compose run`:
+
 ```console
-docker-compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
+docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
 In the case of dependency updates, **rebuild the image** is necessary:
 
 ```console
-docker-compose build
+docker compose build
+```
+
+Using `docker compose up` (adding `--build` rebuilds image):
+
+```console
+docker compose up
+
+docker compose down
 ```
 
 :warning: For local use rename `.env.example` to `.env`.
