@@ -21,11 +21,9 @@ router = APIRouter(tags=["Users"], prefix="/users")
 async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     """Get all users or a specific user by their ID.
 
-    To get a specific User data, the requesting user must match the user_id, or
-    be an Admin.
+    user_id is optional, and if omitted then all Users are returned.
 
-    user_id is optional, and if omitted then all Users are returned. This is
-    only allowed for Admins.
+    This route is only allowed for Admins.
     """
     if user_id:
         return await UserManager.get_user_by_id(user_id, db)
