@@ -2,6 +2,17 @@ site_name: FastAPI Template
 
 theme:
   name: material
+  features:
+    - navigation.footer
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/seapagan/fastapi-template
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/gnramsay-dev
+
+copyright: Copyright © 2023 Grant Ramsay (Seapagan)
 
 plugins:
   - mkdocstrings
