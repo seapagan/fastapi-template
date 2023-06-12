@@ -33,12 +33,13 @@ nav:
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md
-      - Development and Testing:
-          - With a Local Server: usage/dev/local.md
-          - With Docker: usage/dev/docker.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
+  - Development and Testing:
+      - With a Local Server: usage/dev/local.md
+      - With Docker: usage/dev/docker.md
+      - Documentation: usage/dev/documentation.md
   - How-to Guides: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md

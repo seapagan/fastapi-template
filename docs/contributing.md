@@ -20,16 +20,34 @@ committed.
 
 ## Run pre-commit manually
 
-You can run these checks manually on all files using the below command :
+You can run these checks manually on all staged files using the below command :
 
 ```console
 poe pre
 ```
 
-## Contribute your work
+## Update the Documentation if required
 
-1. Fork it
+If you have added or changed functionality, please Update the documentation
+also. **This is a pre-req to having a PR merged**. See
+[Documentation](/usage/dev/documentation/) for instructions
+
+## Ensure the tests Pass
+
+Ensure that any new code has relevant PASSING Unit and (if applicable)
+Integration Tests. New code should have full coverage and overall coverage
+should not drop! See [Running
+Tests](http://127.0.0.1:9000/usage/dev/local/#run-tests) for more information.
+
+Note that there is a GitHub Action set up which will run all tests for each
+commit that is pushed to the Repository.
+
+## Contribution Workflow
+
+1. Fork this Repository
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+3. Write your code, ensuring it is covered by new tests if applicable and
+   documentation.
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create a new Pull Request

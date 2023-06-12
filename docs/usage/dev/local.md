@@ -7,7 +7,7 @@ when you install the project dependencies. This can be used for testing the API
 during development. There is a built-in command to run this easily :
 
 ```console
-api-admin serve
+./api-admin serve
 ```
 
 This will by default run the server on <http://localhost:8000>, and reload after
