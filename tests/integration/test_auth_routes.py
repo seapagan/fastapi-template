@@ -366,3 +366,18 @@ class TestAuthRoutes:
 
         assert response.status_code == 200
         assert response.json()["detail"] == "User succesfully Verified"
+
+    @pytest.mark.parametrize(
+        "verification_token",
+        ["BADBEEF", ""],
+    )
+    @pytest.mark.asyncio()
+    async def test_verify_bad_token(self, test_app, get_db, verification_token):
+        """Ensure a bad token cant be used to verify a user."""
+        _ = await get_db.execute(
+            User.insert(), values={**self.test_user, "verified": False}
+        )
+        response = test_app.get(f"/verify/?code={verification_token}")
+
+        assert response.status_code == 401
+        assert response.json()["detail"] == "That token is Invalid"
