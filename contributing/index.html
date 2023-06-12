@@ -299,8 +299,18 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#contribute-your-work">
-    Contribute your work
+<a class="md-nav__link" href="#update-the-documentation-if-required">
+    Update the Documentation if required
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ensure-the-tests-pass">
+    Ensure the tests Pass
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#contribution-workflow">
+    Contribution Workflow
   </a>
 </li>
 </ul>
@@ -331,8 +341,18 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#contribute-your-work">
-    Contribute your work
+<a class="md-nav__link" href="#update-the-documentation-if-required">
+    Update the Documentation if required
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ensure-the-tests-pass">
+    Ensure the tests Pass
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#contribution-workflow">
+    Contribution Workflow
   </a>
 </li>
 </ul>
@@ -355,13 +375,26 @@ locally before they are pushed up to the Repo.</p>
 <p>This will ensure that all code meets the required linting standard before being
 committed.</p>
 <h2 id="run-pre-commit-manually">Run pre-commit manually</h2>
-<p>You can run these checks manually on all files using the below command :</p>
+<p>You can run these checks manually on all staged files using the below command :</p>
 <div class="highlight"><pre><span></span><code><span class="go">poe pre</span>
 </code></pre></div>
-<h2 id="contribute-your-work">Contribute your work</h2>
+<h2 id="update-the-documentation-if-required">Update the Documentation if required</h2>
+<p>If you have added or changed functionality, please Update the documentation
+also. <strong>This is a pre-req to having a PR merged</strong>. See
+<a href="/usage/dev/documentation/">Documentation</a> for instructions</p>
+<h2 id="ensure-the-tests-pass">Ensure the tests Pass</h2>
+<p>Ensure that any new code has relevant PASSING Unit and (if applicable)
+Integration Tests. New code should have full coverage and overall coverage
+should not drop! See <a href="http://127.0.0.1:9000/usage/dev/local/#run-tests">Running
+Tests</a> for more information.</p>
+<p>Note that there is a GitHub Action set up which will run all tests for each
+commit that is pushed to the Repository.</p>
+<h2 id="contribution-workflow">Contribution Workflow</h2>
 <ol>
-<li>Fork it</li>
+<li>Fork this Repository</li>
 <li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Write your code, ensuring it is covered by new tests if applicable and
+   documentation.</li>
 <li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
 <li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
 <li>Create a new Pull Request</li>
