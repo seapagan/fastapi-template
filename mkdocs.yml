@@ -2,6 +2,17 @@ site_name: FastAPI Template
 
 theme:
   name: material
+  features:
+    - navigation.footer
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/seapagan/fastapi-template
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/gnramsay-dev
+
+copyright: Copyright © 2023 Grant Ramsay (Seapagan)
 
 plugins:
   - mkdocstrings
@@ -33,10 +44,13 @@ nav:
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md
-      - Run a Server: usage/dev-server.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
+  - Development and Testing:
+      - With a Local Server: usage/dev/local.md
+      - With Docker: usage/dev/docker.md
+      - Documentation: usage/dev/documentation.md
   - How-to Guides: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md
