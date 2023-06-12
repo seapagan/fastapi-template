@@ -4,7 +4,7 @@ import pytest
 from faker import Faker
 
 from managers.auth import AuthManager
-from managers.user import pwd_context
+from managers.user import UserManager, pwd_context
 from models.enums import RoleType
 from models.user import User
 
@@ -12,9 +12,15 @@ from models.user import User
 @pytest.mark.asyncio()
 @pytest.mark.integration()
 class TestUserRoutes:
-    """Test the User routes of the application."""
+    """Test the User routes of the application.
 
-    def get_test_user(self):
+    This test class has a mixture of direct database access and using the API
+    Classes when creating and testing Users. This is a bit messy but using
+    direct access crashes some of the tests (It's due to Pydantic validation).
+    This issue will be properly investigated later.
+    """
+
+    def get_test_user(self, hashed=True):
         """Return one or more test users."""
         fake = Faker()
 
@@ -22,7 +28,9 @@ class TestUserRoutes:
             "email": fake.email(),
             "first_name": "Test",
             "last_name": "User",
-            "password": pwd_context.hash("test12345!"),
+            "password": pwd_context.hash("test12345!")
+            if hashed
+            else "test12345!",
             "verified": True,
             "role": RoleType.user,
         }
@@ -46,7 +54,7 @@ class TestUserRoutes:
 
     async def test_get_my_profile_no_auth(self, test_app, get_db):
         """Ensure we get no profile if no auth token is provided."""
-        await get_db.execute(User.insert().values(**self.get_test_user()))
+        await UserManager.register(self.get_test_user(), database=get_db)
 
         response = test_app.get("/users/me", headers={})
 
@@ -56,15 +64,21 @@ class TestUserRoutes:
     # ------------------------------------------------------------------------ #
     #                           test get users route                           #
     # ------------------------------------------------------------------------ #
-    @pytest.mark.skip(reason="Errors somewhere in accessing the route.")
     async def test_admin_can_get_all_users(self, test_app, get_db):
-        """Ensure an admin user can get all users."""
-        for _ in range(3):
-            await get_db.execute(User.insert().values(**self.get_test_user()))
+        """Ensure an admin user can get all users.
 
-        admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await get_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        This test will create 3 users, then create an admin user and ensure
+        it can get all users.
+        """
+        for _ in range(3):
+            await UserManager.register(
+                self.get_test_user(hashed=False), database=get_db
+            )
+
+        token, _ = await UserManager.register(
+            {**self.get_test_user(hashed=False), "role": RoleType.admin},
+            database=get_db,
+        )
 
         response = test_app.get(
             "/users", headers={"Authorization": f"Bearer {token}"}
@@ -73,15 +87,50 @@ class TestUserRoutes:
         assert response.status_code == 200
         assert len(response.json()) == 4
 
+    async def test_admin_can_get_one_user(self, test_app, get_db):
+        """Ensure an admin user can get one users."""
+        for _ in range(3):
+            await UserManager.register(
+                self.get_test_user(hashed=False), database=get_db
+            )
+
+        token, _ = await UserManager.register(
+            {**self.get_test_user(hashed=False), "role": RoleType.admin},
+            database=get_db,
+        )
+
+        response = test_app.get(
+            "/users/?user_id=3", headers={"Authorization": f"Bearer {token}"}
+        )
+
+        assert response.status_code == 200
+        assert response.json()["id"] == 3
+
     async def test_user_cant_get_all_users(self, test_app, get_db):
         """Test we can't get all users if not admin."""
-        await get_db.execute(User.insert().values(**self.get_test_user()))
-        await get_db.execute(User.insert().values(**self.get_test_user()))
-        await get_db.execute(User.insert().values(**self.get_test_user()))
+        for _ in range(3):
+            await UserManager.register(
+                self.get_test_user(hashed=False), database=get_db
+            )
         token = AuthManager.encode_token({"id": 1})
 
         response = test_app.get(
             "/users", headers={"Authorization": f"Bearer {token}"}
+        )
+
+        assert response.status_code == 403
+        assert response.json() == {"detail": "Forbidden"}
+
+    async def test_user_cant_get_single_user(self, test_app, get_db):
+        """Test we can't get all users if not admin."""
+        for _ in range(3):
+            await UserManager.register(
+                self.get_test_user(hashed=False), database=get_db
+            )
+        token = AuthManager.encode_token({"id": 1})
+
+        response = test_app.get(
+            "/users/?user_id=2", headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 403
@@ -443,7 +492,7 @@ class TestUserRoutes:
             f"/users/{user2_id}",
             json={
                 "email": "new@example.com",
-                "password": "new_password",
+                "password": pwd_context.hash("new_password"),
                 "first_name": "new_name",
                 "last_name": "new_surname",
             },
