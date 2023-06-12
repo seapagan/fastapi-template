@@ -1,4 +1,4 @@
-# Run a development Server
+# Run a Local Development Server
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
