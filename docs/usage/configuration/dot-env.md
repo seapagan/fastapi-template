@@ -93,7 +93,11 @@ details entered into the `.env` file.
 For development and testing, I can recommend using
 [Mailtrap](https://mailtrap.io){:target="_blank"} to avoid filling up your
 mailbox with development spam (note that the Unit/Integration tests will
-automatically disable the mail functionality for this reason)
+automatically disable the mail functionality for this reason).
+
+MailTrap offers a free Email capture service with a virtual web-based Inbox. Its
+great for developing and manually testing code that includes email sending, I
+can't recommend it highly enough.
 
 Once you have the email settings, replace the default values in the `.env` file:
 
