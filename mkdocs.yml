@@ -36,6 +36,9 @@ markdown_extensions:
       linenums: false
       auto_title: false
   - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:
   - FastAPI Template: index.md
