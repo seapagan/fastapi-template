@@ -91,36 +91,62 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
 
-It is possible to use Docker with **autoreload**:
+> :warning: For local use rename `.env.example` to `.env`.
 
-Using `docker compose run`:
+It is possible to develop directly on Docker containers :
+
+**Using `docker compose up` (recommended):**
+
+```console
+docker compose up
+```
+
+To run and rebuild image (dependency updates):
+
+```console
+docker compose up --build
+```
+
+To remove all containers:
+
+```console
+docker compose down
+```
+
+**Using `docker compose run`:**
+
+Fisrt run migrations:
+
+```console
+docker compose run --rm api alembic upgrade head
+```
+
+Run containers:
 
 ```console
 docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
-In the case of dependency updates, **rebuild the image** is necessary:
+To run and rebuild image (dependency updates):
 
 ```console
 docker compose build
 ```
 
-Using `docker compose up` (adding `--build` rebuilds image):
+### Migrations on containers
+
+Running migrations on Docker container is also possible:
 
 ```console
-docker compose up
-
-docker compose down
+docker compose run --rm api alembic upgrade head
 ```
-
-:warning: For local use rename `.env.example` to `.env`.
 
 ### Testing on containers
 
-Runing tests on Docker container is also possible:
+Running tests on Docker container is also possible:
 
 ```console
-docker-compose run --rm api pytest
+docker compose run --rm api pytest
 ```
 
 ## Who is Using this Template?
