@@ -138,9 +138,36 @@
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+</label>
 <a class="md-nav__link md-nav__link--active" href="./">
         Installation
       </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#as-a-github-template">
+    As a GitHub template
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#as-a-fork">
+    As a Fork
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#upgrading-from-a-patch-file">
+    Upgrading from a Patch file
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
 <input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2_2" type="checkbox"/>
@@ -289,6 +316,27 @@
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#as-a-github-template">
+    As a GitHub template
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#as-a-fork">
+    As a Fork
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#upgrading-from-a-patch-file">
+    Upgrading from a Patch file
+  </a>
+</li>
+</ul>
 </nav>
 </div>
 </div>
@@ -296,6 +344,13 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="how-to-install-this-project">How to install this project</h1>
+<div class="admonition info">
+<p class="admonition-title">Contribute!</p>
+<p>If you make changes to the existing code, why not create a
+feature-branch and a Pull-Request to have it included into the Template? 😊</p>
+<p>See <a href="/contributing">Contributing</a> for more info.</p>
+</div>
+<h2 id="as-a-github-template">As a GitHub template</h2>
 <p>Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.</p>
@@ -304,6 +359,18 @@ which you can then Clone and start working on.</p>
 good <a href="https://fastapi.tiangolo.com/tutorial/">Basic</a> and
 <a href="https://fastapi.tiangolo.com/advanced/">Advanced</a> User Guides on the FastAPI
 website .</p>
+<h2 id="as-a-fork">As a Fork</h2>
+<p>You can also fork this project as usual, which allows you to easily bring it up
+to date with changes and improvements as they happen. This does have the
+posibility of conflicts. As long as you stick to adding new models and routes
+but not modifying the existing base code it should be ok.</p>
+<h2 id="upgrading-from-a-patch-file">Upgrading from a Patch file</h2>
+<p>Sometime in the next few releases I will include patch files with the release to
+upgrade from the previous release. These can be applied by Git and will upgrade
+the Template code to the latest. The same warning applies as above - your
+changes can cause merge conflicts.</p>
+<p>If you were a few releases behind, you can apply the patches in ascending
+version order to get to the latest.</p>
 </article>
 </div>
 </div>

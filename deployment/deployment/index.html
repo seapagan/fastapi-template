@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#deploying-to-production">
+<a class="md-skip" href="#deployment">
           Skip to content
         </a>
 </div>
@@ -268,6 +268,30 @@
 <a class="md-nav__link" href="#deploying-to-production">
     Deploying to Production
   </a>
+<nav aria-label="Deploying to Production" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nginx">
+    Nginx
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-lambda">
+    AWS Lambda
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-elastic-beanstalk">
+    AWS Elastic Beanstalk
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#docker-container">
+    Docker Container
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -315,6 +339,30 @@
 <a class="md-nav__link" href="#deploying-to-production">
     Deploying to Production
   </a>
+<nav aria-label="Deploying to Production" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nginx">
+    Nginx
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-lambda">
+    AWS Lambda
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-elastic-beanstalk">
+    AWS Elastic Beanstalk
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#docker-container">
+    Docker Container
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -323,29 +371,36 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Deployment</h1>
+<h1 id="deployment">Deployment</h1>
 <h2 id="deploying-to-production">Deploying to Production</h2>
 <p>There are quite a few ways to deploy a FastAPI app to production. There is a
-very good discussion about this on the FastAPI <a href="https://fastapi.tiangolo.com/deployment/">Deployment
-Guide</a> which covers using Uvicorn,
-Gunicorn and Containers.</p>
-<ul>
-<li>My Personal preference is to serve with Gunicorn, using uvicorn workers behind
-an Nginx proxy, though this does require you having your own server. There is a
-pretty decent tutorial on this at
-<a href="https://www.vultr.com/docs/how-to-deploy-fastapi-applications-with-gunicorn-and-nginx-on-ubuntu-20-04/">Vultr</a>.</li>
-<li>For deploying to AWS Lambda with API Gateway, there is a really excellent Medium
-post (and it's followup)
-<a href="https://medium.com/towards-data-science/fastapi-aws-robust-api-part-1-f67ae47390f9">Here</a>,</li>
-<li>For AWS Elastic Beanstalk there is a very comprehensive tutorial at
-<a href="https://testdriven.io/blog/fastapi-elastic-beanstalk/">testdriven.io</a></li>
-</ul>
+very good discussion about this on the FastAPI <a href="https://fastapi.tiangolo.com/deployment/" target="_blank">Deployment
+Guide</a> which covers
+using Uvicorn, Gunicorn and Containers.</p>
 <blockquote>
-<p>Remember:  you still need to set up a virtual environment, install all the
-dependencies, setup your <code>.env</code> file (or use Environment variables if your
-hosting provider uses these - for example Vercel or Heroku) and set up and
-migrate your Database, exactly the same as for Develpment as desctribed above.</p>
+<p>Remember: for each method you still need to set up a virtual environment,
+install all the dependencies, setup your <code>.env</code> file (or use Environment
+variables if your hosting provider uses these - for example Vercel or Heroku)
+and set up and migrate your Database, exactly the same as for Development as
+desctribed above.</p>
 </blockquote>
+<h3 id="nginx">Nginx</h3>
+<p>My Personal preference is to serve with Gunicorn, using uvicorn workers behind
+an Nginx proxy, though this does require you having your own server. There is a
+pretty decent tutorial on this at <a href="https://www.vultr.com/docs/how-to-deploy-fastapi-applications-with-gunicorn-and-nginx-on-ubuntu-20-04/" target="_blank">Vultr</a>.</p>
+<h3 id="aws-lambda">AWS Lambda</h3>
+<p>For deploying to AWS Lambda with API Gateway, there is a really excellent
+Medium post (and it's followup) <a href="https://medium.com/towards-data-science/fastapi-aws-robust-api-part-1-f67ae47390f9" target="_blank">Here</a></p>
+<h3 id="aws-elastic-beanstalk">AWS Elastic Beanstalk</h3>
+<p>For AWS Elastic Beanstalk there is a very comprehensive tutorial at
+<a href="https://testdriven.io/blog/fastapi-elastic-beanstalk/" target="_blank">testdriven.io</a></p>
+<h3 id="docker-container">Docker Container</h3>
+<p>Deploy a Docker container or Kubernetes cluster. There are many services which
+allow this including AWS, Google Cloud and more. See <a href="/development/docker">Develop with
+Docker</a> in this documentation for how to containerize
+this project, and the
+<a href="https://fastapi.tiangolo.com/deployment/docker/" target="_blank">Offical FastAPI docs section</a>
+for more information.</p>
 </article>
 </div>
 </div>
