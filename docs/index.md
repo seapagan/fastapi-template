@@ -39,6 +39,14 @@ following advantages to starting your own from scratch :
 
 The template **Requires Python 3.8.1+**
 
+## Follow the Repository
+
+If you use this code in your own projects, I'd recommend at least to 'star' or
+follow the repository on GitHub. In this way you would be informed of any
+updates, bug fixes or new functionality :+1:
+
+## Accreditation
+
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
 stating that you based your project on this Template, with a link back to this
