@@ -35,6 +35,7 @@ markdown_extensions:
   - pymdownx.highlight:
       linenums: false
       auto_title: false
+  - attr_list
 
 nav:
   - FastAPI Template: index.md
