@@ -173,6 +173,41 @@
     Set up the .env file
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#set-the-base-url">
+    Set the Base URL
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configure-the-database-settings">
+    Configure the database Settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#change-the-secret_key">
+    Change the SECRET_KEY
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#token-expiry-setting">
+    Token Expiry Setting
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#check-cors-settings">
+    Check CORS Settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#change-the-email-server-settings">
+    Change the Email Server settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-full-env-file">
+    Example full .env file
+  </a>
+</li>
 </ul>
 </nav>
 </li>
@@ -316,6 +351,41 @@
     Set up the .env file
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#set-the-base-url">
+    Set the Base URL
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#configure-the-database-settings">
+    Configure the database Settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#change-the-secret_key">
+    Change the SECRET_KEY
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#token-expiry-setting">
+    Token Expiry Setting
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#check-cors-settings">
+    Check CORS Settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#change-the-email-server-settings">
+    Change the Email Server settings
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-full-env-file">
+    Example full .env file
+  </a>
+</li>
 </ul>
 </nav>
 </div>
@@ -331,7 +401,75 @@ Database setup and JWT Secret Key. See the <code>.env.example</code> file for ho
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>The Database and User must already exist in your Postgres database!</p>
+<p><strong>Note that if you are using the <a href="development/docker/">Docker</a> container,
+this is done automatically.</strong></p>
 </div>
+<h2 id="set-the-base-url">Set the Base URL</h2>
+<p>The Base URL is the hostname and path to the ROOT of the API on your hosting
+system. Knowing this allows the API to build paths in responses and internally.</p>
+<div class="highlight"><pre><span></span><code><span class="na">BASE_URL</span><span class="o">=</span><span class="s">https://api.my-server.com</span>
+</code></pre></div>
+<h2 id="configure-the-database-settings">Configure the database Settings</h2>
+<p>Edit the below part of the <code>.env</code> file to confugure your database. If this is
+incorrect, the API will clear all routes and only display an error.</p>
+<div class="highlight"><pre><span></span><code><span class="na">DB_USER</span><span class="o">=</span><span class="s">dbuser</span>
+<span class="na">DB_PASSWORD</span><span class="o">=</span><span class="s">my_secret_passw0rd</span>
+<span class="na">DB_ADDRESS</span><span class="o">=</span><span class="s">localhost</span>
+<span class="na">DB_PORT</span><span class="o">=</span><span class="s">5432</span>
+<span class="na">DB_NAME</span><span class="o">=</span><span class="s">my_database_name</span>
+</code></pre></div>
+<h2 id="change-the-secret_key">Change the SECRET_KEY</h2>
+<p>Do not leave this as default, generate a new unique key for each of your
+projects!</p>
+<p>To generate a good secret key you can use the below command on Linux
+or Mac:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>rand<span class="w"> </span>-base64<span class="w"> </span><span class="m">32</span>
+<span class="go">xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=</span>
+</code></pre></div>
+<p>Then replace the default value in the <code>.env</code> file as so:</p>
+<div class="highlight"><pre><span></span><code><span class="na">SECRET_KEY</span><span class="o">=</span><span class="s">xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=</span>
+</code></pre></div>
+<h2 id="token-expiry-setting">Token Expiry Setting</h2>
+<p>This is how long (in minutes) before the access (Bearer) Token expires and needs
+to be refreshed. Default is 120 minutes.</p>
+<div class="highlight"><pre><span></span><code><span class="na">ACCESS_TOKEN_EXPIRE_MINUTES</span><span class="o">=</span><span class="s">120</span>
+</code></pre></div>
+<h2 id="check-cors-settings">Check CORS Settings</h2>
+<p>Cross-Origin Resource Sharing
+(<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank">CORS</a>)
+is an HTTP-header based mechanism that allows a server to indicate any origins
+(domain, scheme, or port) other than its own from which a browser should permit
+loading resources.</p>
+<p>For a <strong>PUBLIC API</strong> (unless its going through an API gateway!), set
+<code>CORS_ORIGINS=*</code>, otherwise list the domains (<strong>and ports</strong>) required. If you
+use an API gateway of some nature, that will probably need to be listed.</p>
+<div class="highlight"><pre><span></span><code><span class="na">CORS_ORIGINS</span><span class="o">=</span><span class="s">*</span>
+</code></pre></div>
+<p>If the database is not configured or cannot be reached, the Application will
+disable all routes, print an error to the console, and return a a 500 status
+code with a clear JSON message for all routes. This saves the ugly default
+"Internal Server Error" from being displayed.</p>
+<h2 id="change-the-email-server-settings">Change the Email Server settings</h2>
+<p>The API will currently only send an email when a new user registers (though we
+will make more use of this in future), so you need to have valid email account
+details entered into the <code>.env</code> file.</p>
+<p>For development and testing, I can recommend using
+<a href="https://mailtrap.io" target="_blank">Mailtrap</a> to avoid filling up your
+mailbox with development spam (note that the Unit/Integration tests will
+automatically disable the mail functionality for this reason)</p>
+<p>Once you have the email settings, replace the default values in the <code>.env</code> file:</p>
+<div class="highlight"><pre><span></span><code><span class="na">MAIL_USERNAME</span><span class="o">=</span><span class="s">emailuser</span>
+<span class="na">MAIL_PASSWORD</span><span class="o">=</span><span class="s">letmein</span>
+<span class="na">MAIL_FROM</span><span class="o">=</span><span class="s">my_api@provider.com</span>
+<span class="na">MAIL_PORT</span><span class="o">=</span><span class="s">587</span>
+<span class="na">MAIL_SERVER</span><span class="o">=</span><span class="s">smtp.mailserver.com</span>
+<span class="na">MAIL_FROM_NAME</span><span class="o">=</span><span class="s">"FastAPI Template"</span>
+</code></pre></div>
+<h2 id="example-full-env-file">Example full <code>.env</code> file</h2>
+<p>Below is a full .env file. This can also be found in the root of the API as
+<code>.env.example</code>.</p>
+<p>The <code>TEST_DB_xxx</code> variables are not used at the moment, they will allow the use
+of Postgres as the testing datbase instead of the default SQLite.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># The Base API Url. This is where your API wil be served from, and can be read</span>
 <span class="c1"># in the application code. It has no effect on the running of the applciation</span>
 <span class="c1"># but is an easy way to build a path for API responses. Defaults to</span>
@@ -381,17 +519,6 @@ Database setup and JWT Secret Key. See the <code>.env.example</code> file for ho
 <span class="na">MAIL_USE_CREDENTIALS</span><span class="o">=</span><span class="s">True</span>
 <span class="na">MAIL_VALIDATE_CERTS</span><span class="o">=</span><span class="s">True</span>
 </code></pre></div>
-<p>For a <strong>PUBLIC API</strong> (unless its going through an API gateway!), set
-<code>CORS_ORIGINS=*</code>, otherwise list the domains (<strong>and ports</strong>) required. If you
-use an API gateway of some nature, that will probably need to be listed.</p>
-<p>To generate a good secret key you can use the below command on Linux or Mac:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>openssl<span class="w"> </span>rand<span class="w"> </span>-base64<span class="w"> </span><span class="m">32</span>
-<span class="go">xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=</span>
-</code></pre></div>
-<p>If the database is not configured or cannot be reached, the Application will
-disable all routes, print an error to the console, and return a a 500 status
-code with a clear JSON message for all routes. This saves the ugly default
-"Internal Server Error" from being displayed.</p>
 </article>
 </div>
 </div>

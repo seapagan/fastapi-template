@@ -183,6 +183,21 @@
     Migrate the Database
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#update-the-database-structure">
+    Update the Database structure
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#clear-or-initialise-the-database">
+    Clear or Initialise the database
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cli-options-for-the-database">
+    CLI options for the Database
+  </a>
+</li>
 </ul>
 </nav>
 </li>
@@ -316,6 +331,21 @@
     Migrate the Database
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#update-the-database-structure">
+    Update the Database structure
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#clear-or-initialise-the-database">
+    Clear or Initialise the database
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cli-options-for-the-database">
+    CLI options for the Database
+  </a>
+</li>
 </ul>
 </nav>
 </div>
@@ -331,6 +361,7 @@ run the following command to set it up, applying all the required migrations:</p
 </code></pre></div>
 <p>(this is the same as running <code>alembic upgrade head</code>, though it will downgrade to
 the base structure and delete all data as well)</p>
+<h2 id="update-the-database-structure">Update the Database structure</h2>
 <p>Everytime you add or edit a model, create a new migration as shown below. You
 will be asked for a commit message. This will create and apply the migration in
 the same step:</p>
@@ -345,6 +376,12 @@ the same step:</p>
 </code></pre></div>
 <p>Check out the <a href="https://github.com/sqlalchemy/alembic">Alembic</a> repository for
 more information on how to use (for example how to revert migrations).</p>
+<h2 id="clear-or-initialise-the-database">Clear or Initialise the database</h2>
+<p>If you wish clear or reset the database you can do this with <code>./api-admin db
+drop</code>. This will drop all tables and reset the database, destroying all data.
+Note that you will need to either run <code>./api-admin db upgrade</code> or <code>api-admin db
+init</code> again before the database is usable.</p>
+<h2 id="cli-options-for-the-database">CLI options for the Database</h2>
 <p>Look at the built-in help for more details :</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>db<span class="w"> </span>--help
 <span class="go">Usage: api-admin db [OPTIONS] COMMAND [ARGS]...</span>
