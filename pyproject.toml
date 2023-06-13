@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-fastapi = "^0.96.0"
+fastapi = "^0.97.0"
 alembic = "^1.11.1"
 databases = "^0.7.0"
 SQLAlchemy = "^1.4.48,<2.0"
@@ -17,7 +17,7 @@ python-decouple = "^3.8"
 psycopg2 = "^2.9.6"
 PyJWT = "^2.7.0"
 Jinja2 = "^3.1.2"
-rich = "^13.3.5"
+rich = "^13.4.2"
 asyncclick = "^8.1.3.4"
 anyio = "^3.6.2"
 email-validator = "^1.3.1"
@@ -57,7 +57,7 @@ bandit = "^1.7.5"
 poethepoet = "^0.20.0"
 httpx = "0.23.3"
 aiosqlite = "^0.19.0"
-pytest = "^7.3.1"
+pytest = "^7.3.2"
 pytest-cov = "^4.0.0"
 pytest-xdist = "^3.2.1"
 pytest-sugar = "^0.9.7"
@@ -69,6 +69,7 @@ pymdown-extensions = "^10.0.1"
 pygments = "^2.15.1"
 mkdocs-swagger-ui-tag = "^0.6.1"
 mock = "^5.0.2"
+faker = "^18.10.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -78,6 +79,7 @@ build-backend = "poetry.core.masonry.api"
 serve = "uvicorn main:app --reload"
 pre = "pre-commit run --all-files"
 "docs:publish" = "mkdocs gh-deploy"
+"docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 lint = "pylint **/*.py"
 
 [tool.flake8]
@@ -95,7 +97,11 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
-addopts = ["--cov", "--cov-report", "term-missing", "--cov-report", "html"]
+addopts = [
+  "--cov",
+  "--cov-report", "term-missing",
+  "--cov-report", "html",
+  ]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:Deprecated API features detected:DeprecationWarning",

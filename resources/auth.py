@@ -81,9 +81,11 @@ async def verify(code: str = "", db=Depends(get_database)):
     """Verify a new user.
 
     The code is sent to  new user by email, which must then be validated here.
+
+    We dont need to return anything here, as success or errors will be handled
+    by FastAPI exceptions.
     """
-    response = await AuthManager.verify(code, db)
-    return response
+    await AuthManager.verify(code, db)
 
 
 # @router.get("/resend/", status_code=status.HTTP_200_OK)

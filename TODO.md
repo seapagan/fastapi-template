@@ -27,6 +27,10 @@ when it is in a suitable state.
 - allow CLI to verify unverified users.
 - implement rate-limiting - auto block abusers - would help if `quotas`
   implemented first (see below).
+- users should be able to get others (limited) profile data in some cases -
+  public data should be ok (eg in a front-end profile page). Think about how
+  this should be implemented. *This may just need to be in derived projects
+  though, not this template*.
 
 ## Auth
 

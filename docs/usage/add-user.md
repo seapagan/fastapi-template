@@ -7,6 +7,8 @@ the database.
 This template includes a command-line utility to create a new user and
 optionally make them Admin at the same time:
 
+## Interactively
+
 ```console
 ./api-admin user create
 ```
@@ -36,3 +38,18 @@ Options:
 
 Note that any user added manually this way will automatically be verified (no
 need for the confirmation email which will not be sent anyway.)
+
+## Through Command-line parameters
+
+You can also specify the required User parameters on the command-line. Any
+options that are missing will be prompted for (except for Admin, this must be
+physically specified if wanted) :
+
+```console
+$ ./api-admin user create --email testuser@mailserver.com -f Test -l Last -p s3cr3tpassw0rd
+```
+
+In the above case a normal user will be created. You can mix long-form
+parameters (`--first_name`) and short-form (`-f`) in the same command.
+
+This would be useful for automation scripts for example.

@@ -1,11 +1,13 @@
-# Run a development Server
+# Local Development
+
+## Run a Server
 
 The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
 when you install the project dependencies. This can be used for testing the API
 during development. There is a built-in command to run this easily :
 
 ```console
-api-admin serve
+./api-admin serve
 ```
 
 This will by default run the server on <http://localhost:8000>, and reload after
@@ -39,3 +41,46 @@ will automatically reload when it detects any changes as you develop.
 
 **Note: Neither of these are suitable to host a project in production, see the
 next section for information.**
+
+## Run Tests
+
+This API contains Unit and Integration tests using
+'[Pytest](https://docs.pytest.org)'
+
+To run these from within the virtual environment use the `pytest` command:
+
+```console
+$ pytest
+Test session starts (platform: linux, Python 3.11.3, pytest 7.3.1, pytest-sugar 0.9.7)
+Using --randomly-seed=2090593217
+
+...
+
+ tests/integration/test_protected_user_routes.py ✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓
+ tests/integration/test_user_routes.py ✓✓✓✓✓✓✓✓✓✓✓✓✓✓
+
+...
+
+
+------------------------------------------------------------
+TOTAL                            518     10    98%
+Coverage HTML written to dir htmlcov
+
+
+Results (36.04s):
+     157 passed
+       4 skipped
+
+```
+
+if you wish to disable the coverage display temporarily use :
+
+```console
+$ pytest --no-cov
+```
+
+You can also run the Unit or Integration tests independently using `pytest -m
+unit` or `pytest -m integration`.
+
+See the [Pytest how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html) for
+more information

@@ -25,6 +25,7 @@ class UserEditRequest(UserBase):
     For now just inherit everything from the UserRegisterRequest
     """
 
+    email: str = Field(example=ExampleUser.email)
     password: str = Field(example=ExampleUser.password)
     first_name: str = Field(example=ExampleUser.first_name)
     last_name: str = Field(example=ExampleUser.last_name)
