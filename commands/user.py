@@ -162,6 +162,7 @@ def show(
     user_id: int = typer.Argument(
         ...,
         help="The user's id",
+        show_default=False,
     ),
 ):
     """Show details for a single user."""
@@ -190,6 +191,7 @@ def verify(
     user_id: int = typer.Argument(
         ...,
         help="The user's id",
+        show_default=False,
     ),
 ):
     """Manually verify a user by id."""
@@ -232,6 +234,7 @@ def ban(
     user_id: int = typer.Argument(
         ...,
         help="The user's id",
+        show_default=False,
     ),
     unban: bool = typer.Option(
         False,
@@ -285,6 +288,7 @@ def delete(
     user_id: int = typer.Argument(
         ...,
         help="The user's id",
+        show_default=False,
     )
 ):
     """Delete the user with the given id."""
