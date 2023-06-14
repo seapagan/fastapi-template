@@ -32,8 +32,9 @@ alembic revision --autogenerate -m "Commit message"
 alembic upgrade head
 ```
 
-Check out the [Alembic](https://github.com/sqlalchemy/alembic) repository for
-more information on how to use (for example how to revert migrations).
+Check out the [Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"}
+repository for more information on how to use (for example how to revert
+migrations).
 
 ## Clear or Initialise the database
 
