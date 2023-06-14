@@ -4,13 +4,14 @@ from asyncio import run as aiorun
 import typer
 from fastapi import HTTPException
 from rich import print  # pylint: disable=W0622
+from rich.console import Console
+from rich.table import Table
 
-from database.db import get_database
+from database.db import database
 from managers.user import UserManager
 from models.enums import RoleType
 
 app = typer.Typer(no_args_is_help=True)
-database = get_database()
 
 
 @app.command()
@@ -66,9 +67,9 @@ def create(
 
     async def create_user(user_data: dict):
         try:
-            await database.connect()  # type: ignore # pylint: disable=E1101
+            await database.connect()
             await UserManager.register(user_data, database)
-            await database.disconnect()  # type: ignore # pylint: disable=E1101
+            await database.disconnect()
             print(
                 f"\n[green]-> User [bold]{user_data['email']}[/bold] "
                 "added succesfully.\n"
@@ -92,3 +93,98 @@ def create(
     }
 
     aiorun(create_user(user_data))
+
+
+@app.command()
+def list():
+    """List all users in the database.
+
+    Show one line per user with Id, Email, First Name, Last Name and Role.
+    Also include verified/banned status and a total count.
+    """
+
+    async def list_users():
+        try:
+            await database.connect()
+            user_list = await UserManager.get_all_users(database)
+            await database.disconnect()
+
+            return user_list
+        except Exception as exc:
+            print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
+
+    user_list = aiorun(list_users())
+    if user_list:
+        console = Console()
+        table = Table(
+            show_header=True,
+            header_style="bold magenta",
+            title="\n[bold]Registered Users",
+            title_style="bold cyan",
+            title_justify="left",
+        )
+        table.add_column("Id", style="dim", width=5)
+        table.add_column("Email")
+        table.add_column("First Name")
+        table.add_column("Last Name")
+        table.add_column("Role")
+        table.add_column("Verified", justify="center")
+        table.add_column("Banned", justify="center")
+
+        for user in user_list:
+            table.add_row(
+                str(user["id"]),
+                user["email"],
+                user["first_name"],
+                user["last_name"],
+                user["role"].name,
+                str(user["verified"]),
+                str(user["banned"]),
+            )
+        console.print(table)
+
+
+@app.command()
+def show(id: int):
+    """Show details for a single user."""
+
+    async def show_user():
+        try:
+            await database.connect()
+            user_list = await UserManager.get_user_by_id(id, database)
+            await database.disconnect()
+
+            return user_list
+        except Exception as exc:
+            print(f"\n[red]-> ERROR getting User details : [bold]{exc}\n")
+
+    user = aiorun(show_user())
+    if user:
+        console = Console()
+        table = Table(
+            show_header=True,
+            header_style="bold magenta",
+            title=f"\n[bold]Showing details for User {id}",
+            title_style="bold cyan",
+            title_justify="left",
+        )
+        table.add_column("Id", style="dim", width=5)
+        table.add_column("Email")
+        table.add_column("First Name")
+        table.add_column("Last Name")
+        table.add_column("Role")
+        table.add_column("Verified", justify="center")
+        table.add_column("Banned", justify="center")
+
+        table.add_row(
+            str(user["id"]),
+            user["email"],
+            user["first_name"],
+            user["last_name"],
+            user["role"].name,
+            str(user["verified"]),
+            str(user["banned"]),
+        )
+        console.print(table)
+    else:
+        print("\n[red]-> ERROR getting User details : [bold]User not found\n")
