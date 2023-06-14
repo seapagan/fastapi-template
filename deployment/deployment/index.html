@@ -382,13 +382,14 @@
 very good discussion about this on the FastAPI <a href="https://fastapi.tiangolo.com/deployment/" target="_blank">Deployment
 Guide</a> which covers
 using Uvicorn, Gunicorn and Containers.</p>
-<blockquote>
-<p>Remember: for each method you still need to set up a virtual environment,
+<div class="admonition info">
+<p class="admonition-title">Remember</p>
+<p>Whichever method you choose, you still need to set up a virtual environment,
 install all the dependencies, setup your <code>.env</code> file (or use Environment
 variables if your hosting provider uses these - for example Vercel or Heroku)
 and set up and migrate your Database, exactly the same as for Development as
-desctribed above.</p>
-</blockquote>
+desctribed previously.</p>
+</div>
 <h3 id="nginx">Nginx</h3>
 <p>My Personal preference is to serve with Gunicorn, using uvicorn workers behind
 an Nginx proxy, though this does require you having your own server. There is a
