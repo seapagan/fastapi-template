@@ -89,6 +89,66 @@ website .
 
 Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
+## Docker
+
+> :warning: For local use rename `.env.example` to `.env`.
+
+It is possible to develop directly on Docker containers :
+
+**Using `docker compose up` (recommended):**
+
+```console
+docker compose up
+```
+
+To run and rebuild image (dependency updates):
+
+```console
+docker compose up --build
+```
+
+To remove all containers:
+
+```console
+docker compose down
+```
+
+**Using `docker compose run`:**
+
+Fisrt run migrations:
+
+```console
+docker compose run --rm api alembic upgrade head
+```
+
+Run containers:
+
+```console
+docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
+```
+
+To run and rebuild image (dependency updates):
+
+```console
+docker compose build
+```
+
+### Migrations on containers
+
+Running migrations on Docker container is also possible:
+
+```console
+docker compose run --rm api alembic upgrade head
+```
+
+### Testing on containers
+
+Running tests on Docker container is also possible:
+
+```console
+docker compose run --rm api pytest
+```
+
 ## Who is Using this Template?
 
 Meh, at the moment probably no-one except me 😆. If you do use this in one of
