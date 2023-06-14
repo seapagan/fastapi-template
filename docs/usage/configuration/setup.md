@@ -6,23 +6,24 @@ It is always a good idea to set up dedicated Virtual Environment when you are
 developing a Python application. If you use Poetry, this will be done
 automatically for you when you run `poetry install`.
 
-Otherwise, [Pyenv](https://github.com/pyenv/pyenv) has a
-[virtualenv](https://github.com/pyenv/pyenv-virtualenv) plugin which is very
-easy to use.
+Otherwise, [Pyenv](https://github.com/pyenv/pyenv){:target="_blank"} has a
+[virtualenv](https://github.com/pyenv/pyenv-virtualenv){:target="_blank"} plugin
+which is very easy to use.
 
 Also, check out this
-[freeCodeCamp](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/)
+[freeCodeCamp](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/){:target="_blank"}
 tutorial or a similar
-[RealPython](https://realpython.com/python-virtual-environments-a-primer/) one
-for some great info. If you are going this (oldschool!) way, I'd recommend using
-[Virtualenv](https://virtualenv.pypa.io/en/latest/) instead of the built in
-`venv` tool (which is a subset of this).
+[RealPython](https://realpython.com/python-virtual-environments-a-primer/){:target="_blank"}
+one for some great info. If you are going this (oldschool!) way, I'd recommend
+using [Virtualenv](https://virtualenv.pypa.io/en/latest/){:target="_blank"}
+instead of the built in `venv` tool (which is a subset of this).
 
 ## Install required Dependencies
 
-The project has been set up using [Poetry](https://python-poetry.org/) to
-organize and install dependencies. If you have Poetry installed, simply run the
-following to install all that is needed.
+The project has been set up using
+[Poetry](https://python-poetry.org/){:target="_blank"} to organize and install
+dependencies. If you have Poetry installed, simply run the following to install
+all that is needed.
 
 ```console
 poetry install
