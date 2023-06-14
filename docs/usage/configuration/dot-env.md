@@ -9,7 +9,7 @@ Database setup and JWT Secret Key. See the `.env.example` file for how to use.
 !!! info
     The Database and User must already exist in your Postgres database!
 
-    **Note that if you are using the [Docker](development/docker/) container,
+    **Note that if you are using the [Docker](../../../development/docker/) container,
     this is done automatically.**
 
 ## Set the Base URL

@@ -2,8 +2,9 @@
 
 ## Run a Server
 
-Docker containers can be used for testing the API during development
-just make sure that **Docker is installed** and you can use the built-in docker compose file:
+Docker containers can be used for testing the API during development just make
+sure that **Docker is installed** and you can use the built-in docker compose
+file:
 
 ```console
 docker compose up
@@ -35,7 +36,7 @@ docker compose build
 ## Run Tests
 
 This API contains Unit and Integration tests using
-'[Pytest](https://docs.pytest.org)'
+'[Pytest](https://docs.pytest.org){:target="_blank"}'
 
 To run these from within the Docker container use the `pytest` command with `docker compose`:
 
@@ -72,5 +73,6 @@ $ docker compose run --rm api pytest --no-cov
 You can also run the Unit or Integration tests independently using `docker compose run --rm api pytest -m
 unit` or `docker compose run --rm api pytest -m integration`.
 
-See the [Pytest how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html) for
-more information
+See the [Pytest
+how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html){:target="_blank"}
+for more information

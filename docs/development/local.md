@@ -2,9 +2,10 @@
 
 ## Run a Server
 
-The [uvicorn](https://www.uvicorn.org/) ASGI server is automatically installed
-when you install the project dependencies. This can be used for testing the API
-during development. There is a built-in command to run this easily :
+The [uvicorn](https://www.uvicorn.org/){:target="_blank"} ASGI server is
+automatically installed when you install the project dependencies. This can be
+used for testing the API during development. There is a built-in command to run
+this easily :
 
 ```console
 ./api-admin serve
@@ -45,7 +46,7 @@ next section for information.**
 ## Run Tests
 
 This API contains Unit and Integration tests using
-'[Pytest](https://docs.pytest.org)'
+'[Pytest](https://docs.pytest.org){:target="_blank"}'
 
 To run these from within the virtual environment use the `pytest` command:
 
@@ -82,5 +83,6 @@ $ pytest --no-cov
 You can also run the Unit or Integration tests independently using `pytest -m
 unit` or `pytest -m integration`.
 
-See the [Pytest how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html) for
-more information
+See the
+[Pytest how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html){:target="_blank"}
+for more information

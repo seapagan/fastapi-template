@@ -26,9 +26,10 @@ tasks.
 actual work needed for the routes. Check out the `managers/auth.py` and
 `managers/user.py`
 
-**migrations/** - We use [Alembic](https://github.com/sqlalchemy/alembic) to
-handle the database migrations. Check out their pages for more info. See
-instructions under [Development](/usage/configuration/dot-env) for more info.
+**migrations/** - We use
+[Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"} to handle the
+database migrations. Check out their pages for more info. See instructions under
+[Development](../usage/configuration/dot-env) for more info.
 
 **models/** - Any database models used should be defined here along with
 supporting files (eq the `models/enums.py`) used here. Models are
@@ -45,7 +46,8 @@ functionality from the Manager (UserManager in `managers/user.py` in this case).
 
 **schemas/** - Contains all `request` and `response` schemas used in the
 application, as usual with a separate file for each group. The Schemas are
-defined as [Pydantic](https://pydantic-docs.helpmanual.io/) Classes.
+defined as [Pydantic](https://pydantic-docs.helpmanual.io/){:target="_blank"}
+Classes.
 
 **static/** - Any static files used by HTML templates for example CSS or
 JS files.

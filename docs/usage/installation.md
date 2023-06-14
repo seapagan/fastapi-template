@@ -4,7 +4,7 @@
     If you make changes to the existing code, why not create a
     feature-branch and a Pull-Request to have it included into the Template? 😊
 
-    See [Contributing](/contributing) for more info.
+    See [Contributing](../../contributing) for more info.
 
 ## As a GitHub template
 
@@ -13,10 +13,11 @@ This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.
 
 It is assumed that you have at least some knowledge of
-[FastAPI](https://fastapi.tiangolo.com/) to use this template, there are very
-good [Basic](https://fastapi.tiangolo.com/tutorial/) and
-[Advanced](https://fastapi.tiangolo.com/advanced/) User Guides on the FastAPI
-website .
+[FastAPI](https://fastapi.tiangolo.com/){:target="_blank"} to use this template,
+there are very good
+[Basic](https://fastapi.tiangolo.com/tutorial/){:target="_blank"} and
+[Advanced](https://fastapi.tiangolo.com/advanced/){:target="_blank"} User Guides
+on the FastAPI website .
 
 ## As a Fork
 

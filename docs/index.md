@@ -12,8 +12,8 @@ following advantages to starting your own from scratch :
   or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
-  [Alembic](https://github.com/sqlalchemy/alembic) is used to control database
-  migrations.
+  [Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"} is used to
+  control database migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
@@ -26,7 +26,7 @@ following advantages to starting your own from scratch :
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
   data) since it is based on the excellent
-  [asyncclick](https://github.com/python-trio/asyncclick) library.
+  [Typer](https://typer.tiangolo.com/){:target="_blank"} library.
 - Database and Secrets are automatically read from Environment variables or a
   `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
@@ -58,7 +58,7 @@ your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
 appreciation for my work, why not [Buy me a
-Coffee!](https://www.buymeacoffee.com/seapagan) 😃
+Coffee!](https://www.buymeacoffee.com/seapagan){:target="_blank"} 😃
 
 ## Funding Link
 
