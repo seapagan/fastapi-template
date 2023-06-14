@@ -13,8 +13,8 @@ command-line.
 
 ## Add a User
 
-This is described in the [previous page](/usage/add-user). It is important to note that any user
-added this was will be **automatically verified**.
+This is described in the [previous page](/usage/add-user). It is important to
+note that any user added this was will be **automatically verified**.
 
 ## List All Users
 
@@ -55,7 +55,7 @@ $ ./api-admin user vefify 23
 
 ## Search for a user
 
-*Currently not implemented*
+This functionality is *Currently not implemented*
 
 ## Ban or Unban a specific User
 
