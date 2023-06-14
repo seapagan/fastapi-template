@@ -49,6 +49,7 @@ nav:
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md
+      - User Control via the CLI: usage/user-control.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
