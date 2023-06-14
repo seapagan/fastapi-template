@@ -95,6 +95,8 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
 
+### Develop on containers
+
 > :warning: For local use rename `.env.example` to `.env`.
 
 It is possible to develop directly on Docker containers :
