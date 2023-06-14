@@ -20,20 +20,23 @@ details :
 
 ```console
 $ ./api-admin user create --help
-Usage: api-admin user create [OPTIONS]
+ API Template configuration tool 1.5.0
 
-  Create a new user.
+ Usage: api-admin user create [OPTIONS]
 
-  Values are either taken from the command line options, or interactively for
-  any that are missing.
+ Create a new user. This can optionally be an admin user.
+ Values are either taken from the command line options, or interactively for
+ any that are missing.
 
-Options:
-  --email       -e      TEXT  The user's email address [required]
-  --first_name  -f      TEXT  The user's first name [required]
-  --last_name   -l      TEXT  The user's last name [required]
-  --password    -p      TEXT  The user's password [required]
-  --admin       -a            Make this user an Admin
-  --help                 Show this message and exit.
+  Options
+  *  --email       -e      TEXT  The user's email address [required]
+  *  --first_name  -f      TEXT  The user's first name [required]
+  *  --last_name   -l      TEXT  The user's last name [required]
+  *  --password    -p      TEXT  The user's password [required]
+     --admin       -a            Make this user an Admin
+     --help                      Show this message and exit.
+
+
 ```
 
 Note that any user added manually this way will automatically be verified (no

@@ -107,8 +107,6 @@ def metadata():
     This includes the title and description displayed on the root route and
     Documentation, Author details, Repository URL and more.
     """
-    print("\n[green]API-Template : Customize application Metadata\n")
-
     data = {
         "title": click.prompt(
             "Enter your API title", type=str, default=custom_metadata.title
