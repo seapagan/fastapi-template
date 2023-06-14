@@ -127,7 +127,7 @@ Run containers:
 docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
-To run and rebuild image (dependency updates):
+To rebuild image (dependency updates):
 
 ```console
 docker compose build
