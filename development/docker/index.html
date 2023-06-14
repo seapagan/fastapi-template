@@ -242,6 +242,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#updating-dependencies">
+    Updating Dependencies
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#run-tests">
     Run Tests
   </a>
@@ -322,6 +327,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#updating-dependencies">
+    Updating Dependencies
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#run-tests">
     Run Tests
   </a>
@@ -335,7 +345,55 @@
 <article class="md-content__inner md-typeset">
 <h1 id="run-a-server-using-docker">Run a server using Docker</h1>
 <h2 id="run-a-server">Run a Server</h2>
+<p>Docker containers can be used for testing the API during development
+just make sure that <strong>Docker is installed</strong> and you can use the built-in docker compose file:</p>
+<div class="highlight"><pre><span></span><code><span class="go">docker compose up</span>
+</code></pre></div>
+<p>This will by default run the server on <a href="http://localhost:8000">http://localhost:8000</a>, and reload after
+any change to the source code.</p>
+<p>If you need more control, you can run <code>uvicorn</code> directly :</p>
+<div class="highlight"><pre><span></span><code><span class="go">docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload</span>
+</code></pre></div>
+<p>The above command starts the server running on <a href="http://localhost:8000">http://localhost:8000</a>, and it
+will automatically reload when it detects any changes as you develop.</p>
+<p><strong>Note: Neither of these are suitable to host a project in production, see the
+next section for information.</strong></p>
+<h2 id="updating-dependencies">Updating Dependencies</h2>
+<p>Every time a new dependency is installed a new image must be built:</p>
+<div class="highlight"><pre><span></span><code><span class="go">docker compose build</span>
+</code></pre></div>
 <h2 id="run-tests">Run Tests</h2>
+<p>This API contains Unit and Integration tests using
+'<a href="https://docs.pytest.org">Pytest</a>'</p>
+<p>To run these from within the Docker container use the <code>pytest</code> command with <code>docker compose</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>api<span class="w"> </span>pytest
+<span class="go">Test session starts (platform: linux, Python 3.11.3, pytest 7.3.1, pytest-sugar 0.9.7)</span>
+<span class="go">Using --randomly-seed=2090593217</span>
+
+<span class="go">...</span>
+
+<span class="go"> tests/integration/test_protected_user_routes.py ✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓</span>
+<span class="go"> tests/integration/test_user_routes.py ✓✓✓✓✓✓✓✓✓✓✓✓✓✓</span>
+
+<span class="go">...</span>
+
+
+<span class="go">------------------------------------------------------------</span>
+<span class="go">TOTAL                            518     10    98%</span>
+<span class="go">Coverage HTML written to dir htmlcov</span>
+
+
+<span class="go">Results (36.04s):</span>
+<span class="go">     157 passed</span>
+<span class="go">       4 skipped</span>
+</code></pre></div>
+<p>if you wish to disable the coverage display temporarily use:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>docker<span class="w"> </span>compose<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>api<span class="w"> </span>pytest<span class="w"> </span>--no-cov
+</code></pre></div>
+<p>You can also run the Unit or Integration tests independently using <code>docker compose run --rm api pytest -m
+unit</code> or <code>docker compose run --rm api pytest -m integration</code>.</p>
+<p>See the <a href="https://docs.pytest.org/en/7.3.x/how-to/index.html">Pytest how-tos</a> for
+more information</p>
 </article>
 </div>
 </div>
