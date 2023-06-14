@@ -30,14 +30,14 @@ poe pre
 
 If you have added or changed functionality, please Update the documentation
 also. **This is a pre-req to having a PR merged**. See
-[Documentation](/development/documentation/) for instructions
+[Documentation](../development/documentation/) for instructions
 
 ## Ensure the tests Pass
 
 Ensure that any new code has relevant PASSING Unit and (if applicable)
 Integration Tests. New code should have full coverage and overall coverage
-should not drop! See [Running
-Tests](/development/local/#run-tests) for more information.
+should not drop! See [Running Tests](../development/local/#run-tests) for more
+information.
 
 Note that there is a GitHub Action set up which will run all tests for each
 commit that is pushed to the Repository.

@@ -3,12 +3,13 @@
 ## Development
 
 The documentation for this project is created using
-[MkDocs](https://www.mkdocs.org/) with the [Material for MkDocs
-](https://squidfunk.github.io/mkdocs-material/) theme.
+[MkDocs](https://www.mkdocs.org/){:target="_blank"} with the
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/){:target="_blank"}
+theme.
 
 For this template, the docs website is served using [GitHub
-Pages](https://pages.github.com/), though since it is just HTML and CSS you can
-host it from any provider you choose.
+Pages](https://pages.github.com/){:target="_blank"}, though since it is just
+HTML and CSS you can host it from any provider you choose.
 
 Source for this is stored in the `docs` folder off the root of the project, and
 consists of Markdown files. The main control file is `mkdocs.yml` in the root.
@@ -47,8 +48,8 @@ GitHub Pages.
 
 ## Publish to GitHub Pages
 
-When you are happy with the docs, they can be published automatically to
-[GitHub Pages](https://pages.github.com/) using the below command :
+When you are happy with the docs, they can be published automatically to [GitHub
+Pages](https://pages.github.com/){:target="_blank"} using the below command :
 
 ```console
 $ poe docs:publish

@@ -10,6 +10,19 @@ from config.helpers import get_api_details, get_api_version
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 
+def cli_header():
+    """Show a common header for all commands."""
+    name, _, _ = get_api_details()
+    print(
+        Panel(
+            f"[bold]{name} configuration tool[/bold] {get_api_version()}",
+            highlight=True,
+            border_style="green",
+            expand=False,
+        )
+    )
+
+
 @app.callback(invoke_without_command=True)
 def main(
     version: bool = typer.Option(
@@ -21,6 +34,7 @@ def main(
     )
 ):
     """Run administrative tasks for the FastAPI Template system."""
+    cli_header()
     if version:
         name, desc, _ = get_api_details()
         output = f"[bold]{name}[/bold] v{get_api_version()}\n{desc}"

@@ -4,14 +4,15 @@
 
 There are quite a few ways to deploy a FastAPI app to production. There is a
 very good discussion about this on the FastAPI [Deployment
-Guide](https://fastapi.tiangolo.com/deployment/){: target="_blank"} which covers
+Guide][fastapi-deployment]{: target="_blank"} which covers
 using Uvicorn, Gunicorn and Containers.
 
-> Remember: for each method you still need to set up a virtual environment,
-> install all the dependencies, setup your `.env` file (or use Environment
-> variables if your hosting provider uses these - for example Vercel or Heroku)
-> and set up and migrate your Database, exactly the same as for Development as
-> desctribed above.
+!!! info "Remember"
+    Whichever method you choose, you still need to set up a virtual environment,
+    install all the dependencies, setup your `.env` file (or use Environment
+    variables if your hosting provider uses these - for example Vercel or Heroku)
+    and set up and migrate your Database, exactly the same as for Development as
+    desctribed previously.
 
 ### Nginx
 
@@ -42,3 +43,4 @@ for more information.
 [medium]: https://medium.com/towards-data-science/fastapi-aws-robust-api-part-1-f67ae47390f9
 [testdriven]: https://testdriven.io/blog/fastapi-elastic-beanstalk/
 [fastapi-docker]: https://fastapi.tiangolo.com/deployment/docker/
+[fastapi-deployment]: https://fastapi.tiangolo.com/deployment/
