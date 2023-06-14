@@ -5,11 +5,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="../../usage/user-control/" rel="prev"/>
-<link href="../templates/" rel="next"/>
+<link href="../add-user/" rel="prev"/>
+<link href="../../customization/meta/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.4.3, mkdocs-material-9.1.15" name="generator"/>
-<title>Metadata - FastAPI Template</title>
+<title>User Control via the CLI - FastAPI Template</title>
 <link href="../../assets/stylesheets/main.26e3688c.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#customize-the-metadata">
+<a class="md-skip" href="#user-control">
           Skip to content
         </a>
 </div>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              Metadata
+              User Control via the CLI
             
           </span>
 </div>
@@ -124,20 +124,20 @@
         FastAPI Template
       </a>
 </li>
-<li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2" type="checkbox"/>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
 <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
           Usage
           <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_2">
 <span class="md-nav__icon md-icon"></span>
           Usage
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/installation/">
+<a class="md-nav__link" href="../installation/">
         Installation
       </a>
 </li>
@@ -154,17 +154,17 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/configuration/dot-env/">
+<a class="md-nav__link" href="../configuration/dot-env/">
         Environment File
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/configuration/setup/">
+<a class="md-nav__link" href="../configuration/setup/">
         Install Dependencies
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/configuration/database/">
+<a class="md-nav__link" href="../configuration/database/">
         Setup Database
       </a>
 </li>
@@ -172,38 +172,18 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/add-user/">
+<a class="md-nav__link" href="../add-user/">
         Add a User
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../usage/user-control/">
-        User Control via the CLI
-      </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--active md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-          Customization
-          <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_3">
-<span class="md-nav__icon md-icon"></span>
-          Customization
-        </label>
-<ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
 <label class="md-nav__link md-nav__link--active" for="__toc">
-          Metadata
+          User Control via the CLI
           <span class="md-nav__icon md-icon"></span>
 </label>
 <a class="md-nav__link md-nav__link--active" href="./">
-        Metadata
+        User Control via the CLI
       </a>
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
 <label class="md-nav__title" for="__toc">
@@ -212,19 +192,38 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#customize-the-metadata">
-    Customize the Metadata
-  </a>
-<nav aria-label="Customize the Metadata" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manually">
-    Manually
+<a class="md-nav__link" href="#add-a-user">
+    Add a User
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#using-the-provided-configuration-tool">
-    Using the provided configuration tool
+<a class="md-nav__link" href="#list-all-users">
+    List All Users
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#list-a-specific-user">
+    List a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verify-a-specific-user">
+    Verify a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-for-a-user">
+    Search for a user
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ban-or-unban-a-specific-user">
+    Ban or Unban a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#delete-a-specific-user">
+    Delete a specific User
   </a>
 </li>
 </ul>
@@ -233,8 +232,25 @@
 </ul>
 </nav>
 </li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Customization
+          <span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+          Customization
+        </label>
+<ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../templates/">
+<a class="md-nav__link" href="../../customization/meta/">
+        Metadata
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../customization/templates/">
         Templates
       </a>
 </li>
@@ -331,23 +347,39 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#customize-the-metadata">
-    Customize the Metadata
-  </a>
-<nav aria-label="Customize the Metadata" class="md-nav">
-<ul class="md-nav__list">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manually">
-    Manually
+<a class="md-nav__link" href="#add-a-user">
+    Add a User
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#using-the-provided-configuration-tool">
-    Using the provided configuration tool
+<a class="md-nav__link" href="#list-all-users">
+    List All Users
   </a>
 </li>
-</ul>
-</nav>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#list-a-specific-user">
+    List a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verify-a-specific-user">
+    Verify a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-for-a-user">
+    Search for a user
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ban-or-unban-a-specific-user">
+    Ban or Unban a specific User
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#delete-a-specific-user">
+    Delete a specific User
+  </a>
 </li>
 </ul>
 </nav>
@@ -356,78 +388,65 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<h1>Metadata</h1>
-<h2 id="customize-the-metadata">Customize the Metadata</h2>
-<p>By default the Template Title, Description, Author and similar is set to my
-details. Changing this is very easy though, and there are 2 ways you can do.</p>
-<h3 id="manually">Manually</h3>
-<p>Metadata is stored in the <code>config/metadata.py</code> file and this
-can be edited by hand if desired:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">config.helpers</span> <span class="kn">import</span> <span class="n">MetadataBase</span>
-
-<span class="n">custom_metadata</span> <span class="o">=</span> <span class="n">MetadataBase</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"API Template"</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">"Run 'api-admin custom metadata' to change this information."</span><span class="p">,</span>
-    <span class="n">repository</span><span class="o">=</span><span class="s2">"https://github.com/seapagan/fastapi-template"</span><span class="p">,</span>
-    <span class="n">license_info</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"MIT"</span><span class="p">,</span>
-        <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://opensource.org/licenses/MIT"</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">contact</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Grant Ramsay (seapagan)"</span><span class="p">,</span>
-        <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"https://www.gnramsay.com"</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">email</span><span class="o">=</span><span class="s2">"seapagan@gmail.com"</span><span class="p">,</span>
-    <span class="n">year</span><span class="o">=</span><span class="s2">"2023"</span>
-<span class="p">)</span>
+<h1 id="user-control">User Control</h1>
+<p>It is possible to control most of the User functionality through the API as an
+Admin User, however it's often useful to also do it quickly from the
+command-line.</p>
+<div class="admonition danger">
+<p class="admonition-title">Watch Out!!</p>
+<p>These commands don't require an Admin API User to use!</p>
+<p>Make sure you have a good strong password (or even better use SSH Keys)
+if your server can be accessed from public networks.</p>
+</div>
+<h2 id="add-a-user">Add a User</h2>
+<p>This is described in the <a href="/usage/add-user">previous page</a>. It is important to
+note that any user added this was will be <strong>automatically verified</strong>.</p>
+<h2 id="list-all-users">List All Users</h2>
+<p>You can list all registered users in a nice table as shown below:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>list
 </code></pre></div>
-<p>You can change the values in this dictionary as needed. You should also change
-the name, description and authors in the <code>pyproject.toml</code> file.</p>
-<p>For the License URL, you can find a list in the
-<code>config/helpers.py</code></p>
-<h3 id="using-the-provided-configuration-tool">Using the provided configuration tool</h3>
-<p>The <code>api-admin</code> command can also do this for you, asking for the values at the
-command line and automatically updating both files:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>custom<span class="w"> </span>metadata
-
-<span class="go">API-Template : Customize application Metadata</span>
-
-<span class="go">Enter your API title [API Template]:</span>
-<span class="go">Enter the description [Run 'api-admin custom metadata' to change this information.]:</span>
-<span class="go">Version Number (use * to reset to '0.0.1') [1.3.1]:</span>
-<span class="go">URL to your Repository [https://github.com/seapagan/fastapi-template]:</span>
-
-<span class="go">Choose a license from the following options:</span>
-<span class="go">Apache2, BSD3, BSD2, GPL, LGPL, MIT, MPL2, CDDL, EPL</span>
-<span class="go">Your Choice of License? [MIT]:</span>
-
-<span class="go">Author name or handle [Grant Ramsay (seapagan)]:</span>
-<span class="go">Contact Email address [seapagan@gmail.com]:</span>
-<span class="go">Author Website [https://www.gnramsay.com]:</span>
-
-<span class="go">You have entered the following data:</span>
-<span class="go">Title       : API Template</span>
-<span class="go">Description : Run 'api-admin custom metadata' to change this information.</span>
-<span class="go">Version     : 1.3.1</span>
-<span class="go">Repository  : https://github.com/seapagan/fastapi-template</span>
-<span class="go">License     : MIT</span>
-<span class="go">Author      : Grant Ramsay (seapagan)</span>
-<span class="go">Email       : seapagan@gmail.com</span>
-<span class="go">Website     : https://www.gnramsay.com</span>
-<span class="gp gp-VirtualEnv">(C)</span> <span class="go">Year    : 2023</span>
-
-<span class="go">Is this Correct? [Y/n]: y</span>
-
-<span class="go">-&gt; Writing out Metadata .... Done!</span>
+<p>This will show Id, Email address, First and Last name, Role, and the Verified
+and Banned Status.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This list could be rather large and be produced slowly if you have a very
+popular site!</p>
+<p>In future versions I'll add an auto-paging facilty if the numbers are large.</p>
+</div>
+<h2 id="list-a-specific-user">List a specific User</h2>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>show<span class="w"> </span><span class="m">23</span>
 </code></pre></div>
-<p>This will also put in the correct License URL link automatically.</p>
+<p>This will show the same data as above, but for only one user. You must specify
+the user ID.</p>
+<h2 id="verify-a-specific-user">Verify a specific User</h2>
+<p>You can verify a user as being valid from the CLI. This allows them to login
+without needing to use the validation email. Useful for testing or adding Users
+you know exist.</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>vefify<span class="w"> </span><span class="m">23</span>
+</code></pre></div>
+<h2 id="search-for-a-user">Search for a user</h2>
+<p>This functionality is <em>Currently not implemented</em></p>
+<h2 id="ban-or-unban-a-specific-user">Ban or Unban a specific User</h2>
+<p>Ban a User so they cannot access the API. You can also <code>unban</code> any user by
+adding the <code>-u</code> or <code>--unban</code> flag.</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>ban<span class="w"> </span><span class="m">23</span>
+</code></pre></div>
+<p>or to unban:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>ban<span class="w"> </span><span class="m">23</span><span class="w"> </span>-u
+</code></pre></div>
+<h2 id="delete-a-specific-user">Delete a specific User</h2>
+<p>To remove a specific user from the API:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>user<span class="w"> </span>delete<span class="w"> </span><span class="m">23</span>
+</code></pre></div>
+<p>They will no longer be able to access the API, this CANNOT BE UNDONE. It's
+probably better to BAN a user unless you are very sure.</p>
 </article>
 </div>
 </div>
 </main>
 <footer class="md-footer">
 <nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: User Control via the CLI" class="md-footer__link md-footer__link--prev" href="../../usage/user-control/" rel="prev">
+<a aria-label="Previous: Add a User" class="md-footer__link md-footer__link--prev" href="../add-user/" rel="prev">
 <div class="md-footer__button md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
 </div>
@@ -436,17 +455,17 @@ command line and automatically updating both files:</p>
                 Previous
               </span>
 <div class="md-ellipsis">
-                User Control via the CLI
+                Add a User
               </div>
 </div>
 </a>
-<a aria-label="Next: Templates" class="md-footer__link md-footer__link--next" href="../templates/" rel="next">
+<a aria-label="Next: Metadata" class="md-footer__link md-footer__link--next" href="../../customization/meta/" rel="next">
 <div class="md-footer__title">
 <span class="md-footer__direction">
                 Next
               </span>
 <div class="md-ellipsis">
-                Templates
+                Metadata
               </div>
 </div>
 <div class="md-footer__button md-icon">
