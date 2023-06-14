@@ -18,6 +18,7 @@ how-to's.
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
+  - [Develop on containers](#develop-on-containers)
   - [Migrations on containers](#migrations-on-containers)
   - [Testing on containers](#testing-on-containers)
 - [Who is Using this Template?](#who-is-using-this-template)
