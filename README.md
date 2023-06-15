@@ -21,15 +21,16 @@ how-to's.
   - [Develop on containers](#develop-on-containers)
   - [Migrations on containers](#migrations-on-containers)
   - [Testing on containers](#testing-on-containers)
-- [Who is Using this Template?](#who-is-using-this-template)
 - [Planned Functionality](#planned-functionality)
 - [Testing](#testing)
 - [Code Quality](#code-quality)
 - [Known Bugs](#known-bugs)
+- [Who is Using this Template?](#who-is-using-this-template)
 - [Contributing](#contributing)
   - [Install Git Pre-Commit hooks](#install-git-pre-commit-hooks)
   - [Run pre-commit manually](#run-pre-commit-manually)
   - [Contribute your work](#contribute-your-work)
+  - [GitHub Discussions](#github-discussions)
 
 ## Functionality
 
@@ -156,12 +157,6 @@ Running tests on Docker container is also possible:
 docker compose run --rm api pytest
 ```
 
-## Who is Using this Template?
-
-Meh, at the moment probably no-one except me 😆. If you do use this in one of
-your own projects, drop me a message and I'll add your profile and project links
-here 😃.
-
 ## Planned Functionality
 
 See the [TODO.md](TODO.md) file for plans.
@@ -191,6 +186,12 @@ after each test suite is run.
 ## Known Bugs
 
 See the [BUGS.md](BUGS.md) file for known bugs.
+
+## Who is Using this Template?
+
+Meh, at the moment probably no-one except me 😆. If you do use this in one of
+your own projects, drop me a message and I'll add your profile and project links
+here 😃.
 
 ## Contributing
 
@@ -227,5 +228,12 @@ poe pre
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+### GitHub Discussions
+
+I have enabled
+[Discussions](https://github.com/seapagan/fastapi-template/discussions) on this
+repository, so if you have any questions, suggestions or just want to chat about
+this template, please feel free to start a discussion.
 
 [doc]:https://seapagan.github.io/fastapi-template
