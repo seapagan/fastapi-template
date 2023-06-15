@@ -285,11 +285,6 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#add-testing">
-    Add Testing
-  </a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="#general">
     General
   </a>
@@ -312,6 +307,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#quotas">
     Quotas
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caching">
+    Caching
   </a>
 </li>
 <li class="md-nav__item">
@@ -347,11 +347,6 @@
     </label>
 <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#add-testing">
-    Add Testing
-  </a>
-</li>
-<li class="md-nav__item">
 <a class="md-nav__link" href="#general">
     General
   </a>
@@ -377,6 +372,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#caching">
+    Caching
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#frontend">
     Frontend
   </a>
@@ -389,18 +389,14 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="todo-list">TODO List</h1>
-<h2 id="add-testing">Add Testing</h2>
-<ul>
-<li>Both Unit and Integration testing need to be added to this Repo. The integration
-testing is under way for a derivative project of this and will be back-ported
-when it is in a suitable state.</li>
-</ul>
 <h2 id="general">General</h2>
 <ul>
 <li>add time-limited bans (configurable)</li>
 <li>Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.</li>
-<li>Replace the <code>toml</code>/<code>toml_w</code> libraries with <code>tomlkit</code> for better functionality.</li>
+<li>Replace the <code>toml</code>/<code>toml_w</code> libraries with <code>rtoml</code> for better functionality.
+  This is a Rust-based library that is very fast and very complete. It is also
+  written by the same author as <code>pydantic</code> so should be a good fit.</li>
 <li>Add a <code>logout</code> route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)</li>
@@ -413,17 +409,18 @@ when it is in a suitable state.</li>
   the TOML file (can be done using the <code>poetry version</code> command already,
   document this).</li>
 <li>add verified status to user list for admins only.</li>
-<li>allow CLI to verify unverified users.</li>
 <li>implement rate-limiting - auto block abusers - would help if <code>quotas</code>
   implemented first (see below).</li>
 <li>users should be able to get others (limited) profile data in some cases -
   public data should be ok (eg in a front-end profile page). Think about how
   this should be implemented. <em>This may just need to be in derived projects
   though, not this template</em>.</li>
+<li>add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)</li>
 </ul>
 <h2 id="auth">Auth</h2>
 <ul>
 <li>add a password recovery endpoint</li>
+<li>Implement user groups and permissions, make it configurable.</li>
 </ul>
 <h2 id="cli">CLI</h2>
 <ul>
@@ -436,7 +433,6 @@ when it is in a suitable state.</li>
 <li>Add proper documentation with examples showing how to use the User &amp; Auth
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?</li>
-<li>fix relative links to local files in the markdown</li>
 <li>add commands to CLI to serve, build, publish to gh-pages etc</li>
 </ul>
 <h2 id="quotas">Quotas</h2>
@@ -447,6 +443,12 @@ when it is in a suitable state.</li>
 <li>allow endpoint with no Quota</li>
 <li>option to block altogether or seriously slow users access to the API for a
   period of time</li>
+</ul>
+<h2 id="caching">Caching</h2>
+<ul>
+<li>add a Redis cache to the endpoints.
+  <a href="https://pypi.org/project/fastapi-redis-cache/">fastapi-redis-cache</a> should
+  make this reasonably painless.</li>
 </ul>
 <h2 id="frontend">Frontend</h2>
 <p>Add integration for a proper Frontend (ie React, Vue, etc) by having a config
