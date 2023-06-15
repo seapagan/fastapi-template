@@ -4,7 +4,7 @@ import typer
 from rich import print  # pylint: disable=W0622
 from rich.panel import Panel
 
-from commands import custom, db, dev, user
+from commands import custom, db, dev, docs, user
 from config.helpers import get_api_details, get_api_version
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -56,6 +56,9 @@ app.add_typer(
     custom.app, name="custom", help="Customize the Application Metadata."
 )
 app.add_typer(db.app, name="db", help="Control the Database.")
+app.add_typer(
+    docs.app, name="docs", help="Generate and upload API documentation."
+)
 
 if __name__ == "__main__":
     app()
