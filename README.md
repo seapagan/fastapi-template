@@ -122,7 +122,7 @@ docker compose down
 
 **Using `docker compose run`:**
 
-Fisrt run migrations:
+First run migrations:
 
 ```console
 docker compose run --rm api alembic upgrade head
