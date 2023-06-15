@@ -252,6 +252,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#regenerate-the-openapi-documentation">
+    Regenerate the OpenAPI Documentation
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#build-the-documentation">
     Build the Documentation
   </a>
@@ -332,6 +337,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#regenerate-the-openapi-documentation">
+    Regenerate the OpenAPI Documentation
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#build-the-documentation">
     Build the Documentation
   </a>
@@ -368,13 +378,37 @@ consists of Markdown files. The main control file is <code>mkdocs.yml</code> in 
 <span class="go">INFO     -  [12:55:29] Watching paths for changes: 'docs', 'mkdocs.yml'</span>
 <span class="go">INFO     -  [12:55:29] Serving on http://127.0.0.1:9000/</span>
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command will not auto-generate the OpenAPI schema, so you will need to
+run the below command first if your schema has changed :</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>poe<span class="w"> </span>openapi
+</code></pre></div>
+</div>
 <p>The site is still very much a work in progress, and any PR's to add information
 will be gratefully received. The planned general layout and format can be seen
 in the <code>mkdocs.yml</code> file.</p>
+<p>If you want the site to be opened to your local network (ie to test on a
+mobile or another local device), then you can use the below command :</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>poe<span class="w"> </span>docs:serve
+</code></pre></div>
+<p>This will run the <code>mkdocs serve</code> command, but will also open the site on your
+local network. You can then access the site on your other device using the IP
+address of your machine, and the port number shown in the output of the command.</p>
+<h2 id="regenerate-the-openapi-documentation">Regenerate the OpenAPI Documentation</h2>
+<p>The OpenAPI schema is needed for the documentation, and can be generated from
+the existing routes. To do this, run the below command :</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>./api-admin<span class="w"> </span>docs<span class="w"> </span>openapi<span class="w"> </span>--prefix<span class="o">=</span>docs/reference
+</code></pre></div>
+<p>For ease of use this is also run automatically when the docs are built or
+published (but not when using the <code>mkdocs serve</code> command above).</p>
+<p>You can also run the above command easier using the <code>poe</code> command :</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$</span>poe<span class="w"> </span>openapi
+</code></pre></div>
 <h2 id="build-the-documentation">Build the Documentation</h2>
 <p>You can create a production-ready version of the site by using the <code>build</code>
 command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>poe<span class="w"> </span>docs:build
 <span class="go">INFO     -  Cleaning site directory</span>
 <span class="go">INFO     -  Building documentation to directory: /home/seapagan/data/work/own/fastapi-template/site</span>
 <span class="go">INFO     -  Documentation built in 0.95 seconds</span>
@@ -387,6 +421,8 @@ GitHub Pages.</p>
 Pages</a> using the below command :</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>poe<span class="w"> </span>docs:publish
 </code></pre></div>
+<p>This command will automatically build the docs, and then push the <code>site</code> folder
+to GitHub. It will also auto-generate the OpenAPI schema as part of the build.</p>
 <p>Note that only someone with <strong>WRITE</strong> access to the repository can do this.</p>
 </article>
 </div>
