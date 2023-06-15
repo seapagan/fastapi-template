@@ -18,6 +18,7 @@ how-to's.
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
+  - [Develop on containers](#develop-on-containers)
   - [Migrations on containers](#migrations-on-containers)
   - [Testing on containers](#testing-on-containers)
 - [Who is Using this Template?](#who-is-using-this-template)
@@ -95,6 +96,8 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
 
+### Develop on containers
+
 > :warning: For local use rename `.env.example` to `.env`.
 
 It is possible to develop directly on Docker containers :
@@ -131,7 +134,7 @@ Run containers:
 docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
 ```
 
-To run and rebuild image (dependency updates):
+To rebuild image (dependency updates):
 
 ```console
 docker compose build
