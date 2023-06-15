@@ -64,7 +64,7 @@ published (but not when using the `mkdocs serve` command above).
 You can also run the above command easier using the `poe` command :
 
 ```console
-$poe openapi
+$ poe openapi
 ```
 
 ## Build the Documentation
