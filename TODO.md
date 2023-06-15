@@ -1,17 +1,13 @@
 # TODO List
 
-## Add Testing
-
-- Both Unit and Integration testing need to be added to this Repo. The integration
-testing is under way for a derivative project of this and will be back-ported
-when it is in a suitable state.
-
 ## General
 
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
-- Replace the `toml`/`toml_w` libraries with `tomlkit` for better functionality.
+- Replace the `toml`/`toml_w` libraries with `rtoml` for better functionality.
+  This is a Rust-based library that is very fast and very complete. It is also
+  written by the same author as `pydantic` so should be a good fit.
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
@@ -24,7 +20,6 @@ when it is in a suitable state.
   the TOML file (can be done using the `poetry version` command already,
   document this).
 - add verified status to user list for admins only.
-- allow CLI to verify unverified users.
 - implement rate-limiting - auto block abusers - would help if `quotas`
   implemented first (see below).
 - users should be able to get others (limited) profile data in some cases -
