@@ -78,9 +78,11 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 serve = "uvicorn main:app --reload"
 pre = "pre-commit run --all-files"
-"docs:publish" = "mkdocs gh-deploy"
+_publish = "mkdocs gh-deploy"
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 lint = "pylint **/*.py"
+openapi = "./api-admin docs openapi --prefix=docs/reference"
+"docs:publish"= ["openapi", "_publish"]
 
 [tool.flake8]
 exclude = ["__init__.py", ".git", "migrations/versions/*"]
