@@ -11,9 +11,9 @@ with Authorization already baked-in.
 
 <!-- Full documentation is now availiable on it's own page [here][doc]. Please visit
 this for full usage information, how-to's and more. -->
-Partial documentation is now availiable on it's own page [here][doc]. This is a
-work in progress, and when finished will include full usage information and
-how-to's.
+Partial documentation is now availiable on it's own page at
+[https://api-template.seapagan.net][doc]. This is a work in progress, and when
+finished will include full usage information and how-to's.
 
 - [Functionality](#functionality)
 - [Installation](#installation)
@@ -236,4 +236,4 @@ I have enabled
 repository, so if you have any questions, suggestions or just want to chat about
 this template, please feel free to start a discussion.
 
-[doc]:https://seapagan.github.io/fastapi-template
+[doc]:https://api-template.seapagan.net

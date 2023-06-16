@@ -1,4 +1,5 @@
 site_name: FastAPI Template
+site_url: https://api-template.seapagan.net/
 
 theme:
   name: material
