@@ -14,7 +14,7 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/gnramsay-dev
 
-copyright: Copyright © 2023 Grant Ramsay (Seapagan)
+copyright: © 2023 Grant Ramsay (Seapagan)
 
 plugins:
   - mkdocstrings
@@ -23,6 +23,13 @@ plugins:
       tryItOutEnabled: false
       supportedSubmitMethods: []
       defaultModelsExpandDepth: 0
+  - git-revision-date-localized
+  - minify:
+      minify_html: true
+      minify_css: true
+      minify_js: true
+      htmlmin_opts:
+        remove_comments: true
 
 repo_url: https://github.com/seapagan/fastapi-template
 repo_name: seapagan/fastapi-template
