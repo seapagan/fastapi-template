@@ -1,4 +1,6 @@
 """Fixtures and configuration for the test suite."""
+import os
+
 import databases
 import pytest
 import sqlalchemy
@@ -8,15 +10,18 @@ from database.db import get_database, metadata
 from main import app
 from managers.email import EmailManager
 
-DATABASE_URL = "sqlite:///./test.db"
+# detect if we are running in CI (GitHub actions) and use the test postgres
+# database if so. Otherwise we stick with SQLite for now.
+db_connect_args = {}
 
-# DATABASE_URL = (
-#     f"postgresql://{get_settings().test_db_user}:"
-#     f"{get_settings().test_db_password}@"
-#     f"{get_settings().test_db_address}:"
-#     f"{get_settings().test_db_port}/"
-#     f"{get_settings().test_db_name}"
-# )
+if os.getenv("GITHUB_ACTIONS"):
+    DATABASE_URL = (
+        "postgresql://postgres:postgres@localhost:5432/fastapi-template-test"
+    )
+else:
+    DATABASE_URL = "sqlite:///./test.db"
+    db_connect_args = {"check_same_thread": False}
+
 test_database = databases.Database(DATABASE_URL)
 
 
@@ -37,9 +42,7 @@ def get_db():
     available to) another.
     """
     engine = sqlalchemy.create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False}
-        # DATABASE_URL
+        DATABASE_URL, connect_args=db_connect_args
     )
     metadata.create_all(engine)
     app.dependency_overrides[get_database] = get_database_override
