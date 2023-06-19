@@ -2,7 +2,6 @@
 
 import pytest
 from faker import Faker
-
 from managers.auth import AuthManager
 from managers.user import UserManager, pwd_context
 from models.enums import RoleType

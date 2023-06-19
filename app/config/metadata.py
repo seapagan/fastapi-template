@@ -3,7 +3,7 @@
 Be aware, this will be re-generated any time you run the
 'api-admin custom metadata' command!
 """
-from config.helpers import MetadataBase
+from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="API Template",

@@ -2,9 +2,8 @@
 import json
 
 import pytest
-from pydantic import EmailStr
-
 from config.settings import get_settings
+from pydantic import EmailStr
 from schemas.email import EmailSchema, EmailTemplateSchema
 
 

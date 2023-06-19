@@ -4,8 +4,8 @@ import typer
 from rich import print  # pylint: disable=W0622
 from rich.panel import Panel
 
-from commands import custom, db, dev, docs, user
-from config.helpers import get_api_details, get_api_version
+from app.commands import custom, db, dev, docs, user
+from app.config.helpers import get_api_details, get_api_version
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 

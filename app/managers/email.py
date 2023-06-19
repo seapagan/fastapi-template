@@ -6,8 +6,8 @@ from fastapi.responses import JSONResponse
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import EmailStr
 
-from config.settings import get_settings
-from schemas.email import EmailSchema, EmailTemplateSchema
+from app.config.settings import get_settings
+from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
 class EmailManager:

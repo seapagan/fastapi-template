@@ -1,6 +1,5 @@
 """Some helper functions for testing."""
 import jwt
-
 from config.settings import get_settings
 
 

@@ -4,9 +4,9 @@ import pytest
 import sqlalchemy
 from fastapi.testclient import TestClient
 
-from database.db import get_database, metadata
-from main import app
-from managers.email import EmailManager
+from app.database.db import get_database, metadata
+from app.main import app
+from app.managers.email import EmailManager
 
 DATABASE_URL = "sqlite:///./test.db"
 

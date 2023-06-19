@@ -9,14 +9,13 @@ from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from config.settings import get_settings
-from models.enums import RoleType
-from models.user import User
-from schemas.email import EmailTemplateSchema
-from schemas.request.user import UserChangePasswordRequest, UserEditRequest
-
-from .auth import AuthManager
-from .email import EmailManager
+from app.config.settings import get_settings
+from app.managers.auth import AuthManager
+from app.managers.email import EmailManager
+from app.models.enums import RoleType
+from app.models.user import User
+from app.schemas.email import EmailTemplateSchema
+from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

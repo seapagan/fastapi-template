@@ -9,7 +9,7 @@ import typer
 from jinja2 import Template
 from rich import print  # pylint: disable=W0622
 
-from config.helpers import (
+from app.config.helpers import (
     LICENCES,
     TEMPLATE,
     get_api_version,
@@ -45,7 +45,7 @@ def init():
 
 
 try:
-    from config.metadata import custom_metadata
+    from app.config.metadata import custom_metadata
 except ModuleNotFoundError:
     print(
         "[red]The metadata file could not be found, it may have been deleted.\n"

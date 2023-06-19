@@ -5,11 +5,11 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
 
-from config.helpers import get_api_version
-from config.settings import get_settings
-from database.db import database
-from resources import config_error
-from resources.routes import api_router
+from app.config.helpers import get_api_version
+from app.config.settings import get_settings
+from app.database.db import database
+from app.resources import config_error
+from app.resources.routes import api_router
 
 app = FastAPI(
     title=get_settings().api_title,

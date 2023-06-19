@@ -1,6 +1,5 @@
 """Test the Swagger UI routes."""
 import pytest
-
 from config.settings import get_settings
 
 

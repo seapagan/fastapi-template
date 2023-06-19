@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import List
 
 import pytest
-
 from config.helpers import (
     LICENCES,
     TEMPLATE,

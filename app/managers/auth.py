@@ -6,13 +6,13 @@ import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from config.settings import get_settings
-from database.db import get_database
-from managers.email import EmailManager
-from models.enums import RoleType
-from models.user import User
-from schemas.email import EmailTemplateSchema
-from schemas.request.auth import TokenRefreshRequest
+from app.config.settings import get_settings
+from app.database.db import get_database
+from app.managers.email import EmailManager
+from app.models.enums import RoleType
+from app.models.user import User
+from app.schemas.email import EmailTemplateSchema
+from app.schemas.request.auth import TokenRefreshRequest
 
 
 class ResponseMessages:
