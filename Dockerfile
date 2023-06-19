@@ -17,4 +17,4 @@ RUN apt-get purge -y \
     && rm -rf /var/lib/apt/lists/*
 # Copying actual application
 COPY . /app/src/
-CMD ["uvicorn", "--host", "0.0.0.0", "main:app", "--reload"]
+CMD ["uvicorn", "--host", "0.0.0.0", "app.main:app", "--reload"]

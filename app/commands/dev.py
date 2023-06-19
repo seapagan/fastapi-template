@@ -29,7 +29,7 @@ def serve(
     """
     print("\n[cyan] -> Running a development server.\n")
     cmd_line = (
-        f"uvicorn main:app --port={port} --host={host} "
+        f"uvicorn app.main:app --port={port} --host={host} "
         f"{'--reload' if reload else ''}"
     )
     subprocess.call(cmd_line, shell=True)  # nosec
