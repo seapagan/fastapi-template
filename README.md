@@ -47,6 +47,23 @@ previous version. This will be in the form of a `.patch` file which can be
 applied to their project using the `git apply` command. This will be documented
 in the release notes.
 
+## Important note on Versioning
+
+This template versioning has been refactored to start from **Verison 0.4.0**.
+
+The original template was written for my own use and probably promoted to V1.0.0
+before it should have been, and there have been many updates and fixes since
+then.
+
+I will keep the old releases available for those who wish to use them (for now a
+short time). I think it's better to do this now before there are more users who
+need to update their projects to future versions.
+
+All releases from now on will also contain a Git patch to upgrade from the
+previous version. This will be in the form of a `.patch` file which can be
+applied to their project using the `git apply` command. This will be documented
+in the release notes.
+
 ## Functionality
 
 This template is a ready-to-use boilerplate for a FastAPI project. It has the
