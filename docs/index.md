@@ -77,6 +77,13 @@ Given a version number `MAJOR`.`MINOR`.`PATCH`, increment the:
 Additional labels for pre-release and build metadata are available as extensions
 to the MAJOR.MINOR.PATCH format.
 
+## GitHub Discussions
+
+[Discussions](https://github.com/seapagan/fastapi-template/discussions) are
+enabled on this repository, so if you have any problems, questions, suggestions
+or just want to chat about this template, please feel free to start a
+discussion.
+
 ## Follow the Repository
 
 If you use this code in your own projects, I'd recommend at least to 'star' or
