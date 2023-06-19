@@ -8,7 +8,7 @@ from app.config.helpers import get_api_version
 from app.config.settings import get_settings
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/", include_in_schema=False)

@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import List
 
 import pytest
-from config.helpers import (
+
+from app.config.helpers import (
     LICENCES,
     TEMPLATE,
     get_api_details,
@@ -17,12 +18,12 @@ from config.helpers import (
 class TestConfigHelpers:
     """Test the helpers used by the config module."""
 
-    mock_load_tomli = "config.helpers.tomli.load"
+    mock_load_tomli = "app.config.helpers.tomli.load"
 
     def test_get_toml_path(self, mocker):
         """Test we get the correct toml path."""
         mocker.patch(
-            "config.helpers.os.path.realpath",
+            "app.config.helpers.os.path.realpath",
             return_value="/test/path/script.py",
         )
         assert get_toml_path() == Path("/test/path/pyproject.toml")
@@ -30,10 +31,10 @@ class TestConfigHelpers:
     def test_get_config_path(self, mocker):
         """Test we get the correct config path."""
         mocker.patch(
-            "config.helpers.os.path.realpath",
+            "app.config.helpers.os.path.realpath",
             return_value="/test/path/script.py",
         )
-        assert get_config_path() == Path("/test/path/config/metadata.py")
+        assert get_config_path() == Path("/test/path/app/config/metadata.py")
 
     def test_get_api_version(self, mocker):
         """Test we get the API version."""
