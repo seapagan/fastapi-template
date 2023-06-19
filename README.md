@@ -28,9 +28,6 @@ finished will include full usage information and how-to's.
 - [Known Bugs](#known-bugs)
 - [Who is Using this Template?](#who-is-using-this-template)
 - [Contributing](#contributing)
-  - [Install Git Pre-Commit hooks](#install-git-pre-commit-hooks)
-  - [Run pre-commit manually](#run-pre-commit-manually)
-  - [Contribute your work](#contribute-your-work)
   - [GitHub Discussions](#github-discussions)
 
 ## Important note on Versioning
@@ -220,39 +217,7 @@ here 😃.
 
 ## Contributing
 
-Please **do** feel free to open an Issue for any bugs or issues you find, or
-even a Pull Request with solutions 😎
-
-Likewise, I am very open to new feature Pull Requests!
-
-### Install Git Pre-Commit hooks
-
-Please do this if you are intending to submit a PR. It will check commits
-locally before they are pushed up to the Repo.
-
-```console
-$ pre-commit install
-pre-commit installed at .git/hooks/pre-commit
-```
-
-This will ensure that all code meets the required linting standard before being
-committed.
-
-### Run pre-commit manually
-
-You can run these checks manually on all files using the below command :
-
-```console
-poe pre
-```
-
-### Contribute your work
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+See [Contributing][contrib] for details on how to contribute to this project.
 
 ### GitHub Discussions
 
@@ -262,3 +227,4 @@ repository, so if you have any questions, suggestions or just want to chat about
 this template, please feel free to start a discussion.
 
 [doc]:https://api-template.seapagan.net
+[contrib]:https://api-template.seapagan.net/contributing/
