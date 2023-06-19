@@ -4,7 +4,8 @@ from typing import AsyncGenerator
 import databases
 import pytest
 import sqlalchemy
-from database.db import database, get_database, metadata
+
+from app.database.db import database, get_database, metadata
 
 
 @pytest.mark.unit()
@@ -24,7 +25,8 @@ class TestDatabaseDB:
         for GH Actions)
         """
         mocker.patch(
-            "database.db.database", databases.Database("sqlite:///./test.db")
+            "app.database.db.database",
+            databases.Database("sqlite:///./test.db"),
         )
         db_generator = get_database()
         assert isinstance(db_generator, AsyncGenerator)

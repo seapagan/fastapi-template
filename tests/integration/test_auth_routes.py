@@ -2,10 +2,11 @@
 from copy import deepcopy
 
 import pytest
-from managers.auth import AuthManager
-from managers.user import pwd_context
-from models.enums import RoleType
-from models.user import User
+
+from app.managers.auth import AuthManager
+from app.managers.user import pwd_context
+from app.models.enums import RoleType
+from app.models.user import User
 
 
 @pytest.mark.integration()
@@ -15,7 +16,7 @@ class TestAuthRoutes:
     # ------------------------------------------------------------------------ #
     #        some constants to clean up the code and allow easy changing       #
     # ------------------------------------------------------------------------ #
-    email_fn_to_patch = "managers.user.EmailManager.template_send"
+    email_fn_to_patch = "app.managers.user.EmailManager.template_send"
     register_path = "/register"
     login_path = "/login"
 

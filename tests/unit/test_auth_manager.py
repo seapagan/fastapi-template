@@ -3,12 +3,12 @@ from datetime import datetime
 
 import jwt
 import pytest
-from config.settings import get_settings
 from fastapi import BackgroundTasks, HTTPException
-from managers.auth import AuthManager, ResponseMessages
-from managers.user import UserManager
-from schemas.request.auth import TokenRefreshRequest
 
+from app.config.settings import get_settings
+from app.managers.auth import AuthManager, ResponseMessages
+from app.managers.user import UserManager
+from app.schemas.request.auth import TokenRefreshRequest
 from tests.helpers import get_token
 
 

@@ -3,10 +3,11 @@ from typing import List
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException
-from managers.user import ErrorMessages, UserManager, pwd_context
-from models.enums import RoleType
-from models.user import User
-from schemas.request.user import UserChangePasswordRequest, UserEditRequest
+
+from app.managers.user import ErrorMessages, UserManager, pwd_context
+from app.models.enums import RoleType
+from app.models.user import User
+from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 
 
 @pytest.mark.unit()
