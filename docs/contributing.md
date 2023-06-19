@@ -5,6 +5,13 @@ even a Pull Request with solutions 😎
 
 Likewise, I am very open to new feature Pull Requests!
 
+## GitHub Discussions
+
+I have enabled
+[Discussions](https://github.com/seapagan/fastapi-template/discussions) on this
+repository, so if you have any questions, suggestions or just want to chat about
+this template, please feel free to start a discussion.
+
 ## Install Git Pre-Commit hooks
 
 Please do this if you are intending to submit a PR. It will check commits
