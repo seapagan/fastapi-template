@@ -3,6 +3,22 @@
 !!! warning "ALPHA Status!"
     This documentation is currently **Alpha** status and I have much still to add.
 
+!!! danger "Version Refactor"
+
+    This template versioning has been refactored to start from **Verison 0.4.0**
+    . The original template was written for my own use and probably promoted to
+    V 1.0.0 before it should have been, and there have been many updates and
+    fixes since then.
+
+    I will keep the old releases available for those who wish to use them (for
+    now a short time). I think it's better to do this now before there are more
+    users who need to update their projects to future versions.
+
+    All releases from now on will also contain a Git patch to upgrade from the
+    previous version. This will be in the form of a `.patch` file which can be
+    applied to their project using the `git apply` command. This will be
+    documented in the release notes.
+
 ## Features
 
 This template is a ready-to-use boilerplate for a FastAPI project. It has the
@@ -39,6 +55,27 @@ following advantages to starting your own from scratch :
 - Docker and Compose file set up to develop and test this API using Docker
 
 The template **Requires Python 3.8.1+**
+
+## Versioning
+
+!!! important "Version 0.4.0"
+
+    This template is still in very active development and is not yet ready for
+    full production use. However, I am currently using it to develop my own
+    projects, which include some production API's without issues. I will update
+    the template as I find bugs or add new features. I will also be adding more
+    documentation as I go.
+
+This project uses [Semantic Versioning 2.0.0](https://semver.org/)
+
+Given a version number `MAJOR`.`MINOR`.`PATCH`, increment the:
+
+  1. `MAJOR` version when you make incompatible API changes
+  2. `MINOR` version when you add functionality in a backward compatible manner
+  3. `PATCH` version when you make backward compatible bug fixes
+
+Additional labels for pre-release and build metadata are available as extensions
+to the MAJOR.MINOR.PATCH format.
 
 ## Follow the Repository
 

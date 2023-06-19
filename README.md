@@ -15,6 +15,7 @@ Partial documentation is now availiable on it's own page at
 [https://api-template.seapagan.net][doc]. This is a work in progress, and when
 finished will include full usage information and how-to's.
 
+- [Important note on Versioning](#important-note-on-versioning)
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
@@ -31,6 +32,23 @@ finished will include full usage information and how-to's.
   - [Run pre-commit manually](#run-pre-commit-manually)
   - [Contribute your work](#contribute-your-work)
   - [GitHub Discussions](#github-discussions)
+
+## Important note on Versioning
+
+This template versioning has been refactored to start from **Verison 0.4.0**.
+
+The original template was written for my own use and probably promoted to V1.0.0
+before it should have been, and there have been many updates and fixes since
+then.
+
+I will keep the old releases available for those who wish to use them (for now a
+short time). I think it's better to do this now before there are more users who
+need to update their projects to future versions.
+
+All releases from now on will also contain a Git patch to upgrade from the
+previous version. This will be in the form of a `.patch` file which can be
+applied to their project using the `git apply` command. This will be documented
+in the release notes.
 
 ## Functionality
 
@@ -67,7 +85,14 @@ following advantages to starting your own from scratch :
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
-The template **Requires Python 3.8.1+**
+**This template is still in very active development and is not yet ready for
+full production use. However, I am currently using it to develop my own
+projects, which include some production API's without issues. I will update the
+template as I find bugs or add new features. I will also be adding more
+documentation as I go.**
+
+The template **Requires Python 3.8.1+** or higher. It is developed under Python
+3.11.
 
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
