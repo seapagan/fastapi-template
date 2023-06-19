@@ -16,7 +16,7 @@ any change to the source code.
 If you need more control, you can run `uvicorn` directly :
 
 ```console
-docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 main:app --reload
+docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 app.main:app --reload
 ```
 
 The above command starts the server running on <http://localhost:8000>, and it
@@ -70,9 +70,11 @@ if you wish to disable the coverage display temporarily use:
 $ docker compose run --rm api pytest --no-cov
 ```
 
-You can also run the Unit or Integration tests independently using `docker compose run --rm api pytest -m
-unit` or `docker compose run --rm api pytest -m integration`.
+You can also run the Unit or Integration tests independently using `docker
+compose run --rm api pytest -m unit` or `docker compose run --rm api pytest -m
+integration`.
 
-See the [Pytest
-how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html){:target="_blank"}
+See the [Pytest how-tos][pytest-how-tos]{:target="_blank"}
 for more information
+
+[pytest-how-tos]: https://docs.pytest.org/en/latest/how-to/index.html
