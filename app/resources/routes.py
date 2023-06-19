@@ -1,7 +1,7 @@
 """Include all the other routes into one router."""
 from fastapi import APIRouter
 
-from resources import auth, home, user
+from app.resources import auth, home, user
 
 api_router = APIRouter()
 

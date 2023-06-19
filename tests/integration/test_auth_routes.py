@@ -2,7 +2,6 @@
 from copy import deepcopy
 
 import pytest
-
 from managers.auth import AuthManager
 from managers.user import pwd_context
 from models.enums import RoleType

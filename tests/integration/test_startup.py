@@ -8,8 +8,8 @@ import pytest
 from databases import Database
 from fastapi.testclient import TestClient
 
-from config.settings import get_settings
-from main import app
+from app.config.settings import get_settings
+from app.main import app
 
 
 class TestStartup:

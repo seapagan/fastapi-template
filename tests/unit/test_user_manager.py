@@ -3,7 +3,6 @@ from typing import List
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException
-
 from managers.user import ErrorMessages, UserManager, pwd_context
 from models.enums import RoleType
 from models.user import User

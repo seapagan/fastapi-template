@@ -90,7 +90,7 @@ openapi = "./api-admin docs openapi --prefix=docs/reference"
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 
 [tool.flake8]
-exclude = ["__init__.py", ".git", "migrations/versions/*"]
+exclude = ["__init__.py", ".git", "app/migrations/versions/*"]
 max-line-length = 80
 docstring-convention = "google"
 

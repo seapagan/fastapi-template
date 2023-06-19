@@ -1,7 +1,6 @@
 """Test the AuthManager class."""
 import pytest
 from fastapi import HTTPException
-
 from managers.auth import can_edit_user, is_admin, is_banned
 from models.enums import RoleType
 

@@ -4,9 +4,9 @@ from datetime import datetime
 import pytest
 import sqlalchemy
 from fastapi import BackgroundTasks, HTTPException
-
 from managers.auth import CustomHTTPBearer, ResponseMessages
 from managers.user import UserManager
+
 from tests.helpers import get_token
 
 

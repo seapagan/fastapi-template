@@ -1,7 +1,6 @@
 """Integration tests for user routes."""
 
 import pytest
-
 from managers.user import pwd_context
 
 

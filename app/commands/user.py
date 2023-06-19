@@ -8,10 +8,10 @@ from rich import print  # pylint: disable=W0622
 from rich.console import Console
 from rich.table import Table
 
-from database.db import database
-from managers.user import UserManager
-from models.enums import RoleType
-from models.user import User
+from app.database.db import database
+from app.managers.user import UserManager
+from app.models.enums import RoleType
+from app.models.user import User
 
 app = typer.Typer(no_args_is_help=True)
 

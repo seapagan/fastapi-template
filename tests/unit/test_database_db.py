@@ -4,7 +4,6 @@ from typing import AsyncGenerator
 import databases
 import pytest
 import sqlalchemy
-
 from database.db import database, get_database, metadata
 
 

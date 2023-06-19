@@ -1,7 +1,7 @@
 """Define the Base Schema structures we will inherit from."""
 from pydantic import BaseModel, Field
 
-from .examples import ExampleUser
+from app.schemas.examples import ExampleUser
 
 
 class UserBase(BaseModel):

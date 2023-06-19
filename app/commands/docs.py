@@ -7,7 +7,7 @@ import typer
 from fastapi.openapi.utils import get_openapi
 from rich import print  # pylint: disable=W0622
 
-from main import app as main_app
+from app.main import app as main_app
 
 app = typer.Typer(no_args_is_help=True)
 

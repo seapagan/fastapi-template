@@ -6,9 +6,9 @@ import pytest
 import sqlalchemy
 from fastapi.testclient import TestClient
 
-from database.db import get_database, metadata
-from main import app
-from managers.email import EmailManager
+from app.database.db import get_database, metadata
+from app.main import app
+from app.managers.email import EmailManager
 
 # detect if we are running in CI (GitHub actions) and use the test postgres
 # database if so. Otherwise we stick with SQLite for now.

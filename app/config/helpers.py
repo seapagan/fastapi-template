@@ -18,7 +18,7 @@ def get_toml_path():
 def get_config_path():
     """Return the full path of the custom config file."""
     script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "config" / "metadata.py"
+    return script_dir / "app/config" / "metadata.py"
 
 
 def get_api_version() -> str:
@@ -97,7 +97,7 @@ TEMPLATE: str = """
 Be aware, this will be re-generated any time you run the
 'api-admin custom metadata' command!
 \"\"\"
-from config.helpers import MetadataBase
+from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="{{ title }}",
