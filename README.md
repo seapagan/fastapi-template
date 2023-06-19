@@ -28,7 +28,7 @@ finished will include full usage information and how-to's.
 - [Known Bugs](#known-bugs)
 - [Who is Using this Template?](#who-is-using-this-template)
 - [Contributing](#contributing)
-  - [GitHub Discussions](#github-discussions)
+- [GitHub Discussions](#github-discussions)
 
 ## Important note on Versioning
 
@@ -219,7 +219,7 @@ here 😃.
 
 See [Contributing][contrib] for details on how to contribute to this project.
 
-### GitHub Discussions
+## GitHub Discussions
 
 I have enabled
 [Discussions](https://github.com/seapagan/fastapi-template/discussions) on this
