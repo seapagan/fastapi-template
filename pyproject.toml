@@ -72,6 +72,7 @@ mock = "^5.0.2"
 faker = "^18.10.1"
 mkdocs-git-revision-date-localized-plugin = "^1.2.0"
 mkdocs-minify-plugin = "^0.6.4"
+mkdocs-latest-git-tag-plugin = "^0.1.0"
 
 [build-system]
 requires = ["poetry-core"]
