@@ -1827,13 +1827,13 @@ pytz = "*"
 
 [[package]]
 name = "mkdocs-latest-git-tag-plugin"
-version = "0.1.0"
+version = "0.1.1"
 description = "MkDocs plugin to get the latest git tag from the local repository"
 optional = false
 python-versions = ">=3.8.1,<4.0.0"
 files = [
-    {file = "mkdocs_latest_git_tag_plugin-0.1.0-py3-none-any.whl", hash = "sha256:bf0cabab3bf7512aaf8235d88975b5a31187daa5e4b2a005bdabbdef749c0da5"},
-    {file = "mkdocs_latest_git_tag_plugin-0.1.0.tar.gz", hash = "sha256:e8287c585b66912c4054b3d996e6f0e9519053552062122e9d811ec4f70f06ac"},
+    {file = "mkdocs_latest_git_tag_plugin-0.1.1-py3-none-any.whl", hash = "sha256:e2b5b8818b3476d3e27467215c442534c6bd7a7bf4db8e651e61b14c4047082a"},
+    {file = "mkdocs_latest_git_tag_plugin-0.1.1.tar.gz", hash = "sha256:d0fe7f31598eca2eebf588ee4096759eaff333e2b47f0e2e5b84285b50f9ed7c"},
 ]
 
 [package.dependencies]
@@ -3895,4 +3895,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "dbdcf2f2951bd3baa74aa9725ce374eff740527b555092cfb8ddea1c28d0d4b3"
+content-hash = "59e1a186bc8eca8110e847c967690203dfcacc4e824bddb572e3f6433a1761a9"
