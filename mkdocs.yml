@@ -24,6 +24,7 @@ plugins:
       supportedSubmitMethods: []
       defaultModelsExpandDepth: 0
   - git-revision-date-localized
+  - latest-git-tag
   - minify:
       minify_html: true
       minify_css: true
