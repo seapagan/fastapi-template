@@ -58,7 +58,7 @@ The template **Requires Python 3.8.1+**
 
 ## Versioning
 
-!!! important "Version 0.4.0"
+!!! important "Current Release version is {{ latest-git-tag }}"
 
     This template is still in very active development and is not yet ready for
     full production use. However, I am currently using it to develop my own
