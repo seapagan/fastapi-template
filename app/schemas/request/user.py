@@ -1,8 +1,8 @@
 """Define Schemas used by the User routes."""
 from pydantic import BaseModel, Field
 
-from schemas.base import UserBase
-from schemas.examples import ExampleUser
+from app.schemas.base import UserBase
+from app.schemas.examples import ExampleUser
 
 
 class UserRegisterRequest(UserBase):

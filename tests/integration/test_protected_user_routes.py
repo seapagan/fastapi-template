@@ -2,7 +2,7 @@
 
 import pytest
 
-from managers.user import pwd_context
+from app.managers.user import pwd_context
 
 
 @pytest.mark.integration()

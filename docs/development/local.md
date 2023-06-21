@@ -34,7 +34,7 @@ Options:
 If you need more control, you can run `uvicorn` directly :
 
 ```console
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 The above command starts the server running on <http://localhost:8000>, and it
@@ -84,5 +84,7 @@ You can also run the Unit or Integration tests independently using `pytest -m
 unit` or `pytest -m integration`.
 
 See the
-[Pytest how-tos](https://docs.pytest.org/en/7.3.x/how-to/index.html){:target="_blank"}
+[Pytest how-tos][pytest-how-tos]{:target="_blank"}
 for more information
+
+[pytest-how-tos]: https://docs.pytest.org/en/latest/how-to/index.html

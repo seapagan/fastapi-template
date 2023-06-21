@@ -1,9 +1,9 @@
 """Define Response schemas specific to the Users."""
 from pydantic import Field
 
-from models.enums import RoleType
-from schemas.base import UserBase
-from schemas.examples import ExampleUser
+from app.models.enums import RoleType
+from app.schemas.base import UserBase
+from app.schemas.examples import ExampleUser
 
 
 class UserResponse(UserBase):

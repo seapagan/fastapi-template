@@ -3,10 +3,10 @@
 import pytest
 from faker import Faker
 
-from managers.auth import AuthManager
-from managers.user import UserManager, pwd_context
-from models.enums import RoleType
-from models.user import User
+from app.managers.auth import AuthManager
+from app.managers.user import UserManager, pwd_context
+from app.models.enums import RoleType
+from app.models.user import User
 
 
 @pytest.mark.asyncio()

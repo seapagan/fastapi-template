@@ -4,8 +4,8 @@ import json
 import pytest
 from pydantic import EmailStr
 
-from config.settings import get_settings
-from schemas.email import EmailSchema, EmailTemplateSchema
+from app.config.settings import get_settings
+from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
 @pytest.mark.unit()
@@ -22,6 +22,8 @@ class TestEmailManager:
     email_data_with_template = EmailTemplateSchema(
         template_name="template.html", body={"name": "Test Name"}, **email_data
     )
+
+    background_tasks_mock_path = "app.managers.email.BackgroundTasks"
 
     def test_init(self, email_manager):
         """Test the EmailManager constructor."""
@@ -40,7 +42,7 @@ class TestEmailManager:
 
     def test_background_send(self, email_manager, mocker):
         """Test the background_send method."""
-        mock_backgroundtasks = mocker.patch("managers.email.BackgroundTasks")
+        mock_backgroundtasks = mocker.patch(self.background_tasks_mock_path)
         response = email_manager.background_send(
             mock_backgroundtasks, self.email_schema
         )
@@ -51,7 +53,7 @@ class TestEmailManager:
 
     def test_template_send(self, email_manager, mocker):
         """Test the template_send method."""
-        mock_backgroundtasks = mocker.patch("managers.email.BackgroundTasks")
+        mock_backgroundtasks = mocker.patch(self.background_tasks_mock_path)
         response = email_manager.template_send(
             mock_backgroundtasks, self.email_data_with_template
         )

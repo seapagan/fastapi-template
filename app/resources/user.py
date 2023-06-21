@@ -3,12 +3,12 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
 
-from database.db import get_database
-from managers.auth import can_edit_user, is_admin, oauth2_schema
-from managers.user import UserManager
-from models.enums import RoleType
-from schemas.request.user import UserChangePasswordRequest, UserEditRequest
-from schemas.response.user import MyUserResponse, UserResponse
+from app.database.db import get_database
+from app.managers.auth import can_edit_user, is_admin, oauth2_schema
+from app.managers.user import UserManager
+from app.models.enums import RoleType
+from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
+from app.schemas.response.user import MyUserResponse, UserResponse
 
 router = APIRouter(tags=["Users"], prefix="/users")
 

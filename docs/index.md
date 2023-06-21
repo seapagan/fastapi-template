@@ -11,7 +11,7 @@
     fixes since then.
 
     I will keep the old releases available for those who wish to use them (for
-    now a short time). I think it's better to do this now before there are more
+    a short time). I think it's better to do this now before there are more
     users who need to update their projects to future versions.
 
     All releases from now on will also contain a Git patch to upgrade from the

@@ -1,12 +1,12 @@
 """Define routes for Authentication."""
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 
-from database.db import get_database
-from managers.auth import AuthManager
-from managers.user import UserManager
-from schemas.request.auth import TokenRefreshRequest
-from schemas.request.user import UserLoginRequest, UserRegisterRequest
-from schemas.response.auth import TokenRefreshResponse, TokenResponse
+from app.database.db import get_database
+from app.managers.auth import AuthManager
+from app.managers.user import UserManager
+from app.schemas.request.auth import TokenRefreshRequest
+from app.schemas.request.user import UserLoginRequest, UserRegisterRequest
+from app.schemas.response.auth import TokenRefreshResponse, TokenResponse
 
 router = APIRouter(tags=["Authentication"])
 
