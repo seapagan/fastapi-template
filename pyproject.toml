@@ -119,6 +119,7 @@ markers = [
   "unit: Unit tests",
   "integration: Integration tests",
 ]
+testpaths = ["tests"]
 
 [tool.coverage.run]
 # source = []
