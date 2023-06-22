@@ -34,11 +34,11 @@ class Settings(BaseSettings):
     db_port = "5432"
     db_name = "api-template"
 
-    # Setup the TEST Postgresql database.
-    test_db_user = "my_db_username"
-    test_db_password = "Sup3rS3cr3tP455w0rd"
-    test_db_address = "localhost"
-    test_db_port = "5432"
+    # flag to indicate if we are using postgres or not for testing. Defaults to
+    # False so that we use SQLite for testing by default.
+    test_with_postgres = False
+
+    # Setup the TEST Postgresql database. We only need to change the db name.
     test_db_name = "api-template-test"
 
     # JTW secret Key
