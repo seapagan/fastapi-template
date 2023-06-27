@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
-fastapi = "^0.97.0"
+fastapi = "^0.98.0"
 alembic = "^1.11.1"
 asyncpg = "^0.27.0"
 python-decouple = "^3.8"
@@ -24,13 +24,13 @@ tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 mkdocs = "^1.4.3"
 mkdocstrings = { extras = ["python"], version = "^0.22.0" }
-mkdocs-material = "^9.1.16"
+mkdocs-material = "^9.1.17"
 poetry = "^1.5.1"
 sqlalchemy = {extras = ["asyncio"], version = "^2.0.16"}
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
-version = "^1.2.8"
+version = "^1.3.0"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
@@ -56,7 +56,7 @@ bandit = "^1.7.5"
 poethepoet = "^0.20.0"
 httpx = "0.23.3"
 aiosqlite = "^0.19.0"
-pytest = "^7.3.2"
+pytest = "^7.4.0"
 pytest-cov = "^4.0.0"
 pytest-xdist = "^3.2.1"
 pytest-sugar = "^0.9.7"
@@ -68,10 +68,10 @@ pymdown-extensions = "^10.0.1"
 pygments = "^2.15.1"
 mkdocs-swagger-ui-tag = "^0.6.2"
 mock = "^5.0.2"
-faker = "^18.10.1"
+faker = "^18.11.2"
 mkdocs-git-revision-date-localized-plugin = "^1.2.0"
 mkdocs-minify-plugin = "^0.6.4"
-mkdocs-latest-git-tag-plugin = "^0.1.1"
+mkdocs-latest-git-tag-plugin = "^0.1.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -116,6 +116,7 @@ markers = [
   "unit: Unit tests",
   "integration: Integration tests",
 ]
+testpaths = ["tests"]
 
 [tool.coverage.run]
 # source = []

@@ -48,10 +48,17 @@ xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=
 
 ```
 
+or a one-liner using Python:
+
+```console
+$ python -c 'import secrets; print(secrets.token_hex(32))'
+d0d83c7ac2f3e4dfa205dc3c51b4952ad57fa8a842c8417168dc46bc07fbc1f8
+```
+
 Then replace the default value in the `.env` file as so:
 
 ```ini
-SECRET_KEY=xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=
+SECRET_KEY=d0d83c7ac2f3e4dfa205dc3c51b4952ad57fa8a842c8417168dc46bc07fbc1f8
 ```
 
 ## Token Expiry Setting
@@ -119,52 +126,5 @@ The `TEST_DB_xxx` variables are not used at the moment, they will allow the use
 of Postgres as the testing datbase instead of the default SQLite.
 
 ```ini
-# The Base API Url. This is where your API wil be served from, and can be read
-# in the application code. It has no effect on the running of the applciation
-# but is an easy way to build a path for API responses. Defaults to
-# http://localhost:8000
-BASE_URL=http://localhost:8000
-
-# Database Settings These must be changed to match your setup.
-DB_USER=dbuser
-DB_PASSWORD=my_secret_passw0rd
-DB_ADDRESS=localhost
-DB_PORT=5432
-DB_NAME=my_database_name
-
-# TEST Database Settings These must be changed to match your setup. This is only
-# for using Postgresql as a Test database, however that functionality is not yet
-# configurable and SQLite is used by default for testing.
-TEST_DB_USER=dbuser
-TEST_DB_PASSWORD=my_secret_passw0rd
-TEST_DB_ADDRESS=localhost
-TEST_DB_PORT=5432
-TEST_DB_NAME=my_database_name
-
-# generate your own super secret key here, used by the JWT functions.
-# 32 characters or longer, definately change the below!!
-SECRET_KEY=123456
-
-# How many minutes before Bearer tokens expire?
-ACCESS_TOKEN_EXPIRE_MINUTES=120
-
-# List of origins that can access this API, separated by a comma, eg:
-# CORS_ORIGINS=http://localhost,https://www.gnramsay.com
-# If you want all origins to access (the default), use * or leave commented:
-CORS_ORIGINS=*
-
-# Email Settings
-MAIL_USERNAME=emailuser
-MAIL_PASSWORD=letmein
-MAIL_FROM=my_api@provider.com
-MAIL_PORT=587
-MAIL_SERVER=smtp.mailserver.com
-MAIL_FROM_NAME="FastAPI Template"
-
-# Common Mail Settings, demending on your mail provider.
-# The below values work fine for GMail
-MAIL_STARTTLS=True
-MAIL_SSL_TLS=False
-MAIL_USE_CREDENTIALS=True
-MAIL_VALIDATE_CERTS=True
+--8<-- ".env.example"
 ```

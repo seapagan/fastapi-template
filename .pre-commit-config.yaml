@@ -26,7 +26,7 @@ repos:
       - id: isort
         args: [--profile=black, --line-length=80]
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.9
+    rev: v0.9.11
     hooks:
       - id: pymarkdown
         exclude: ^.github/|^docs/
