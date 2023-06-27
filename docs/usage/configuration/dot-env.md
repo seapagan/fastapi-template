@@ -48,6 +48,13 @@ xtFhsNhbGOJG//TAtDNtoTxV/hVDvssC79ApNm0gs7w=
 
 ```
 
+or a one-liner using Python:
+
+```console
+$ python -c 'import secrets; print(secrets.token_hex(32))'
+d0d83c7ac2f3e4dfa205dc3c51b4952ad57fa8a842c8417168dc46bc07fbc1f8
+```
+
 Then replace the default value in the `.env` file as so:
 
 ```ini
