@@ -54,7 +54,7 @@ class TestUserRoutes:
 
     async def test_get_my_profile_no_auth(self, test_app, get_db):
         """Ensure we get no profile if no auth token is provided."""
-        await UserManager.register(self.get_test_user(), database=get_db)
+        await UserManager.register(self.get_test_user(), session=get_db)
 
         response = test_app.get("/users/me", headers={})
 
@@ -72,12 +72,12 @@ class TestUserRoutes:
         """
         for _ in range(3):
             await UserManager.register(
-                self.get_test_user(hashed=False), database=get_db
+                self.get_test_user(hashed=False), session=get_db
             )
 
         token, _ = await UserManager.register(
             {**self.get_test_user(hashed=False), "role": RoleType.admin},
-            database=get_db,
+            session=get_db,
         )
 
         response = test_app.get(
@@ -91,12 +91,12 @@ class TestUserRoutes:
         """Ensure an admin user can get one users."""
         for _ in range(3):
             await UserManager.register(
-                self.get_test_user(hashed=False), database=get_db
+                self.get_test_user(hashed=False), session=get_db
             )
 
         token, _ = await UserManager.register(
             {**self.get_test_user(hashed=False), "role": RoleType.admin},
-            database=get_db,
+            session=get_db,
         )
 
         response = test_app.get(
@@ -110,7 +110,7 @@ class TestUserRoutes:
         """Test we can't get all users if not admin."""
         for _ in range(3):
             await UserManager.register(
-                self.get_test_user(hashed=False), database=get_db
+                self.get_test_user(hashed=False), session=get_db
             )
         token = AuthManager.encode_token({"id": 1})
 
@@ -125,7 +125,7 @@ class TestUserRoutes:
         """Test we can't get all users if not admin."""
         for _ in range(3):
             await UserManager.register(
-                self.get_test_user(hashed=False), database=get_db
+                self.get_test_user(hashed=False), session=get_db
             )
         token = AuthManager.encode_token({"id": 1})
 

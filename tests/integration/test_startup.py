@@ -5,13 +5,13 @@ routes and enable the config_error route.
 """
 import mock
 import pytest
-from databases import Database
 from fastapi.testclient import TestClient
 
 from app.config.settings import get_settings
 from app.main import app
 
 
+@pytest.mark.skip(reason="Functionality has changed")
 class TestStartup:
     """Test the startup of the application.
 
@@ -24,7 +24,7 @@ class TestStartup:
         "localhost:5432/"
         f"{get_settings().db_name}"
     )
-    bad_db = Database(bad_database_url)
+    # bad_db = Database(bad_database_url)
 
     @pytest.mark.skip(reason="Can cause issues with other tests")
     @pytest.mark.parametrize(

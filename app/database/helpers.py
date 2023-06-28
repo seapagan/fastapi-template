@@ -22,3 +22,12 @@ async def get_user_by_id_(user_id: int, session: AsyncSession) -> User | None:
     """Return a specific user by their email address."""
     result = await session.execute(select(User).where(User.id == user_id))
     return result.scalars().first()
+
+
+async def add_new_user_(user_data: dict, session: AsyncSession) -> User:
+    """Add a new user to the database."""
+    new_user = User(**user_data)
+    session.add(new_user)
+    await session.commit()
+    await session.refresh(new_user)
+    return new_user

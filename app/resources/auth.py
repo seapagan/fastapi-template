@@ -33,7 +33,7 @@ async def register(
     """
     token, refresh = await UserManager.register(
         user_data.dict(),
-        database=db,
+        session=db,
         background_tasks=background_tasks,
     )
     return {"token": token, "refresh": refresh}

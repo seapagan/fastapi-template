@@ -5,9 +5,12 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.settings import get_settings
 from app.database.db import get_database
+from app.database.helpers import get_user_by_id_
 from app.managers.email import EmailManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -37,7 +40,7 @@ class AuthManager:
         """Create and return a JTW token."""
         try:
             payload = {
-                "sub": user["id"],
+                "sub": user.id,
                 "exp": datetime.utcnow()
                 + timedelta(minutes=get_settings().access_token_expire_minutes),
             }
@@ -55,7 +58,7 @@ class AuthManager:
         """Create and return a JTW token."""
         try:
             payload = {
-                "sub": user["id"],
+                "sub": user.id,
                 "exp": datetime.utcnow() + timedelta(minutes=60 * 24 * 30),
                 "typ": "refresh",
             }
@@ -74,7 +77,7 @@ class AuthManager:
         """Create and return a JTW token."""
         try:
             payload = {
-                "sub": user["id"],
+                "sub": user.id,
                 "exp": datetime.utcnow() + timedelta(minutes=10),
                 "typ": "verify",
             }
@@ -89,7 +92,9 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def refresh(refresh_token: TokenRefreshRequest, database):
+    async def refresh(
+        refresh_token: TokenRefreshRequest, session: AsyncSession
+    ) -> str:
         """Refresh an expired JWT token, given a valid Refresh token."""
         try:
             payload = jwt.decode(
@@ -103,9 +108,7 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await database.fetch_one(
-                User.select().where(User.c.id == payload["sub"])
-            )
+            user_data = await get_user_by_id_(payload["sub"], session)
 
             if not user_data:
                 raise HTTPException(
@@ -113,7 +116,7 @@ class AuthManager:
                 )
 
             # block a banned user
-            if user_data["banned"]:
+            if user_data.banned:
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -130,7 +133,7 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def verify(code: str, database):
+    async def verify(code: str, session: AsyncSession) -> None:
         """Verify a new User's Email using the token they were sent."""
         try:
             payload = jwt.decode(
@@ -138,9 +141,7 @@ class AuthManager:
                 get_settings().secret_key,
                 algorithms=["HS256"],
             )
-            user_data = await database.fetch_one(
-                User.select().where(User.c.id == payload["sub"])
-            )
+            user_data = await get_user_by_id_(payload["sub"], session)
 
             if not user_data:
                 raise HTTPException(
@@ -163,7 +164,7 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            await database.execute(
+            await session.execute(
                 User.update()
                 .where(User.c.id == payload["sub"])
                 .values(
@@ -185,10 +186,10 @@ class AuthManager:
 
     @staticmethod
     async def resend_verify_code(
-        user: int, background_tasks: BackgroundTasks, database
-    ):  # pragma: no cover (code not used at this time)
+        user: int, background_tasks: BackgroundTasks, session: AsyncSession
+    ) -> None:  # pragma: no cover (code not used at this time)
         """Resend the user a verification email."""
-        user_data = await database.fetch_one(
+        user_data = await session.fetch_one(
             User.select().where(User.c.id == user)
         )
 
@@ -241,7 +242,7 @@ class CustomHTTPBearer(HTTPBearer):
     """Our own custom HTTPBearer class."""
 
     async def __call__(
-        self, request: Request, db=Depends(get_database)
+        self, request: Request, db: AsyncSession = Depends(get_database)
     ) -> Optional[HTTPAuthorizationCredentials]:
         """Override the default __call__ function."""
         res = await super().__call__(request)
@@ -250,16 +251,20 @@ class CustomHTTPBearer(HTTPBearer):
             payload = jwt.decode(
                 res.credentials, get_settings().secret_key, algorithms=["HS256"]
             )
-            user_data = await db.fetch_one(
-                User.select().where(User.c.id == payload["sub"])
+            result = await db.execute(
+                select(User).where(User.id == payload["sub"])
             )
+            user_data: User = result.scalars().first()
             # block a banned or unverified user
-            if user_data["banned"] or not user_data["verified"]:
-                raise HTTPException(
-                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
-                )
-            request.state.user = user_data
-            return user_data
+            if user_data:
+                if user_data.banned or not user_data.verified:
+                    raise HTTPException(
+                        status.HTTP_401_UNAUTHORIZED,
+                        ResponseMessages.INVALID_TOKEN,
+                    )
+                request.state.user = user_data
+                return user_data
+            return None
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
@@ -275,7 +280,7 @@ oauth2_schema = CustomHTTPBearer()
 
 def is_admin(request: Request):
     """Block if user is not an Admin."""
-    if request.state.user["role"] != RoleType.admin:
+    if request.state.user.role != RoleType.admin:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
 
@@ -284,13 +289,14 @@ def can_edit_user(request: Request):
 
     True if they own the resource or are Admin
     """
-    if request.state.user["role"] != RoleType.admin and request.state.user[
-        "id"
-    ] != int(request.path_params["user_id"]):
+    if (
+        request.state.user.role != RoleType.admin
+        and request.state.user.id != int(request.path_params["user_id"])
+    ):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
 
 def is_banned(request: Request):
     """Dont let banned users access the route."""
-    if request.state.user["banned"]:
+    if request.state.user.banned:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Banned!")
