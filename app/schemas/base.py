@@ -8,3 +8,8 @@ class UserBase(BaseModel):
     """Base for the User Schema."""
 
     email: str = Field(example=ExampleUser.email)
+
+    class Config:
+        """Pydantic Config."""
+
+        orm_mode = True
