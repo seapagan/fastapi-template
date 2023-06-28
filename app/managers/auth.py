@@ -5,7 +5,7 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.settings import get_settings
@@ -116,7 +116,7 @@ class AuthManager:
                 )
 
             # block a banned user
-            if user_data.banned:
+            if bool(user_data.banned):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -154,23 +154,25 @@ class AuthManager:
                 )
 
             # block a banned user
-            if user_data["banned"]:
+            if bool(user_data.banned):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            if user_data["verified"]:
+            if bool(user_data.verified):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             await session.execute(
-                User.update()
-                .where(User.c.id == payload["sub"])
+                update(User)
+                .where(User.id == payload["sub"])
                 .values(
                     verified=True,
                 )
             )
+            await session.commit()
+
             raise HTTPException(
                 status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
             )
@@ -189,9 +191,7 @@ class AuthManager:
         user: int, background_tasks: BackgroundTasks, session: AsyncSession
     ) -> None:  # pragma: no cover (code not used at this time)
         """Resend the user a verification email."""
-        user_data = await session.fetch_one(
-            User.select().where(User.c.id == user)
-        )
+        user_data = await get_user_by_id_(user, session)
 
         if not user_data:
             raise HTTPException(
@@ -199,12 +199,12 @@ class AuthManager:
             )
 
         # block a banned user
-        if user_data["banned"]:
+        if bool(user_data.banned):
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
 
-        if user_data["verified"]:
+        if bool(user_data.verified):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ResponseMessages.ALREADY_VALIDATED,
@@ -248,22 +248,23 @@ class CustomHTTPBearer(HTTPBearer):
         res = await super().__call__(request)
 
         try:
-            payload = jwt.decode(
-                res.credentials, get_settings().secret_key, algorithms=["HS256"]
-            )
-            result = await db.execute(
-                select(User).where(User.id == payload["sub"])
-            )
-            user_data: User = result.scalars().first()
-            # block a banned or unverified user
-            if user_data:
-                if user_data.banned or not user_data.verified:
-                    raise HTTPException(
-                        status.HTTP_401_UNAUTHORIZED,
-                        ResponseMessages.INVALID_TOKEN,
-                    )
-                request.state.user = user_data
-                return user_data
+            if res:
+                payload = jwt.decode(
+                    res.credentials,
+                    get_settings().secret_key,
+                    algorithms=["HS256"],
+                )
+
+                user_data = await get_user_by_id_(payload["sub"], db)
+                # block a banned or unverified user
+                if user_data:
+                    if bool(user_data.banned) or not bool(user_data.verified):
+                        raise HTTPException(
+                            status.HTTP_401_UNAUTHORIZED,
+                            ResponseMessages.INVALID_TOKEN,
+                        )
+                    request.state.user = user_data
+                    return user_data
             return None
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(

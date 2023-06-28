@@ -7,6 +7,7 @@ from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
 from pydantic import EmailStr
+from sqlalchemy import delete, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -124,14 +125,16 @@ class UserManager:
 
         if (
             not user_do
-            or not pwd_context.verify(user_data["password"], user_do.password)
-            or user_do.banned
+            or not pwd_context.verify(
+                user_data["password"], str(user_do.password)
+            )
+            or bool(user_do.banned)
         ):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
             )
 
-        if not user_do.verified:
+        if not bool(user_do.verified):
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
@@ -149,7 +152,8 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
-        await session.execute(User.delete().where(User.id == user_id))
+        await session.execute(delete(User).where(User.id == user_id))
+        await session.commit()
 
     @staticmethod
     async def update_user(
@@ -162,8 +166,8 @@ class UserManager:
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await session.execute(
-            User.update()
-            .where(User.c.id == user_id)
+            update(User)
+            .where(User.id == user_id)
             .values(
                 email=user_data.email,
                 first_name=user_data.first_name,
@@ -171,6 +175,7 @@ class UserManager:
                 password=pwd_context.hash(user_data.password),
             )
         )
+        await session.commit()
 
     @staticmethod
     async def change_password(
@@ -185,10 +190,11 @@ class UserManager:
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await session.execute(
-            User.update()
-            .where(User.c.id == user_id)
+            update(User)
+            .where(User.id == user_id)
             .values(password=pwd_context.hash(user_data.password))
         )
+        await session.commit()
 
     @staticmethod
     async def set_ban_status(
@@ -204,14 +210,15 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
-        if check_user["banned"] == state:
+        if bool(check_user.banned) == state:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.ALREADY_BANNED_OR_UNBANNED,
             )
         await session.execute(
-            User.update().where(User.c.id == user_id).values(banned=state)
+            update(User).where(User.id == user_id).values(banned=state)
         )
+        await session.commit()
 
     @staticmethod
     async def change_role(
@@ -219,8 +226,9 @@ class UserManager:
     ) -> None:
         """Change the specified user's Role."""
         await session.execute(
-            User.update().where(User.c.id == user_id).values(role=role)
+            update(User).where(User.id == user_id).values(role=role)
         )
+        await session.commit()
 
     @staticmethod
     async def get_all_users(session: AsyncSession):

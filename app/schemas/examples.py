@@ -11,3 +11,4 @@ class ExampleUser:
     password = "My S3cur3 P@ssw0rd"
     role = "user"
     banned = False
+    verified = True
