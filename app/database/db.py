@@ -19,5 +19,4 @@ async_session = async_sessionmaker(engine, expire_on_commit=False)
 async def get_database():
     """Return the database connection as a Generator."""
     async with async_session() as session:
-        async with session.begin():
-            yield session
+        yield session
