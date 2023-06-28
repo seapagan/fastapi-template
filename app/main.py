@@ -9,7 +9,7 @@ from rich import print  # pylint: disable=W0622
 
 from app.config.helpers import get_api_version
 from app.config.settings import get_settings
-from app.database.db import database
+from app.database.db import async_session
 from app.resources import config_error
 from app.resources.routes import api_router
 
@@ -18,11 +18,13 @@ from app.resources.routes import api_router
 async def lifespan(app: FastAPI):
     """Lifespan function Replaces the previous startup/shutdown functions.
 
-    Corrently we only ensure that the database is available and configured
+    Currently we only ensure that the database is available and configured
     properly. We disconnect from the database immediately after.
     """
     try:
-        await database.connect()
+        async with async_session() as session:
+            await session.connection()
+
         print("[green]INFO:     [/green][bold]Database configuration Tested.")
     except Exception as exc:
         print(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
@@ -32,8 +34,6 @@ async def lifespan(app: FastAPI):
         )
         app.routes.clear()
         app.include_router(config_error.router)
-    finally:
-        await database.disconnect()
 
     yield
     # we would normally put any cleanup code here, but we don't have any at the
