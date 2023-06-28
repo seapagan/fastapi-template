@@ -1,23 +1,24 @@
 """Define the Users model."""
-from sqlalchemy import Boolean, Column, Enum, Integer, String, Table
+from sqlalchemy import Boolean, Column, Enum, Integer, String
 
-from app.database.db import metadata
+from app.database.db import Base
 from app.models.enums import RoleType
 
-User = Table(
-    "users",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("email", String(120), unique=True),
-    Column("password", String(255)),
-    Column("first_name", String(30)),
-    Column("last_name", String(50)),
-    Column(
-        "role",
+
+class User(Base):
+    """Define the Users model."""
+
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String(120), unique=True)
+    password = Column(String(255))
+    first_name = Column(String(30))
+    last_name = Column(String(50))
+    role = Column(
         Enum(RoleType),
         nullable=False,
         server_default=RoleType.user.name,
-    ),
-    Column("banned", Boolean, default=False),
-    Column("verified", Boolean, default=False),
-)
+    )
+    banned = Column(Boolean, default=False)
+    verified = Column(Boolean, default=False)
