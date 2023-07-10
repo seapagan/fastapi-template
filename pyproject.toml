@@ -31,7 +31,7 @@ poetry = "^1.5.1"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
-version = "^1.3.0"
+version = "^1.3.1"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
