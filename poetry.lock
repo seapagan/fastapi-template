@@ -2692,13 +2692,13 @@ pytest = "*"
 
 [[package]]
 name = "pytest-reverse"
-version = "1.6.0"
+version = "1.7.0"
 description = "Pytest plugin to reverse test order."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "pytest_reverse-1.6.0-py3-none-any.whl", hash = "sha256:8b1a67b9f5d2c448ac0cffab282f07ab09cd852601f83ca9b0cb97bdac4a2fd4"},
-    {file = "pytest_reverse-1.6.0.tar.gz", hash = "sha256:b052f258958978fc327d5bcf3b1d3dc5f4ba80f0e7305e809664c7bb124eaf3e"},
+    {file = "pytest_reverse-1.7.0-py3-none-any.whl", hash = "sha256:37e83daac57eea3fb1cb718aa9ccdf9ca2ea8ac3645cb5bccf1c7ae25a8ad1d2"},
+    {file = "pytest_reverse-1.7.0.tar.gz", hash = "sha256:f943e5b9d253267569fd7ad237afc56b3e98ce9f6d2f6f3bb487b8c759e214fe"},
 ]
 
 [package.dependencies]
@@ -3896,4 +3896,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "a45b97d4a8f282a55dacdb738646b034d049c1ec9520afa40ade6b5fa4b53be8"
+content-hash = "35a40c1d32bda195b8c27583f51565bf307a5dffb103180ac2636570f8dfcdd6"
