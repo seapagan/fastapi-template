@@ -1,4 +1,4 @@
-# """Test the database module."""
+"""Test the database module."""
 # from typing import AsyncGenerator
 
 # import pytest
@@ -16,13 +16,13 @@
 #     async def test_get_database(self, mocker):
 #         """Test the get_database function.
 
-#         This is an Async Generator, so we need to test it as such. We also make
-#         sure that the database is connected when we get it, and disconnected
-#         when we're done with it.
+#         This is an Async Generator, so we need to test it as such. We also
+#         make sure that the database is connected when we get it, and
+#         disconnected when we're done with it.
 
-#         We need to mock the Database object, otherwise it trys to connect to the
-#         configured production database (usually PostgreSQL which is not set up
-#         for GH Actions)
+#         We need to mock the Database object, otherwise it trys to connect to
+#         the configured production database (usually PostgreSQL which is not
+#         set up for GH Actions)
 #         """
 #         mocker.patch(
 #             "app.database.db.database",
