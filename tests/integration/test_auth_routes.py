@@ -2,6 +2,7 @@
 from copy import deepcopy
 
 import pytest
+from sqlalchemy import select
 
 from app.managers.auth import AuthManager
 from app.managers.user import pwd_context
@@ -63,7 +64,8 @@ class TestAuthRoutes:
         assert isinstance(response.json()["token"], str)
         assert isinstance(response.json()["refresh"], str)
 
-        users_data = await get_db.fetch_one(User.select())
+        # users_data = await get_db.fetch_one(User.select())
+        users_data = await get_db.execute(select(User))
         assert users_data["email"] == post_body["email"]
         assert users_data["first_name"] == post_body["first_name"]
         assert users_data["last_name"] == post_body["last_name"]
@@ -90,8 +92,8 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        user_from_db = await get_db.fetch_one(
-            User.select().where(User.c.email == post_body["email"])
+        user_from_db = await get_db.execute(
+            select(User).where(User.email == post_body["email"])
         )
         assert user_from_db["password"] != post_body["password"]
         assert pwd_context.verify(
@@ -119,7 +121,7 @@ class TestAuthRoutes:
         assert response.status_code == 400
         assert response.json()["detail"] == "This email address is not valid"
 
-        users_from_db = await get_db.fetch_all(User.select())
+        users_from_db = await get_db.execute(select(User))
         assert len(users_from_db) == 0
 
         mock_send.assert_not_called()
@@ -166,7 +168,7 @@ class TestAuthRoutes:
 
         assert response.status_code in (400, 422)
 
-        users_from_db = await get_db.fetch_all(User.select())
+        users_from_db = await get_db.execute(select(User))
         assert len(users_from_db) == 0
 
         mock_send.assert_not_called()
@@ -179,7 +181,7 @@ class TestAuthRoutes:
         """Ensure a new user has to validate email before logging in."""
         my_user = deepcopy(self.test_user)
         my_user["verified"] = False
-        _ = await get_db.execute(User.insert(), values=my_user)
+        _ = await get_db.add(User(**my_user))
 
         response = test_app.post(
             self.login_path,
@@ -198,7 +200,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_verified_user_can_login(self, test_app, get_db):
         """Ensure a validated user can log in."""
-        _ = await get_db.execute(User.insert(), values=self.test_user)
+        _ = await get_db.add(User(**self.test_user))
 
         response = test_app.post(
             self.login_path,
@@ -231,7 +233,7 @@ class TestAuthRoutes:
         self, test_app, get_db, post_body
     ):
         """Ensure the user cant login with wrong email or password."""
-        _ = await get_db.execute(User.insert(), values=self.test_user)
+        _ = await get_db.add(User(**self.test_user))
 
         response = test_app.post(
             self.login_path,
@@ -258,7 +260,7 @@ class TestAuthRoutes:
         self, test_app, get_db, post_body
     ):
         """Ensure the user cant login with missing email or password."""
-        _ = await get_db.execute(User.insert(), values=self.test_user)
+        _ = await get_db.add(User(**self.test_user))
 
         response = test_app.post(
             self.login_path,
@@ -271,9 +273,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_cant_login_with_unverified_email(self, test_app, get_db):
         """Ensure the user cant login with unverified email."""
-        _ = await get_db.execute(
-            User.insert(), values=self.test_unverified_user
-        )
+        _ = await get_db.add(User(**self.test_unverified_user))
 
         response = test_app.post(
             self.login_path,
@@ -292,7 +292,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_cant_login_with_banned_user(self, test_app, get_db):
         """Ensure the user cant login with banned user."""
-        _ = await get_db.execute(User.insert(), values=self.test_banned_user)
+        _ = await get_db.add(User(**self.test_banned_user))
 
         response = test_app.post(
             self.login_path,
@@ -312,7 +312,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_refresh_token(self, test_app, get_db):
         """Ensure the user can refresh the token."""
-        _ = await get_db.execute(User.insert(), values=self.test_user)
+        _ = await get_db.add(User(**self.test_user))
 
         login_response = test_app.post(
             self.login_path,
@@ -338,7 +338,7 @@ class TestAuthRoutes:
         self, test_app, get_db
     ):
         """Ensure the user cant refresh the token with invalid refresh token."""
-        _ = await get_db.execute(User.insert(), values=self.test_user)
+        _ = await get_db.add(User(**self.test_user))
 
         refresh_response = test_app.post(
             "/refresh",
@@ -357,9 +357,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_verify_user(self, test_app, get_db):
         """Test we can verify a user."""
-        _ = await get_db.execute(
-            User.insert(), values={**self.test_user, "verified": False}
-        )
+        _ = await get_db.add(User({**self.test_user, "verified": False}))
         verification_token = AuthManager.encode_verify_token({"id": 1})
 
         response = test_app.get(f"/verify/?code={verification_token}")
@@ -374,9 +372,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_verify_bad_token(self, test_app, get_db, verification_token):
         """Ensure a bad token cant be used to verify a user."""
-        _ = await get_db.execute(
-            User.insert(), values={**self.test_user, "verified": False}
-        )
+        _ = await get_db.add(User({**self.test_user, "verified": False}))
         response = test_app.get(f"/verify/?code={verification_token}")
 
         assert response.status_code == 401

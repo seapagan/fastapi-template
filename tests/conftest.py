@@ -1,8 +1,10 @@
 """Fixtures and configuration for the test suite."""
+import logging
 from typing import Any, AsyncGenerator
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -20,36 +22,42 @@ async_engine = create_async_engine(DATABASE_URL, echo=False)
 Base = declarative_base()
 async_test_session = async_sessionmaker(async_engine, expire_on_commit=False)
 
+# non-async engine for setup and teardown
+setup_engine = create_engine(DATABASE_URL, echo=False)
 
 session = async_test_session()
+
+LOGGER = logging.getLogger(__name__)
 
 
 # Override the database connection to use the test database.
 async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection for testing."""
-    async with session.begin():
-        yield session
+    yield session
 
 
-async def setup_db():
+def setup_db():
     """Drop then recreate the database."""
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+    print("setup_db")
+    Base.metadata.drop_all
+    Base.metadata.create_all
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _setup():
+    """Setup and Teardown for the test suite."""
+    print("setup")
+    setup_db()
+    app.dependency_overrides[get_database] = get_database_override
+    yield
+    app.dependency_overrides = {}
+    print("teardown")
 
 
 @pytest.fixture()
 def get_db():
-    """Fixture to create the test database.
-
-    Before each test we drop and recreate the database using the 'setup_db'
-    function. We then override the get_database dependency to return the
-    test database connection.
-    """
-    _ = setup_db()
-    app.dependency_overrides[get_database] = get_database_override
-    yield session.begin()
-    app.dependency_overrides = {}
+    """Fixture to return a database session."""
+    return session
 
 
 @pytest.fixture(scope="module")
