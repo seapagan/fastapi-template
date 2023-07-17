@@ -153,7 +153,6 @@ class UserManager:
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         await session.execute(delete(User).where(User.id == user_id))
-        await session.commit()
 
     @staticmethod
     async def update_user(
@@ -175,7 +174,6 @@ class UserManager:
                 password=pwd_context.hash(user_data.password),
             )
         )
-        await session.commit()
 
     @staticmethod
     async def change_password(
@@ -194,7 +192,6 @@ class UserManager:
             .where(User.id == user_id)
             .values(password=pwd_context.hash(user_data.password))
         )
-        await session.commit()
 
     @staticmethod
     async def set_ban_status(
@@ -218,7 +215,6 @@ class UserManager:
         await session.execute(
             update(User).where(User.id == user_id).values(banned=state)
         )
-        await session.commit()
 
     @staticmethod
     async def change_role(
@@ -228,7 +224,6 @@ class UserManager:
         await session.execute(
             update(User).where(User.id == user_id).values(role=role)
         )
-        await session.commit()
 
     @staticmethod
     async def get_all_users(session: AsyncSession):

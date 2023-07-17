@@ -28,6 +28,4 @@ async def add_new_user_(user_data: dict, session: AsyncSession) -> User:
     """Add a new user to the database."""
     new_user = User(**user_data)
     session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
     return new_user
