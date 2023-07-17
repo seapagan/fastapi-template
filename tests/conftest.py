@@ -45,7 +45,7 @@ def setup_db():
 
 @pytest.fixture(scope="session", autouse=True)
 def _setup():
-    """Setup and Teardown for the test suite."""
+    """Perform Setup and Teardown for the test suite."""
     print("setup")
     setup_db()
     app.dependency_overrides[get_database] = get_database_override
