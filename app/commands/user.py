@@ -1,6 +1,5 @@
 """Add a user from the command line, optionally make superuser."""
 from asyncio import run as aiorun
-from typing import List
 
 import typer
 from fastapi import HTTPException
@@ -8,7 +7,7 @@ from rich import print  # pylint: disable=W0622
 from rich.console import Console
 from rich.table import Table
 
-from app.database.db import database
+from app.database.db import async_session
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -16,7 +15,7 @@ from app.models.user import User
 app = typer.Typer(no_args_is_help=True)
 
 
-def show_table(title: str, user_list: List):
+def show_table(title: str, user_list):
     """Show User data in a tabulated format."""
     console = Console()
     table = Table(
@@ -36,13 +35,13 @@ def show_table(title: str, user_list: List):
 
     for user in user_list:
         table.add_row(
-            str(user["id"]),
-            user["email"],
-            user["first_name"],
-            user["last_name"],
-            user["role"].name.capitalize(),
-            str(user["verified"]),
-            str(user["banned"]),
+            str(user.id),
+            user.email,
+            user.first_name,
+            user.last_name,
+            user.role.name.capitalize(),
+            str(user.verified),
+            str(user.banned),
         )
     console.print(table)
 
@@ -101,18 +100,17 @@ def create(
     async def create_user(user_data: dict):
         """Asny function to create a new user."""
         try:
-            await database.connect()
-            await UserManager.register(user_data, database)
-            print(
-                f"\n[green]-> User [bold]{user_data['email']}[/bold] "
-                "added succesfully.\n"
-            )
+            async with async_session() as session:
+                await UserManager.register(user_data, session)
+                await session.commit()
+                print(
+                    f"\n[green]-> User [bold]{user_data['email']}[/bold] "
+                    "added succesfully.\n"
+                )
         except HTTPException as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err.detail}\n")
         except Exception as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err}\n")
-        finally:
-            await database.disconnect()
 
     if admin:
         role_type = RoleType.admin
@@ -141,14 +139,11 @@ def list():
     async def list_users():
         """Async function to list all users in the database."""
         try:
-            await database.connect()
-            user_list = await UserManager.get_all_users(database)
-
+            async with async_session() as session:
+                user_list = await UserManager.get_all_users(session)
             return user_list
         except Exception as exc:
             print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
-        finally:
-            await database.disconnect()
 
     user_list = aiorun(list_users())
     if user_list:
@@ -170,14 +165,11 @@ def show(
     async def show_user():
         """Async function to show details for a single user."""
         try:
-            await database.connect()
-            user = await UserManager.get_user_by_id(user_id, database)
-
+            async with async_session() as session:
+                user = await UserManager.get_user_by_id(user_id, session)
             return user
         except Exception as exc:
             print(f"\n[red]-> ERROR getting User details : [bold]{exc}\n")
-        finally:
-            await database.disconnect()
 
     user = aiorun(show_user())
     if user:
@@ -199,26 +191,14 @@ def verify(
     async def verify_user(user_id: int):
         """Async function to verify a user by id."""
         try:
-            await database.connect()
-            user = await database.fetch_one(
-                User.select().where(User.c.id == user_id)
-            )
-            if user:
-                await database.execute(
-                    User.update()
-                    .where(User.c.id == user_id)
-                    .values(
-                        verified=True,
-                    )
-                )
-                user = await database.fetch_one(
-                    User.select().where(User.c.id == user_id)
-                )
-                return user
+            async with async_session() as session:
+                user = await session.get(User, user_id)
+                if user:
+                    user.verified = True  # type: ignore
+                    await session.commit()
+                    return user
         except Exception as exc:
             print(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
-        finally:
-            await database.disconnect()
 
     user = aiorun(verify_user(user_id))
     if user:
@@ -249,26 +229,14 @@ def ban(
     async def ban_user(user_id: int, unban: bool):
         """Async function to ban or unban a user."""
         try:
-            await database.connect()
-            user = await database.fetch_one(
-                User.select().where(User.c.id == user_id)
-            )
-            if user:
-                await database.execute(
-                    User.update()
-                    .where(User.c.id == user_id)
-                    .values(
-                        banned=(not unban),
-                    )
-                )
-                user = await database.fetch_one(
-                    User.select().where(User.c.id == user_id)
-                )
-                return user
+            async with async_session() as session:
+                user = await session.get(User, user_id)
+                if user:
+                    user.banned = not unban  # type: ignore
+                    await session.commit()
+                    return user
         except Exception as exc:
             print(f"\n[RED]-> ERROR banning  or unbanning User : [bold]{exc}\n")
-        finally:
-            await database.disconnect()
 
     user = aiorun(ban_user(user_id, unban))
     if user:
@@ -296,19 +264,14 @@ def delete(
     async def delete_user(user_id: int):
         """Async function to delete a user."""
         try:
-            await database.connect()
-            user = await database.fetch_one(
-                User.select().where(User.c.id == user_id)
-            )
-            if user:
-                await database.execute(
-                    User.delete().where(User.c.id == user_id)
-                )
-            return user
+            async with async_session() as session:
+                user = await session.get(User, user_id)
+                if user:
+                    await session.delete(user)
+                    await session.commit()
+                return user
         except Exception as exc:
             print(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
-        finally:
-            await database.disconnect()
 
     user = aiorun(delete_user(user_id))
 
