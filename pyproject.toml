@@ -58,7 +58,6 @@ httpx = "0.23.3"
 aiosqlite = "^0.19.0"
 pytest = "^7.4.0"
 pytest-cov = "^4.0.0"
-pytest-xdist = "^3.2.1"
 pytest-sugar = "^0.9.7"
 pytest-randomly = "^3.13.0"
 pytest-reverse = "^1.7.0"
@@ -103,15 +102,15 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
-addopts = [
-  "--cov",
-  "--cov-report", "term-missing",
-  "--cov-report", "html",
-  ]
+# addopts = [
+#   "--cov",
+#   "--cov-report", "term-missing",
+#   "--cov-report", "html",
+#   ]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
 ]
-mock_use_standalone_module = true
+# mock_use_standalone_module = true
 markers = [
   "unit: Unit tests",
   "integration: Integration tests",
