@@ -1,8 +1,13 @@
 """Fixtures and configuration for the test suite."""
+from typing import Any, AsyncGenerator
+
 import pytest
-import sqlalchemy
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.orm import declarative_base
 
 from app.database.db import get_database
@@ -11,30 +16,39 @@ from app.managers.email import EmailManager
 
 DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-engine = create_async_engine(DATABASE_URL, echo=False)
+async_engine = create_async_engine(DATABASE_URL, echo=False)
 Base = declarative_base()
-async_test_session = async_sessionmaker(engine, expire_on_commit=False)
+async_test_session = async_sessionmaker(async_engine, expire_on_commit=False)
+
+
+session = async_test_session()
 
 
 # Override the database connection to use the test database.
-async def get_database_override():
+async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection for testing."""
-    async with async_test_session() as session:
+    async with session.begin():
         yield session
+
+
+async def setup_db():
+    """Drop then recreate the database."""
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 
 @pytest.fixture()
 def get_db():
     """Fixture to create the test database.
 
-    Once the particular test is done, the database is dropped ready for the next
-    test. This means that data from one test will not interfere with (or be
-    available to) another.
+    Before each test we drop and recreate the database using the 'setup_db'
+    function. We then override the get_database dependency to return the
+    test database connection.
     """
-    # metadata.create_all(engine)
+    _ = setup_db()
     app.dependency_overrides[get_database] = get_database_override
-    yield test_database
-    # metadata.drop_all(engine)
+    yield session.begin()
     app.dependency_overrides = {}
 
 
