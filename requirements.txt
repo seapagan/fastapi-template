@@ -103,7 +103,7 @@ trove-classifiers==2023.7.6 ; python_full_version >= "3.8.1" and python_version 
 typer[all]==0.8.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 typing-extensions==4.7.1 ; python_full_version >= "3.8.1" and python_version < "4.0"
 urllib3==1.26.16 ; python_full_version >= "3.8.1" and python_version < "4.0"
-uvicorn[standard]==0.22.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
+uvicorn[standard]==0.23.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 uvloop==0.17.0 ; (sys_platform != "win32" and sys_platform != "cygwin") and platform_python_implementation != "PyPy" and python_full_version >= "3.8.1" and python_version < "4.0"
 virtualenv==20.24.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 watchdog==3.0.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
