@@ -102,12 +102,12 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
-# addopts = [
-#   "--cov",
-#   "--cov-report", "term-missing",
-#   "--cov-report", "html",
-#   ]
-# norecursedirs = "old_tests/*"
+addopts = [
+  "--cov",
+  "--cov-report", "term-missing",
+  "--cov-report", "html",
+  ]
+norecursedirs = "old_tests/*"
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
 ]
