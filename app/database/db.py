@@ -1,12 +1,13 @@
 """Setup the Database and support functions.."""
 from typing import Any, AsyncGenerator
 
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from app.config.settings import get_settings
 
@@ -17,8 +18,25 @@ DATABASE_URL = (
     f"{get_settings().db_name}"
 )
 
+
+class Base(DeclarativeBase):
+    """Base class for SQLAlchemy models.
+
+    All other models should inherit from this class.
+    """
+
+    metadata = MetaData(
+        naming_convention={
+            "ix": "ix_%(column_0_label)s",
+            "uq": "uq_%(table_name)s_%(column_0_name)s",
+            "ck": "ck_%(table_name)s_%(constraint_name)s",
+            "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        }
+    )
+
+
 async_engine = create_async_engine(DATABASE_URL, echo=False)
-Base = declarative_base()
 async_session = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
