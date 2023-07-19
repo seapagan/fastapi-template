@@ -12,7 +12,7 @@ from app.database.db import Base
 from app.models import user
 
 DATABASE_URL = (
-    f"postgresql://{cfg('DB_USER')}:{cfg('DB_PASSWORD')}@"
+    f"postgresql+asyncpg://{cfg('DB_USER')}:{cfg('DB_PASSWORD')}@"
     f"{cfg('DB_ADDRESS')}:{cfg('DB_PORT')}/{cfg('DB_NAME')}"
 )
 
