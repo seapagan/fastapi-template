@@ -33,6 +33,11 @@
 - add a password recovery endpoint
 - Implement user groups and permissions, make it configurable.
 
+## Testing
+
+- fix all the tests that were broken by the recent changes to SQLAlchemy 2.0
+- allow choice of Postgresql or SQLite for testing (currently only Postgresql)
+
 ## CLI
 
 - option to remove the customization functionality from the CLI. Useful once you

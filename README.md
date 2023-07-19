@@ -187,10 +187,35 @@ See the [TODO.md](TODO.md) file for plans.
 
 ## Testing
 
+**IMPORTANT : All tests are currently disabled on the `develop` branch until
+they are properly re-written for async support. I expect to get the Unit tests
+back quite soon, the integration tests will take a bit longer 😔**
+
 This project has a test suite for Integration and Unit tests. We use
 [pytest](https://docs.pytest.org) for this.
 
-These can be run from the checked out code with:
+Currently you need a Postgresql database running for this to work, however
+SQLite support is planned to be re-added.
+
+Before running the tests, you need to create a dedicated test database, in is
+assumed that the server, username and password are the same as for the main
+database.
+
+Edit the setting in `.env` to point to the test database:
+
+```ini
+# Database name to use for testing. This must already exist.
+TEST_DB_NAME=api-template-test
+```
+
+You can then migrate this empty database by running:
+
+```console
+$ ./api-admin test setup
+Migrating the test database ... Done!
+```
+
+Tests can then be run from the checked out code with:
 
 ```console
 $ pytest
