@@ -14,6 +14,7 @@ class UserResponse(UserBase):
     last_name: str = Field(example=ExampleUser.last_name)
     role: RoleType = Field(example=ExampleUser.role)
     banned: bool = Field(example=ExampleUser.banned)
+    verified: bool = Field(example=ExampleUser.verified)
 
 
 class MyUserResponse(UserBase):

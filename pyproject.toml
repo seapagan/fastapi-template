@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "API Template"
-version = "0.4.0"
+version = "0.5.0-beta0"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
@@ -10,8 +10,6 @@ readme = "README.md"
 python = ">=3.8.1,<4.0"
 fastapi = "^0.99.1"
 alembic = "^1.11.1"
-databases = "^0.7.0"
-SQLAlchemy = "^1.4.49"
 asyncpg = "^0.28.0"
 python-decouple = "^3.8"
 psycopg2 = "^2.9.6"
@@ -28,6 +26,7 @@ mkdocs = "^1.4.3"
 mkdocstrings = { extras = ["python"], version = "^0.22.0" }
 mkdocs-material = "^9.1.18"
 poetry = "^1.5.1"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.16"}
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
@@ -59,7 +58,6 @@ httpx = "0.23.3"
 aiosqlite = "^0.19.0"
 pytest = "^7.4.0"
 pytest-cov = "^4.0.0"
-pytest-xdist = "^3.2.1"
 pytest-sugar = "^0.9.7"
 pytest-randomly = "^3.13.0"
 pytest-reverse = "^1.7.0"
@@ -90,7 +88,7 @@ openapi = "./api-admin docs openapi --prefix=docs/reference"
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 
 [tool.flake8]
-exclude = ["__init__.py", ".git", "app/migrations/versions/*"]
+exclude = ["__init__.py", ".git", "app/migrations/versions/*", "old_tests/*"]
 max-line-length = 80
 docstring-convention = "google"
 
@@ -104,17 +102,16 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
-addopts = [
-  "--cov",
-  "--cov-report", "term-missing",
-  "--cov-report", "html",
-  ]
+# addopts = [
+#   "--cov",
+#   "--cov-report", "term-missing",
+#   "--cov-report", "html",
+#   ]
+# norecursedirs = "old_tests/*"
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
-  "ignore:Deprecated API features detected:DeprecationWarning",
-  "ignore::sqlalchemy.exc.RemovedIn20Warning",
 ]
-mock_use_standalone_module = true
+# mock_use_standalone_module = true
 markers = [
   "unit: Unit tests",
   "integration: Integration tests",

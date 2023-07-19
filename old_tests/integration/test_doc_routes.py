@@ -4,6 +4,7 @@ import pytest
 from app.config.settings import get_settings
 
 
+@pytest.mark.skip(reason="Swagger customization removed for now")
 @pytest.mark.integration()
 class TestDocRoutes:
     """Test the Swagger documentation."""

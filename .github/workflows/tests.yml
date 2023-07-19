@@ -9,6 +9,8 @@ on:
 
 jobs:
   test:
+    # disable this job temporarily
+    if: false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

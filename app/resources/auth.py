@@ -1,5 +1,6 @@
 """Define routes for Authentication."""
 from fastapi import APIRouter, BackgroundTasks, Depends, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
 from app.managers.auth import AuthManager
@@ -20,7 +21,7 @@ router = APIRouter(tags=["Authentication"])
 async def register(
     background_tasks: BackgroundTasks,
     user_data: UserRegisterRequest,
-    db=Depends(get_database),
+    session: AsyncSession = Depends(get_database),
 ):
     """Register a new User and return a JWT token plus a Refresh Token.
 
@@ -33,7 +34,7 @@ async def register(
     """
     token, refresh = await UserManager.register(
         user_data.dict(),
-        database=db,
+        session=session,
         background_tasks=background_tasks,
     )
     return {"token": token, "refresh": refresh}
@@ -45,7 +46,9 @@ async def register(
     response_model=TokenResponse,
     status_code=status.HTTP_200_OK,
 )
-async def login(user_data: UserLoginRequest, db=Depends(get_database)):
+async def login(
+    user_data: UserLoginRequest, session: AsyncSession = Depends(get_database)
+):
     """Login an existing User and return a JWT token plus a Refresh Token.
 
     The JWT token should be sent as a Bearer token for each access to a
@@ -55,7 +58,7 @@ async def login(user_data: UserLoginRequest, db=Depends(get_database)):
     endpoint to return a new JWT Token. The Refresh token will last 30 days, and
     cannot be refreshed.
     """
-    token, refresh = await UserManager.login(user_data.dict(), db)
+    token, refresh = await UserManager.login(user_data.dict(), session)
     return {"token": token, "refresh": refresh}
 
 
@@ -65,19 +68,20 @@ async def login(user_data: UserLoginRequest, db=Depends(get_database)):
     response_model=TokenRefreshResponse,
 )
 async def generate_refresh_token(
-    refresh_token: TokenRefreshRequest, db=Depends(get_database)
+    refresh_token: TokenRefreshRequest,
+    session: AsyncSession = Depends(get_database),
 ):
     """Return a new JWT, given a valid Refresh token.
 
     The Refresh token will not be updated at this time, it will still expire 30
     days after original issue. At that time the User will need to login again.
     """
-    token = await AuthManager.refresh(refresh_token, db)
+    token = await AuthManager.refresh(refresh_token, session)
     return {"token": token}
 
 
 @router.get("/verify/", status_code=status.HTTP_200_OK)
-async def verify(code: str = "", db=Depends(get_database)):
+async def verify(code: str = "", session: AsyncSession = Depends(get_database)):
     """Verify a new user.
 
     The code is sent to  new user by email, which must then be validated here.
@@ -85,7 +89,7 @@ async def verify(code: str = "", db=Depends(get_database)):
     We dont need to return anything here, as success or errors will be handled
     by FastAPI exceptions.
     """
-    await AuthManager.verify(code, db)
+    await AuthManager.verify(code, session)
 
 
 # @router.get("/resend/", status_code=status.HTTP_200_OK)
