@@ -8,13 +8,8 @@ from decouple import config as cfg
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app.database.db import Base
+from app.database.db import DATABASE_URL, Base
 from app.models import user
-
-DATABASE_URL = (
-    f"postgresql+asyncpg://{cfg('DB_USER')}:{cfg('DB_PASSWORD')}@"
-    f"{cfg('DB_ADDRESS')}:{cfg('DB_PORT')}/{cfg('DB_NAME')}"
-)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -77,7 +72,7 @@ async def run_async_migrations():
     """
 
     connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section),
+        config.get_section(config.config_ini_section),  # type: ignore
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
