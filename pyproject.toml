@@ -88,7 +88,7 @@ openapi = "./api-admin docs openapi --prefix=docs/reference"
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 
 [tool.flake8]
-exclude = ["__init__.py", ".git", "app/migrations/versions/*"]
+exclude = ["__init__.py", ".git", "app/migrations/versions/*", "old_tests/*"]
 max-line-length = 80
 docstring-convention = "google"
 
@@ -107,6 +107,7 @@ skips = ['*_test.py', '*/test_*.py']
 #   "--cov-report", "term-missing",
 #   "--cov-report", "html",
 #   ]
+# norecursedirs = "old_tests/*"
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
 ]

@@ -6,7 +6,6 @@ from app.managers.user import pwd_context
 
 
 @pytest.mark.integration()
-@pytest.mark.usefixtures("get_db")
 class TestProtectedUserRoutes:
     """Ensure the user routes are protected by authentication.
 
