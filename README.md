@@ -87,8 +87,11 @@ full production use. However, I am currently using it to develop my own
 projects, which include some production API's without issues. I will update the
 template as I find bugs or add new features. I will also be adding more
 documentation as I go. For the moment, if you wish to use it without getting
-involved in dev, I'd recommend checking out the latest `Git TAG` instead
-of using the main branch.**
+involved in dev, I'd recommend checking out the latest actual
+[Release](https://github.com/seapagan/fastapi-template/releases/latest).**
+
+However, the `main` branch should be pretty stable as all development is done on
+the `develop` branch and merged into `main` when ready.
 
 The template **Requires Python 3.8.1+** or higher. It is developed under Python
 3.11.
