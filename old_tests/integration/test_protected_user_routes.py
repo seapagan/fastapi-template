@@ -36,10 +36,10 @@ class TestProtectedUserRoutes:
         "route",
         test_routes,
     )
-    def test_routes_no_auth(self, test_app, route):
+    def test_routes_no_auth(self, test_client, route):
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_app, method)
+        fn = getattr(test_client, method)
         response = fn(route_name)
 
         assert response.status_code == 403
@@ -49,10 +49,10 @@ class TestProtectedUserRoutes:
         "route",
         test_routes,
     )
-    def test_routes_bad_auth(self, test_app, route):
+    def test_routes_bad_auth(self, test_client, route):
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_app, method)
+        fn = getattr(test_client, method)
         response = fn(route_name, headers={"Authorization": "Bearer BADBEEF"})
 
         assert response.status_code == 401
