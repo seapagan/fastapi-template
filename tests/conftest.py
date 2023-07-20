@@ -2,7 +2,7 @@
 from typing import Any, AsyncGenerator
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -38,10 +38,15 @@ async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
 
 
 @pytest.fixture()
-def test_app():
+async def client():
     """Fixture to yield a test client for the app."""
     app.dependency_overrides[get_database] = get_database_override
-    yield TestClient(app)
+    async with AsyncClient(
+        app=app,
+        base_url="http://testserver",
+        headers={"Content-Type": "application/json"},
+    ) as client:
+        yield client
     app.dependency_overrides = {}
 
 
