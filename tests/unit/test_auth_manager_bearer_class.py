@@ -7,7 +7,7 @@ from fastapi import BackgroundTasks, HTTPException
 from app.managers.auth import CustomHTTPBearer, ResponseMessages
 from app.managers.user import UserManager
 from app.models.user import User
-from old_tests.helpers import get_token
+from tests.helpers import get_token
 
 
 @pytest.mark.unit()
