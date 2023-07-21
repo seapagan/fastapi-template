@@ -22,7 +22,7 @@ class TestProtectedUserRoutes:
     }
 
     test_routes = [
-        ["/users", "get"],
+        ["/users/", "get"],
         ["/users/me", "get"],
         ["/users/1/make-admin", "post"],
         ["/users/1/password", "post"],
@@ -32,28 +32,32 @@ class TestProtectedUserRoutes:
         ["/users/1", "delete"],
     ]
 
+    @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "route",
         test_routes,
     )
-    def test_routes_no_auth(self, test_client, route):
+    async def test_routes_no_auth(self, client, route):
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_client, method)
-        response = fn(route_name)
+        fn = getattr(client, method)
+        response = await fn(route_name)
 
         assert response.status_code == 403
         assert response.json() == {"detail": "Not authenticated"}
 
+    @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "route",
         test_routes,
     )
-    def test_routes_bad_auth(self, test_client, route):
+    async def test_routes_bad_auth(self, client, route):
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_client, method)
-        response = fn(route_name, headers={"Authorization": "Bearer BADBEEF"})
+        fn = getattr(client, method)
+        response = await fn(
+            route_name, headers={"Authorization": "Bearer BADBEEF"}
+        )
 
         assert response.status_code == 401
         assert response.json() == {"detail": "That token is Invalid"}
