@@ -1,4 +1,5 @@
 """Fixtures and configuration for the test suite."""
+import asyncio
 from typing import Any, AsyncGenerator
 
 import pytest
@@ -9,7 +10,6 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool
 
 from app.config.settings import get_settings
 from app.database.db import Base, get_database
@@ -26,11 +26,19 @@ DATABASE_URL = (
 
 # DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-# no to happy with this, but it works. if don't set the poolclass to NullPool,
-# then the tests will hang. I think it's because the test engine is getting
-# closed, Needs more investigation.
-async_engine = create_async_engine(DATABASE_URL, echo=False, poolclass=NullPool)
+async_engine = create_async_engine(DATABASE_URL, echo=False)
 async_test_session = async_sessionmaker(async_engine, expire_on_commit=False)
+
+
+@pytest_asyncio.fixture(scope="session")
+def event_loop(request):
+    """Override the default event loop to use the async event loop.
+
+    This is required for pytest-asyncio to work with FastAPI.
+    """
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
 
 
 # reset the database before each test
