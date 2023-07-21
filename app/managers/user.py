@@ -248,3 +248,4 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
+        return user
