@@ -1,11 +1,12 @@
 """Fixtures and configuration for the test suite."""
 import asyncio
-from typing import Any, AsyncGenerator
+from typing import Any, AsyncGenerator, Generator
 
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
@@ -24,14 +25,14 @@ DATABASE_URL = (
 )
 
 
-# DATABASE_URL = "sqlite+aiosqlite:///./test.db"
-
-async_engine = create_async_engine(DATABASE_URL, echo=False)
-async_test_session = async_sessionmaker(async_engine, expire_on_commit=False)
+async_engine: AsyncEngine = create_async_engine(DATABASE_URL, echo=False)
+async_test_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
+    async_engine, expire_on_commit=False
+)
 
 
 @pytest_asyncio.fixture(scope="session")
-def event_loop(request):
+def event_loop(request) -> Generator[asyncio.AbstractEventLoop, Any, Any]:
     """Override the default event loop to use the async event loop.
 
     This is required for pytest-asyncio to work with FastAPI.
@@ -43,7 +44,7 @@ def event_loop(request):
 
 # reset the database before each test
 @pytest_asyncio.fixture(autouse=True)
-async def reset_db():
+async def reset_db() -> None:
     """Reset the database."""
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -59,7 +60,7 @@ async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
 
 
 @pytest_asyncio.fixture()
-async def test_db():
+async def test_db() -> AsyncGenerator[AsyncSession, Any]:
     """Fixture to yield a database connection for testing."""
     async with async_test_session() as session:
         async with session.begin():
@@ -67,7 +68,7 @@ async def test_db():
 
 
 @pytest_asyncio.fixture()
-async def client():
+async def client() -> AsyncGenerator[AsyncClient, Any]:
     """Fixture to yield a test client for the app."""
     app.dependency_overrides[get_database] = get_database_override
     async with AsyncClient(
@@ -80,7 +81,7 @@ async def client():
 
 
 @pytest.fixture(scope="module")
-def email_manager():
+def email_manager() -> EmailManager:
     """Fixture to return an EmailManager instance.
 
     We disable actually sending mail by setting suppress_send to True.
