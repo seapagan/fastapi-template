@@ -2,15 +2,17 @@
 from typing import Any, AsyncGenerator
 
 import pytest
+import pytest_asyncio
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
+from sqlalchemy.pool import NullPool
 
 from app.config.settings import get_settings
-from app.database.db import get_database
+from app.database.db import Base, get_database
 from app.main import app
 from app.managers.email import EmailManager
 
@@ -21,23 +23,42 @@ DATABASE_URL = (
     f"{get_settings().test_db_name}"
 )
 
+
 # DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-async_engine = create_async_engine(DATABASE_URL, echo=True)
+# no to happy with this, but it works. if don't set the poolclass to NullPool,
+# then the tests will hang. I think it's because the test engine is getting
+# closed, Needs more investigation.
+async_engine = create_async_engine(DATABASE_URL, echo=False, poolclass=NullPool)
 async_test_session = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
-# Override the database connection to use the test database, rolling back after
-# each test.
+# reset the database before each test
+@pytest_asyncio.fixture(autouse=True)
+async def reset_db():
+    """Reset the database."""
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+
+# Override the database connection to use the test database
 async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection for testing."""
     async with async_test_session() as session:
         async with session.begin():
             yield session
-            await session.rollback()
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
+async def test_db():
+    """Fixture to yield a database connection for testing."""
+    async with async_test_session() as session:
+        async with session.begin():
+            yield session
+
+
+@pytest_asyncio.fixture()
 async def client():
     """Fixture to yield a test client for the app."""
     app.dependency_overrides[get_database] = get_database_override
