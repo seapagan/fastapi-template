@@ -2615,35 +2615,6 @@ pytest = ">=5.0"
 dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
-name = "pytest-randomly"
-version = "3.13.0"
-description = "Pytest plugin to randomly order tests and control random.seed."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "pytest_randomly-3.13.0-py3-none-any.whl", hash = "sha256:e78d898ef4066f89744e5075083aa7fb6f0de07ffd70ca9c4435cda590cf1eac"},
-    {file = "pytest_randomly-3.13.0.tar.gz", hash = "sha256:079c78b94693189879fbd7304de4e147304f0811fa96249ea5619f2f1cd33df0"},
-]
-
-[package.dependencies]
-importlib-metadata = {version = ">=3.6.0", markers = "python_version < \"3.10\""}
-pytest = "*"
-
-[[package]]
-name = "pytest-reverse"
-version = "1.7.0"
-description = "Pytest plugin to reverse test order."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "pytest_reverse-1.7.0-py3-none-any.whl", hash = "sha256:37e83daac57eea3fb1cb718aa9ccdf9ca2ea8ac3645cb5bccf1c7ae25a8ad1d2"},
-    {file = "pytest_reverse-1.7.0.tar.gz", hash = "sha256:f943e5b9d253267569fd7ad237afc56b3e98ce9f6d2f6f3bb487b8c759e214fe"},
-]
-
-[package.dependencies]
-pytest = "*"
-
-[[package]]
 name = "pytest-sugar"
 version = "0.9.7"
 description = "pytest-sugar is a plugin for pytest that changes the default look and feel of pytest (e.g. progressbar, show tests that fail instantly)."
@@ -3943,4 +3914,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "d2624694af030567913e17ad5830b5615251c0a0269dd5da763588da9bd20a53"
+content-hash = "22c6d43cbf38aea1de26d4a9743d3d60eb82fb0cc95671836441c404fc27a939"

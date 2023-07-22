@@ -59,8 +59,8 @@ aiosqlite = "^0.19.0"
 pytest = "^7.4.0"
 pytest-cov = "^4.0.0"
 pytest-sugar = "^0.9.7"
-pytest-randomly = "^3.13.0"
-pytest-reverse = "^1.7.0"
+# pytest-randomly = "^3.13.0"
+# pytest-reverse = "^1.7.0"
 pytest-asyncio = "^0.21.1"
 pytest-mock = "^3.11.1"
 pymdown-extensions = "^10.1"
@@ -107,7 +107,6 @@ addopts = [
   "--cov-report", "term-missing",
   "--cov-report", "html",
   ]
-norecursedirs = "old_tests/*"
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
 ]
