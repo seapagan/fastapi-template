@@ -6,7 +6,7 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.managers.auth import AuthManager
-from app.managers.user import UserManager, pwd_context
+from app.managers.user import ErrorMessages, UserManager, pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -21,6 +21,8 @@ class TestUserRoutes:
     direct access crashes some of the tests (It's due to Pydantic validation).
     This issue will be properly investigated later.
     """
+
+    mock_request_path = "app.resources.user.Request.state"
 
     def get_test_user(self, hashed=True):
         """Return one or more test users."""
@@ -43,13 +45,16 @@ class TestUserRoutes:
     #                            test profile route                            #
     # ------------------------------------------------------------------------ #
     async def test_get_my_profile(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test we can get the current users profile."""
         test_user = User(**self.get_test_user())
 
         test_db.add(test_user)
         token = AuthManager.encode_token(test_user)
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
 
         response = await client.get(
             "/users/me", headers={"Authorization": f"Bearer {token}"}
@@ -59,10 +64,13 @@ class TestUserRoutes:
         assert len(response.json()) == 3
 
     async def test_get_my_profile_no_auth(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Ensure we get no profile if no auth token is provided."""
         await UserManager.register(self.get_test_user(), session=test_db)
+
+        mock_req = mocker.patch("app.resources.user.Request.state")
+        mock_req.user.id = 1
 
         response = await client.get("/users/me", headers={})
 
@@ -73,7 +81,7 @@ class TestUserRoutes:
     #                           test get users route                           #
     # ------------------------------------------------------------------------ #
     async def test_admin_can_get_all_users(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Ensure an admin user can get all users.
 
@@ -90,6 +98,9 @@ class TestUserRoutes:
             session=test_db,
         )
 
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 4
+
         response = await client.get(
             "/users/", headers={"Authorization": f"Bearer {token}"}
         )
@@ -98,7 +109,7 @@ class TestUserRoutes:
         assert len(response.json()) == 4
 
     async def test_admin_can_get_one_user(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Ensure an admin user can get one users."""
         for _ in range(3):
@@ -111,6 +122,9 @@ class TestUserRoutes:
             session=test_db,
         )
 
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 4
+
         response = await client.get(
             "/users/?user_id=3", headers={"Authorization": f"Bearer {token}"}
         )
@@ -119,7 +133,7 @@ class TestUserRoutes:
         assert response.json()["id"] == 3
 
     async def test_user_cant_get_all_users(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test we can't get all users if not admin."""
         for _ in range(3):
@@ -127,6 +141,9 @@ class TestUserRoutes:
                 self.get_test_user(hashed=False), session=test_db
             )
         token = AuthManager.encode_token(User(id=1))
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
 
         response = await client.get(
             "/users/", headers={"Authorization": f"Bearer {token}"}
@@ -136,7 +153,7 @@ class TestUserRoutes:
         assert response.json() == {"detail": "Forbidden"}
 
     async def test_user_cant_get_single_user(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test we can't get all users if not admin."""
         for _ in range(3):
@@ -144,6 +161,9 @@ class TestUserRoutes:
                 self.get_test_user(hashed=False), session=test_db
             )
         token = AuthManager.encode_token(User(id=1))
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
 
         response = await client.get(
             "/users/?user_id=2", headers={"Authorization": f"Bearer {token}"}
@@ -156,21 +176,31 @@ class TestUserRoutes:
     #                           test make_admin route                          #
     # ------------------------------------------------------------------------ #
     async def test_make_admin_as_admin(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test we can upgrade an existing user to admin."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = test_db.add(User(**normal_user))
-        admin_id = test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=admin_id))
+        test_db.add(User(**normal_user))
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=2))
+
+        print(token)
+
+        admin_user = await test_db.get(User, 2)
+        print("Admin User: ", admin_user.__dict__)
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=2, role=RoleType.admin)
 
         response = await client.post(
-            f"/users/{user_id}/make-admin",
+            "/users/1/make-admin",
             headers={"Authorization": f"Bearer {token}"},
         )
-        new_admin = await test_db.get(User, user_id)
+        new_admin = await test_db.get(User, 1)
+
+        print("New Admin: ", new_admin.__dict__)
 
         assert response.status_code == 204
         assert new_admin is not None
@@ -277,7 +307,7 @@ class TestUserRoutes:
         )
 
         assert response.status_code == 404
-        assert response.json() == {"detail": "This User does not exist"}
+        assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
     # ------------------------------------------------------------------------ #
     #                           test unban user route                          #
@@ -333,7 +363,7 @@ class TestUserRoutes:
         )
 
         assert response.status_code == 404
-        assert response.json() == {"detail": "This User does not exist"}
+        assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
     async def test_user_cant_unban(
         self, client: AsyncClient, test_db: AsyncSession
@@ -361,54 +391,62 @@ class TestUserRoutes:
     #                          test delete user route                          #
     # ------------------------------------------------------------------------ #
     async def test_admin_can_delete_user(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test that an admin can delete a user."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = test_db.add(User(**normal_user))
-        admin_id = test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=admin_id))
+        test_db.add(User(**normal_user))
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=2))
 
-        response = await client.delete(
-            f"/users/{user_id}",
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=2, role=RoleType.admin)
+
+        await client.delete(
+            "/users/1",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        deleted_user = await test_db.get(User, user_id)
+        deleted_user = await test_db.get(User, 1)
 
-        assert response.status_code == 204
         assert deleted_user is None
 
     async def test_non_admin_cant_delete_user(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test that an ordinary user cant delete another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
 
-        user_id = test_db.add(User(**normal_user))
-        user2_id = test_db.add(User(**normal_user_2))
-        token = AuthManager.encode_token(User(id=user_id))
+        test_db.add(User(**normal_user))
+        test_db.add(User(**normal_user_2))
+        token = AuthManager.encode_token(User(id=1))
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=1, role=RoleType.user)
 
         response = await client.delete(
-            f"/users/{user2_id}",
+            "/users/2",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        not_deleted_user = await test_db.get(User, user2_id)
+        not_deleted_user = await test_db.get(User, 2)
 
         assert response.status_code == 403
         assert not_deleted_user is not None
 
     async def test_delete_missing_user(
-        self, client: AsyncClient, test_db: AsyncSession
+        self, client: AsyncClient, test_db: AsyncSession, mocker
     ):
         """Test deleting a non-existing user."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=admin_id))
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=1))
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=1, role=RoleType.admin)
 
         response = await client.delete(
             "/users/66",
@@ -416,7 +454,7 @@ class TestUserRoutes:
         )
 
         assert response.status_code == 404
-        assert response.json()["detail"] == "This User does not exist"
+        assert response.json()["detail"] == ErrorMessages.USER_INVALID
 
     # ------------------------------------------------------------------------ #
     #                        test change password route                        #

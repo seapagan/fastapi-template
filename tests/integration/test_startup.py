@@ -12,6 +12,8 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.config.settings import get_settings
+from app.database.db import get_database
+from app.main import app
 
 
 @pytest.mark.skip(reason="Functionality has changed")
@@ -22,32 +24,35 @@ class TestStartup:
     since we already test the default success in another test.
     """
 
-    def __init__(self):
-        """Initialize the test class."""
-        self.bad_database_url = (
-            "postgresql://bad_user:wrong_password@"
-            "localhost:5432/"
-            f"{get_settings().db_name}"
-        )
-        self.bad_engine: AsyncEngine = create_async_engine(
-            self.bad_database_url, echo=False
-        )
-        self.bad_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
-            self.bad_engine, expire_on_commit=False
-        )
-        self.bad_db: AsyncSession = self.bad_session()
+    bad_database_url = (
+        "postgresql+asyncpg://bad_user:wrong_password@"
+        "localhost:5432/"
+        f"{get_settings().db_name}"
+    )
+    bad_engine: AsyncEngine = create_async_engine(bad_database_url, echo=False)
+    bad_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
+        bad_engine, expire_on_commit=False
+    )
+    bad_db: AsyncSession = bad_session()
 
-    @pytest.mark.skip(reason="Can cause issues with other tests")
+    async def db_error(self):
+        """Return a bad database connection."""
+        async with self.bad_session() as session:
+            async with session.begin():
+                yield session
+
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "route",
-        ["/", "/users", "/login", "/register"],
+        ["/", "/users/", "/login/", "/register/"],
     )
     async def test_startup_fails_no_db(self, client, capfd, route):
         """Test fail with bad or missing database settings.
 
         We test a number of routes to ensure that the error handler is working
         """
+        app.dependency_overrides[get_database] = self.db_error
+
         response = await client.get(route)
 
         assert response.status_code == 500
