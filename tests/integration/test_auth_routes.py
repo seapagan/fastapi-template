@@ -1,0 +1,418 @@
+"""Test the authentication routes of the application."""
+import logging
+
+# from copy import deepcopy
+from typing import Dict, Union
+
+import pytest
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.managers.auth import AuthManager
+from app.managers.user import pwd_context
+from app.models.enums import RoleType
+from app.models.user import User
+
+logging.basicConfig(
+    format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.DEBUG,
+)
+
+
+@pytest.mark.integration()
+class TestAuthRoutes:
+    """Test the authentication routes of the application."""
+
+    # ------------------------------------------------------------------------ #
+    #        some constants to clean up the code and allow easy changing       #
+    # ------------------------------------------------------------------------ #
+    email_fn_to_patch = "app.managers.user.EmailManager.template_send"
+    register_path = "/register/"
+    login_path = "/login/"
+
+    test_user: Dict[str, Union[str, bool]] = {
+        "email": "testuser@usertest.com",
+        "first_name": "Test",
+        "last_name": "User",
+        "password": pwd_context.hash("test12345!"),
+        "verified": True,
+    }
+
+    test_unverified_user = {
+        **test_user,
+        "verified": False,
+    }
+
+    test_banned_user = {
+        **test_user,
+        "banned": True,
+    }
+
+    # ------------------------------------------------------------------------ #
+    #                          test '/register' route                          #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.asyncio()
+    async def test_register_new_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
+        """Ensure a new user can register."""
+        # disable email sending by mocking the function
+        mock_send = mocker.patch(self.email_fn_to_patch)
+
+        post_body = {
+            "email": "testuser@testuser.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "test12345!",
+        }
+        response = await client.post(
+            self.register_path,
+            json=post_body,
+        )
+        print(response)
+
+        assert response.status_code == 201
+        assert list(response.json().keys()) == ["token", "refresh"]
+        assert isinstance(response.json()["token"], str)
+        assert isinstance(response.json()["refresh"], str)
+
+        user_from_db = await test_db.get(User, 1)
+
+        if user_from_db is None:
+            pytest.fail("User was not added to the database")
+
+        assert user_from_db.email == post_body["email"]
+        assert user_from_db.first_name == post_body["first_name"]
+        assert user_from_db.last_name == post_body["last_name"]
+        assert user_from_db.password != post_body["password"]
+        assert user_from_db.verified is False
+        assert user_from_db.role == RoleType.user
+
+        mock_send.assert_called_once()
+
+    @pytest.mark.asyncio()
+    async def test_password_is_stored_hashed(self, client, test_db, mocker):
+        """Ensure that the raw password is not stored in the database."""
+        # disable email sending by mocking the function
+        _ = mocker.patch(self.email_fn_to_patch)
+
+        post_body = {
+            "email": "testuser@testuser.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "test12345!",
+        }
+        await client.post(
+            self.register_path,
+            json=post_body,
+        )
+
+        user_from_db = await test_db.get(User, 1)
+
+        assert user_from_db.password != post_body["password"]
+        assert pwd_context.verify(post_body["password"], user_from_db.password)
+
+    @pytest.mark.asyncio()
+    async def test_register_new_user_with_bad_email(
+        self, client, test_db, mocker
+    ):
+        """Ensure an invalid email address fails, and no email is sent."""
+        # mock the email sending function
+        mock_send = mocker.patch(self.email_fn_to_patch)
+
+        response = await client.post(
+            self.register_path,
+            json={
+                "email": "bad_email",
+                "first_name": "Test",
+                "last_name": "User",
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert response.json()["detail"] == "This email address is not valid"
+
+        user_from_db = await test_db.get(User, 1)
+        assert user_from_db is None
+
+        mock_send.assert_not_called()
+
+    # @pytest.mark.skip(
+    #     reason="parameterized tests not working under pytest-asyncio"
+    # )
+    @pytest.mark.parametrize(
+        "post_body",
+        [
+            {},
+            {
+                "email": "",
+                "first_name": "Test",
+                "last_name": "User",
+                "password": "test12345!",
+            },
+            {
+                "email": "email@testuser.com",
+                "first_name": "",
+                "last_name": "User",
+                "password": "test12345!",
+            },
+            {
+                "email": "email@testuser.com",
+                "first_name": "Test",
+                "last_name": "",
+                "password": "test12345!",
+            },
+            {
+                "email": "email@testuser.com",
+                "first_name": "Test",
+                "last_name": "User",
+                "password": "",
+            },
+        ],
+    )
+    @pytest.mark.asyncio()
+    async def test_register_new_user_with_missing_data(
+        self, client, test_db, mocker, post_body
+    ):
+        """Ensure registering with missing data fails, and no email is sent."""
+        # mock the email sending function
+        mock_send = mocker.patch(self.email_fn_to_patch)
+
+        response = await client.post(self.register_path, json=post_body)
+
+        assert response.status_code in (400, 422)
+
+        user_from_db = await test_db.get(User, 1)
+        assert user_from_db is None
+
+        mock_send.assert_not_called()
+
+    # ------------------------------------------------------------------------ #
+    #                            test '/login' route                           #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.asyncio()
+    async def test_cant_login_before_verifying_email(self, client, test_db):
+        """Ensure a new user has to validate email before logging in."""
+        # my_user = deepcopy(self.test_user)
+        # my_user["verified"] = False
+        test_db.add(User(**self.test_unverified_user))
+
+        print(self.test_unverified_user)
+
+        response = await client.post(
+            self.login_path,
+            json={
+                "email": self.test_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert (
+            response.json()["detail"]
+            == "You need to verify your Email before logging in"
+        )
+
+    @pytest.mark.asyncio()
+    async def test_verified_user_can_login(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
+        """Ensure a validated user can log in."""
+        test_db.add(User(**self.test_user))
+
+        data = {
+            "email": self.test_user["email"],
+            "password": "test12345!",
+        }
+
+        print(data)
+
+        response = await client.post(
+            self.login_path,
+            json=data,
+        )
+
+        print(response)
+
+        assert response.status_code == 200
+        # assert list(response.json().keys()) == ["token", "refresh"]
+        # assert isinstance(response.json()["token"], str)
+        # assert isinstance(response.json()["refresh"], str)
+
+    # @pytest.mark.skip(
+    #     reason="parameterized tests not working under pytest-asyncio"
+    # )
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize(
+        "post_body",
+        [
+            {
+                "email": "notregistered@usertest.com",
+                "password": "test12345!",
+            },
+            {
+                "email": "testuser@usertest.com",
+                "password": "thisiswrong!",
+            },
+        ],
+    )
+    async def test_cant_login_with_wrong_email_or_password(
+        self, client, test_db, post_body
+    ):
+        """Ensure the user cant login with wrong email or password."""
+        test_db.add(User(**self.test_user))
+
+        response = await client.post(
+            self.login_path,
+            json=post_body,
+        )
+
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Wrong email or password"
+
+    # @pytest.mark.skip(
+    #     reason="parameterized tests not working under pytest-asyncio"
+    # )
+    @pytest.mark.asyncio()
+    @pytest.mark.parametrize(
+        "post_body",
+        [
+            {},
+            {
+                "password": "test12345!",
+            },
+            {
+                "email": "testuser@usertest.com",
+            },
+        ],
+    )
+    async def test_cant_login_with_missing_email_or_password(
+        self, client, test_db, post_body
+    ):
+        """Ensure the user cant login with missing email or password."""
+        print(test_db, type(test_db))
+        test_db.add(User(**self.test_user))
+
+        response = await client.post(
+            self.login_path,
+            json=post_body,
+        )
+
+        assert response.status_code == 422
+        assert "value_error.missing" in str(response.json()["detail"])
+
+    @pytest.mark.asyncio()
+    async def test_cant_login_with_unverified_email(self, client, test_db):
+        """Ensure the user cant login with unverified email."""
+        test_db.add(User(**self.test_unverified_user))
+
+        response = await client.post(
+            self.login_path,
+            json={
+                "email": self.test_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert (
+            response.json()["detail"]
+            == "You need to verify your Email before logging in"
+        )
+
+    @pytest.mark.asyncio()
+    async def test_cant_login_with_banned_user(self, client, test_db):
+        """Ensure the user cant login with banned user."""
+        test_db.add(User(**self.test_banned_user))
+
+        response = await client.post(
+            self.login_path,
+            json={
+                "email": self.test_banned_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Wrong email or password"
+
+    # ------------------------------------------------------------------------ #
+    #                           test '/refresh' route                          #
+    # ------------------------------------------------------------------------ #
+
+    @pytest.mark.asyncio()
+    async def test_refresh_token(self, client, test_db):
+        """Ensure the user can refresh the token."""
+        test_db.add(User(**self.test_user))
+
+        login_response = await client.post(
+            self.login_path,
+            json={
+                "email": self.test_user["email"],
+                "password": "test12345!",
+            },
+        )
+
+        refresh_response = await client.post(
+            "/refresh/",
+            json={
+                "refresh": login_response.json()["refresh"],
+            },
+        )
+
+        assert refresh_response.status_code == 200
+        assert list(refresh_response.json().keys()) == ["token"]
+        assert isinstance(refresh_response.json()["token"], str)
+
+    @pytest.mark.asyncio()
+    async def test_cant_refresh_token_with_invalid_refresh_token(
+        self, client, test_db
+    ):
+        """Ensure the user cant refresh the token with invalid refresh token."""
+        test_db.add(User(**self.test_user))
+
+        refresh_response = await client.post(
+            "/refresh/",
+            json={
+                "refresh": "invalid_refresh_token",
+            },
+        )
+
+        assert refresh_response.status_code == 401
+        assert refresh_response.json()["detail"] == "That token is Invalid"
+
+    # ------------------------------------------------------------------------ #
+    #                           test '/verify' route                           #
+    # ------------------------------------------------------------------------ #
+
+    @pytest.mark.asyncio()
+    async def test_verify_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
+        """Test we can verify a user."""
+        test_db.add(User(**self.test_unverified_user))
+        verification_token = AuthManager.encode_verify_token(User(id=1))
+
+        print("Test Session: ", test_db)
+
+        response = await client.get(
+            "/verify/", params={"code": verification_token}
+        )
+
+        assert response.status_code == 200
+        assert response.json()["detail"] == "User succesfully Verified"
+
+    @pytest.mark.parametrize(
+        "verification_token",
+        ["BADBEEF", ""],
+    )
+    @pytest.mark.asyncio()
+    async def test_verify_bad_token(self, client, test_db, verification_token):
+        """Ensure a bad token cant be used to verify a user."""
+        test_db.add(User(**self.test_unverified_user))
+        response = await client.get(f"/verify/?code={verification_token}")
+
+        assert response.status_code == 401
+        assert response.json()["detail"] == "That token is Invalid"
