@@ -1854,13 +1854,13 @@ files = [
 
 [[package]]
 name = "mkdocs-minify-plugin"
-version = "0.6.4"
+version = "0.7.0"
 description = "An MkDocs plugin to minify HTML, JS or CSS files prior to being written to disk"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mkdocs-minify-plugin-0.6.4.tar.gz", hash = "sha256:1906e9687c39ded7d1ca959c76c6e52da6a8d0765e3981ad9812d3a489f1ecdb"},
-    {file = "mkdocs_minify_plugin-0.6.4-py3-none-any.whl", hash = "sha256:c0221053968a68418245228e04b0d5bc7e6b1a1940db721a52c7ec98d898242e"},
+    {file = "mkdocs-minify-plugin-0.7.0.tar.gz", hash = "sha256:8aaff5ed2d5edac786b389e854aea310d9ad3c3737c7743fedb233500ecc09d4"},
+    {file = "mkdocs_minify_plugin-0.7.0-py3-none-any.whl", hash = "sha256:6efb7143eff1c36d50b88d507084b7da83f359d99330b6c17b35a04a8526806a"},
 ]
 
 [package.dependencies]
@@ -3943,4 +3943,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "d2624694af030567913e17ad5830b5615251c0a0269dd5da763588da9bd20a53"
+content-hash = "9c2d94e9fdaae8f7afb45d70adb37f189de4de2d3c234054dbc32c5d561c3220"

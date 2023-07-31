@@ -69,7 +69,7 @@ mkdocs-swagger-ui-tag = "^0.6.2"
 mock = "^5.1.0"
 faker = "^19.1.0"
 mkdocs-git-revision-date-localized-plugin = "^1.2.0"
-mkdocs-minify-plugin = "^0.6.4"
+mkdocs-minify-plugin = "^0.7.0"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
 
 [build-system]
