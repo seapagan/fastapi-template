@@ -2,11 +2,13 @@
 from typing import List, Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
 from app.managers.auth import can_edit_user, is_admin, oauth2_schema
 from app.managers.user import UserManager
 from app.models.enums import RoleType
+from app.models.user import User
 from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 from app.schemas.response.user import MyUserResponse, UserResponse
 
@@ -36,9 +38,11 @@ async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-async def get_my_user(request: Request, db=Depends(get_database)):
+async def get_my_user(
+    request: Request, db: AsyncSession = Depends(get_database)
+):
     """Get the current user's data only."""
-    my_user = request.state.user.id
+    my_user: int = request.state.user.id
     return await UserManager.get_user_by_id(my_user, db)
 
 
@@ -47,7 +51,7 @@ async def get_my_user(request: Request, db=Depends(get_database)):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def make_admin(user_id: int, db=Depends(get_database)):
+async def make_admin(user_id: int, db: AsyncSession = Depends(get_database)):
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id, db)
 
@@ -58,7 +62,9 @@ async def make_admin(user_id: int, db=Depends(get_database)):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def change_password(
-    user_id: int, user_data: UserChangePasswordRequest, db=Depends(get_database)
+    user_id: int,
+    user_data: UserChangePasswordRequest,
+    db: AsyncSession = Depends(get_database),
 ):
     """Change the password for the specified user.
 
@@ -72,7 +78,9 @@ async def change_password(
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def ban_user(request: Request, user_id: int, db=Depends(get_database)):
+async def ban_user(
+    request: Request, user_id: int, db: AsyncSession = Depends(get_database)
+):
     """Ban the specific user Id.
 
     Admins only. The Admin cannot ban their own ID!
@@ -85,7 +93,9 @@ async def ban_user(request: Request, user_id: int, db=Depends(get_database)):
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def unban_user(request: Request, user_id: int, db=Depends(get_database)):
+async def unban_user(
+    request: Request, user_id: int, db: AsyncSession = Depends(get_database)
+):
     """Ban the specific user Id.
 
     Admins only.
@@ -100,14 +110,16 @@ async def unban_user(request: Request, user_id: int, db=Depends(get_database)):
     response_model=MyUserResponse,
 )
 async def edit_user(
-    user_id: int, user_data: UserEditRequest, db=Depends(get_database)
+    user_id: int,
+    user_data: UserEditRequest,
+    db: AsyncSession = Depends(get_database),
 ):
     """Update the specified User's data.
 
     Available for the specific requesting User, or an Admin.
     """
     await UserManager.update_user(user_id, user_data, db)
-    return await UserManager.get_user_by_id(user_id, db)
+    return await db.get(User, user_id)
 
 
 @router.delete(
@@ -115,7 +127,7 @@ async def edit_user(
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_user(user_id: int, db=Depends(get_database)):
+async def delete_user(user_id: int, db: AsyncSession = Depends(get_database)):
     """Delete the specified User by user_id.
 
     Admin only.

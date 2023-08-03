@@ -8,8 +8,9 @@ from fastapi import BackgroundTasks, HTTPException
 from app.config.settings import get_settings
 from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.user import UserManager
+from app.models.user import User
 from app.schemas.request.auth import TokenRefreshRequest
-from old_tests.helpers import get_token
+from tests.helpers import get_token
 
 
 @pytest.mark.unit()
@@ -29,7 +30,7 @@ class TestAuthManager:
     def test_encode_token(self):
         """Ensure we can correctly encode a token."""
         time_now = datetime.utcnow()
-        token = AuthManager.encode_token({"id": 1})
+        token = AuthManager.encode_token(User(id=1))
 
         payload = jwt.decode(
             token, get_settings().secret_key, algorithms=["HS256"]
@@ -58,7 +59,7 @@ class TestAuthManager:
     def test_encode_refresh_token(self):
         """Ensure we can correctly encode a refresh token."""
         time_now = datetime.utcnow()
-        refresh_token = AuthManager.encode_refresh_token({"id": 1})
+        refresh_token = AuthManager.encode_refresh_token(User(id=1))
 
         payload = jwt.decode(
             refresh_token, get_settings().secret_key, algorithms=["HS256"]
@@ -88,7 +89,7 @@ class TestAuthManager:
     def test_encode_verify_token(self):
         """Ensure we can correctly encode a verify token."""
         time_now = datetime.utcnow()
-        verify_token = AuthManager.encode_verify_token({"id": 1})
+        verify_token = AuthManager.encode_verify_token(User(id=1))
 
         payload = jwt.decode(
             verify_token, get_settings().secret_key, algorithms=["HS256"]
@@ -187,7 +188,7 @@ class TestAuthManager:
     @pytest.mark.asyncio()
     async def test_refresh_no_user(self, test_db):
         """Test the refresh method when user does not exist."""
-        no_user_refresh = AuthManager.encode_refresh_token({"id": 999})
+        no_user_refresh = AuthManager.encode_refresh_token(User(id=999))
         new_token = None
         with pytest.raises(HTTPException) as exc_info:
             new_token = await AuthManager.refresh(
@@ -202,7 +203,7 @@ class TestAuthManager:
         """Test the refresh method with a banned user."""
         await UserManager.register(self.test_user, test_db)
         await UserManager.set_ban_status(1, True, 666, test_db)
-        banned_user_refresh = AuthManager.encode_refresh_token({"id": 1})
+        banned_user_refresh = AuthManager.encode_refresh_token(User(id=1))
         new_token = None
         with pytest.raises(HTTPException) as exc_info:
             new_token = await AuthManager.refresh(
@@ -220,7 +221,7 @@ class TestAuthManager:
         """Test the verify method."""
         background_tasks = BackgroundTasks()
         await UserManager.register(self.test_user, test_db, background_tasks)
-        verify_token = AuthManager.encode_verify_token({"id": 1})
+        verify_token = AuthManager.encode_verify_token(User(id=1))
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, test_db)
         assert exc_info.value.status_code == 200
@@ -232,7 +233,7 @@ class TestAuthManager:
     @pytest.mark.asyncio()
     async def test_verify_missing_user(self, test_db):
         """Test the verify method with a missing user."""
-        verify_token = AuthManager.encode_verify_token({"id": 1})
+        verify_token = AuthManager.encode_verify_token(User(id=1))
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, test_db)
         assert exc_info.value.status_code == 404

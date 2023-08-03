@@ -3,6 +3,7 @@ from typing import List
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException
+from sqlalchemy.exc import IntegrityError
 
 from app.managers.user import ErrorMessages, UserManager, pwd_context
 from app.models.enums import RoleType
@@ -26,16 +27,14 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_create_user(self, test_db):
         """Test creating a user."""
         await UserManager.register(self.test_user, test_db)
-        new_user = await test_db.fetch_one(User.select().where(User.c.id == 1))
+        new_user = await test_db.get(User, 1)
 
-        assert new_user["email"] == self.test_user["email"]
-        assert new_user["first_name"] == self.test_user["first_name"]
-        assert new_user["last_name"] == self.test_user["last_name"]
-        assert new_user["password"] != self.test_user["password"]
+        assert new_user.email == self.test_user["email"]
+        assert new_user.first_name == self.test_user["first_name"]
+        assert new_user.last_name == self.test_user["last_name"]
+        assert new_user.password != self.test_user["password"]
 
-        assert pwd_context.verify(
-            self.test_user["password"], new_user["password"]
-        )
+        assert pwd_context.verify(self.test_user["password"], new_user.password)
 
     async def test_create_user_with_bad_email(self, test_db):
         """Ensure you cant create a user with a bad email."""
@@ -88,7 +87,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         """Test creating a duplicate user."""
         await UserManager.register(self.test_user, test_db)
 
-        with pytest.raises(HTTPException, match=ErrorMessages.EMAIL_EXISTS):
+        with pytest.raises(IntegrityError):
             await UserManager.register(self.test_user, test_db)
 
     async def test_create_user_returns_tokens(self, test_db):
@@ -107,9 +106,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     ):
         """Test user is automatically verified when no 'background_tasks'."""
         await UserManager.register(self.test_user, test_db)
-        user = await test_db.fetch_one(User.select().where(User.c.id == 1))
+        user = await test_db.get(User, 1)
 
-        assert user["verified"] is True
+        assert user.verified is True
 
     async def test_register_user_not_verified_when_background_tasks_specified(
         self,
@@ -120,9 +119,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.register(
             self.test_user, test_db, background_tasks=background_tasks
         )
-        user = await test_db.fetch_one(User.select().where(User.c.id == 1))
+        user = await test_db.get(User, 1)
 
-        assert user["verified"] is False
+        assert user.verified is False
 
     # --------------------------- test login method -------------------------- #
     async def test_login_user(self, test_db):
@@ -176,7 +175,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.register(self.test_user, test_db)
         await UserManager.delete_user(1, test_db)
 
-        user = await test_db.fetch_one(User.select().where(User.c.id == 1))
+        user = await test_db.get(User, 1)
         assert user is None
 
     async def test_delete_user_not_found(self, test_db):
@@ -194,11 +193,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.update_user(
             1, UserEditRequest(**edited_user), test_db
         )
-        edited_user = await test_db.fetch_one(
-            User.select().where(User.c.id == 1)
-        )
+        edited_user = await test_db.get(User, 1)
 
-        assert edited_user["first_name"] == "Edited"
+        assert edited_user.first_name == "Edited"
 
     async def test_update_user_not_found(self, test_db):
         """Test updating a user that doesn't exist."""
@@ -217,8 +214,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
             test_db,
         )
 
-        user = await test_db.fetch_one(User.select().where(User.c.id == 1))
-        assert user["password"] != self.test_user["password"]
+        user = await test_db.get(User, 1)
+        assert user.password != self.test_user["password"]
 
     async def test_change_password_not_found(self, test_db):
         """Test changing a user's password that doesn't exist."""
@@ -235,10 +232,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.register(self.test_user, test_db)
         await UserManager.set_ban_status(1, True, 666, test_db)
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == 1)
-        )
-        assert banned_user["banned"] is True
+        banned_user = await test_db.get(User, 1)
+        assert banned_user.banned is True
 
     async def test_unban_user(self, test_db):
         """Test we can ban or unban a user."""
@@ -248,10 +243,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
         await UserManager.set_ban_status(1, False, 666, test_db)
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == 1)
-        )
-        assert banned_user["banned"] is False
+        banned_user = await test_db.get(User, 1)
+        assert banned_user.banned is False
 
     async def test_ban_user_not_found(self, test_db):
         """Test we can't ban a user that doesn't exist."""
@@ -282,9 +275,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.register(self.test_user, test_db)
         await UserManager.change_role(RoleType.admin, 1, test_db)
 
-        user_data = await test_db.fetch_one(User.select().where(User.c.id == 1))
+        user_data = await test_db.get(User, 1)
 
-        assert user_data["role"] == RoleType.admin
+        assert user_data.role == RoleType.admin
 
     # ----------------------- test the helper functions ---------------------- #
     async def test_get_user_by_id(self, test_db):
@@ -293,32 +286,31 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         user_data = await UserManager.get_user_by_id(1, test_db)
 
         assert user_data is not None
-        assert user_data["id"] == 1
+        assert user_data.id == 1
 
     async def test_get_user_by_id_not_found(self, test_db):
         """Ensure we get None if the user doesn't exist."""
-        user_data = await UserManager.get_user_by_id(1, test_db)
-
-        assert user_data is None
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
+            await UserManager.get_user_by_id(1, test_db)
 
     async def test_get_user_by_email(self, test_db):
         """Ensure we can get a user by their email."""
         await UserManager.register(self.test_user, test_db)
+
         user_data = await UserManager.get_user_by_email(
             self.test_user["email"], test_db
         )
 
         assert user_data is not None
-        assert user_data["email"] == self.test_user["email"]
-        assert user_data["id"] == 1
+        assert user_data.email == self.test_user["email"]
+        assert user_data.id == 1
 
     async def test_get_user_by_email_not_found(self, test_db):
         """Ensure we get None if the user with email doesn't exist."""
-        user_data = await UserManager.get_user_by_email(
-            self.test_user["email"], test_db
-        )
-
-        assert user_data is None
+        with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
+            await UserManager.get_user_by_email(
+                self.test_user["email"], test_db
+            )
 
     async def test_get_all_users(self, test_db):
         """Test getting all users."""

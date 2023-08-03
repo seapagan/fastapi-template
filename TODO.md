@@ -2,6 +2,8 @@
 
 ## General
 
+- Upgrade to FastAPI 0.100.x, which has breaking changes due to Pydantic 2.0.
+  Well worth the effort as it is a major upgrade.
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.

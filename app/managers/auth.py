@@ -5,6 +5,7 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import EmailStr
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -141,7 +142,8 @@ class AuthManager:
                 get_settings().secret_key,
                 algorithms=["HS256"],
             )
-            user_data = await get_user_by_id_(payload["sub"], session)
+
+            user_data = await session.get(User, payload["sub"])
 
             if not user_data:
                 raise HTTPException(
@@ -213,11 +215,11 @@ class AuthManager:
         email.template_send(
             background_tasks,
             EmailTemplateSchema(
-                recipients=[user_data["email"]],
+                recipients=[EmailStr(user_data.email)],
                 subject=f"Welcome to {get_settings().api_title}!",
                 body={
                     "application": f"{get_settings().api_title}",
-                    "user": user_data["email"],
+                    "user": user_data.email,
                     "base_url": get_settings().base_url,
                     "verification": AuthManager.encode_verify_token(user_data),
                 },

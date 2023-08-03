@@ -2,9 +2,11 @@
 
 import pytest
 from faker import Faker
+from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.managers.auth import AuthManager
-from app.managers.user import UserManager, pwd_context
+from app.managers.user import ErrorMessages, UserManager, pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -19,6 +21,8 @@ class TestUserRoutes:
     direct access crashes some of the tests (It's due to Pydantic validation).
     This issue will be properly investigated later.
     """
+
+    mock_request_path = "app.resources.user.Request.state"
 
     def get_test_user(self, hashed=True):
         """Return one or more test users."""
@@ -40,23 +44,35 @@ class TestUserRoutes:
     # ------------------------------------------------------------------------ #
     #                            test profile route                            #
     # ------------------------------------------------------------------------ #
-    async def test_get_my_profile(self, test_app, test_db):
+    async def test_get_my_profile(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test we can get the current users profile."""
-        await test_db.execute(User.insert().values(**self.get_test_user()))
-        token = AuthManager.encode_token({"id": 1})
+        test_user = User(**self.get_test_user())
 
-        response = test_app.get(
+        test_db.add(test_user)
+        token = AuthManager.encode_token(test_user)
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
+
+        response = await client.get(
             "/users/me", headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 200
         assert len(response.json()) == 3
 
-    async def test_get_my_profile_no_auth(self, test_app, test_db):
+    async def test_get_my_profile_no_auth(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Ensure we get no profile if no auth token is provided."""
         await UserManager.register(self.get_test_user(), session=test_db)
 
-        response = test_app.get("/users/me", headers={})
+        mock_req = mocker.patch("app.resources.user.Request.state")
+        mock_req.user.id = 1
+
+        response = await client.get("/users/me", headers={})
 
         assert response.status_code == 403
         assert response.json() == {"detail": "Not authenticated"}
@@ -64,7 +80,9 @@ class TestUserRoutes:
     # ------------------------------------------------------------------------ #
     #                           test get users route                           #
     # ------------------------------------------------------------------------ #
-    async def test_admin_can_get_all_users(self, test_app, test_db):
+    async def test_admin_can_get_all_users(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Ensure an admin user can get all users.
 
         This test will create 3 users, then create an admin user and ensure
@@ -80,14 +98,19 @@ class TestUserRoutes:
             session=test_db,
         )
 
-        response = test_app.get(
-            "/users", headers={"Authorization": f"Bearer {token}"}
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 4
+
+        response = await client.get(
+            "/users/", headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 200
         assert len(response.json()) == 4
 
-    async def test_admin_can_get_one_user(self, test_app, test_db):
+    async def test_admin_can_get_one_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Ensure an admin user can get one users."""
         for _ in range(3):
             await UserManager.register(
@@ -99,37 +122,50 @@ class TestUserRoutes:
             session=test_db,
         )
 
-        response = test_app.get(
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 4
+
+        response = await client.get(
             "/users/?user_id=3", headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 200
         assert response.json()["id"] == 3
 
-    async def test_user_cant_get_all_users(self, test_app, test_db):
+    async def test_user_cant_get_all_users(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test we can't get all users if not admin."""
         for _ in range(3):
             await UserManager.register(
                 self.get_test_user(hashed=False), session=test_db
             )
-        token = AuthManager.encode_token({"id": 1})
+        token = AuthManager.encode_token(User(id=1))
 
-        response = test_app.get(
-            "/users", headers={"Authorization": f"Bearer {token}"}
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
+
+        response = await client.get(
+            "/users/", headers={"Authorization": f"Bearer {token}"}
         )
 
         assert response.status_code == 403
         assert response.json() == {"detail": "Forbidden"}
 
-    async def test_user_cant_get_single_user(self, test_app, test_db):
+    async def test_user_cant_get_single_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test we can't get all users if not admin."""
         for _ in range(3):
             await UserManager.register(
                 self.get_test_user(hashed=False), session=test_db
             )
-        token = AuthManager.encode_token({"id": 1})
+        token = AuthManager.encode_token(User(id=1))
 
-        response = test_app.get(
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user.id = 1
+
+        response = await client.get(
             "/users/?user_id=2", headers={"Authorization": f"Bearer {token}"}
         )
 
@@ -139,334 +175,367 @@ class TestUserRoutes:
     # ------------------------------------------------------------------------ #
     #                           test make_admin route                          #
     # ------------------------------------------------------------------------ #
-    async def test_make_admin_as_admin(self, test_app, test_db):
+    async def test_make_admin_as_admin(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test we can upgrade an existing user to admin."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        test_db.add(User(**normal_user))
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=2))
 
-        response = test_app.post(
-            f"/users/{user_id}/make-admin",
+        print(token)
+
+        admin_user = await test_db.get(User, 2)
+        print("Admin User: ", admin_user.__dict__)
+
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=2, role=RoleType.admin)
+
+        response = await client.post(
+            "/users/1/make-admin",
             headers={"Authorization": f"Bearer {token}"},
         )
+        new_admin = await test_db.get(User, 1)
 
-        new_admin = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        print("New Admin: ", new_admin.__dict__)
 
         assert response.status_code == 204
-        assert new_admin["role"] == RoleType.admin
+        assert new_admin is not None
+        assert new_admin.role == RoleType.admin
 
-    async def test_cant_make_admin_as_user(self, test_app, test_db):
+    async def test_cant_make_admin_as_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Test we can upgrade an existing user to admin."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(User.insert().values(**normal_user_2))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        user2_id = test_db.add(User(**normal_user_2))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user2_id}/make-admin",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        new_admin = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        new_admin = await test_db.get(User, user_id)
 
         assert response.status_code == 403
-        assert new_admin["role"] == RoleType.user
+        assert new_admin is not None
+        assert new_admin.role == RoleType.user
 
     # ------------------------------------------------------------------------ #
     #                            test ban user route                           #
     # ------------------------------------------------------------------------ #
-    async def test_admin_can_ban_user(self, test_app, test_db):
+    async def test_admin_can_ban_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin can ban a user."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        user_id = test_db.add(User(**normal_user))
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user_id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        banned_user = await test_db.get(User, user_id)
 
         assert response.status_code == 204
-        assert banned_user["banned"] is True
+        assert banned_user is not None
+        assert banned_user.banned is True
 
-    async def test_admin_cant_ban_self(self, test_app, test_db):
+    async def test_admin_cant_ban_self(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin can ban a user."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{admin_id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == admin_id)
-        )
+        banned_user = await test_db.get(User, admin_id)
 
         assert response.status_code == 400
-        assert banned_user["banned"] is None
+        assert banned_user is not None
+        assert banned_user.banned is None
 
-    async def test_user_cant_ban(self, test_app, test_db):
+    async def test_user_cant_ban(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a non-admin cant ban another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(User.insert().values(**normal_user_2))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        user2_id = test_db.add(User(**normal_user_2))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user2_id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user2_id)
-        )
+        banned_user = await test_db.get(User, user2_id)
 
         assert response.status_code == 403
-        assert banned_user["banned"] is None
+        assert banned_user is not None
+        assert banned_user.banned is None
 
-    async def test_admin_cant_ban_missing_user(self, test_app, test_db):
+    async def test_admin_cant_ban_missing_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin cant unban user that does not exist."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             "/users/66/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == 404
-        assert response.json() == {"detail": "This User does not exist"}
+        assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
     # ------------------------------------------------------------------------ #
     #                           test unban user route                          #
     # ------------------------------------------------------------------------ #
-    async def test_admin_can_unban_user(self, test_app, test_db):
+    async def test_admin_can_unban_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin can ban a user."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = await test_db.execute(
-            User.insert().values(**normal_user, banned=True)
-        )
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        user_id = test_db.add(User(**normal_user, banned=True))
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user_id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        banned_user = await test_db.get(User, user_id)
 
         assert response.status_code == 204
-        assert banned_user["banned"] is False
+        assert banned_user is not None
+        assert banned_user.banned is False
 
-    async def test_admin_cant_uban_self(self, test_app, test_db):
+    async def test_admin_cant_uban_self(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin cant unban self."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{admin_id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == 400
 
-    async def test_admin_cant_unban_missing_user(self, test_app, test_db):
+    async def test_admin_cant_unban_missing_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin cant unban user that does not exist."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             "/users/66/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == 404
-        assert response.json() == {"detail": "This User does not exist"}
+        assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
-    async def test_user_cant_unban(self, test_app, test_db):
+    async def test_user_cant_unban(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a non-admin cant unban another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(
-            User.insert().values(**normal_user_2, banned=True)
-        )
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        user2_id = test_db.add(User(**normal_user_2, banned=True))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user2_id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        banned_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user2_id)
-        )
+        banned_user = await test_db.get(User, user2_id)
 
         assert response.status_code == 403
-        assert banned_user["banned"] is True
+        assert banned_user is not None
+        assert banned_user.banned is True
 
     # ------------------------------------------------------------------------ #
     #                          test delete user route                          #
     # ------------------------------------------------------------------------ #
-    async def test_admin_can_delete_user(self, test_app, test_db):
+    async def test_admin_can_delete_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test that an admin can delete a user."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        test_db.add(User(**normal_user))
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=2))
 
-        response = test_app.delete(
-            f"/users/{user_id}",
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=2, role=RoleType.admin)
+
+        await client.delete(
+            "/users/1",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        deleted_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        deleted_user = await test_db.get(User, 1)
 
-        assert response.status_code == 204
         assert deleted_user is None
 
-    async def test_non_admin_cant_delete_user(self, test_app, test_db):
+    async def test_non_admin_cant_delete_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test that an ordinary user cant delete another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
 
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(User.insert().values(**normal_user_2))
-        token = AuthManager.encode_token({"id": user_id})
+        test_db.add(User(**normal_user))
+        test_db.add(User(**normal_user_2))
+        token = AuthManager.encode_token(User(id=1))
 
-        response = test_app.delete(
-            f"/users/{user2_id}",
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=1, role=RoleType.user)
+
+        response = await client.delete(
+            "/users/2",
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        not_deleted_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user2_id)
-        )
+        not_deleted_user = await test_db.get(User, 2)
 
         assert response.status_code == 403
         assert not_deleted_user is not None
 
-    async def test_delete_missing_user(self, test_app, test_db):
+    async def test_delete_missing_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ):
         """Test deleting a non-existing user."""
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=1))
 
-        response = test_app.delete(
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.user = User(id=1, role=RoleType.admin)
+
+        response = await client.delete(
             "/users/66",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == 404
-        assert response.json()["detail"] == "This User does not exist"
+        assert response.json()["detail"] == ErrorMessages.USER_INVALID
 
     # ------------------------------------------------------------------------ #
     #                        test change password route                        #
     # ------------------------------------------------------------------------ #
-    async def test_user_can_change_own_password(self, test_app, test_db):
+    async def test_user_can_change_own_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a user can change their own password."""
         user = self.get_test_user()
-        user_id = await test_db.execute(User.insert().values(**user))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**user))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user_id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        updated_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        updated_user = await test_db.get(User, user_id)
 
         assert response.status_code == 204
-        assert updated_user["password"] != user["password"]
-        assert pwd_context.verify("new_password", updated_user["password"])
+        assert updated_user is not None
+        assert updated_user.password != user["password"]
+        assert pwd_context.verify("new_password", updated_user.password)
 
-    async def test_user_cant_change_others_password(self, test_app, test_db):
+    async def test_user_cant_change_others_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a user cant change other user password."""
         normal_user = self.get_test_user()
         normal_user2 = self.get_test_user()
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(User.insert().values(**normal_user2))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        user2_id = test_db.add(User(**normal_user2))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user2_id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        updated_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user2_id)
-        )
+        updated_user = await test_db.get(User, user2_id)
 
         assert response.status_code == 403
-        assert pwd_context.verify("test12345!", updated_user["password"])
+        assert updated_user is not None
+        assert pwd_context.verify("test12345!", updated_user.password)
 
-    async def test_admin_can_change_others_password(self, test_app, test_db):
+    async def test_admin_can_change_others_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin user can change any user password."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        user_id = test_db.add(User(**normal_user))
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.post(
+        response = await client.post(
             f"/users/{user_id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        updated_user = await test_db.fetch_one(
-            User.select().where(User.c.id == user_id)
-        )
+        updated_user = await test_db.get(User, user_id)
 
         assert response.status_code == 204
-        assert pwd_context.verify("new_password", updated_user["password"])
+        assert updated_user is not None
+        assert pwd_context.verify("new_password", updated_user.password)
 
     # ------------------------------------------------------------------------ #
     #                      test editing user details route                     #
     # ------------------------------------------------------------------------ #
-    async def test_user_can_change_own_details(self, test_app, test_db):
+    async def test_user_can_change_own_details(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a user can change their own details."""
         normal_user = self.get_test_user()
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.put(
+        response = await client.put(
             f"/users/{user_id}",
             json={
                 "email": "new@example.com",
@@ -480,15 +549,17 @@ class TestUserRoutes:
         assert response.status_code == 200
         assert response.json()["email"] == "new@example.com"
 
-    async def test_user_cant_change_others_details(self, test_app, test_db):
+    async def test_user_cant_change_others_details(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a user cant change other user password."""
         normal_user = self.get_test_user()
         normal_user2 = self.get_test_user()
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        user2_id = await test_db.execute(User.insert().values(**normal_user2))
-        token = AuthManager.encode_token({"id": user_id})
+        user_id = test_db.add(User(**normal_user))
+        user2_id = test_db.add(User(**normal_user2))
+        token = AuthManager.encode_token(User(id=user_id))
 
-        response = test_app.put(
+        response = await client.put(
             f"/users/{user2_id}",
             json={
                 "email": "new@example.com",
@@ -501,15 +572,17 @@ class TestUserRoutes:
 
         assert response.status_code == 403
 
-    async def test_admin_can_change_others_details(self, test_app, test_db):
+    async def test_admin_can_change_others_details(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin user can change any user password."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
-        user_id = await test_db.execute(User.insert().values(**normal_user))
-        admin_id = await test_db.execute(User.insert().values(**admin_user))
-        token = AuthManager.encode_token({"id": admin_id})
+        user_id = test_db.add(User(**normal_user))
+        admin_id = test_db.add(User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_id))
 
-        response = test_app.put(
+        response = await client.put(
             f"/users/{user_id}",
             json={
                 "email": "new@example.com",

@@ -2,12 +2,12 @@
 from datetime import datetime
 
 import pytest
-import sqlalchemy
 from fastapi import BackgroundTasks, HTTPException
 
 from app.managers.auth import CustomHTTPBearer, ResponseMessages
 from app.managers.user import UserManager
-from old_tests.helpers import get_token
+from app.models.user import User
+from tests.helpers import get_token
 
 
 @pytest.mark.unit()
@@ -33,9 +33,9 @@ class TestCustomHTTPBearer:
         bearer = CustomHTTPBearer()
         result = await bearer(request=mock_req, db=test_db)
 
-        assert isinstance(result, sqlalchemy.engine.row.Row)
-        assert result._mapping["email"] == self.test_user["email"]
-        assert result._mapping["id"] == 1
+        assert isinstance(result, User)
+        assert result.email == self.test_user["email"]
+        assert result.id == 1
 
     async def test_custom_bearer_class_invalid_token(self, test_db, mocker):
         """Test with an invalid token."""
