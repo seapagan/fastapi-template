@@ -5,6 +5,12 @@ even a Pull Request with solutions 😎
 
 Likewise, I am very open to new feature Pull Requests!
 
+## Development Branch
+
+All development should be done from the `develop` branch, the `main` branch is
+reserved for releases only. Please Fork the `develop` branch and submit PRs
+relative to that branch.
+
 ## GitHub Discussions
 
 I have enabled
@@ -49,6 +55,11 @@ information.
 Note that there is a GitHub Action set up which will run all tests for each
 commit that is pushed to the Repository.
 
+## Code of Conduct
+
+This project is intended to be a safe, welcoming space for collaboration, and
+contributors are expected to adhere to the [Code of Conduct][coc].
+
 ## Contribution Workflow
 
 1. Fork this Repository
@@ -58,3 +69,5 @@ commit that is pushed to the Repository.
 4. Commit your changes (`git commit -am 'Add some feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create a new Pull Request
+
+[coc]:https://github.com/seapagan/fastapi-template/blob/main/CODE_OF_CONDUCT.md
