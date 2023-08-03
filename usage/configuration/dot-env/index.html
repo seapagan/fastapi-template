@@ -23,7 +23,8 @@
 <span class=c1># http://localhost:8000</span>
 <span class=na>BASE_URL</span><span class=o>=</span><span class=s>http://localhost:8000</span>
 
-<span class=c1># Database Settings These must be changed to match your setup.</span>
+<span class=c1># Database Settings These must be changed to match your setup, and the database</span>
+<span class=c1># must already exist.</span>
 <span class=na>DB_USER</span><span class=o>=</span><span class=s>dbuser</span>
 <span class=na>DB_PASSWORD</span><span class=o>=</span><span class=s>my_secret_passw0rd</span>
 <span class=na>DB_ADDRESS</span><span class=o>=</span><span class=s>postgres</span><span class=w>             </span><span class=c1>#localhost if not using Docker</span>
@@ -31,12 +32,9 @@
 <span class=na>DB_NAME</span><span class=o>=</span><span class=s>my_database_name</span>
 
 <span class=c1># Database settings to use for testing. These must be changed to match your</span>
-<span class=c1># setup.</span>
-<span class=c1># NOTE: This is NOT USED at present, the tests use SQLite.</span>
-<span class=na>TEST_DB_USER</span><span class=o>=</span><span class=s>dbuser</span>
-<span class=na>TEST_DB_PASSWORD</span><span class=o>=</span><span class=s>my_secret_passw0rd</span>
-<span class=na>TEST_DB_ADDRESS</span><span class=o>=</span><span class=s>localhost</span>
-<span class=na>TEST_DB_PORT</span><span class=o>=</span><span class=s>5432</span>
+<span class=c1># setup. Note that User/Pass and Server/Port are the same as above, but the</span>
+<span class=c1># database name should be different to avoid conflicts. This database needs to</span>
+<span class=c1># already exist.</span>
 <span class=na>TEST_DB_NAME</span><span class=o>=</span><span class=s>my_database_name_tests</span>
 
 <span class=c1># generate your own super secret key here, used by the JWT functions.</span>
