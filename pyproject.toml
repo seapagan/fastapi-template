@@ -26,7 +26,7 @@ mkdocs = "^1.4.3"
 mkdocstrings = { extras = ["python"], version = "^0.22.0" }
 mkdocs-material = "^9.1.18"
 poetry = "^1.5.1"
-sqlalchemy = {extras = ["asyncio"], version = "^2.0.16"}
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.16" }
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
@@ -83,7 +83,7 @@ lint = "pylint **/*.py"
 _publish_docs = "mkdocs gh-deploy"
 _build_docs = "mkdocs build"
 openapi = "./api-admin docs openapi --prefix=docs/reference"
-"docs:publish"= ["openapi", "_publish_docs"]
+"docs:publish" = ["openapi", "_publish_docs"]
 "docs:build" = ["openapi", "_build_docs"]
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 
@@ -103,18 +103,17 @@ skips = ['*_test.py', '*/test_*.py']
 
 [tool.pytest.ini_options]
 addopts = [
+  "-m",
+  "not integration",
   "--cov",
-  "--cov-report", "term-missing",
-  "--cov-report", "html",
-  ]
-filterwarnings = [
-  "ignore:'crypt' is deprecated:DeprecationWarning",
+  "--cov-report",
+  "term-missing",
+  "--cov-report",
+  "html",
 ]
+filterwarnings = ["ignore:'crypt' is deprecated:DeprecationWarning"]
 # mock_use_standalone_module = true
-markers = [
-  "unit: Unit tests",
-  "integration: Integration tests",
-]
+markers = ["unit: Unit tests", "integration: Integration tests"]
 testpaths = ["tests"]
 
 [tool.coverage.run]

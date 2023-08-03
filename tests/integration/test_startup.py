@@ -17,6 +17,7 @@ from app.main import app
 
 
 @pytest.mark.skip(reason="Functionality has changed")
+@pytest.mark.integration()
 class TestStartup:
     """Test the startup of the application.
 
