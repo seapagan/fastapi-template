@@ -43,7 +43,7 @@ version = "^1.7.4"
 [tool.poetry.group.dev.dependencies]
 openapi-readme = "^0.2.1"
 aiosmtpd = "^1.4.4"
-flake8 = "^6.0.0"
+flake8 = "^6.1.0"
 flake8-docstrings = "^1.7.0"
 flake8-pyproject = "^1.2.3"
 flake8-pytest-style = "^1.7.2"
