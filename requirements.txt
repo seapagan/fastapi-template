@@ -72,7 +72,7 @@ ptyprocess==0.7.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 pycparser==2.21 ; python_full_version >= "3.8.1" and python_version < "4.0" and (sys_platform == "darwin" or sys_platform == "linux")
 pydantic==1.10.11 ; python_full_version >= "3.8.1" and python_version < "4.0"
 pygments==2.15.1 ; python_full_version >= "3.8.1" and python_version < "4.0"
-pyjwt==2.7.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
+pyjwt==2.8.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 pymdown-extensions==10.1 ; python_full_version >= "3.8.1" and python_version < "4.0"
 pyproject-hooks==1.0.0 ; python_full_version >= "3.8.1" and python_version < "4.0"
 python-dateutil==2.8.2 ; python_full_version >= "3.8.1" and python_version < "4.0"
