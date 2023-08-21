@@ -23,7 +23,7 @@ tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 poetry = "^1.5.1"
-sqlalchemy = { extras = ["asyncio"], version = "^2.0.16" }
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.20" }
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
