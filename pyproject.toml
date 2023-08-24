@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"
 fastapi = "^0.99.1"
-alembic = "^1.11.2"
+alembic = "^1.11.3"
 asyncpg = "^0.28.0"
 python-decouple = "^3.8"
 psycopg2 = "^2.9.7"
