@@ -1,13 +1,17 @@
 """Define the Email Manager."""
-from pathlib import Path
+from __future__ import annotations
 
-from fastapi import BackgroundTasks
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from fastapi import BackgroundTasks  # noqa TC002
 from fastapi.responses import JSONResponse
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import EmailStr
 
 from app.config.settings import get_settings
-from app.schemas.email import EmailSchema, EmailTemplateSchema
+
+if TYPE_CHECKING:
+    from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
 class EmailManager:
@@ -21,7 +25,7 @@ class EmailManager:
         self.conf = ConnectionConfig(
             MAIL_USERNAME=get_settings().mail_username,
             MAIL_PASSWORD=get_settings().mail_password,
-            MAIL_FROM=EmailStr(get_settings().mail_from),
+            MAIL_FROM=get_settings().mail_from,
             MAIL_PORT=get_settings().mail_port,
             MAIL_SERVER=get_settings().mail_server,
             MAIL_FROM_NAME=get_settings().mail_from_name,

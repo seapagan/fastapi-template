@@ -1,15 +1,14 @@
 """Define the User manager."""
+from __future__ import annotations
 
-from typing import Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, Optional, Tuple
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
-from pydantic import EmailStr
 from sqlalchemy import delete, update
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.settings import get_settings
 from app.database.helpers import (
@@ -20,10 +19,17 @@ from app.database.helpers import (
 )
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
-from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
-from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from app.models.enums import RoleType
+    from app.schemas.request.user import (
+        UserChangePasswordRequest,
+        UserEditRequest,
+    )
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -95,7 +101,7 @@ class UserManager:
             email.template_send(
                 background_tasks,
                 EmailTemplateSchema(
-                    recipients=[EmailStr(new_user["email"])],
+                    recipients=[new_user["email"]],
                     subject=f"Welcome to {get_settings().api_title}!",
                     body={
                         "application": f"{get_settings().api_title}",

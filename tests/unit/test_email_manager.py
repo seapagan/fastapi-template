@@ -2,7 +2,6 @@
 import json
 
 import pytest
-from pydantic import EmailStr
 
 from app.config.settings import get_settings
 from app.schemas.email import EmailSchema, EmailTemplateSchema
@@ -14,7 +13,7 @@ class TestEmailManager:
 
     email_data = {
         "subject": "Test Subject",
-        "recipients": [EmailStr("test_recipient@testing.com")],
+        "recipients": ["test_recipient@testing.com"],
     }
 
     email_schema = EmailSchema(body="Test Body", **email_data)

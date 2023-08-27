@@ -7,8 +7,8 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4.0"
-fastapi = "^0.99.1"
+python = ">=3.9,<4.0"
+fastapi = { extras = ["all"], version = "^0.103.0" }
 alembic = "^1.11.3"
 asyncpg = "^0.28.0"
 python-decouple = "^3.8"
@@ -18,16 +18,18 @@ Jinja2 = "^3.1.2"
 rich = "^13.5.2"
 asyncclick = "^8.1.3.4"
 anyio = "^3.7.1"
-email-validator = "^1.3.1"
+email-validator = "^2.0.0.post2"
 tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 poetry = "^1.6.1"
 sqlalchemy = { extras = ["asyncio"], version = "^2.0.20" }
+pydantic = "^2.3.0"
+pydantic-settings = "^2.0.3"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
-version = "^1.3.1"
+version = "^1.4.1"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
@@ -50,7 +52,7 @@ flake8-type-checking = "^2.4.1"
 httpx = "0.23.3"
 isort = "^5.12.0"
 mypy = "^1.5.1"
-openapi-readme = "^0.2.1"
+openapi-readme = "^0.2.4"
 pep8-naming = "^0.13.3"
 pylint = "^2.17.5"
 pydocstyle = "^6.3.0"
@@ -101,15 +103,31 @@ openapi = "./api-admin docs openapi --prefix=docs/reference"
 try = "tryceratops **/*.py"
 
 [tool.flake8]
-exclude = ["__init__.py", ".git", "app/migrations/versions/*", "old_tests/*"]
 max-line-length = 80
-docstring-convention = "google"
+exclude = ["__init__.py", ".git", "app/migrations/versions/*", "old_tests/*"]
 extend-ignore = ["E203", "W503"]
 extend-select = ["TC", "TC1", "TRY"]
+docstring-convention = "google"
 type-checking-pydantic-enabled = true
+classmethod-decorators = ["classmethod", "validator"]
 
 [tool.isort]
 profile = "black"
+
+[tool.black]
+line-length = 80
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | venv
+  | \.venv
+  | _build
+  | build
+  | dist
+)/
+'''
 
 [tool.bandit]
 exclude_dirs = ["config/settings.py", "schemas/examples.py"]
@@ -118,7 +136,7 @@ exclude_dirs = ["config/settings.py", "schemas/examples.py"]
 skips = ['*_test.py', '*/test_*.py']
 
 [tool.pydocstyle]
-# add-ignore = ["D104"]
+add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
 addopts = [
@@ -138,3 +156,6 @@ testpaths = ["tests"]
 [tool.coverage.run]
 # source = []
 omit = ["*/tests/*"]
+
+[tool.pymarkdown]
+plugins.md014.enabled = false

@@ -1,5 +1,5 @@
 """Define the Base Schema structures we will inherit from."""
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.examples import ExampleUser
 
@@ -7,9 +7,6 @@ from app.schemas.examples import ExampleUser
 class UserBase(BaseModel):
     """Base for the User Schema."""
 
-    email: str = Field(example=ExampleUser.email)
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        """Pydantic Config."""
-
-        orm_mode = True
+    email: str = Field(examples=[ExampleUser.email])
