@@ -58,7 +58,7 @@ async def login(
     endpoint to return a new JWT Token. The Refresh token will last 30 days, and
     cannot be refreshed.
     """
-    token, refresh = await UserManager.login(user_data.dict(), session)
+    token, refresh = await UserManager.login(user_data.model_dump(), session)
     return {"token": token, "refresh": refresh}
 
 
