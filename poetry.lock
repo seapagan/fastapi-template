@@ -2214,6 +2214,21 @@ files = [
 setuptools = "*"
 
 [[package]]
+name = "openapi-readme"
+version = "0.2.4"
+description = "Generate Markdown from an openapi JSON file."
+optional = false
+python-versions = ">=3.8.1,<4.0.0"
+files = [
+    {file = "openapi_readme-0.2.4-py3-none-any.whl", hash = "sha256:8e3bf774ccc3ba7e5054372ea4f3396b0d9ae33a05337f257513f1d2674642f3"},
+    {file = "openapi_readme-0.2.4.tar.gz", hash = "sha256:f4658e232f1769cb1a3aeca163896b303adb4fc9d84b57e17fad7de09410480b"},
+]
+
+[package.dependencies]
+single-source = ">=0.3.0,<0.4.0"
+typer = {version = ">=0.6.1,<0.9.0", extras = ["all"]}
+
+[[package]]
 name = "orjson"
 version = "3.9.5"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -3510,6 +3525,17 @@ files = [
 ]
 
 [[package]]
+name = "single-source"
+version = "0.3.0"
+description = "Access to the project version in Python code for PEP 621-style projects"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "single-source-0.3.0.tar.gz", hash = "sha256:b12705af958ca99d56ea9ce40bd9cc749378f4fe7ad03b1f9067e29daceef27d"},
+    {file = "single_source-0.3.0-py3-none-any.whl", hash = "sha256:7bc87168ced50f638b6ab0cda4cc1ce9e80ee0e1220014397050d336d021a597"},
+]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -4309,4 +4335,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "42dd304de32a348af29edb00c23d073e831928ee49b1210a2faa71b0970f0436"
+content-hash = "1785a787f1e96dcc7b2d0c111b131772079acebac96a880ddd0846e4aefb2f53"
