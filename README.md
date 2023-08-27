@@ -16,6 +16,7 @@ Partial documentation is now availiable on it's own page at
 finished will include full usage information and how-to's.
 
 - [Important note on Versioning](#important-note-on-versioning)
+- [Development Release](#development-release)
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
@@ -46,6 +47,15 @@ All releases from now on will also contain a Git patch to upgrade from the
 previous version. This will be in the form of a `.patch` file which can be
 applied to their project using the `git apply` command. This will be documented
 in the release notes.
+
+## Development Release
+
+The current development release is [Version
+0.5.0-alpha0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha0).
+This is functional but still in development and may contain bugs. It is not
+currently recommended for serious production use, though there are no known
+issues at the moment. It is not fully backware compatible with previous
+versions, if they have been customized.
 
 ## Functionality
 
