@@ -9,4 +9,4 @@ class UserBase(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    email: str = Field(example=ExampleUser.email)
+    email: str = Field(examples=[ExampleUser.email])
