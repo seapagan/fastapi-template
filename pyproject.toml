@@ -81,7 +81,7 @@ mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.2.3"
 mkdocs-minify-plugin = "^0.7.1"
 mkdocs-swagger-ui-tag = "^0.6.4"
-pymdown-extensions = "^10.1"
+pymdown-extensions = "^10.3"
 pygments = "^2.16.1"
 
 # additional packages
