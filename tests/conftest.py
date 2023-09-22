@@ -1,5 +1,6 @@
 """Fixtures and configuration for the test suite."""
 import asyncio
+import os
 from typing import Any, AsyncGenerator, Generator
 
 import pytest
@@ -17,12 +18,18 @@ from app.database.db import Base, get_database
 from app.main import app
 from app.managers.email import EmailManager
 
-DATABASE_URL = (
-    "postgresql+asyncpg://"
-    f"{get_settings().db_user}:{get_settings().db_password}@"
-    f"{get_settings().db_address}:{get_settings().db_port}/"
-    f"{get_settings().test_db_name}"
-)
+if os.getenv("GITHUB_ACTIONS"):
+    DATABASE_URL = (
+        "postgresql+asyncpg://postgres:postgres"
+        "@localhost:5432/fastapi-template-test"
+    )
+else:
+    DATABASE_URL = (
+        "postgresql+asyncpg://"
+        f"{get_settings().db_user}:{get_settings().db_password}@"
+        f"{get_settings().db_address}:{get_settings().db_port}/"
+        f"{get_settings().test_db_name}"
+    )
 
 
 async_engine: AsyncEngine = create_async_engine(DATABASE_URL, echo=False)

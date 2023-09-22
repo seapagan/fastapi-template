@@ -211,3 +211,4 @@ cython_debug/
 openapi.json
 test.db
 docs/CNAME
+.python-version
