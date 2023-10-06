@@ -24,7 +24,7 @@ tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.8.0" }
 poetry = "^1.6.1"
 sqlalchemy = { extras = ["asyncio"], version = "^2.0.20" }
-pydantic = "^2.3.0"
+pydantic = "^2.4.2"
 pydantic-settings = "^2.0.3"
 
 [tool.poetry.dependencies.fastapi-mail]
