@@ -56,7 +56,7 @@ openapi-readme = "^0.2.4"
 pep8-naming = "^0.13.3"
 pylint = "^3.0.1"
 pydocstyle = "^6.3.0"
-pre-commit = "^3.4.0"
+pre-commit = "^3.5.0"
 tryceratops = "^2.3.2"
 
 # task runner
