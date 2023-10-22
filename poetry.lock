@@ -1065,13 +1065,13 @@ flake8-plugin-utils = ">=1.3.2,<2.0.0"
 
 [[package]]
 name = "flake8-type-checking"
-version = "2.4.1"
+version = "2.5.1"
 description = "A flake8 plugin for managing type-checking imports & forward references"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "flake8_type_checking-2.4.1-py3-none-any.whl", hash = "sha256:fe75cfe668e3bf6914dd2ba36579bbe6c82f3795127774e7584ecc8c9f7379e5"},
-    {file = "flake8_type_checking-2.4.1.tar.gz", hash = "sha256:f3c7023114dee2ec2e8282a9080206ffd8fdd61205626593aa5c801bc2f8035d"},
+    {file = "flake8_type_checking-2.5.1-py3-none-any.whl", hash = "sha256:1cd5cd9731f34921b33640751455643ca1cf7ee4a347a45cd94d3af328a3dd64"},
+    {file = "flake8_type_checking-2.5.1.tar.gz", hash = "sha256:bfc51dd6e09a26662ab19191f44102f0606377ec0271a0e764ae993346a206d6"},
 ]
 
 [package.dependencies]
@@ -4073,4 +4073,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "c4c0b008f9bb2e035ac055c3bf24ab98fdb72c61155e8cdd674da39dc7490d52"
+content-hash = "a2c4bf2f293ebfcc197c2327fbdc94b8beea75603d92dcac6c21a3752a701bba"
