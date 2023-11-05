@@ -881,13 +881,13 @@ pgp = ["gpg"]
 
 [[package]]
 name = "email-validator"
-version = "2.1.0"
+version = "2.1.0.post1"
 description = "A robust email address syntax and deliverability validation library."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "email_validator-2.1.0-py3-none-any.whl", hash = "sha256:4496ecc949b51e42d1c9e6159d57cd04ef017af57d2e366ed7fd998f1bf8af69"},
-    {file = "email_validator-2.1.0.tar.gz", hash = "sha256:5f511cca8856bb03251d6292ba59e7f98978aae13fa5823ddd8bf885c56a6260"},
+    {file = "email_validator-2.1.0.post1-py3-none-any.whl", hash = "sha256:c973053efbeddfef924dc0bd93f6e77a1ea7ee0fce935aea7103c7a3d6d2d637"},
+    {file = "email_validator-2.1.0.post1.tar.gz", hash = "sha256:a4b0bd1cf55f073b924258d19321b1f3aa74b4b5a71a42c305575dba920e1a44"},
 ]
 
 [package.dependencies]
@@ -4139,4 +4139,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "d5285e61b4381ed847fb1932607497451da444ca014f3f41dadecb3422277377"
+content-hash = "24900042b32e8ca412a9a1fff8b4bfcbf81ccb60b827d51522bfbd32fdbc84fe"
