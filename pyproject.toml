@@ -60,7 +60,7 @@ pre-commit = "^3.4.0"
 tryceratops = "^2.3.2"
 
 # task runner
-poethepoet = "^0.24.1"
+poethepoet = "^0.24.2"
 
 # testing
 faker = "^19.13.0"
