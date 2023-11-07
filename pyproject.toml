@@ -10,7 +10,7 @@ readme = "README.md"
 python = ">=3.9,<4.0"
 fastapi = { extras = ["all"], version = "^0.103.0" }
 alembic = "^1.12.1"
-asyncpg = "^0.28.0"
+asyncpg = "^0.29.0"
 python-decouple = "^3.8"
 psycopg2 = "^2.9.9"
 PyJWT = "^2.8.0"
