@@ -1,5 +1,7 @@
 """CLI command to control the Database."""
 
+from typing import Optional
+
 import typer
 from alembic import command
 from alembic.config import Config
@@ -13,7 +15,7 @@ DONE_MSG = "[green]Done!"
 
 @app.command()
 def init(
-    force: bool = typer.Option(
+    force: Optional[bool] = typer.Option(
         False,
         "--force",
         "-f",
@@ -40,7 +42,7 @@ def init(
 
 @app.command()
 def drop(
-    force: bool = typer.Option(
+    force: Optional[bool] = typer.Option(
         False,
         "--force",
         "-f",
@@ -64,7 +66,7 @@ def drop(
 
 
 @app.command()
-def upgrade():
+def upgrade() -> None:
     """Apply the latest Database Migrations."""
     print("\nUpgrading Database ... ", end="")
 
@@ -81,7 +83,7 @@ def revision(
         prompt=("Enter the commit message for the revision"),
         help="Provide a message for this commit.",
     ),
-):
+) -> None:
     """Create a new revision.
 
     The revision will be created in the `alembic/versions` directory, and is

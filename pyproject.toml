@@ -131,7 +131,11 @@ ignore = [
   "FBT003",
   "B006",
 ] # These rules are too strict even for us 😝
-extend-ignore = ["COM812", "ISC001"] # these are ignored for ruff formatting
+extend-ignore = [
+  "COM812", # ignored for ruff formatting
+  "ISC001", # ignored for ruff formatting
+  "T201",   # temporary ignore for now, will remove when migrate to logging
+]
 
 src = ["app"]
 extend-exclude = ["app/migrations"]

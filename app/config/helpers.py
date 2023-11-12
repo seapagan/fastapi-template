@@ -14,7 +14,7 @@ def get_toml_path():
     return script_dir / "pyproject.toml"
 
 
-def get_config_path():
+def get_config_path() -> Path:
     """Return the full path of the custom config file."""
     script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
     return script_dir / "app" / "config" / "metadata.py"
@@ -27,8 +27,6 @@ def get_api_version() -> str:
             config = tomli.load(file)
             version = config["tool"]["poetry"]["version"]
 
-            return version
-
     except KeyError as exc:
         print(f"Cannot find the API version in the pyproject.toml file : {exc}")
         sys.exit(2)
@@ -36,6 +34,9 @@ def get_api_version() -> str:
     except OSError as exc:
         print(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
+
+    else:
+        return version
 
 
 def get_api_details() -> tuple[str, str, list]:

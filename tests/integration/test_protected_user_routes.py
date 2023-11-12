@@ -1,6 +1,7 @@
 """Integration tests for user routes."""
 
 import pytest
+from fastapi import status
 
 from app.managers.user import pwd_context
 
@@ -43,7 +44,7 @@ class TestProtectedUserRoutes:
         fn = getattr(client, method)
         response = await fn(route_name)
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Not authenticated"}
 
     @pytest.mark.asyncio()
@@ -59,5 +60,5 @@ class TestProtectedUserRoutes:
             route_name, headers={"Authorization": "Bearer BADBEEF"}
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json() == {"detail": "That token is Invalid"}

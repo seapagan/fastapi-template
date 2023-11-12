@@ -1,4 +1,6 @@
 """Routes for the home screen and templates."""
+from __future__ import annotations
+
 from typing import Union
 
 from fastapi import APIRouter, Header, Request
