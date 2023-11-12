@@ -12,7 +12,9 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/", include_in_schema=False)
-def root_path(request: Request, accept: Union[str, None] = Header(default="text/html")):
+def root_path(
+    request: Request, accept: Union[str, None] = Header(default="text/html")
+):
     """Display an HTML template for a browser, JSON response otherwise."""
     if accept and accept.split(",")[0] == "text/html":
         context = {
@@ -28,6 +30,8 @@ def root_path(request: Request, accept: Union[str, None] = Header(default="text/
         return templates.TemplateResponse("index.html", context)
 
     return {
-        "info": (f"{get_settings().contact['name']}'s {get_settings().api_title}"),
+        "info": (
+            f"{get_settings().contact['name']}'s {get_settings().api_title}"
+        ),
         "repository": get_settings().repository,
     }

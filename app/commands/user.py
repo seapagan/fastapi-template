@@ -202,7 +202,9 @@ def verify(
 
     user = aiorun(verify_user(user_id))
     if user:
-        print(f"\n[green]-> User [bold]{user_id}[/bold] verified succesfully.\n")
+        print(
+            f"\n[green]-> User [bold]{user_id}[/bold] verified succesfully.\n"
+        )
     else:
         print("\n[red]-> ERROR verifying User : [bold]User not found\n")
 
@@ -244,7 +246,9 @@ def ban(
         )
         show_table("", [user])
     else:
-        print("\n[red]-> ERROR banning or unbanning User : [bold]User not found\n")
+        print(
+            "\n[red]-> ERROR banning or unbanning User : [bold]User not found\n"
+        )
 
 
 @app.command()

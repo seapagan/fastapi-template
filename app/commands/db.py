@@ -17,7 +17,9 @@ def init(
         False,
         "--force",
         "-f",
-        prompt=("Warning! This deletes all data in the database. Are you sure?"),
+        prompt=(
+            "Warning! This deletes all data in the database. Are you sure?"
+        ),
         help="Do not ask for confirmation.",
     ),
 ) -> None:
@@ -42,7 +44,9 @@ def drop(
         False,
         "--force",
         "-f",
-        prompt=("Warning! This deletes all data in the database. Are you sure?"),
+        prompt=(
+            "Warning! This deletes all data in the database. Are you sure?"
+        ),
         help="Do not ask for confirmation.",
     ),
 ) -> None:

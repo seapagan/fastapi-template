@@ -23,7 +23,9 @@ async def get_user_by_email_(email, session: AsyncSession) -> Union[User, None]:
     return result.scalars().first()
 
 
-async def get_user_by_id_(user_id: int, session: AsyncSession) -> Union[User, None]:
+async def get_user_by_id_(
+    user_id: int, session: AsyncSession
+) -> Union[User, None]:
     """Return a specific user by their email address."""
     result = await session.execute(select(User).where(User.id == user_id))
     return result.scalars().first()

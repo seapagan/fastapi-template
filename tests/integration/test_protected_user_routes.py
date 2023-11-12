@@ -55,7 +55,9 @@ class TestProtectedUserRoutes:
         """Test that routes are protected by authentication."""
         route_name, method = route
         fn = getattr(client, method)
-        response = await fn(route_name, headers={"Authorization": "Bearer BADBEEF"})
+        response = await fn(
+            route_name, headers={"Authorization": "Bearer BADBEEF"}
+        )
 
         assert response.status_code == 401
         assert response.json() == {"detail": "That token is Invalid"}

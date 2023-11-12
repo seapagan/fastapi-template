@@ -32,7 +32,9 @@ class TestUserRoutes:
             "email": fake.email(),
             "first_name": "Test",
             "last_name": "User",
-            "password": pwd_context.hash("test12345!") if hashed else "test12345!",
+            "password": pwd_context.hash("test12345!")
+            if hashed
+            else "test12345!",
             "verified": True,
             "role": RoleType.user,
         }
@@ -229,7 +231,9 @@ class TestUserRoutes:
     # ------------------------------------------------------------------------ #
     #                            test ban user route                           #
     # ------------------------------------------------------------------------ #
-    async def test_admin_can_ban_user(self, client: AsyncClient, test_db: AsyncSession):
+    async def test_admin_can_ban_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure an admin can ban a user."""
         normal_user = self.get_test_user()
         admin_user = {**self.get_test_user(), "role": RoleType.admin}
@@ -267,7 +271,9 @@ class TestUserRoutes:
         assert banned_user is not None
         assert banned_user.banned is None
 
-    async def test_user_cant_ban(self, client: AsyncClient, test_db: AsyncSession):
+    async def test_user_cant_ban(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a non-admin cant ban another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
@@ -359,7 +365,9 @@ class TestUserRoutes:
         assert response.status_code == 404
         assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
-    async def test_user_cant_unban(self, client: AsyncClient, test_db: AsyncSession):
+    async def test_user_cant_unban(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Ensure a non-admin cant unban another user."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()

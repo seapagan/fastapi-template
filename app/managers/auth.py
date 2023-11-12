@@ -45,7 +45,9 @@ class AuthManager:
                 "exp": datetime.utcnow()
                 + timedelta(minutes=get_settings().access_token_expire_minutes),
             }
-            return jwt.encode(payload, get_settings().secret_key, algorithm="HS256")
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
         except Exception as exc:
             # log the exception
             raise HTTPException(
@@ -61,7 +63,9 @@ class AuthManager:
                 "exp": datetime.utcnow() + timedelta(minutes=60 * 24 * 30),
                 "typ": "refresh",
             }
-            return jwt.encode(payload, get_settings().secret_key, algorithm="HS256")
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
         except Exception as exc:
             # log the exception
             raise HTTPException(
@@ -78,7 +82,9 @@ class AuthManager:
                 "exp": datetime.utcnow() + timedelta(minutes=10),
                 "typ": "verify",
             }
-            return jwt.encode(payload, get_settings().secret_key, algorithm="HS256")
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
         except Exception as exc:
             # log the exception
             raise HTTPException(
@@ -87,7 +93,9 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    async def refresh(refresh_token: TokenRefreshRequest, session: AsyncSession) -> str:
+    async def refresh(
+        refresh_token: TokenRefreshRequest, session: AsyncSession
+    ) -> str:
         """Refresh an expired JWT token, given a valid Refresh token."""
         try:
             payload = jwt.decode(
@@ -226,7 +234,9 @@ class AuthManager:
         #     ),
         # )
 
-        raise HTTPException(status.HTTP_200_OK, ResponseMessages.VALIDATION_RESENT)
+        raise HTTPException(
+            status.HTTP_200_OK, ResponseMessages.VALIDATION_RESENT
+        )
 
 
 class CustomHTTPBearer(HTTPBearer):
@@ -281,8 +291,9 @@ def can_edit_user(request: Request):
 
     True if they own the resource or are Admin
     """
-    if request.state.user.role != RoleType.admin and request.state.user.id != int(
-        request.path_params["user_id"]
+    if (
+        request.state.user.role != RoleType.admin
+        and request.state.user.id != int(request.path_params["user_id"])
     ):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
