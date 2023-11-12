@@ -38,9 +38,7 @@ async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-async def get_my_user(
-    request: Request, db: AsyncSession = Depends(get_database)
-):
+async def get_my_user(request: Request, db: AsyncSession = Depends(get_database)):
     """Get the current user's data only."""
     my_user: int = request.state.user.id
     return await UserManager.get_user_by_id(my_user, db)

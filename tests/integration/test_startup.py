@@ -62,6 +62,4 @@ class TestStartup:
         assert "Have you set up your .env file??" in out
 
         json_response = response.json()
-        assert (
-            "ERROR: Cannot connect to the database" in json_response["detail"]
-        )
+        assert "ERROR: Cannot connect to the database" in json_response["detail"]

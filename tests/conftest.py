@@ -20,8 +20,7 @@ from app.managers.email import EmailManager
 
 if os.getenv("GITHUB_ACTIONS"):
     DATABASE_URL = (
-        "postgresql+asyncpg://postgres:postgres"
-        "@localhost:5432/fastapi-template-test"
+        "postgresql+asyncpg://postgres:postgres" "@localhost:5432/fastapi-template-test"
     )
 else:
     DATABASE_URL = (

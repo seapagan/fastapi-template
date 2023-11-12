@@ -17,11 +17,9 @@ def init(
         False,
         "--force",
         "-f",
-        prompt=(
-            "Warning! This deletes all data in the database. Are you sure?"
-        ),
+        prompt=("Warning! This deletes all data in the database. Are you sure?"),
         help="Do not ask for confirmation.",
-    )
+    ),
 ) -> None:
     """Re-Initialise the database using Alembic.
 
@@ -44,11 +42,9 @@ def drop(
         False,
         "--force",
         "-f",
-        prompt=(
-            "Warning! This deletes all data in the database. Are you sure?"
-        ),
+        prompt=("Warning! This deletes all data in the database. Are you sure?"),
         help="Do not ask for confirmation.",
-    )
+    ),
 ) -> None:
     """Drop all tables and reset the Database.
 
@@ -80,7 +76,7 @@ def revision(
         "-m",
         prompt=("Enter the commit message for the revision"),
         help="Provide a message for this commit.",
-    )
+    ),
 ):
     """Create a new revision.
 

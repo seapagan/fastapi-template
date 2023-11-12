@@ -55,8 +55,7 @@ def get_api_details() -> tuple[str, str, List]:
 
     except KeyError as exc:
         print(
-            "Missing name/description or authors in the pyproject.toml file "
-            f": {exc}"
+            "Missing name/description or authors in the pyproject.toml file " f": {exc}"
         )
         sys.exit(2)
 
