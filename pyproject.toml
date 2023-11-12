@@ -133,8 +133,9 @@ ignore = [
 ] # These rules are too strict even for us 😝
 extend-ignore = ["COM812", "ISC001"] # these are ignored for ruff formatting
 
-src = ["github_changelog_md"]
-target-version = "py39"       # minimum python version supported
+src = ["app"]
+extend-exclude = ["app/migrations"]
+target-version = "py39"             # minimum python version supported
 
 [tool.ruff.format]
 indent-style = "space"
