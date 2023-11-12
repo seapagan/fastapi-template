@@ -42,22 +42,12 @@ version = "^1.7.4"
 [tool.poetry.group.dev.dependencies]
 aiosmtpd = "^1.4.4"
 aiosqlite = "^0.19.0"
-bandit = "^1.7.5"
-black = "^23.10.1"
-flake8 = "^6.1.0"
-flake8-docstrings = "^1.7.0"
-flake8-pyproject = "^1.2.3"
-flake8-pytest-style = "^1.7.2"
-flake8-type-checking = "^2.5.1"
 httpx = "0.23.3"
-isort = "^5.12.0"
 mypy = "^1.5.1"
 openapi-readme = "^0.2.4"
-pep8-naming = "^0.13.3"
-pylint = "^3.0.1"
-pydocstyle = "^6.3.0"
 pre-commit = "^3.4.0"
-tryceratops = "^2.3.2"
+pymarkdownlnt = "^0.9.14"
+ruff = "^0.1.5"
 
 # task runner
 poethepoet = "^0.24.2"
@@ -65,6 +55,7 @@ poethepoet = "^0.24.2"
 # testing
 faker = "^19.13.0"
 mock = "^5.1.0"
+pyfakefs = "^5.3.0"
 pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.0.0"
@@ -85,6 +76,7 @@ pymdown-extensions = "^10.3"
 pygments = "^2.16.1"
 
 # additional packages
+
 
 [build-system]
 requires = ["poetry-core"]
