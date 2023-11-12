@@ -98,7 +98,7 @@ ruff.help = "Run Ruff checks"
 ruff.cmd = "ruff check ."
 test.help = "Run tests using Pytest"
 test.cmd = "pytest"
-markdown.cmd = "pymarkdown scan  -r github_changelog_md/**/*.md docs/**/*.md"
+markdown.cmd = "pymarkdown --strict-config scan  -r docs/**/*.md"
 markdown.help = "Run markdown checks"
 
 # run all linting checks in sequence. we want to run them all, even if one fails
@@ -122,8 +122,9 @@ changelog.help = "Generate the CHANGELOG.md file"
 # configure assorted tools and linters
 [tool.pymarkdown]
 plugins.md014.enabled = false
-# plugins.md036.enabled = false
 plugins.md046.enabled = false
+plugins.md033.allowed_elements = "!--,![CDATA[,!DOCTYPE,swagger-ui"
+plugins.md013.enabled = false
 
 [tool.ruff]
 line-length = 80
@@ -160,10 +161,9 @@ convention = "google"
   "S101",   # we can (and MUST!) use 'assert' in test files.
   "ANN001", # annotations for fixtures are sometimes a pain for test files.
 ]
-# "github_changelog_md/main.py" = [
-#   "UP007",
-#   "PLR0913",
-# ] # These cause issues in Typer Apps
+"app/managers/auth.py" = ["ERA001"]
+"app/resources/auth.py" = ["ERA001"]
+
 
 [tool.ruff.flake8-bugbear]
 extend-immutable-calls = [

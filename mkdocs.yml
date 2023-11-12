@@ -46,8 +46,8 @@ markdown_extensions:
       auto_title: false
   - attr_list
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
   - FastAPI Template: index.md
@@ -66,7 +66,7 @@ nav:
       - With a Local Server: development/local.md
       - With Docker: development/docker.md
       - Documentation: development/documentation.md
-  - How-to Guides: how-to-guides.md
+  - Guides and How-to's: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md

@@ -13,7 +13,8 @@
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
-- Allow to resend a registration email
+- Allow to resend a registration email (part of the code is already there for
+  this, but was not functioning properly so disabled).
 - Send an email to the **User** when they change their password or update their
   profile, are Banned/Unbanned and to **Admins** when important events happen.
 - Update current and future email templates with actual content, and change

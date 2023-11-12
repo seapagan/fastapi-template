@@ -1,4 +1,4 @@
-## Customize the Templates
+# Customize the Templates
 
 There are several HTML templates used at this time, all are stored in the
 `templates/` folder or a subfolder of this.
