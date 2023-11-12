@@ -1,5 +1,5 @@
 """Routes for User listing and control."""
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,7 +18,7 @@ router = APIRouter(tags=["Users"], prefix="/users")
 @router.get(
     "/",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    response_model=Union[UserResponse, List[UserResponse]],
+    response_model=Union[UserResponse, list[UserResponse]],
 )
 async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     """Get all users or a specific user by their ID.
@@ -38,7 +38,9 @@ async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-async def get_my_user(request: Request, db: AsyncSession = Depends(get_database)):
+async def get_my_user(
+    request: Request, db: AsyncSession = Depends(get_database)
+):
     """Get the current user's data only."""
     my_user: int = request.state.user.id
     return await UserManager.get_user_by_id(my_user, db)

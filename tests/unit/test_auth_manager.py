@@ -32,22 +32,28 @@ class TestAuthManager:
         time_now = datetime.utcnow()
         token = AuthManager.encode_token(User(id=1))
 
-        payload = jwt.decode(token, get_settings().secret_key, algorithms=["HS256"])
+        payload = jwt.decode(
+            token, get_settings().secret_key, algorithms=["HS256"]
+        )
         assert payload["sub"] == 1
         assert isinstance(payload["exp"], int)
-        # todo: better comparison to ensure the exp is in the future but close
+        # TODO: better comparison to ensure the exp is in the future but close
         # to the expected expiry time taking into account the setting for token
         # expiry
         assert payload["exp"] > time_now.timestamp()
 
     def test_encode_token_no_data(self):
         """Test the encode_token method with no data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_JWT):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
+        ):
             AuthManager.encode_token({})
 
     def test_encode_token_bad_data(self):
         """Test the encode_token method with bad data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_JWT):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
+        ):
             AuthManager.encode_token("bad_data")
 
     def test_encode_refresh_token(self):
@@ -61,19 +67,23 @@ class TestAuthManager:
 
         assert payload["sub"] == 1
         assert isinstance(payload["exp"], int)
-        # todo: better comparison to ensure the exp is in the future but close
+        # TODO: better comparison to ensure the exp is in the future but close
         # to the expected expiry time taking into account the expiry for these
         # is 30 days
         assert payload["exp"] > time_now.timestamp()
 
     def test_encode_refresh_token_no_data(self):
         """Test the encode_refresh_token method with no data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
+        ):
             AuthManager.encode_refresh_token({})
 
     def test_encode_refresh_token_bad_data(self):
         """Test the encode_refresh_token method with bad data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
+        ):
             AuthManager.encode_refresh_token("bad_data")
 
     def test_encode_verify_token(self):
@@ -88,19 +98,23 @@ class TestAuthManager:
         assert payload["sub"] == 1
         assert payload["typ"] == "verify"
         assert isinstance(payload["exp"], int)
-        # todo: better comparison to ensure the exp is in the future but close
+        # TODO: better comparison to ensure the exp is in the future but close
         # to the expected expiry time taking into account the expiry for these
         # is 10 minutes
         assert payload["exp"] > time_now.timestamp()
 
     def test_encode_verify_token_no_data(self):
         """Test the encode_verify_token method with no data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
+        ):
             AuthManager.encode_verify_token({})
 
     def test_encode_verify_token_bad_data(self):
         """Test the encode_verify_token method with bad data."""
-        with pytest.raises(HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY):
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
+        ):
             AuthManager.encode_verify_token("bad_data")
 
     # ------------------------------------------------------------------------ #
@@ -152,7 +166,9 @@ class TestAuthManager:
         )
 
         with pytest.raises(HTTPException) as exc_info:
-            await AuthManager.refresh(TokenRefreshRequest(refresh=wrong_token), test_db)
+            await AuthManager.refresh(
+                TokenRefreshRequest(refresh=wrong_token), test_db
+            )
         assert exc_info.value.status_code == 401
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 

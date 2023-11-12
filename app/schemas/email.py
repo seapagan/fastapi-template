@@ -1,5 +1,5 @@
 """Define email Connection Schema."""
-from typing import Any, Dict, List
+from typing import Any
 
 from pydantic import BaseModel, EmailStr
 
@@ -7,7 +7,7 @@ from pydantic import BaseModel, EmailStr
 class EmailSchema(BaseModel):
     """Define the Email Schema."""
 
-    recipients: List[EmailStr]
+    recipients: list[EmailStr]
     subject: str
     body: str
 
@@ -15,7 +15,7 @@ class EmailSchema(BaseModel):
 class EmailTemplateSchema(BaseModel):
     """Define the Email Schema."""
 
-    recipients: List[EmailStr]
+    recipients: list[EmailStr]
     subject: str
-    body: Dict[str, Any]
+    body: dict[str, Any]
     template_name: str

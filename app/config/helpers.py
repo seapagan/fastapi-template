@@ -3,7 +3,6 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
 
 import tomli
 
@@ -39,7 +38,7 @@ def get_api_version() -> str:
         sys.exit(2)
 
 
-def get_api_details() -> tuple[str, str, List]:
+def get_api_details() -> tuple[str, str, list]:
     """Return the API Name from the pyproject.toml file."""
     try:
         with open(get_toml_path(), "rb") as file:
@@ -55,7 +54,8 @@ def get_api_details() -> tuple[str, str, List]:
 
     except KeyError as exc:
         print(
-            "Missing name/description or authors in the pyproject.toml file " f": {exc}"
+            "Missing name/description or authors in the pyproject.toml file "
+            f": {exc}"
         )
         sys.exit(2)
 
@@ -78,7 +78,7 @@ class MetadataBase:
 
 
 # List of acceptable Opensource Licenses with a link to their text.
-LICENCES: List[Dict[str, str]] = [
+LICENCES: list[dict[str, str]] = [
     {"name": "Apache2", "url": "https://opensource.org/licenses/Apache-2.0"},
     {"name": "BSD3", "url": "https://opensource.org/licenses/BSD-3-Clause"},
     {"name": "BSD2", "url": "https://opensource.org/licenses/BSD-2-Clause"},

@@ -1,6 +1,5 @@
 """Test config/helpers.py."""
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -143,7 +142,7 @@ class TestConfigHelpers:
 
     def test_licences_structure(self):
         """Test the licences structure."""
-        assert isinstance(LICENCES, List)
+        assert isinstance(LICENCES, list)
 
         for licence in LICENCES:
             assert isinstance(licence, dict)

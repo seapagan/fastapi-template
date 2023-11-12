@@ -1,7 +1,8 @@
 """Fixtures and configuration for the test suite."""
 import asyncio
 import os
-from typing import Any, AsyncGenerator, Generator
+from collections.abc import AsyncGenerator, Generator
+from typing import Any
 
 import pytest
 import pytest_asyncio
@@ -20,7 +21,8 @@ from app.managers.email import EmailManager
 
 if os.getenv("GITHUB_ACTIONS"):
     DATABASE_URL = (
-        "postgresql+asyncpg://postgres:postgres" "@localhost:5432/fastapi-template-test"
+        "postgresql+asyncpg://postgres:postgres"
+        "@localhost:5432/fastapi-template-test"
     )
 else:
     DATABASE_URL = (

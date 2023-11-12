@@ -1,5 +1,4 @@
 """Test the UserManager class."""
-from typing import List
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException
@@ -190,7 +189,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         edited_user = self.test_user.copy()
         edited_user["first_name"] = "Edited"
 
-        await UserManager.update_user(1, UserEditRequest(**edited_user), test_db)
+        await UserManager.update_user(
+            1, UserEditRequest(**edited_user), test_db
+        )
         edited_user = await test_db.get(User, 1)
 
         assert edited_user.first_name == "Edited"
@@ -198,7 +199,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_update_user_not_found(self, test_db):
         """Test updating a user that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.update_user(1, UserEditRequest(**self.test_user), test_db)
+            await UserManager.update_user(
+                1, UserEditRequest(**self.test_user), test_db
+            )
 
     # ------------------------ test changing password ------------------------ #
     async def test_change_password(self, test_db):
@@ -304,7 +307,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_get_user_by_email_not_found(self, test_db):
         """Ensure we get None if the user with email doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.get_user_by_email(self.test_user["email"], test_db)
+            await UserManager.get_user_by_email(
+                self.test_user["email"], test_db
+            )
 
     async def test_get_all_users(self, test_db):
         """Test getting all users."""
@@ -315,7 +320,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
         users = await UserManager.get_all_users(test_db)
 
-        assert isinstance(users, List)
+        assert isinstance(users, list)
         assert len(users) == 5
 
     async def test_get_all_users_empty(self, test_db):

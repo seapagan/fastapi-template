@@ -1,6 +1,9 @@
 """CLI functionality to customize the template."""
+from __future__ import annotations
+
 import sys
 from datetime import date
+from typing import Literal
 
 import asyncclick as click
 import tomli
@@ -55,12 +58,12 @@ except ModuleNotFoundError:
     sys.exit(1)
 
 
-def get_licenses():
+def get_licenses() -> list[str]:
     """Return a list of possible Open-source Licence types."""
     return [licence["name"] for licence in LICENCES]
 
 
-def get_case_insensitive_dict(choice):
+def get_case_insensitive_dict(choice) -> dict[str, str] | Literal["Unknown"]:
     """Return the dictionary with specified key, case insensitive.
 
     We already know the key exists, however it may have wrong case.
@@ -88,7 +91,7 @@ def choose_license():
     return get_case_insensitive_dict(choice)
 
 
-def choose_version(current_version):
+def choose_version(current_version: str) -> str:
     """Change the version or reset it."""
     choice = click.prompt(
         "Version Number (use * to reset to '0.0.1')",

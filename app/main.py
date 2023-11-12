@@ -28,7 +28,8 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         print(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
         print(
-            "[yellow]WARNING:  [/yellow]Clearing routes and enabling " "error message."
+            "[yellow]WARNING:  [/yellow]Clearing routes and enabling "
+            "error message."
         )
         app.routes.clear()
         app.include_router(config_error.router)

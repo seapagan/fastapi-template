@@ -1,5 +1,6 @@
 """Setup the Database and support functions.."""
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (

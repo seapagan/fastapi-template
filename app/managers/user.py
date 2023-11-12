@@ -1,7 +1,7 @@
 """Define the User manager."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -52,18 +52,20 @@ class UserManager:
 
     @staticmethod
     async def register(
-        user_data: Dict,
+        user_data: dict,
         session: AsyncSession,
         background_tasks: Optional[BackgroundTasks] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Register a new user."""
         # make sure relevant fields are not empty
         if not all(user_data.values()):
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, ErrorMessages.EMPTY_FIELDS)
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.EMPTY_FIELDS
+            )
 
         # create a new dictionary to return, otherwise the original is modified
         # and can cause random testing issues
-        new_user: Dict = user_data.copy()
+        new_user: dict = user_data.copy()
 
         new_user["password"] = pwd_context.hash(user_data["password"])
         new_user["banned"] = False
@@ -106,9 +108,12 @@ class UserManager:
                         "user": new_user["email"],
                         "base_url": get_settings().base_url,
                         "name": (
-                            f"{new_user['first_name']}" f"{new_user['last_name']}"
+                            f"{new_user['first_name']}"
+                            f"{new_user['last_name']}"
                         ),
-                        "verification": AuthManager.encode_verify_token(user_do),
+                        "verification": AuthManager.encode_verify_token(
+                            user_do
+                        ),
                     },
                     template_name="welcome.html",
                 ),
@@ -120,19 +125,25 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def login(user_data: Dict, session: AsyncSession) -> Tuple[str, str]:
+    async def login(user_data: dict, session: AsyncSession) -> tuple[str, str]:
         """Log in an existing User."""
         user_do = await get_user_by_email_(user_data["email"], session)
 
         if (
             not user_do
-            or not pwd_context.verify(user_data["password"], str(user_do.password))
+            or not pwd_context.verify(
+                user_data["password"], str(user_do.password)
+            )
             or bool(user_do.banned)
         ):
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID)
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+            )
 
         if not bool(user_do.verified):
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED)
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
+            )
 
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
@@ -144,7 +155,9 @@ class UserManager:
         """Delete the User with specified ID."""
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         await session.execute(delete(User).where(User.id == user_id))
 
     @staticmethod
@@ -154,7 +167,9 @@ class UserManager:
         """Update the User with specified ID."""
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         await session.execute(
             update(User)
             .where(User.id == user_id)
@@ -175,7 +190,9 @@ class UserManager:
         """Change the specified user's Password."""
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         await session.execute(
             update(User)
             .where(User.id == user_id)
@@ -193,7 +210,9 @@ class UserManager:
             )
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         if bool(check_user.banned) == state:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
@@ -204,9 +223,13 @@ class UserManager:
         )
 
     @staticmethod
-    async def change_role(role: RoleType, user_id: int, session: AsyncSession) -> None:
+    async def change_role(
+        role: RoleType, user_id: int, session: AsyncSession
+    ) -> None:
         """Change the specified user's Role."""
-        await session.execute(update(User).where(User.id == user_id).values(role=role))
+        await session.execute(
+            update(User).where(User.id == user_id).values(role=role)
+        )
 
     @staticmethod
     async def get_all_users(session: AsyncSession):
@@ -218,7 +241,9 @@ class UserManager:
         """Return one user by ID."""
         user = await session.get(User, user_id)
         if not user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         return user
 
     @staticmethod
@@ -226,5 +251,7 @@ class UserManager:
         """Return one user by Email."""
         user = await get_user_by_email_(email, session)
         if not user:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID)
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+            )
         return user

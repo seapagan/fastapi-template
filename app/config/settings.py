@@ -1,7 +1,6 @@
 """Control the app settings, including reading from a .env file."""
 import sys
 from functools import lru_cache
-from typing import Dict
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -54,8 +53,8 @@ class Settings(BaseSettings):
     api_title: str = custom_metadata.title
     api_description: str = custom_metadata.description
     repository: str = custom_metadata.repository
-    contact: Dict[str, str] = custom_metadata.contact
-    license_info: Dict[str, str] = custom_metadata.license_info
+    contact: dict[str, str] = custom_metadata.contact
+    license_info: dict[str, str] = custom_metadata.license_info
     year: str = custom_metadata.year
 
     # email settings

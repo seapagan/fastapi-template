@@ -2,7 +2,7 @@
 import logging
 
 # from copy import deepcopy
-from typing import Dict, Union
+from typing import Union
 
 import pytest
 from httpx import AsyncClient
@@ -31,7 +31,7 @@ class TestAuthRoutes:
     register_path = "/register/"
     login_path = "/login/"
 
-    test_user: Dict[str, Union[str, bool]] = {
+    test_user: dict[str, Union[str, bool]] = {
         "email": "testuser@usertest.com",
         "first_name": "Test",
         "last_name": "User",
@@ -114,7 +114,9 @@ class TestAuthRoutes:
         assert pwd_context.verify(post_body["password"], user_from_db.password)
 
     @pytest.mark.asyncio()
-    async def test_register_new_user_with_bad_email(self, client, test_db, mocker):
+    async def test_register_new_user_with_bad_email(
+        self, client, test_db, mocker
+    ):
         """Ensure an invalid email address fails, and no email is sent."""
         # mock the email sending function
         mock_send = mocker.patch(self.email_fn_to_patch)
@@ -365,7 +367,9 @@ class TestAuthRoutes:
         assert isinstance(refresh_response.json()["token"], str)
 
     @pytest.mark.asyncio()
-    async def test_cant_refresh_token_with_invalid_refresh_token(self, client, test_db):
+    async def test_cant_refresh_token_with_invalid_refresh_token(
+        self, client, test_db
+    ):
         """Ensure the user cant refresh the token with invalid refresh token."""
         test_db.add(User(**self.test_user))
 
@@ -384,14 +388,18 @@ class TestAuthRoutes:
     # ------------------------------------------------------------------------ #
 
     @pytest.mark.asyncio()
-    async def test_verify_user(self, client: AsyncClient, test_db: AsyncSession):
+    async def test_verify_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ):
         """Test we can verify a user."""
         test_db.add(User(**self.test_unverified_user))
         verification_token = AuthManager.encode_verify_token(User(id=1))
 
         print("Test Session: ", test_db)
 
-        response = await client.get("/verify/", params={"code": verification_token})
+        response = await client.get(
+            "/verify/", params={"code": verification_token}
+        )
 
         assert response.status_code == 200
         assert response.json()["detail"] == "User succesfully Verified"

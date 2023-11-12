@@ -158,7 +158,7 @@ convention = "google"
 # ] # These cause issues in Typer Apps
 
 [tool.ruff.isort]
-known-first-party = ["github_changelog_md"]
+known-first-party = ["app"]
 
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true

@@ -26,9 +26,9 @@ class TestEmailManager:
 
     def test_init(self, email_manager):
         """Test the EmailManager constructor."""
-        assert email_manager.conf.MAIL_USERNAME == get_settings().mail_username
-        assert email_manager.conf.MAIL_PASSWORD == get_settings().mail_password
-        assert email_manager.conf.MAIL_FROM == get_settings().mail_from
+        assert get_settings().mail_username == email_manager.conf.MAIL_USERNAME
+        assert get_settings().mail_password == email_manager.conf.MAIL_PASSWORD
+        assert get_settings().mail_from == email_manager.conf.MAIL_FROM
         assert email_manager.conf.SUPPRESS_SEND == 1
 
     @pytest.mark.asyncio()
