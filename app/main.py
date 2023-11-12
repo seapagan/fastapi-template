@@ -1,5 +1,7 @@
 """Main file for the FastAPI Template."""
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,7 +16,7 @@ from app.resources.routes import api_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     """Lifespan function Replaces the previous startup/shutdown functions.
 
     Currently we only ensure that the database is available and configured

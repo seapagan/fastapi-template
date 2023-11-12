@@ -13,10 +13,10 @@ router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.get("/", include_in_schema=False)
+@router.get("/", include_in_schema=False, response_model=None)
 def root_path(
     request: Request, accept: Union[str, None] = Header(default="text/html")
-):
+) -> dict[str, str] | templates.TemplateResponse:
     """Display an HTML template for a browser, JSON response otherwise."""
     if accept and accept.split(",")[0] == "text/html":
         context = {

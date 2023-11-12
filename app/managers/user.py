@@ -201,7 +201,7 @@ class UserManager:
 
     @staticmethod
     async def set_ban_status(
-        user_id: int, state: bool, my_id: int, session: AsyncSession
+        user_id: int, state: Optional[bool], my_id: int, session: AsyncSession
     ) -> None:
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:
@@ -232,12 +232,12 @@ class UserManager:
         )
 
     @staticmethod
-    async def get_all_users(session: AsyncSession):
+    async def get_all_users(session: AsyncSession) -> list[User]:
         """Get all Users."""
         return await get_all_users_(session)
 
     @staticmethod
-    async def get_user_by_id(user_id: int, session: AsyncSession):
+    async def get_user_by_id(user_id: int, session: AsyncSession) -> User:
         """Return one user by ID."""
         user = await session.get(User, user_id)
         if not user:
@@ -247,7 +247,7 @@ class UserManager:
         return user
 
     @staticmethod
-    async def get_user_by_email(email: str, session: AsyncSession):
+    async def get_user_by_email(email: str, session: AsyncSession) -> User:
         """Return one user by Email."""
         user = await get_user_by_email_(email, session)
         if not user:

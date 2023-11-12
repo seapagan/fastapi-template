@@ -43,6 +43,5 @@ async_session = async_sessionmaker(async_engine, expire_on_commit=False)
 
 async def get_database() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection as a Generator."""
-    async with async_session() as session:
-        async with session.begin():
-            yield session
+    async with async_session() as session, session.begin():
+        yield session

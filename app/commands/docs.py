@@ -1,6 +1,5 @@
 """CLI commands for generating documentation."""
 import json
-import os
 from pathlib import Path
 
 import typer
@@ -18,7 +17,7 @@ def openapi(
     filename: str = typer.Option(
         "openapi.json", help="Filename for the OpenAPI schema"
     ),
-):
+) -> None:
     """Generate an OpenAPI schema from the current routes.
 
     By default this will be stored in the project root as `openapi.json`,
@@ -29,9 +28,9 @@ def openapi(
     openapi_file = Path(prefix, filename)
     print(
         "Generating OpenAPI schema at [bold]"
-        f"{os.path.abspath(openapi_file)}[/bold]\n"
+        f"{openapi_file.resolve()}[/bold]\n"
     )
-    with open(openapi_file, "w") as f:
+    with openapi_file.open(mode="w") as f:
         json.dump(
             get_openapi(
                 title=main_app.title,

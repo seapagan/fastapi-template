@@ -40,7 +40,7 @@ class TestStartup:
     )
     bad_db: AsyncSession = bad_session()
 
-    async def db_error(self) -> AsyncGenerator[AsyncSession, Any, None]:
+    async def db_error(self) -> AsyncGenerator[AsyncSession, None]:
         """Return a bad database connection."""
         async with self.bad_session() as session, session.begin():
             yield session

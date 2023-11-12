@@ -25,6 +25,6 @@ class User(Base):
     banned: Mapped[bool] = mapped_column(Boolean, default=False)
     verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Define the model representation."""
         return f'User({self.id}, "{self.first_name} {self.last_name}")'

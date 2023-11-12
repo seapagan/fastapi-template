@@ -1,8 +1,8 @@
 """CLI functionality to customize the template."""
 from __future__ import annotations
 
+import datetime
 import sys
-from datetime import date
 from typing import Literal
 
 import asyncclick as click
@@ -20,10 +20,12 @@ from app.config.helpers import (
     get_toml_path,
 )
 
+LicenceType = dict[str, str] | Literal["Unknown"]
+
 app = typer.Typer(no_args_is_help=True)
 
 
-def init():
+def init() -> None:
     """Create a default metadata file, overwrite any existing."""
     data = {
         "title": "API Template",
@@ -36,12 +38,15 @@ def init():
         "author": "Grant Ramsay (seapagan)",
         "website": "https://www.gnramsay.com",
         "email": "seapagan@gmail.com",
-        "this_year": date.today().year,
+        "this_year": datetime.datetime.now(tz=datetime.timezone.utc)
+        .date()
+        .today()
+        .year,
     }
 
     out = Template(TEMPLATE).render(data)
     try:
-        with open(get_config_path(), "w", encoding="UTF-8") as file:
+        with get_config_path().open("w", encoding="UTF-8") as file:
             file.write(out)
     except OSError as err:
         print(f"Cannot Write the metadata : {err}")
@@ -63,7 +68,7 @@ def get_licenses() -> list[str]:
     return [licence["name"] for licence in LICENCES]
 
 
-def get_case_insensitive_dict(choice) -> dict[str, str] | Literal["Unknown"]:
+def get_case_insensitive_dict(choice: str) -> LicenceType:
     """Return the dictionary with specified key, case insensitive.
 
     We already know the key exists, however it may have wrong case.
@@ -74,7 +79,7 @@ def get_case_insensitive_dict(choice) -> dict[str, str] | Literal["Unknown"]:
     return "Unknown"
 
 
-def choose_license():
+def choose_license() -> LicenceType:
     """Select a licence from a fixed list."""
     license_list = get_licenses()
     license_strings = ", ".join(license_list)
@@ -104,7 +109,7 @@ def choose_version(current_version: str) -> str:
 
 
 @app.command()
-def metadata():
+def metadata() -> None:
     """Customize the Application Metadata.
 
     This includes the title and description displayed on the root route and
@@ -143,7 +148,9 @@ def metadata():
         ),
     }
 
-    data["this_year"] = date.today().year
+    data["this_year"] = datetime.datetime.now(
+        tz=datetime.timezone.utc.date().today().year
+    )
 
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
@@ -161,7 +168,7 @@ def metadata():
         print("\n[green]-> Writing out Metadata .... ", end="")
         out = Template(TEMPLATE).render(data)
         try:
-            with open(get_config_path(), "w", encoding="UTF-8") as file:
+            with get_config_path().open(mode="w", encoding="UTF-8") as file:
                 file.write(out)
         except OSError as err:
             print(f"Cannot Write the metadata : {err}")
@@ -169,7 +176,7 @@ def metadata():
 
         # update the pyproject.toml file
         try:
-            with open(get_toml_path(), "rb") as file:
+            with get_toml_path().open(mode="rb") as file:
                 config = tomli.load(file)
                 config["tool"]["poetry"]["name"] = data["title"]
                 config["tool"]["poetry"]["version"] = data["version"]
@@ -177,7 +184,7 @@ def metadata():
                 config["tool"]["poetry"]["authors"] = [
                     f"{data['author']} <{data['email']}>"
                 ]
-            with open(get_toml_path(), "wb") as file:
+            with get_toml_path().open(mode="wb") as file:
                 tomli_w.dump(config, file)
         except OSError as err:
             print(f"Cannot update the pyproject.toml file : {err}")

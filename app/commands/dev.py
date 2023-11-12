@@ -1,5 +1,6 @@
 """CLI command to run a dev server."""
-import subprocess  # nosec
+import subprocess
+from typing import Optional  # nosec
 
 import typer
 from rich import print  # pylint: disable=W0622
@@ -18,7 +19,7 @@ def serve(
         "-h",
         help="Define the interface to run the server on.",
     ),
-    reload: bool = typer.Option(
+    reload: Optional[bool] = typer.Option(
         True,
         help="Enable auto-reload on code changes",
     ),
@@ -32,4 +33,4 @@ def serve(
         f"uvicorn app.main:app --port={port} --host={host} "
         f"{'--reload' if reload else ''}"
     )
-    subprocess.call(cmd_line, shell=True)  # nosec
+    subprocess.call(cmd_line, shell=True)  # noqa: S602

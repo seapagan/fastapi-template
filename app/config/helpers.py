@@ -7,25 +7,26 @@ from pathlib import Path
 import tomli
 
 
-def get_toml_path():
+def get_toml_path() -> Path:
     """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.dirname(os.path.realpath(__name__)))
+    script_dir = Path(os.path.realpath(__name__)).parent
 
     return script_dir / "pyproject.toml"
 
 
 def get_config_path() -> Path:
     """Return the full path of the custom config file."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
+    script_dir = Path(os.path.realpath(sys.argv[0])).parent
     return script_dir / "app" / "config" / "metadata.py"
 
 
 def get_api_version() -> str:
     """Return the API version from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as file:
+        toml_path = get_toml_path()
+        with toml_path.open(mode="rb") as file:
             config = tomli.load(file)
-            version = config["tool"]["poetry"]["version"]
+            version: str = config["tool"]["poetry"]["version"]
 
     except KeyError as exc:
         print(f"Cannot find the API version in the pyproject.toml file : {exc}")
@@ -39,10 +40,11 @@ def get_api_version() -> str:
         return version
 
 
-def get_api_details() -> tuple[str, str, list]:
+def get_api_details() -> tuple[str, str, list[str]]:
     """Return the API Name from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as file:
+        toml_path = get_toml_path()
+        with toml_path.open(mode="rb") as file:
             config = tomli.load(file)
             name = config["tool"]["poetry"]["name"]
             desc = config["tool"]["poetry"]["description"]

@@ -22,7 +22,7 @@ async def register(
     background_tasks: BackgroundTasks,
     user_data: UserRegisterRequest,
     session: AsyncSession = Depends(get_database),
-):
+) -> dict[str, str]:
     """Register a new User and return a JWT token plus a Refresh Token.
 
     The JWT token should be sent as a Bearer token for each access to a
@@ -48,7 +48,7 @@ async def register(
 )
 async def login(
     user_data: UserLoginRequest, session: AsyncSession = Depends(get_database)
-):
+) -> dict[str, str]:
     """Login an existing User and return a JWT token plus a Refresh Token.
 
     The JWT token should be sent as a Bearer token for each access to a
@@ -70,7 +70,7 @@ async def login(
 async def generate_refresh_token(
     refresh_token: TokenRefreshRequest,
     session: AsyncSession = Depends(get_database),
-):
+) -> dict[str, str]:
     """Return a new JWT, given a valid Refresh token.
 
     The Refresh token will not be updated at this time, it will still expire 30
@@ -81,7 +81,9 @@ async def generate_refresh_token(
 
 
 @router.get("/verify/", status_code=status.HTTP_200_OK)
-async def verify(code: str = "", session: AsyncSession = Depends(get_database)):
+async def verify(
+    code: str = "", session: AsyncSession = Depends(get_database)
+) -> None:
     """Verify a new user.
 
     The code is sent to  new user by email, which must then be validated here.

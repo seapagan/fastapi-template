@@ -76,6 +76,10 @@ mkdocs-swagger-ui-tag = "^0.6.6"
 pymdown-extensions = "^10.3"
 pygments = "^2.16.1"
 
+# for typing
+types-passlib = "^1.7.7.13"
+asyncpg-stubs = "^0.29.1"
+
 # additional packages
 
 [build-system]
@@ -138,8 +142,8 @@ extend-ignore = [
 ]
 
 src = ["app"]
-extend-exclude = ["app/migrations"]
-target-version = "py39"             # minimum python version supported
+extend-exclude = ["app/migrations", "tests"]
+target-version = "py39"                      # minimum python version supported
 
 [tool.ruff.format]
 indent-style = "space"
@@ -160,6 +164,17 @@ convention = "google"
 #   "UP007",
 #   "PLR0913",
 # ] # These cause issues in Typer Apps
+
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.params.Depends",
+  "fastapi.Query",
+  "fastapi.params.Query",
+]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id"]
 
 [tool.ruff.isort]
 known-first-party = ["app"]
