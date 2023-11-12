@@ -6,6 +6,7 @@ authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 fastapi = { extras = ["all"], version = "^0.103.0" }
@@ -77,58 +78,93 @@ pygments = "^2.16.1"
 
 # additional packages
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-serve = "uvicorn main:app --reload"
-pre = "pre-commit run --all-files"
-lint = "pylint **/*.py"
-_publish_docs = "mkdocs gh-deploy"
-_build_docs = "mkdocs build"
-openapi = "./api-admin docs openapi --prefix=docs/reference"
-"docs:publish" = ["openapi", "_publish_docs"]
-"docs:build" = ["openapi", "_build_docs"]
-"docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
-try = "tryceratops **/*.py"
+# setup PoeThePoet tasks
+pre.cmd = "pre-commit run --all-files"
+pre.help = "Run pre-commit checks"
+mypy.cmd = "mypy github_changelog_md/**/*.py tests/**/*.py --strict"
+mypy.help = "Run mypy checks"
+format.help = "Format code with Ruff"
+format.cmd = "ruff format ."
+ruff.help = "Run Ruff checks"
+ruff.cmd = "ruff check ."
+test.help = "Run tests using Pytest"
+test.cmd = "pytest"
+markdown.cmd = "pymarkdown scan  -r github_changelog_md/**/*.md docs/**/*.md"
+markdown.help = "Run markdown checks"
 
-[tool.flake8]
-max-line-length = 80
-exclude = ["__init__.py", ".git", "app/migrations/versions/*", "old_tests/*"]
-extend-ignore = ["E203", "W503"]
-extend-select = ["TC", "TC1", "TRY"]
-docstring-convention = "google"
-type-checking-pydantic-enabled = true
-classmethod-decorators = ["classmethod", "validator"]
+# run all linting checks in sequence. we want to run them all, even if one fails
+lint.ignore_fail = "return_non_zero"
+lint.sequence = ["format", "ruff", "mypy", "markdown"]
+lint.help = "Run all linting checks"
 
-[tool.isort]
-profile = "black"
+# documentation tasks
+"docs:publish".cmd = "mkdocs gh-deploy"
+"docs:publish".help = "Publish documentation to GitHub Pages"
+"docs:build".cmd = "mkdocs build"
+"docs:build".help = "Build documentation locally to './site' folder"
+"docs:serve".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md"
+"docs:serve".help = "Serve documentation locally"
+"docs:serve:all".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -a 0.0.0.0:8000"
+"docs:serve:all".help = "Serve documentation locally on all interfaces"
 
-[tool.black]
+changelog.cmd = "github-changelog-md"
+changelog.help = "Generate the CHANGELOG.md file"
+
+# configure assorted tools and linters
+[tool.pymarkdown]
+plugins.md014.enabled = false
+# plugins.md036.enabled = false
+plugins.md046.enabled = false
+
+[tool.ruff]
 line-length = 80
-exclude = '''
-/(
-    \.git
-  | \.mypy_cache
-  | \.tox
-  | venv
-  | \.venv
-  | _build
-  | build
-  | dist
-)/
-'''
+select = ["ALL"] # we are being very strict!
+ignore = [
+  "ANN101",
+  "PGH003",
+  "FBT002",
+  "FBT003",
+  "B006",
+] # These rules are too strict even for us 😝
+extend-ignore = ["COM812", "ISC001"] # these are ignored for ruff formatting
 
-[tool.bandit]
-exclude_dirs = ["config/settings.py", "schemas/examples.py"]
+src = ["github_changelog_md"]
+target-version = "py39"       # minimum python version supported
 
-[tool.bandit.assert_used]
-skips = ['*_test.py', '*/test_*.py']
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
 
-[tool.pydocstyle]
-add-ignore = ["D104"]
+[tool.ruff.pep8-naming]
+classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.extend-per-file-ignores]
+"tests/**/*.py" = [
+  "S101",   # we can (and MUST!) use 'assert' in test files.
+  "ANN001", # annotations for fixtures are sometimes a pain for test files.
+]
+# "github_changelog_md/main.py" = [
+#   "UP007",
+#   "PLR0913",
+# ] # These cause issues in Typer Apps
+
+[tool.ruff.isort]
+known-first-party = ["github_changelog_md"]
+
+[tool.ruff.pyupgrade]
+keep-runtime-typing = true
+
+[[tool.mypy.overrides]]
+disable_error_code = ["method-assign", "no-untyped-def", "attr-defined"]
+module = "tests.*"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -141,13 +177,11 @@ addopts = [
   "html",
 ]
 filterwarnings = ["ignore:'crypt' is deprecated:DeprecationWarning"]
-mock_use_standalone_module = true
 markers = ["unit: Unit tests", "integration: Integration tests"]
 testpaths = ["tests"]
+mock_use_standalone_module = true
 
 [tool.coverage.run]
 # source = []
+source = ["app"]
 omit = ["*/tests/*"]
-
-[tool.pymarkdown]
-plugins.md014.enabled = false
