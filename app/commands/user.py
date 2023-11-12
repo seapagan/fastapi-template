@@ -1,4 +1,6 @@
 """Add a user from the command line, optionally make superuser."""
+from __future__ import annotations
+
 from asyncio import run as aiorun
 from typing import Optional
 
@@ -115,7 +117,7 @@ def create(
 
     role_type = RoleType.admin if admin else RoleType.user
 
-    user_data = {
+    user_data: dict[str, str] = {
         "email": email,
         "first_name": first_name,
         "last_name": last_name,
@@ -142,6 +144,7 @@ def list_all_users() -> None:
 
         except Exception as exc:
             print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
         else:
             return user_list
 
@@ -171,6 +174,7 @@ def show(
             print(
                 f"\n[red]-> ERROR getting User details : [bold]{exc.detail}\n"
             )
+            raise typer.Exit(1) from exc
         else:
             return user
 
@@ -200,6 +204,7 @@ def verify(
                     return user
         except Exception as exc:
             print(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
 
     user = aiorun(_verify_user(user_id))
     if user:
@@ -238,6 +243,7 @@ def ban(
                     return user
         except Exception as exc:
             print(f"\n[RED]-> ERROR banning or unbanning User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
 
     user = aiorun(_ban_user(user_id, unban))
     if user:
@@ -273,6 +279,7 @@ def delete(
                 return user
         except Exception as exc:
             print(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
 
     user = aiorun(_delete_user(user_id))
 

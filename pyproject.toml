@@ -90,7 +90,7 @@ build-backend = "poetry.core.masonry.api"
 # setup PoeThePoet tasks
 pre.cmd = "pre-commit run --all-files"
 pre.help = "Run pre-commit checks"
-mypy.cmd = "mypy github_changelog_md/**/*.py tests/**/*.py --strict"
+mypy.cmd = "mypy . --strict"
 mypy.help = "Run mypy checks"
 format.help = "Format code with Ruff"
 format.cmd = "ruff format ."
@@ -182,9 +182,17 @@ known-first-party = ["app"]
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true
 
+[tool.mypy]
+python_version = "3.9"
+exclude = ["app/migrations/", "tests"]
+
 [[tool.mypy.overrides]]
 disable_error_code = ["method-assign", "no-untyped-def", "attr-defined"]
 module = "tests.*"
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = "decouple.*"
 
 [tool.pytest.ini_options]
 addopts = [

@@ -1,6 +1,7 @@
 """Define some database helper functions."""
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from sqlalchemy import select
@@ -8,8 +9,6 @@ from sqlalchemy import select
 from app.models.user import User
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from sqlalchemy.ext.asyncio import AsyncSession
 
 

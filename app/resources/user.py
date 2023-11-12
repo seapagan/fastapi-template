@@ -1,16 +1,24 @@
 """Routes for User listing and control."""
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
 from app.managers.auth import can_edit_user, is_admin, oauth2_schema
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
-from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 from app.schemas.response.user import MyUserResponse, UserResponse
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from app.schemas.request.user import (
+        UserChangePasswordRequest,
+        UserEditRequest,
+    )
 
 router = APIRouter(tags=["Users"], prefix="/users")
 
@@ -117,7 +125,7 @@ async def edit_user(
     user_id: int,
     user_data: UserEditRequest,
     db: AsyncSession = Depends(get_database),
-) -> User:
+) -> User | None:
     """Update the specified User's data.
 
     Available for the specific requesting User, or an Admin.
