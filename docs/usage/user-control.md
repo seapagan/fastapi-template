@@ -50,12 +50,12 @@ without needing to use the validation email. Useful for testing or adding Users
 you know exist.
 
 ```console
-$ ./api-admin user vefify 23
+$ ./api-admin user verify 23
 ```
 
 ## Search for a user
 
-This functionality is *Currently not implemented*
+- This functionality is #Currently not implemented*
 
 ## Ban or Unban a specific User
 
