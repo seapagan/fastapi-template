@@ -42,7 +42,7 @@ The `api-admin` command can also do this for you, asking for the values at the
 command line and automatically updating both files:
 
 ```console
-$ ./api-admin custom metadata
+$ api-admin custom metadata
 
 API-Template : Customize application Metadata
 
