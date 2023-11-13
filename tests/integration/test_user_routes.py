@@ -1,5 +1,6 @@
 """Define tests for the 'User' routes of the application."""
 
+from typing import Any
 import pytest
 from faker import Faker
 from httpx import AsyncClient
@@ -24,7 +25,7 @@ class TestUserRoutes:
 
     mock_request_path = "app.resources.user.Request.state"
 
-    def get_test_user(self, hashed=True):
+    def get_test_user(self, hashed=True) -> dict[str, Any]:
         """Return one or more test users."""
         fake = Faker()
 

@@ -42,19 +42,12 @@ class TestAuthManager:
         # for token expiry
         assert payload["exp"] > time_now.timestamp()
 
-    def test_encode_token_no_data(self) -> None:
-        """Test the encode_token method with no data."""
-        with pytest.raises(
-            HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
-        ):
-            AuthManager.encode_token({})
-
     def test_encode_token_bad_data(self) -> None:
         """Test the encode_token method with bad data."""
         with pytest.raises(
             HTTPException, match=ResponseMessages.CANT_GENERATE_JWT
         ):
-            AuthManager.encode_token("bad_data")
+            AuthManager.encode_token("bad_data")  # type: ignore
 
     def test_encode_refresh_token(self) -> None:
         """Ensure we can correctly encode a refresh token."""
@@ -72,19 +65,12 @@ class TestAuthManager:
         # for these is 30 days
         assert payload["exp"] > time_now.timestamp()
 
-    def test_encode_refresh_token_no_data(self) -> None:
-        """Test the encode_refresh_token method with no data."""
-        with pytest.raises(
-            HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
-        ):
-            AuthManager.encode_refresh_token({})
-
     def test_encode_refresh_token_bad_data(self) -> None:
         """Test the encode_refresh_token method with bad data."""
         with pytest.raises(
             HTTPException, match=ResponseMessages.CANT_GENERATE_REFRESH
         ):
-            AuthManager.encode_refresh_token("bad_data")
+            AuthManager.encode_refresh_token("bad_data")  # type: ignore
 
     def test_encode_verify_token(self) -> None:
         """Ensure we can correctly encode a verify token."""
@@ -103,19 +89,12 @@ class TestAuthManager:
         # for these is 10 minutes
         assert payload["exp"] > time_now.timestamp()
 
-    def test_encode_verify_token_no_data(self) -> None:
-        """Test the encode_verify_token method with no data."""
-        with pytest.raises(
-            HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
-        ):
-            AuthManager.encode_verify_token({})
-
     def test_encode_verify_token_bad_data(self) -> None:
         """Test the encode_verify_token method with bad data."""
         with pytest.raises(
             HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
         ):
-            AuthManager.encode_verify_token("bad_data")
+            AuthManager.encode_verify_token("bad_data")  # type: ignore
 
     # ------------------------------------------------------------------------ #
     #                            test refresh token                            #

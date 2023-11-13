@@ -269,7 +269,6 @@ class CustomHTTPBearer(HTTPBearer):
                             ResponseMessages.INVALID_TOKEN,
                         )
                     request.state.user = user_data
-                    return user_data  # type: ignore
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
@@ -280,7 +279,7 @@ class CustomHTTPBearer(HTTPBearer):
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
         else:
-            return None
+            return user_data  # type: ignore
 
 
 oauth2_schema = CustomHTTPBearer()

@@ -1,5 +1,6 @@
 """Test the EmailManager class."""
 import json
+from typing import TypedDict
 
 import pytest
 from fastapi import status
@@ -8,11 +9,18 @@ from app.config.settings import get_settings
 from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
+class EmailData(TypedDict):
+    """Type definition for email data."""
+
+    subject: str
+    recipients: list[str]
+
+
 @pytest.mark.unit()
 class TestEmailManager:
     """Test the EmailManager class."""
 
-    email_data = {  # noqa: RUF012
+    email_data: EmailData = {  # noqa: RUF012
         "subject": "Test Subject",
         "recipients": ["test_recipient@testing.com"],
     }
