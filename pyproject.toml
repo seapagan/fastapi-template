@@ -7,6 +7,8 @@ license = "MIT"
 readme = "README.md"
 packages = [{ include = "app", from = "." }]
 
+classifiers = ["Private :: Do Not Upload"]
+
 [tool.poetry.scripts]
 api-admin = "app.api_admin:app"
 
