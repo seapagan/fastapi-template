@@ -50,8 +50,17 @@ in the release notes.
 
 ## Development Release
 
+Actual development work is carried out on the
+[`develop`](https://github.com/seapagan/fastapi-template/tree/develop) branch.
+When it comes time for a non-alpha/beta release, the `develop` branch will be
+merged into `main` and a new release will be made from there.
+
+Check out the
+[CHANGELOG](https://github.com/seapagan/fastapi-template/blob/develop/CHANGELOG.md)
+on that branch for details of what has changed since the last release.
+
 The current development release is [Version
-0.5.0-alpha1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha1).
+0.5.0-alpha2](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha2).
 This is functional but still in development and may contain bugs. It is not
 currently recommended for serious production use, though there are no known
 issues at the moment. It is not fully backware compatible with previous

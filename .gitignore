@@ -211,3 +211,5 @@ cython_debug/
 openapi.json
 test.db
 docs/CNAME
+.changelog_generator.toml
+.python-version
