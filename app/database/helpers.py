@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from app.models.user import User
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession

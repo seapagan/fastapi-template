@@ -22,7 +22,7 @@ from app.managers.email import EmailManager
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession
