@@ -48,6 +48,7 @@
   change it easily.
 - ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
+- add an option to make user an admin (or take it away)
 
 ## Documentation
 
