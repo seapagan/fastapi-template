@@ -36,9 +36,11 @@
   "git.enableCommitSigning": true,
   "html.format.indentHandlebars": true,
   "html.format.templating": true,
+  "markdownlint.ignore": ["CHANGELOG.md"],
   "material-icon-theme.languages.associations": {
     "jinja-html": "django"
   },
+  "mypy-type-checker.args": ["--strict"],
   "mypy-type-checker.importStrategy": "useBundled",
   "mypy-type-checker.reportingScope": "workspace",
   "python.analysis.autoImportCompletions": true,
@@ -53,6 +55,5 @@
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
   "ruff.fixAll": false,
-  "ruff.organizeImports": true,
-  "mypy-type-checker.args": ["--strict"]
+  "ruff.organizeImports": true
 }
