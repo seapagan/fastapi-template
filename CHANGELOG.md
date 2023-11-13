@@ -9,24 +9,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
 
 
-These are the changes that have been merged to the repository since the last
-release. If you want to try out these changes, you can install the latest
-version from the main branch by running:
+**Breaking Changes**
 
-```console
-$ pip install git+https://github.com/seapagan/github-changelog-md
-```
+This version contains minor breaking changes to the way you will run the CLI
+tool. See the documentation for more information.
 
-or, if using poetry:
 
-```console
-$ poetry add git+https://github.com/seapagan/github-changelog-md
-```
-Everything in this section will be included in the next official release.
+**Breaking Changes**
 
+- Make the API an installable package and CLI command ([#276](https://github.com/seapagan/fastapi-template/pull/276)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
 
+- Update and freshen the docs ([#275](https://github.com/seapagan/fastapi-template/pull/275)) by [seapagan](https://github.com/seapagan)
 - Add a changelog to the project ([#274](https://github.com/seapagan/fastapi-template/pull/274)) by [seapagan](https://github.com/seapagan)
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD.patch)
@@ -49,6 +44,7 @@ Everything in this section will be included in the next official release.
 - Bump pytest from 7.4.2 to 7.4.3 ([#264](https://github.com/seapagan/fastapi-template/pull/264)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump mkdocs-swagger-ui-tag from 0.6.5 to 0.6.6 ([#263](https://github.com/seapagan/fastapi-template/pull/263)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump alembic from 1.12.0 to 1.12.1 ([#261](https://github.com/seapagan/fastapi-template/pull/261)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
 - *and 19 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha1...v0.5.0-alpha2) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha1...v0.5.0-alpha2.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha1...v0.5.0-alpha2.patch)
@@ -71,6 +67,7 @@ Everything in this section will be included in the next official release.
 - Bump pytest from 7.4.1 to 7.4.2 ([#214](https://github.com/seapagan/fastapi-template/pull/214)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pre-commit from 3.3.3 to 3.4.0 ([#211](https://github.com/seapagan/fastapi-template/pull/211)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pymdown-extensions from 10.1 to 10.3 ([#210](https://github.com/seapagan/fastapi-template/pull/210)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
 - *and 7 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha0...v0.5.0-alpha1) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha0...v0.5.0-alpha1.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha0...v0.5.0-alpha1.patch)
@@ -86,7 +83,6 @@ Everything in this section will be included in the next official release.
 
 - Update fastapi to latest version ([#197](https://github.com/seapagan/fastapi-template/pull/197)) by [seapagan](https://github.com/seapagan)
 - Start re-adding tests ([#161](https://github.com/seapagan/fastapi-template/pull/161)) by [seapagan](https://github.com/seapagan)
-- Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
@@ -100,6 +96,7 @@ Everything in this section will be included in the next official release.
 - Bump mypy from 1.4.1 to 1.5.1 ([#189](https://github.com/seapagan/fastapi-template/pull/189)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump alembic from 1.11.2 to 1.11.3 ([#187](https://github.com/seapagan/fastapi-template/pull/187)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump mkdocs-swagger-ui-tag from 0.6.3 to 0.6.4 ([#185](https://github.com/seapagan/fastapi-template/pull/185)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
 - *and 22 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.1...v0.5.0-alpha0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.1...v0.5.0-alpha0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.1...v0.5.0-alpha0.patch)
@@ -133,6 +130,7 @@ Everything in this section will be included in the next official release.
 - Bump fastapi-mail from 1.3.0 to 1.3.1 ([#143](https://github.com/seapagan/fastapi-template/pull/143)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump fastapi from 0.98.0 to 0.99.1 ([#142](https://github.com/seapagan/fastapi-template/pull/142)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump mkdocs-material from 9.1.17 to 9.1.18 ([#141](https://github.com/seapagan/fastapi-template/pull/141)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
 - *and 7 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.0...v0.4.1) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.0...v0.4.1.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.0...v0.4.1.patch)
@@ -225,6 +223,7 @@ for more of the reasoning behind this change.
 - Bump rich from 12.6.0 to 13.3.5 ([#75](https://github.com/seapagan/fastapi-template/pull/75)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pylint from 2.17.3 to 2.17.4 ([#74](https://github.com/seapagan/fastapi-template/pull/74)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pre-commit from 3.2.2 to 3.3.1 ([#73](https://github.com/seapagan/fastapi-template/pull/73)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
 - *and 4 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v1.4.1...v1.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v1.4.1...v1.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v1.4.1...v1.5.0.patch)
