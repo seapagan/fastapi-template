@@ -117,6 +117,11 @@ lint.help = "Run all linting checks"
 "docs:serve:all".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -a 0.0.0.0:8000"
 "docs:serve:all".help = "Serve documentation locally on all interfaces"
 
+# regenerate the openapi.json file
+openapi.cmd = "./api-admin docs openapi --prefix=docs/reference"
+openapi.help = "Generate an OpenAPI JSON file from this API"
+
+# generate the CHANGELOG.md file
 changelog.cmd = "github-changelog-md"
 changelog.help = "Generate the CHANGELOG.md file"
 
