@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.config.helpers import get_api_version
+from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
 from app.resources import config_error
@@ -54,7 +54,9 @@ app = FastAPI(
 )
 
 app.include_router(api_router)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+static_dir = get_project_root() / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # set up CORS
 cors_list = (get_settings().cors_origins).split(",")

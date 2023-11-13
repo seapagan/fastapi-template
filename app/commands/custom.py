@@ -190,3 +190,4 @@ def metadata() -> None:
             print(f"Cannot update the pyproject.toml file : {err}")
             sys.exit(3)
         print("Done!")
+        print("\n[cyan]-> Remember to RESTART the API if it is running.\n")

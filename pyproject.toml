@@ -5,7 +5,12 @@ description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "app", from = "." }]
 
+classifiers = ["Private :: Do Not Upload"]
+
+[tool.poetry.scripts]
+api-admin = "app.api_admin:app"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
@@ -225,4 +230,4 @@ mock_use_standalone_module = true
 [tool.coverage.run]
 # source = []
 source = ["app"]
-omit = ["*/tests/*", "app/commands/*"]
+omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]

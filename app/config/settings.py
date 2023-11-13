@@ -1,8 +1,11 @@
 """Control the app settings, including reading from a .env file."""
 import sys
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.config.helpers import get_project_root
 
 try:
     from .metadata import custom_metadata
@@ -23,7 +26,10 @@ class Settings(BaseSettings):
     not be stored in the Git repository.
     """
 
-    model_config = SettingsConfigDict(env_file=".env")
+    project_root: Path = get_project_root()
+
+    env_file: str = str(project_root / ".env")
+    model_config = SettingsConfigDict(env_file=env_file)
 
     base_url: str = "http://localhost:8000"
 

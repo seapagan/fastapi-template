@@ -1,23 +1,25 @@
 """Helper classes and functions for config use."""
-import os
 import sys
 from dataclasses import dataclass
+from importlib import resources
 from pathlib import Path
 
 import tomli
 
 
+def get_project_root() -> Path:
+    """Return the full path of the project root."""
+    return (Path(str(resources.files("app"))) / "..").resolve()
+
+
 def get_toml_path() -> Path:
     """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.realpath(__name__)).parent
-
-    return script_dir / "pyproject.toml"
+    return get_project_root() / "pyproject.toml"
 
 
 def get_config_path() -> Path:
     """Return the full path of the custom config file."""
-    script_dir = Path(os.path.realpath(sys.argv[0])).parent
-    return script_dir / "app" / "config" / "metadata.py"
+    return get_project_root() / "app" / "config" / "metadata.py"
 
 
 def get_api_version() -> str:
@@ -114,7 +116,7 @@ custom_metadata = MetadataBase(
         "url": "{{ website }}",
     },
     email="{{ email }}",
-    year="{{ this_year }}"
+    year="{{ this_year }}",
 )
 
 """

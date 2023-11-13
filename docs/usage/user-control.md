@@ -21,7 +21,7 @@ note that any user added this was will be **automatically verified**.
 You can list all registered users in a nice table as shown below:
 
 ```console
-$ ./api-admin user list
+$ api-admin user list
 ```
 
 This will show Id, Email address, First and Last name, Role, and the Verified
@@ -37,7 +37,7 @@ and Banned Status.
 ## List a specific User
 
 ```console
-$ ./api-admin user show 23
+$ api-admin user show 23
 ```
 
 This will show the same data as above, but for only one user. You must specify
@@ -50,7 +50,7 @@ without needing to use the validation email. Useful for testing or adding Users
 you know exist.
 
 ```console
-$ ./api-admin user verify 23
+$ api-admin user verify 23
 ```
 
 ## Search for a user
@@ -63,13 +63,13 @@ Ban a User so they cannot access the API. You can also `unban` any user by
 adding the `-u` or `--unban` flag.
 
 ```console
-$ ./api-admin user ban 23
+$ api-admin user ban 23
 ```
 
 or to unban:
 
 ```console
-$ ./api-admin user ban 23 -u
+$ api-admin user ban 23 -u
 ```
 
 ## Delete a specific User
@@ -77,7 +77,7 @@ $ ./api-admin user ban 23 -u
 To remove a specific user from the API:
 
 ```console
-$ ./api-admin user delete 23
+$ api-admin user delete 23
 ```
 
 They will no longer be able to access the API, this CANNOT BE UNDONE. It's
