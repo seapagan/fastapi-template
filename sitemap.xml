@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://api-template.seapagan.net/changelog/</loc>
+         <lastmod>2023-11-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://api-template.seapagan.net/contributing/</loc>
          <lastmod>2023-11-13</lastmod>
          <changefreq>daily</changefreq>
@@ -22,6 +27,11 @@
     </url>
     <url>
          <loc>https://api-template.seapagan.net/known-issues/</loc>
+         <lastmod>2023-11-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://api-template.seapagan.net/license/</loc>
          <lastmod>2023-11-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
