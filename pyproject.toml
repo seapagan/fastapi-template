@@ -228,4 +228,4 @@ mock_use_standalone_module = true
 [tool.coverage.run]
 # source = []
 source = ["app"]
-omit = ["*/tests/*", "app/commands/*"]
+omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]

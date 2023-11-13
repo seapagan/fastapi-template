@@ -2,16 +2,20 @@
 import os
 import sys
 from dataclasses import dataclass
+from importlib import resources
 from pathlib import Path
 
 import tomli
 
 
+def get_project_root() -> Path:
+    """Return the full path of the project root."""
+    return Path(str(resources.files("app"))) / ".."
+
+
 def get_toml_path() -> Path:
     """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.realpath(__name__)).parent
-
-    return script_dir / "pyproject.toml"
+    return get_project_root() / "pyproject.toml"
 
 
 def get_config_path() -> Path:

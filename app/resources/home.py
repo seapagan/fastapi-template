@@ -4,11 +4,13 @@ from typing import Union
 from fastapi import APIRouter, Header, Request
 from fastapi.templating import Jinja2Templates
 
-from app.config.helpers import get_api_version
+from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
+
+template_folder = get_project_root() / "app" / "templates"
+templates = Jinja2Templates(directory=template_folder)
 
 RootResponse = Union[dict[str, str], templates.TemplateResponse]  # type: ignore
 
