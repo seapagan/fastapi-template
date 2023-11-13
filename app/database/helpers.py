@@ -1,7 +1,7 @@
 """Define some database helper functions."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import select
 
@@ -31,7 +31,9 @@ async def get_user_by_id_(user_id: int, session: AsyncSession) -> User | None:
     return result.scalars().first()
 
 
-async def add_new_user_(user_data: dict, session: AsyncSession) -> User:
+async def add_new_user_(
+    user_data: dict[str, Any], session: AsyncSession
+) -> User:
     """Add a new user to the database."""
     new_user = User(**user_data)
     session.add(new_user)

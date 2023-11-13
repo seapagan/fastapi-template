@@ -1,5 +1,6 @@
 """Routes for User listing and control."""
 
+from collections.abc import Sequence
 from typing import Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
@@ -10,10 +11,7 @@ from app.managers.auth import can_edit_user, is_admin, oauth2_schema
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
-from app.schemas.request.user import (
-    UserChangePasswordRequest,
-    UserEditRequest,
-)
+from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 from app.schemas.response.user import MyUserResponse, UserResponse
 
 router = APIRouter(tags=["Users"], prefix="/users")
@@ -26,7 +24,7 @@ router = APIRouter(tags=["Users"], prefix="/users")
 )
 async def get_users(
     user_id: Optional[int] = None, db: AsyncSession = Depends(get_database)
-) -> list[User]:
+) -> Union[Sequence[User], User]:
     """Get all users or a specific user by their ID.
 
     user_id is optional, and if omitted then all Users are returned.

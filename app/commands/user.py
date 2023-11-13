@@ -2,23 +2,27 @@
 from __future__ import annotations
 
 from asyncio import run as aiorun
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import typer
 from fastapi import HTTPException
 from rich import print  # pylint: disable=W0622
 from rich.console import Console
 from rich.table import Table
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.db import async_session
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 app = typer.Typer(no_args_is_help=True)
 
 
-def show_table(title: str, user_list: list[User]) -> None:
+def show_table(title: str, user_list: Sequence[User]) -> None:
     """Show User data in a tabulated format."""
     console = Console()
     table = Table(
@@ -100,7 +104,7 @@ def create(
     any that are missing.
     """
 
-    async def create_user(user_data: dict[str, str]) -> None:
+    async def create_user(user_data: dict[str, str | RoleType]) -> None:
         """Asny function to create a new user."""
         try:
             async with async_session() as session:
@@ -112,12 +116,12 @@ def create(
                 )
         except HTTPException as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err.detail}\n")
-        except Exception as err:
+        except SQLAlchemyError as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err}\n")
 
     role_type = RoleType.admin if admin else RoleType.user
 
-    user_data: dict[str, str] = {
+    user_data: dict[str, str | RoleType] = {
         "email": email,
         "first_name": first_name,
         "last_name": last_name,
@@ -136,13 +140,13 @@ def list_all_users() -> None:
     Also include verified/banned status and a total count.
     """
 
-    async def _list_users() -> list[User]:
+    async def _list_users() -> Sequence[User]:
         """Async function to list all users in the database."""
         try:
             async with async_session() as session:
                 user_list = await UserManager.get_all_users(session)
 
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
             raise typer.Exit(1) from exc
         else:
@@ -193,7 +197,7 @@ def verify(
 ) -> None:
     """Manually verify a user by id."""
 
-    async def _verify_user(user_id: int) -> User:
+    async def _verify_user(user_id: int) -> User | None:
         """Async function to verify a user by id."""
         try:
             async with async_session() as session:
@@ -201,10 +205,11 @@ def verify(
                 if user:
                     user.verified = True
                     await session.commit()
-                    return user
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
+        else:
+            return user
 
     user = aiorun(_verify_user(user_id))
     if user:
@@ -232,7 +237,7 @@ def ban(
 ) -> None:
     """Ban or Unban a user by id."""
 
-    async def _ban_user(user_id: int, unban: Optional[bool]) -> User:
+    async def _ban_user(user_id: int, unban: Optional[bool]) -> User | None:
         """Async function to ban or unban a user."""
         try:
             async with async_session() as session:
@@ -240,10 +245,11 @@ def ban(
                 if user:
                     user.banned = not unban
                     await session.commit()
-                    return user
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[RED]-> ERROR banning or unbanning User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
+        else:
+            return user
 
     user = aiorun(_ban_user(user_id, unban))
     if user:
@@ -268,7 +274,7 @@ def delete(
 ) -> None:
     """Delete the user with the given id."""
 
-    async def _delete_user(user_id: int) -> User:
+    async def _delete_user(user_id: int) -> User | None:
         """Async function to delete a user."""
         try:
             async with async_session() as session:
@@ -276,10 +282,11 @@ def delete(
                 if user:
                     await session.delete(user)
                     await session.commit()
-                return user
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
+        else:
+            return user
 
     user = aiorun(_delete_user(user_id))
 

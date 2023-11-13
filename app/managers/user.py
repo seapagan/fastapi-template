@@ -1,7 +1,7 @@
 """Define the User manager."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
@@ -23,6 +23,8 @@ from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from sqlalchemy.ext.asyncio import AsyncSession
 
     from app.models.enums import RoleType
@@ -52,7 +54,7 @@ class UserManager:
 
     @staticmethod
     async def register(
-        user_data: dict,
+        user_data: dict[str, Any],
         session: AsyncSession,
         background_tasks: Optional[BackgroundTasks] = None,
     ) -> tuple[str, str]:
@@ -65,7 +67,7 @@ class UserManager:
 
         # create a new dictionary to return, otherwise the original is modified
         # and can cause random testing issues
-        new_user: dict = user_data.copy()
+        new_user = user_data.copy()
 
         new_user["password"] = pwd_context.hash(user_data["password"])
         new_user["banned"] = False
@@ -95,6 +97,10 @@ class UserManager:
             ) from err
 
         user_do = await get_user_by_email_(new_user["email"], session)
+        # below is purely for mypy, as it can't tell that the above function
+        # will always return a User object in  this case (we have just created
+        # it without an exception, so it must exist)
+        assert user_do  # noqa: S101
 
         if background_tasks:
             email = EmailManager()
@@ -125,7 +131,9 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def login(user_data: dict, session: AsyncSession) -> tuple[str, str]:
+    async def login(
+        user_data: dict[str, str], session: AsyncSession
+    ) -> tuple[str, str]:
         """Log in an existing User."""
         user_do = await get_user_by_email_(user_data["email"], session)
 
@@ -232,7 +240,7 @@ class UserManager:
         )
 
     @staticmethod
-    async def get_all_users(session: AsyncSession) -> list[User]:
+    async def get_all_users(session: AsyncSession) -> Sequence[User]:
         """Get all Users."""
         return await get_all_users_(session)
 

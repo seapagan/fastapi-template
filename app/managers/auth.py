@@ -1,7 +1,6 @@
 """Define the Autorization Manager."""
 import datetime
 from typing import Optional
-from urllib.parse import non_hierarchical
 
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
@@ -270,7 +269,7 @@ class CustomHTTPBearer(HTTPBearer):
                             ResponseMessages.INVALID_TOKEN,
                         )
                     request.state.user = user_data
-                    return user_data
+                    return user_data  # type: ignore
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
@@ -287,7 +286,7 @@ class CustomHTTPBearer(HTTPBearer):
 oauth2_schema = CustomHTTPBearer()
 
 
-def is_admin(request: Request) -> non_hierarchical:
+def is_admin(request: Request) -> None:
     """Block if user is not an Admin."""
     if request.state.user.role != RoleType.admin:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")

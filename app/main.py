@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.config.helpers import get_api_version
 from app.config.settings import get_settings
@@ -27,7 +28,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
             await session.connection()
 
         print("[green]INFO:     [/green][bold]Database configuration Tested.")
-    except Exception as exc:
+    except SQLAlchemyError as exc:
         print(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
         print(
             "[yellow]WARNING:  [/yellow]Clearing routes and enabling "

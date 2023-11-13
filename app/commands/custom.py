@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import datetime
 import sys
-from typing import Literal
+from typing import Literal, Union
 
 import asyncclick as click
 import tomli
@@ -20,7 +20,7 @@ from app.config.helpers import (
     get_toml_path,
 )
 
-LicenceType = dict[str, str] | Literal["Unknown"]
+LicenceType = Union[dict[str, str], Literal["Unknown"]]
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -98,7 +98,7 @@ def choose_license() -> LicenceType:
 
 def choose_version(current_version: str) -> str:
     """Change the version or reset it."""
-    choice = click.prompt(
+    choice: str = click.prompt(
         "Version Number (use * to reset to '0.0.1')",
         type=str,
         default=current_version,
@@ -148,8 +148,8 @@ def metadata() -> None:
         ),
     }
 
-    data["this_year"] = datetime.datetime.now(
-        tz=datetime.timezone.utc.date().today().year
+    data["this_year"] = (
+        datetime.datetime.now(tz=datetime.timezone.utc).today().year
     )
 
     print("\nYou have entered the following data:")

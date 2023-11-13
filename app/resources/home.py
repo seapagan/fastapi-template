@@ -1,6 +1,4 @@
 """Routes for the home screen and templates."""
-from __future__ import annotations
-
 from typing import Union
 
 from fastapi import APIRouter, Header, Request
@@ -12,11 +10,13 @@ from app.config.settings import get_settings
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+RootResponse = Union[dict[str, str], templates.TemplateResponse]  # type: ignore
+
 
 @router.get("/", include_in_schema=False, response_model=None)
 def root_path(
     request: Request, accept: Union[str, None] = Header(default="text/html")
-) -> dict[str, str] | templates.TemplateResponse:
+) -> RootResponse:
     """Display an HTML template for a browser, JSON response otherwise."""
     if accept and accept.split(",")[0] == "text/html":
         context = {
