@@ -5,7 +5,10 @@ description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "app", from = "." }]
 
+[tool.poetry.scripts]
+api-admin = "app.api_admin:app"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
