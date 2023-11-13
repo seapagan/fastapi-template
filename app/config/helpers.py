@@ -1,5 +1,4 @@
 """Helper classes and functions for config use."""
-import os
 import sys
 from dataclasses import dataclass
 from importlib import resources
@@ -20,8 +19,7 @@ def get_toml_path() -> Path:
 
 def get_config_path() -> Path:
     """Return the full path of the custom config file."""
-    script_dir = Path(os.path.realpath(sys.argv[0])).parent
-    return script_dir / "app" / "config" / "metadata.py"
+    return get_project_root() / "app" / "config" / "metadata.py"
 
 
 def get_api_version() -> str:
@@ -118,7 +116,7 @@ custom_metadata = MetadataBase(
         "url": "{{ website }}",
     },
     email="{{ email }}",
-    year="{{ this_year }}"
+    year="{{ this_year }}",
 )
 
 """
