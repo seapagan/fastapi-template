@@ -81,6 +81,7 @@ types-passlib = "^1.7.7.13"
 asyncpg-stubs = "^0.29.1"
 
 # additional packages
+pytest-watcher = "^0.3.4"
 
 [build-system]
 requires = ["poetry-core"]
@@ -143,8 +144,8 @@ extend-ignore = [
 ]
 
 src = ["app"]
-extend-exclude = ["app/migrations", "tests"]
-target-version = "py39"                      # minimum python version supported
+extend-exclude = ["app/migrations", "tests/integration"]
+target-version = "py39"                                  # minimum python version supported
 
 [tool.ruff.format]
 indent-style = "space"
@@ -160,6 +161,10 @@ convention = "google"
 "tests/**/*.py" = [
   "S101",   # we can (and MUST!) use 'assert' in test files.
   "ANN001", # annotations for fixtures are sometimes a pain for test files.
+  "ARG001", # sometimes fixtures are not physically used but have side-effects
+  "ARG002", # as above
+  "TD003",
+  "FIX002",
 ]
 "app/managers/auth.py" = ["ERA001"]
 "app/resources/auth.py" = ["ERA001"]

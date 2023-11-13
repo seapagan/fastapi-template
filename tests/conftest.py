@@ -3,8 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import os
-from collections.abc import AsyncGenerator, Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
 import pytest_asyncio
@@ -20,6 +19,10 @@ from app.config.settings import get_settings
 from app.database.db import Base, get_database
 from app.main import app
 from app.managers.email import EmailManager
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator, Generator
+
 
 if os.getenv("GITHUB_ACTIONS"):
     DATABASE_URL = (
@@ -64,17 +67,15 @@ async def reset_db() -> None:
 # Override the database connection to use the test database
 async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection for testing."""
-    async with async_test_session() as session:
-        async with session.begin():
-            yield session
+    async with async_test_session() as session, session.begin():
+        yield session
 
 
 @pytest_asyncio.fixture()
 async def test_db() -> AsyncGenerator[AsyncSession, Any]:
     """Fixture to yield a database connection for testing."""
-    async with async_test_session() as session:
-        async with session.begin():
-            yield session
+    async with async_test_session() as session, session.begin():
+        yield session
 
 
 @pytest_asyncio.fixture()
