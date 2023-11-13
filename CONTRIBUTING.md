@@ -4,6 +4,7 @@
 [![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)&nbsp;
 [![codecov](https://codecov.io/gh/seapagan/fastapi-template/graph/badge.svg?token=27D8PGNX0E)](https://codecov.io/gh/seapagan/fastapi-template)&nbsp;
 [![Dependency Review](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml)&nbsp;
+[![CodeQL](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml)
 
 Thank you for your interest in contributing to `fastapi-template`! We welcome
 all contributions, big or small.
