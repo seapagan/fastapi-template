@@ -9,7 +9,7 @@ import tomli
 
 def get_project_root() -> Path:
     """Return the full path of the project root."""
-    return Path(str(resources.files("app"))) / ".."
+    return (Path(str(resources.files("app"))) / "..").resolve()
 
 
 def get_toml_path() -> Path:

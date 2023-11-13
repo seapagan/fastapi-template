@@ -22,16 +22,16 @@ class TestConfigHelpers:
     def test_get_toml_path(self, mocker) -> None:
         """Test we get the correct toml path."""
         mocker.patch(
-            "app.config.helpers.os.path.realpath",
-            return_value="/test/path/script.py",
+            "app.config.helpers.resources.files",
+            return_value="/test/path/app",
         )
         assert get_toml_path() == Path("/test/path/pyproject.toml")
 
     def test_get_config_path(self, mocker) -> None:
         """Test we get the correct config path."""
         mocker.patch(
-            "app.config.helpers.os.path.realpath",
-            return_value="/test/path/script.py",
+            "app.config.helpers.resources.files",
+            return_value="/test/path/app",
         )
         assert get_config_path() == Path("/test/path/app/config/metadata.py")
 
