@@ -1,10 +1,13 @@
 """Main file for the FastAPI Template."""
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.config.helpers import get_api_version
 from app.config.settings import get_settings
@@ -14,7 +17,7 @@ from app.resources.routes import api_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     """Lifespan function Replaces the previous startup/shutdown functions.
 
     Currently we only ensure that the database is available and configured
@@ -25,7 +28,7 @@ async def lifespan(app: FastAPI):
             await session.connection()
 
         print("[green]INFO:     [/green][bold]Database configuration Tested.")
-    except Exception as exc:
+    except SQLAlchemyError as exc:
         print(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
         print(
             "[yellow]WARNING:  [/yellow]Clearing routes and enabling "

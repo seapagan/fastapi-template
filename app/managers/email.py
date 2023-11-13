@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from fastapi import BackgroundTasks  # noqa TC002
+from fastapi import BackgroundTasks  # noqa: TCH002
 from fastapi.responses import JSONResponse
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class EmailManager:
     """Class to manage all Email operations."""
 
-    def __init__(self, suppress_send: bool = False):
+    def __init__(self, suppress_send: Optional[bool] = False) -> None:
         """Initialize the EmailManager.
 
         Define the configuration instance.
@@ -68,7 +68,7 @@ class EmailManager:
 
     def template_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailTemplateSchema
-    ):
+    ) -> None:
         """Send an email using a Jinja Template."""
         message = MessageSchema(
             subject=email_data.subject,

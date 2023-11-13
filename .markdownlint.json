@@ -1,4 +1,9 @@
 {
   "MD014": false,
-  "MD046": false
+  "MD046": false,
+  "MD033": {
+    "allowed_elements": [
+      "swagger-ui"
+    ]
+  }
 }

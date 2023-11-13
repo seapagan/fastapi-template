@@ -1,5 +1,5 @@
 """Define the Autorization Manager."""
-from datetime import datetime, timedelta
+import datetime
 from typing import Optional
 
 import jwt
@@ -25,8 +25,8 @@ class ResponseMessages:
     CANT_GENERATE_JWT = "Unable to generate the JWT"
     CANT_GENERATE_REFRESH = "Unable to generate the Refresh Token"
     CANT_GENERATE_VERIFY = "Unable to generate the Verification Token"
-    INVALID_TOKEN = "That token is Invalid"  # nosec
-    EXPIRED_TOKEN = "That token has Expired"  # nosec
+    INVALID_TOKEN = "That token is Invalid"  # noqa: S105
+    EXPIRED_TOKEN = "That token has Expired"  # noqa: S105
     VERIFICATION_SUCCESS = "User succesfully Verified"
     USER_NOT_FOUND = "User not Found"
     ALREADY_VALIDATED = "You are already validated"
@@ -37,36 +37,39 @@ class AuthManager:
     """Handle the JWT Auth."""
 
     @staticmethod
-    def encode_token(user):
+    def encode_token(user: User) -> str:
         """Create and return a JTW token."""
         try:
             payload = {
                 "sub": user.id,
-                "exp": datetime.utcnow()
-                + timedelta(minutes=get_settings().access_token_expire_minutes),
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(
+                    minutes=get_settings().access_token_expire_minutes
+                ),
             }
             return jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-        except Exception as exc:
+        except (jwt.PyJWTError, AttributeError) as exc:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.CANT_GENERATE_JWT
             ) from exc
 
     @staticmethod
-    def encode_refresh_token(user):
+    def encode_refresh_token(user: User) -> str:
         """Create and return a JTW token."""
         try:
             payload = {
                 "sub": user.id,
-                "exp": datetime.utcnow() + timedelta(minutes=60 * 24 * 30),
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=60 * 24 * 30),
                 "typ": "refresh",
             }
             return jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-        except Exception as exc:
+        except (jwt.PyJWTError, AttributeError) as exc:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
@@ -74,18 +77,19 @@ class AuthManager:
             ) from exc
 
     @staticmethod
-    def encode_verify_token(user):
+    def encode_verify_token(user: User) -> str:
         """Create and return a JTW token."""
         try:
             payload = {
                 "sub": user.id,
-                "exp": datetime.utcnow() + timedelta(minutes=10),
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=10),
                 "typ": "verify",
             }
             return jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-        except Exception as exc:
+        except (jwt.PyJWTError, AttributeError) as exc:
             # log the exception
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
@@ -122,7 +126,6 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
             new_token = AuthManager.encode_token(user_data)
-            return new_token
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
@@ -132,6 +135,8 @@ class AuthManager:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
+        else:
+            return new_token
 
     @staticmethod
     async def verify(code: str, session: AsyncSession) -> None:
@@ -255,7 +260,6 @@ class CustomHTTPBearer(HTTPBearer):
                     get_settings().secret_key,
                     algorithms=["HS256"],
                 )
-
                 user_data = await get_user_by_id_(payload["sub"], db)
                 # block a banned or unverified user
                 if user_data:
@@ -265,8 +269,7 @@ class CustomHTTPBearer(HTTPBearer):
                             ResponseMessages.INVALID_TOKEN,
                         )
                     request.state.user = user_data
-                    return user_data
-            return None
+
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
@@ -275,18 +278,20 @@ class CustomHTTPBearer(HTTPBearer):
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
+        else:
+            return user_data  # type: ignore
 
 
 oauth2_schema = CustomHTTPBearer()
 
 
-def is_admin(request: Request):
+def is_admin(request: Request) -> None:
     """Block if user is not an Admin."""
     if request.state.user.role != RoleType.admin:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
 
-def can_edit_user(request: Request):
+def can_edit_user(request: Request) -> None:
     """Check if the user can edit this resource.
 
     True if they own the resource or are Admin
@@ -298,7 +303,7 @@ def can_edit_user(request: Request):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
 
-def is_banned(request: Request):
+def is_banned(request: Request) -> None:
     """Dont let banned users access the route."""
     if request.state.user.banned:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Banned!")

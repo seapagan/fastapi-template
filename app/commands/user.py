@@ -1,21 +1,28 @@
 """Add a user from the command line, optionally make superuser."""
+from __future__ import annotations
+
 from asyncio import run as aiorun
+from typing import TYPE_CHECKING, Optional
 
 import typer
 from fastapi import HTTPException
 from rich import print  # pylint: disable=W0622
 from rich.console import Console
 from rich.table import Table
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.db import async_session
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 app = typer.Typer(no_args_is_help=True)
 
 
-def show_table(title: str, user_list):
+def show_table(title: str, user_list: Sequence[User]) -> None:
     """Show User data in a tabulated format."""
     console = Console()
     table = Table(
@@ -82,7 +89,7 @@ def create(
         show_default=False,
         hide_input=True,
     ),
-    admin: bool = typer.Option(
+    admin: Optional[bool] = typer.Option(
         False,
         "--admin",
         "-a",
@@ -90,14 +97,14 @@ def create(
         prompt="Should this user be an Admin?",
         help="Make this user an Admin",
     ),
-):
+) -> None:
     """Create a new user. This can optionally be an admin user.
 
     Values are either taken from the command line options, or interactively for
     any that are missing.
     """
 
-    async def create_user(user_data: dict):
+    async def create_user(user_data: dict[str, str | RoleType]) -> None:
         """Asny function to create a new user."""
         try:
             async with async_session() as session:
@@ -109,15 +116,12 @@ def create(
                 )
         except HTTPException as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err.detail}\n")
-        except Exception as err:
+        except SQLAlchemyError as err:
             print(f"\n[red]-> ERROR adding User : [bold]{err}\n")
 
-    if admin:
-        role_type = RoleType.admin
-    else:
-        role_type = RoleType.user
+    role_type = RoleType.admin if admin else RoleType.user
 
-    user_data = {
+    user_data: dict[str, str | RoleType] = {
         "email": email,
         "first_name": first_name,
         "last_name": last_name,
@@ -128,24 +132,27 @@ def create(
     aiorun(create_user(user_data))
 
 
-@app.command()
-def list():
+@app.command(name="list")
+def list_all_users() -> None:
     """List all users in the database.
 
     Show one line per user with Id, Email, First Name, Last Name and Role.
     Also include verified/banned status and a total count.
     """
 
-    async def list_users():
+    async def _list_users() -> Sequence[User]:
         """Async function to list all users in the database."""
         try:
             async with async_session() as session:
                 user_list = await UserManager.get_all_users(session)
-            return user_list
-        except Exception as exc:
-            print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
 
-    user_list = aiorun(list_users())
+        except SQLAlchemyError as exc:
+            print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+        else:
+            return user_list
+
+    user_list = aiorun(_list_users())
     if user_list:
         show_table("Registered Users", user_list)
     else:
@@ -159,23 +166,25 @@ def show(
         help="The user's id",
         show_default=False,
     ),
-):
+) -> None:
     """Show details for a single user."""
 
-    async def show_user():
+    async def _show_user() -> User:
         """Async function to show details for a single user."""
         try:
             async with async_session() as session:
                 user = await UserManager.get_user_by_id(user_id, session)
+        except HTTPException as exc:
+            print(
+                f"\n[red]-> ERROR getting User details : [bold]{exc.detail}\n"
+            )
+            raise typer.Exit(1) from exc
+        else:
             return user
-        except Exception as exc:
-            print(f"\n[red]-> ERROR getting User details : [bold]{exc}\n")
 
-    user = aiorun(show_user())
+    user = aiorun(_show_user())
     if user:
         show_table(f"Showing details for User {user_id}", [user])
-    else:
-        print("\n[red]-> ERROR getting User details : [bold]User not found\n")
 
 
 @app.command()
@@ -185,22 +194,24 @@ def verify(
         help="The user's id",
         show_default=False,
     ),
-):
+) -> None:
     """Manually verify a user by id."""
 
-    async def verify_user(user_id: int):
+    async def _verify_user(user_id: int) -> User | None:
         """Async function to verify a user by id."""
         try:
             async with async_session() as session:
                 user = await session.get(User, user_id)
                 if user:
-                    user.verified = True  # type: ignore
+                    user.verified = True
                     await session.commit()
-                    return user
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+        else:
+            return user
 
-    user = aiorun(verify_user(user_id))
+    user = aiorun(_verify_user(user_id))
     if user:
         print(
             f"\n[green]-> User [bold]{user_id}[/bold] verified succesfully.\n"
@@ -216,29 +227,31 @@ def ban(
         help="The user's id",
         show_default=False,
     ),
-    unban: bool = typer.Option(
+    unban: Optional[bool] = typer.Option(
         False,
         "--unban",
         "-u",
         flag_value=True,
         help="Unban this user instead of banning them",
     ),
-):
+) -> None:
     """Ban or Unban a user by id."""
 
-    async def ban_user(user_id: int, unban: bool):
+    async def _ban_user(user_id: int, unban: Optional[bool]) -> User | None:
         """Async function to ban or unban a user."""
         try:
             async with async_session() as session:
                 user = await session.get(User, user_id)
                 if user:
-                    user.banned = not unban  # type: ignore
+                    user.banned = not unban
                     await session.commit()
-                    return user
-        except Exception as exc:
-            print(f"\n[RED]-> ERROR banning  or unbanning User : [bold]{exc}\n")
+        except SQLAlchemyError as exc:
+            print(f"\n[RED]-> ERROR banning or unbanning User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+        else:
+            return user
 
-    user = aiorun(ban_user(user_id, unban))
+    user = aiorun(_ban_user(user_id, unban))
     if user:
         print(
             f"\n[green]-> User [bold]{user_id}[/bold] "
@@ -257,11 +270,11 @@ def delete(
         ...,
         help="The user's id",
         show_default=False,
-    )
-):
+    ),
+) -> None:
     """Delete the user with the given id."""
 
-    async def delete_user(user_id: int):
+    async def _delete_user(user_id: int) -> User | None:
         """Async function to delete a user."""
         try:
             async with async_session() as session:
@@ -269,11 +282,13 @@ def delete(
                 if user:
                     await session.delete(user)
                     await session.commit()
-                return user
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             print(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+        else:
+            return user
 
-    user = aiorun(delete_user(user_id))
+    user = aiorun(_delete_user(user_id))
 
     if user:
         print(

@@ -1,3 +1,5 @@
+# Metadata
+
 ## Customize the Metadata
 
 By default the Template Title, Description, Author and similar is set to my

@@ -34,7 +34,7 @@ For AWS Elastic Beanstalk there is a very comprehensive tutorial at
 
 Deploy a Docker container or Kubernetes cluster. There are many services which
 allow this including AWS, Google Cloud and more. See [Develop with
-Docker](/development/docker) in this documentation for how to containerize
+Docker](../development/docker.md) in this documentation for how to containerize
 this project, and the
 [Offical FastAPI docs section][fastapi-docker]{: target="_blank"}
 for more information.

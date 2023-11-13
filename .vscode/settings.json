@@ -4,13 +4,12 @@
       "source.fixAll": true,
       "source.organizeImports": true
     },
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "autoDocstring.startOnNewLine": true,
   "beautify.language": {
     "html": ["htm", "html", "django-html"]
   },
-  "black-formatter.args": ["--line-length=80"],
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
   "emmet.includeLanguages": {
@@ -27,28 +26,33 @@
   },
   "files.eol": "\n",
   "files.exclude": {
+    "**/.cache": true,
+    "**/.mypy_cache": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
     "**/__pycache__": true
   },
-  "flake8.args": ["--max-line-length=80"],
   "git.alwaysSignOff": true,
   "git.enableCommitSigning": true,
   "html.format.indentHandlebars": true,
   "html.format.templating": true,
-  "isort.args": ["--profile", "black", "--src=${workspaceFolder}"],
   "material-icon-theme.languages.associations": {
     "jinja-html": "django"
   },
-  "pylint.args": ["--load-plugins", "pylint-pydantic", "pylint-pytest"],
+  "mypy-type-checker.importStrategy": "useBundled",
+  "mypy-type-checker.reportingScope": "workspace",
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoImportUserSymbols": true,
   "python.analysis.extraPaths": [],
   "python.analysis.indexing": true,
   "python.analysis.stubPath": "/home/seapagan/stubs",
-  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.typeCheckingMode": "off",
   "python.languageServer": "Pylance",
   "python.pythonPath": "./.venv/bin/python",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
-  "ruff.organizeImports": false
+  "ruff.fixAll": false,
+  "ruff.organizeImports": true,
+  "mypy-type-checker.args": ["--strict"]
 }

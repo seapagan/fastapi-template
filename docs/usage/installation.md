@@ -4,7 +4,7 @@
     If you make changes to the existing code, why not create a
     feature-branch and a Pull-Request to have it included into the Template? 😊
 
-    See [Contributing](../../contributing) for more info.
+    See [Contributing](../contributing.md) for more info.
 
 ## As a GitHub template
 

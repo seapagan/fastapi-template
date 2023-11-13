@@ -1,5 +1,7 @@
 """Routes for User listing and control."""
-from typing import List, Optional, Union
+
+from collections.abc import Sequence
+from typing import Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,9 +20,11 @@ router = APIRouter(tags=["Users"], prefix="/users")
 @router.get(
     "/",
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
-    response_model=Union[UserResponse, List[UserResponse]],
+    response_model=Union[UserResponse, list[UserResponse]],
 )
-async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
+async def get_users(
+    user_id: Optional[int] = None, db: AsyncSession = Depends(get_database)
+) -> Union[Sequence[User], User]:
     """Get all users or a specific user by their ID.
 
     user_id is optional, and if omitted then all Users are returned.
@@ -40,7 +44,7 @@ async def get_users(user_id: Optional[int] = None, db=Depends(get_database)):
 )
 async def get_my_user(
     request: Request, db: AsyncSession = Depends(get_database)
-):
+) -> User:
     """Get the current user's data only."""
     my_user: int = request.state.user.id
     return await UserManager.get_user_by_id(my_user, db)
@@ -51,7 +55,9 @@ async def get_my_user(
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def make_admin(user_id: int, db: AsyncSession = Depends(get_database)):
+async def make_admin(
+    user_id: int, db: AsyncSession = Depends(get_database)
+) -> None:
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id, db)
 
@@ -65,7 +71,7 @@ async def change_password(
     user_id: int,
     user_data: UserChangePasswordRequest,
     db: AsyncSession = Depends(get_database),
-):
+) -> None:
     """Change the password for the specified user.
 
     Can only be done by an Admin, or the specific user that matches the user_id.
@@ -80,7 +86,7 @@ async def change_password(
 )
 async def ban_user(
     request: Request, user_id: int, db: AsyncSession = Depends(get_database)
-):
+) -> None:
     """Ban the specific user Id.
 
     Admins only. The Admin cannot ban their own ID!
@@ -95,7 +101,7 @@ async def ban_user(
 )
 async def unban_user(
     request: Request, user_id: int, db: AsyncSession = Depends(get_database)
-):
+) -> None:
     """Ban the specific user Id.
 
     Admins only.
@@ -113,7 +119,7 @@ async def edit_user(
     user_id: int,
     user_data: UserEditRequest,
     db: AsyncSession = Depends(get_database),
-):
+) -> Union[User, None]:
     """Update the specified User's data.
 
     Available for the specific requesting User, or an Admin.
@@ -127,7 +133,9 @@ async def edit_user(
     dependencies=[Depends(oauth2_schema), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_database)):
+async def delete_user(
+    user_id: int, db: AsyncSession = Depends(get_database)
+) -> None:
     """Delete the specified User by user_id.
 
     Admin only.

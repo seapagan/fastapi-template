@@ -2,7 +2,7 @@
 import logging
 
 # from copy import deepcopy
-from typing import Dict, Union
+from typing import Union
 
 import pytest
 from httpx import AsyncClient
@@ -31,7 +31,7 @@ class TestAuthRoutes:
     register_path = "/register/"
     login_path = "/login/"
 
-    test_user: Dict[str, Union[str, bool]] = {
+    test_user: dict[str, Union[str, bool]] = {
         "email": "testuser@usertest.com",
         "first_name": "Test",
         "last_name": "User",

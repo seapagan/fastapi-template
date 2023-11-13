@@ -8,7 +8,7 @@ class ExampleUser:
     first_name = "John"
     last_name = "Doe"
     email = "user@example.com"
-    password = "My S3cur3 P@ssw0rd"  # nosec
+    password = "My S3cur3 P@ssw0rd"  # noqa: S105
     role = "user"
     banned = False
     verified = True

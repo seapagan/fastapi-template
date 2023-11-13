@@ -7,7 +7,7 @@ router = APIRouter()
 
 @router.api_route("/")
 @router.api_route("/{full_path}")
-def catch_all():
+def catch_all() -> None:
     """Catch anything including the root route.
 
     It will only be loaded if there is an issue to configure the database.
