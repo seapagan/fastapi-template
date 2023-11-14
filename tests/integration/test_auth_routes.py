@@ -1,7 +1,6 @@
 """Test the authentication routes of the application."""
 import logging
 
-# from copy import deepcopy
 from typing import Union
 
 import pytest
@@ -20,7 +19,7 @@ logging.basicConfig(
 )
 
 
-@pytest.mark.integration()
+@pytest.mark.rewrite()
 class TestAuthRoutes:
     """Test the authentication routes of the application."""
 
@@ -195,8 +194,6 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_cant_login_before_verifying_email(self, client, test_db):
         """Ensure a new user has to validate email before logging in."""
-        # my_user = deepcopy(self.test_user)
-        # my_user["verified"] = False
         test_db.add(User(**self.test_unverified_user))
 
         print(self.test_unverified_user)
@@ -237,13 +234,7 @@ class TestAuthRoutes:
         print(response)
 
         assert response.status_code == 200
-        # assert list(response.json().keys()) == ["token", "refresh"]
-        # assert isinstance(response.json()["token"], str)
-        # assert isinstance(response.json()["refresh"], str)
 
-    # @pytest.mark.skip(
-    #     reason="parameterized tests not working under pytest-asyncio"
-    # )
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "post_body",

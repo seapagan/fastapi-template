@@ -13,7 +13,7 @@ from app.models.user import User
 
 
 @pytest.mark.asyncio()
-@pytest.mark.integration()
+@pytest.mark.rewrite()
 class TestUserRoutes:
     """Test the User routes of the application.
 

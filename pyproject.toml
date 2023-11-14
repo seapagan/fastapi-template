@@ -220,7 +220,7 @@ module = "decouple.*"
 [tool.pytest.ini_options]
 addopts = [
   "-m",
-  "not integration",
+  "not rewrite",
   "--cov",
   "--cov-report",
   "term-missing",
@@ -228,7 +228,11 @@ addopts = [
   "html",
 ]
 filterwarnings = ["ignore:'crypt' is deprecated:DeprecationWarning"]
-markers = ["unit: Unit tests", "integration: Integration tests"]
+markers = [
+  "unit: Unit tests",
+  "integration: Integration tests",
+  "rewrite: Tests need Rewriting",
+]
 testpaths = ["tests"]
 mock_use_standalone_module = true
 
