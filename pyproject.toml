@@ -87,6 +87,7 @@ asyncpg-stubs = "^0.29.1"
 
 # additional packages
 pytest-watcher = "^0.3.4"
+pyright = "^1.1.335"
 
 [build-system]
 requires = ["poetry-core"]
@@ -231,3 +232,13 @@ mock_use_standalone_module = true
 # source = []
 source = ["app"]
 omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+include = ["app"]
+exclude = ["app/migrations", "tests/integration"]
+reportMissingImports = true
+reportMissingTypeStubs = true
+pythonVersion = "3.9"
+typeCheckingMode = "basic"
