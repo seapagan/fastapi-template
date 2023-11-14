@@ -6,3 +6,4 @@ a bug, please report it.
 
 - If a user is deleted while logged in, the API returns a 500 (Internal Server
    Error).
+- Tests dont work under Docker since we don't have a 'test' database configured.

@@ -33,7 +33,23 @@ Every time a new dependency is installed a new image must be built:
 docker compose build
 ```
 
+## Database Administration
+
+At this time, the CLI tool is not available in the Docker container, so you will
+need to use an external tool such as `pgAdmin4` to manage the database. Note
+that the database is exposed on port `5433` and the default username and
+password are those set in your `.env` file.
+
+In the future I will try to get the `api-admin` tool working inside the Docker
+container. The issue is getting this to work without destroying my local `.venv`
+folder.
+
 ## Run Tests
+
+!!! danger "Tests Broken"
+
+    The tests are currently broken due to us now using Postgres for the tests.
+    This will be fixed in an upcoming release.
 
 This API contains Unit and Integration tests using
 '[Pytest](https://docs.pytest.org){:target="_blank"}'

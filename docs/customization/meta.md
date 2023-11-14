@@ -7,7 +7,7 @@ details. Changing this is very easy though, and there are 2 ways you can do.
 
 ### Manually
 
-Metadata is stored in the `config/metadata.py` file and this
+Metadata is stored in the `app/config/metadata.py` file and this
 can be edited by hand if desired:
 
 ```python
