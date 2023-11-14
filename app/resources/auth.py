@@ -33,7 +33,7 @@ async def register(
     cannot be refreshed.
     """
     token, refresh = await UserManager.register(
-        user_data.dict(),
+        user_data.model_dump(),
         session=session,
         background_tasks=background_tasks,
     )
