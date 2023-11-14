@@ -48,8 +48,8 @@ def get_api_details() -> tuple[str, str, list[str]]:
         toml_path = get_toml_path()
         with toml_path.open(mode="rb") as file:
             config = tomli.load(file)
-            name = config["tool"]["poetry"]["name"]
-            desc = config["tool"]["poetry"]["description"]
+            name: str = config["tool"]["poetry"]["name"]
+            desc: str = config["tool"]["poetry"]["description"]
             authors = config["tool"]["poetry"]["authors"]
 
             if not isinstance(authors, list):

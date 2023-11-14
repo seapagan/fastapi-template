@@ -31,7 +31,14 @@ repos:
     rev: "v1.6.1" # Use the sha / tag you want to point at
     hooks:
       - id: mypy
-        name: "run mypy"
+        name: "Check with Mypy"
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.335
+    hooks:
+      - id: pyright
+        name: "Check with Pyright"
+        exclude: tests
 
   - repo: https://github.com/python-poetry/poetry
     rev: "1.7.0"
