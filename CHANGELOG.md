@@ -9,9 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
 
 
-**Breaking Changes**
 
-This version contains minor breaking changes to the way you will run the CLI
+This version contains **minor breaking changes** to the way you will run the CLI
 tool. See the documentation for more information.
 
 
@@ -22,6 +21,14 @@ tool. See the documentation for more information.
 **Merged Pull Requests**
 
 - Add 'pyright' tool to check out functionality ([#279](https://github.com/seapagan/fastapi-template/pull/279)) by [seapagan](https://github.com/seapagan)
+
+**New Features**
+
+- Update docker config to the more recent image and postgres versions ([#282](https://github.com/seapagan/fastapi-template/pull/282)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Fix integration tests ([#283](https://github.com/seapagan/fastapi-template/pull/283)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
 
@@ -60,7 +67,7 @@ tool. See the documentation for more information.
 
 ## [v0.5.0-alpha1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha1) (September 22, 2023)
 
-**Merged Pull Requests**
+**Testing**
 
 - Re-enable gh actions ([#223](https://github.com/seapagan/fastapi-template/pull/223)) by [seapagan](https://github.com/seapagan)
 
@@ -86,6 +93,10 @@ tool. See the documentation for more information.
 
 - Update fastapi to latest version ([#197](https://github.com/seapagan/fastapi-template/pull/197)) by [seapagan](https://github.com/seapagan)
 - Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Start re-adding tests ([#161](https://github.com/seapagan/fastapi-template/pull/161)) by [seapagan](https://github.com/seapagan)
 
 **Refactoring**
 
@@ -161,12 +172,15 @@ tool. See the documentation for more information.
 - Update .env.example file ([#104](https://github.com/seapagan/fastapi-template/pull/104)) by [seapagan](https://github.com/seapagan)
 - Disable the Codacy coverage upload. ([#97](https://github.com/seapagan/fastapi-template/pull/97)) by [seapagan](https://github.com/seapagan)
 - Further work on testing ([#93](https://github.com/seapagan/fastapi-template/pull/93)) by [seapagan](https://github.com/seapagan)
-- Continue to improve test coverage ([#92](https://github.com/seapagan/fastapi-template/pull/92)) by [seapagan](https://github.com/seapagan)
 - Clear Pylint warnings ([#89](https://github.com/seapagan/fastapi-template/pull/89)) by [seapagan](https://github.com/seapagan)
 
 **New Features**
 
 - Docker Support ([#101](https://github.com/seapagan/fastapi-template/pull/101)) by [pdrivom](https://github.com/pdrivom)
+
+**Testing**
+
+- Continue to improve test coverage ([#92](https://github.com/seapagan/fastapi-template/pull/92)) by [seapagan](https://github.com/seapagan)
 
 **Bug Fixes**
 
@@ -212,6 +226,10 @@ for more of the reasoning behind this change.
 
 - Setup Testing ([#84](https://github.com/seapagan/fastapi-template/pull/84)) by [seapagan](https://github.com/seapagan)
 - Backport database changes ([#83](https://github.com/seapagan/fastapi-template/pull/83)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Setup Testing ([#84](https://github.com/seapagan/fastapi-template/pull/84)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
 
