@@ -1,6 +1,5 @@
 """Test the authentication routes of the application."""
 import logging
-
 from typing import Union
 
 import pytest
@@ -8,7 +7,8 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.managers.auth import AuthManager
-from app.managers.user import pwd_context, ErrorMessages as UserErrorMessages
+from app.managers.user import ErrorMessages as UserErrorMessages
+from app.managers.user import pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -53,7 +53,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_register_new_user(
         self, client: AsyncClient, test_db: AsyncSession, mocker
-    ):
+    ) -> None:
         """Ensure a new user can register."""
         # disable email sending by mocking the function
         mock_send = mocker.patch(self.email_fn_to_patch)
@@ -68,7 +68,6 @@ class TestAuthRoutes:
             self.register_path,
             json=post_body,
         )
-        print(response)
 
         assert response.status_code == 201
         assert list(response.json().keys()) == ["token", "refresh"]
@@ -90,7 +89,9 @@ class TestAuthRoutes:
         mock_send.assert_called_once()
 
     @pytest.mark.asyncio()
-    async def test_password_is_stored_hashed(self, client, test_db, mocker):
+    async def test_password_is_stored_hashed(
+        self, client, test_db, mocker
+    ) -> None:
         """Ensure that the raw password is not stored in the database."""
         # disable email sending by mocking the function
         _ = mocker.patch(self.email_fn_to_patch)
@@ -114,7 +115,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_register_new_user_with_bad_email(
         self, client, test_db, mocker
-    ):
+    ) -> None:
         """Ensure an invalid email address fails, and no email is sent."""
         # mock the email sending function
         mock_send = mocker.patch(self.email_fn_to_patch)
@@ -137,9 +138,6 @@ class TestAuthRoutes:
 
         mock_send.assert_not_called()
 
-    # @pytest.mark.skip(
-    #     reason="parameterized tests not working under pytest-asyncio"
-    # )
     @pytest.mark.parametrize(
         "post_body",
         [
@@ -173,7 +171,7 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_register_new_user_with_missing_data(
         self, client, test_db, mocker, post_body
-    ):
+    ) -> None:
         """Ensure registering with missing data fails, and no email is sent."""
         # mock the email sending function
         mock_send = mocker.patch(self.email_fn_to_patch)
@@ -191,9 +189,12 @@ class TestAuthRoutes:
     #                            test '/login' route                           #
     # ------------------------------------------------------------------------ #
     @pytest.mark.asyncio()
-    async def test_cant_login_before_verifying_email(self, client, test_db):
+    async def test_cant_login_before_verifying_email(
+        self, client, test_db
+    ) -> None:
         """Ensure a new user has to validate email before logging in."""
         test_db.add(User(**self.test_unverified_user))
+        await test_db.commit()
 
         print(self.test_unverified_user)
 
@@ -206,13 +207,12 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == 400
-        assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
-
+        assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
     @pytest.mark.asyncio()
     async def test_verified_user_can_login(
         self, client: AsyncClient, test_db: AsyncSession
-    ):
+    ) -> None:
         """Ensure a validated user can log in."""
         test_db.add(User(**self.test_user))
         await test_db.commit()
@@ -222,14 +222,10 @@ class TestAuthRoutes:
             "password": "test12345!",
         }
 
-        print(data)
-
         response = await client.post(
             self.login_path,
             json=data,
         )
-
-        print(response)
 
         assert response.status_code == 200
 
@@ -249,9 +245,10 @@ class TestAuthRoutes:
     )
     async def test_cant_login_with_wrong_email_or_password(
         self, client, test_db, post_body
-    ):
+    ) -> None:
         """Ensure the user cant login with wrong email or password."""
         test_db.add(User(**self.test_user))
+        await test_db.commit()
 
         response = await client.post(
             self.login_path,
@@ -261,9 +258,6 @@ class TestAuthRoutes:
         assert response.status_code == 400
         assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
 
-    # @pytest.mark.skip(
-    #     reason="parameterized tests not working under pytest-asyncio"
-    # )
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "post_body",
@@ -279,9 +273,10 @@ class TestAuthRoutes:
     )
     async def test_cant_login_with_missing_email_or_password(
         self, client, test_db, post_body
-    ):
+    ) -> None:
         """Ensure the user cant login with missing email or password."""
         test_db.add(User(**self.test_user))
+        await test_db.commit()
 
         response = await client.post(
             self.login_path,
@@ -292,9 +287,12 @@ class TestAuthRoutes:
         assert "Field required" in response.json()["detail"][0]["msg"]
 
     @pytest.mark.asyncio()
-    async def test_cant_login_with_unverified_email(self, client, test_db):
+    async def test_cant_login_with_unverified_email(
+        self, client, test_db
+    ) -> None:
         """Ensure the user cant login with unverified email."""
         test_db.add(User(**self.test_unverified_user))
+        await test_db.commit()
 
         response = await client.post(
             self.login_path,
@@ -305,12 +303,13 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == 400
-        assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
+        assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
     @pytest.mark.asyncio()
-    async def test_cant_login_with_banned_user(self, client, test_db):
+    async def test_cant_login_with_banned_user(self, client, test_db) -> None:
         """Ensure the user cant login with banned user."""
         test_db.add(User(**self.test_banned_user))
+        await test_db.commit()
 
         response = await client.post(
             self.login_path,
@@ -328,7 +327,7 @@ class TestAuthRoutes:
     # ------------------------------------------------------------------------ #
 
     @pytest.mark.asyncio()
-    async def test_refresh_token(self, client, test_db):
+    async def test_refresh_token(self, client, test_db) -> None:
         """Ensure the user can refresh the token."""
         test_db.add(User(**self.test_user))
         await test_db.commit()
@@ -357,9 +356,10 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_cant_refresh_token_with_invalid_refresh_token(
         self, client, test_db
-    ):
+    ) -> None:
         """Ensure the user cant refresh the token with invalid refresh token."""
         test_db.add(User(**self.test_user))
+        await test_db.commit()
 
         refresh_response = await client.post(
             "/refresh/",
@@ -378,10 +378,11 @@ class TestAuthRoutes:
     @pytest.mark.asyncio()
     async def test_verify_user(
         self, client: AsyncClient, test_db: AsyncSession
-    ):
+    ) -> None:
         """Test we can verify a user."""
         test_db.add(User(**self.test_unverified_user))
         await test_db.commit()
+
         verification_token = AuthManager.encode_verify_token(User(id=1))
 
         response = await client.get(
@@ -396,9 +397,13 @@ class TestAuthRoutes:
         ["BADBEEF", ""],
     )
     @pytest.mark.asyncio()
-    async def test_verify_bad_token(self, client, test_db, verification_token):
+    async def test_verify_bad_token(
+        self, client, test_db, verification_token
+    ) -> None:
         """Ensure a bad token cant be used to verify a user."""
         test_db.add(User(**self.test_unverified_user))
+        await test_db.commit()
+
         response = await client.get(f"/verify/?code={verification_token}")
 
         assert response.status_code == 401
