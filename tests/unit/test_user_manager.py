@@ -2,7 +2,6 @@
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException
-from sqlalchemy.exc import IntegrityError
 
 from app.managers.user import ErrorMessages, UserManager, pwd_context
 from app.models.enums import RoleType
@@ -88,7 +87,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         """Test creating a duplicate user."""
         await UserManager.register(self.test_user, test_db)
 
-        with pytest.raises(IntegrityError):
+        with pytest.raises(HTTPException, match=ErrorMessages.EMAIL_EXISTS):
             await UserManager.register(self.test_user, test_db)
 
     async def test_create_user_returns_tokens(self, test_db) -> None:

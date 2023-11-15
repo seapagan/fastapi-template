@@ -90,6 +90,32 @@ class TestAuthRoutes:
         mock_send.assert_called_once()
 
     @pytest.mark.asyncio()
+    async def test_register_duplicate_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Ensure a duplicate user cant register."""
+        _ = mocker.patch(self.email_fn_to_patch)
+
+        post_body = {
+            "email": "testuser@testuser.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "test12345!",
+        }
+
+        await client.post(
+            self.register_path,
+            json=post_body,
+        )
+
+        duplicate_user = await client.post(
+            self.register_path,
+            json=post_body,
+        )
+
+        assert duplicate_user.status_code == status.HTTP_400_BAD_REQUEST
+
+    @pytest.mark.asyncio()
     async def test_password_is_stored_hashed(
         self, client, test_db, mocker
     ) -> None:
@@ -232,6 +258,13 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == status.HTTP_200_OK
+
+        assert len(response.json()) == 2  # noqa: PLR2004
+        assert list(response.json().keys()) == ["token", "refresh"]
+
+        token, refresh = response.json().values()
+        assert isinstance(token, str)
+        assert isinstance(refresh, str)
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(

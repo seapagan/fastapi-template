@@ -66,7 +66,7 @@ class TestUserRoutes:
         test_db.add(User(**self.get_test_user()))
         await test_db.commit()
 
-        response = await client.get("/users/me", headers={})
+        response = await client.get("/users/me")
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Not authenticated"}
@@ -556,8 +556,14 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
+        print(response.json())
+
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()["email"] == "new@example.com"
+        assert response.json() == {
+            "email": "new@example.com",
+            "first_name": "new_name",
+            "last_name": "new_surname",
+        }
 
     async def test_user_cant_change_others_details(
         self, client: AsyncClient, test_db: AsyncSession
