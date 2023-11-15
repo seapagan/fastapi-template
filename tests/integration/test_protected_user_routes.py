@@ -38,7 +38,7 @@ class TestProtectedUserRoutes:
         "route",
         test_routes,
     )
-    async def test_routes_no_auth(self, client, route):
+    async def test_routes_no_auth(self, client, route) -> None:
         """Test that routes are protected by authentication."""
         route_name, method = route
         fn = getattr(client, method)
@@ -52,7 +52,7 @@ class TestProtectedUserRoutes:
         "route",
         test_routes,
     )
-    async def test_routes_bad_auth(self, client, route):
+    async def test_routes_bad_auth(self, client, route) -> None:
         """Test that routes are protected by authentication."""
         route_name, method = route
         fn = getattr(client, method)

@@ -17,7 +17,7 @@ class TestCustomHTTPBearer:
 
     mock_request_path = "app.managers.auth.Request"
 
-    test_user = {  # noqa: RUF012
+    test_user = {
         "email": "testuser@usertest.com",
         "password": "test12345!",
         "first_name": "Test",

@@ -15,7 +15,7 @@ from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 class TestUserManager:  # pylint: disable=too-many-public-methods
     """Test the UserManager class."""
 
-    test_user = {  # noqa: RUF012
+    test_user = {
         "email": "testuser@usertest.com",
         "password": "test12345!",
         "first_name": "Test",

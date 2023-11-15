@@ -17,7 +17,7 @@ from tests.helpers import get_token
 class TestAuthManager:
     """Test the AuthManager class methods."""
 
-    test_user = {  # noqa: RUF012
+    test_user = {
         "email": "testuser@usertest.com",
         "password": "test12345!",
         "first_name": "Test",
