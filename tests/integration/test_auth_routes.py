@@ -3,6 +3,7 @@ import logging
 from typing import Union
 
 import pytest
+from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -69,7 +70,7 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        assert response.status_code == 201
+        assert response.status_code == status.HTTP_201_CREATED
         assert list(response.json().keys()) == ["token", "refresh"]
         assert isinstance(response.json()["token"], str)
         assert isinstance(response.json()["refresh"], str)
@@ -130,7 +131,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert response.status_code == 400
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == "This email address is not valid"
 
         user_from_db = await test_db.get(User, 1)
@@ -178,7 +179,10 @@ class TestAuthRoutes:
 
         response = await client.post(self.register_path, json=post_body)
 
-        assert response.status_code in (400, 422)
+        assert response.status_code in (
+            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
 
         user_from_db = await test_db.get(User, 1)
         assert user_from_db is None
@@ -206,7 +210,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert response.status_code == 400
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
     @pytest.mark.asyncio()
@@ -227,7 +231,7 @@ class TestAuthRoutes:
             json=data,
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
@@ -255,7 +259,7 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        assert response.status_code == 400
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
 
     @pytest.mark.asyncio()
@@ -283,7 +287,7 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        assert response.status_code == 422
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         assert "Field required" in response.json()["detail"][0]["msg"]
 
     @pytest.mark.asyncio()
@@ -302,7 +306,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert response.status_code == 400
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
     @pytest.mark.asyncio()
@@ -319,7 +323,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert response.status_code == 400
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
 
     # ------------------------------------------------------------------------ #
@@ -349,7 +353,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert refresh_response.status_code == 200
+        assert refresh_response.status_code == status.HTTP_200_OK
         assert list(refresh_response.json().keys()) == ["token"]
         assert isinstance(refresh_response.json()["token"], str)
 
@@ -368,7 +372,7 @@ class TestAuthRoutes:
             },
         )
 
-        assert refresh_response.status_code == 401
+        assert refresh_response.status_code == status.HTTP_401_UNAUTHORIZED
         assert refresh_response.json()["detail"] == "That token is Invalid"
 
     # ------------------------------------------------------------------------ #
@@ -389,7 +393,7 @@ class TestAuthRoutes:
             "/verify/", params={"code": verification_token}
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json()["detail"] == "User succesfully Verified"
 
     @pytest.mark.parametrize(
@@ -406,5 +410,5 @@ class TestAuthRoutes:
 
         response = await client.get(f"/verify/?code={verification_token}")
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == "That token is Invalid"

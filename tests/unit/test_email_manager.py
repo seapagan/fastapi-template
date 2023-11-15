@@ -20,7 +20,7 @@ class EmailData(TypedDict):
 class TestEmailManager:
     """Test the EmailManager class."""
 
-    email_data: EmailData = {  # noqa: RUF012
+    email_data: EmailData = {
         "subject": "Test Subject",
         "recipients": ["test_recipient@testing.com"],
     }

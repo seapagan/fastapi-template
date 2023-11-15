@@ -4,6 +4,7 @@ from typing import Any
 
 import pytest
 from faker import Faker
+from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -55,8 +56,8 @@ class TestUserRoutes:
             "/users/me", headers={"Authorization": f"Bearer {token}"}
         )
 
-        assert response.status_code == 200
-        assert len(response.json()) == 3
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.json()) == 3  # noqa: PLR2004
 
     async def test_get_my_profile_no_auth(
         self, client: AsyncClient, test_db: AsyncSession
@@ -67,7 +68,7 @@ class TestUserRoutes:
 
         response = await client.get("/users/me", headers={})
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Not authenticated"}
 
     # ------------------------------------------------------------------------ #
@@ -94,8 +95,8 @@ class TestUserRoutes:
             "/users/", headers={"Authorization": f"Bearer {token}"}
         )
 
-        assert response.status_code == 200
-        assert len(response.json()) == 4
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.json()) == 4  # noqa: PLR2004
 
     async def test_admin_can_get_one_user(
         self, client: AsyncClient, test_db: AsyncSession
@@ -114,8 +115,8 @@ class TestUserRoutes:
             "/users/?user_id=3", headers={"Authorization": f"Bearer {token}"}
         )
 
-        assert response.status_code == 200
-        assert response.json()["id"] == 3
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()["id"] == 3  # noqa: PLR2004
 
     async def test_user_cant_get_all_users(
         self, client: AsyncClient, test_db: AsyncSession
@@ -132,7 +133,7 @@ class TestUserRoutes:
             "/users/", headers={"Authorization": f"Bearer {token}"}
         )
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Forbidden"}
 
     async def test_user_cant_get_single_user(
@@ -150,7 +151,7 @@ class TestUserRoutes:
             "/users/?user_id=2", headers={"Authorization": f"Bearer {token}"}
         )
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Forbidden"}
 
     # ------------------------------------------------------------------------ #
@@ -178,8 +179,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert upgrade_user.status_code == 204
-        assert new_admin.status_code == 200
+        assert upgrade_user.status_code == status.HTTP_204_NO_CONTENT
+        assert new_admin.status_code == status.HTTP_200_OK
         assert new_admin.json()["role"] == RoleType.admin.value
 
     async def test_cant_make_admin_as_user(
@@ -205,8 +206,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert upgrade_user.status_code == 403
-        assert new_admin.status_code == 403
+        assert upgrade_user.status_code == status.HTTP_403_FORBIDDEN
+        assert new_admin.status_code == status.HTTP_403_FORBIDDEN
 
     # ------------------------------------------------------------------------ #
     #                            test ban user route                           #
@@ -234,8 +235,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert banned_response.status_code == 204
-        assert banned_user.status_code == 200
+        assert banned_response.status_code == status.HTTP_204_NO_CONTENT
+        assert banned_user.status_code == status.HTTP_200_OK
         assert banned_user.json()["banned"] is True
 
     async def test_admin_cant_ban_self(
@@ -258,8 +259,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 400
-        assert admin_user.status_code == 200
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert admin_user.status_code == status.HTTP_200_OK
         assert admin_user.json()["banned"] is False
 
     async def test_user_cant_ban(
@@ -284,8 +285,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
-        assert response.status_code == 403
-        assert banned_user.status_code == 200
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert banned_user.status_code == status.HTTP_200_OK
         assert banned_user.json()["banned"] is False
 
     async def test_admin_cant_ban_missing_user(
@@ -302,7 +303,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
     # ------------------------------------------------------------------------ #
@@ -330,8 +331,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert unban_response.status_code == 204
-        assert banned_user.status_code == 200
+        assert unban_response.status_code == status.HTTP_204_NO_CONTENT
+        assert banned_user.status_code == status.HTTP_200_OK
         assert banned_user.json()["banned"] is False
 
     async def test_admin_cant_uban_self(
@@ -349,7 +350,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     async def test_admin_cant_unban_missing_user(
         self, client: AsyncClient, test_db: AsyncSession
@@ -365,14 +366,13 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {"detail": ErrorMessages.USER_INVALID}
 
     async def test_user_cant_unban(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure a non-admin cant unban another user."""
-
         test_db.add(User(**self.get_test_user()))
         test_db.add(User(**{**self.get_test_user(), "banned": True}))
         token = AuthManager.encode_token(User(id=1))
@@ -384,7 +384,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     # ------------------------------------------------------------------------ #
     #                          test delete user route                          #
@@ -409,7 +409,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
 
     async def test_non_admin_cant_delete_user(
         self, client: AsyncClient, test_db: AsyncSession
@@ -433,8 +433,8 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
-        assert response.status_code == 403
-        assert not_deleted_user.status_code == 200
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert not_deleted_user.status_code == status.HTTP_200_OK
 
     async def test_delete_missing_user(
         self, client: AsyncClient, test_db: AsyncSession
@@ -450,7 +450,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 404
+        assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json()["detail"] == ErrorMessages.USER_INVALID
 
     # ------------------------------------------------------------------------ #
@@ -477,8 +477,8 @@ class TestUserRoutes:
             json={"email": user["email"], "password": "new_password"},
         )
 
-        assert response.status_code == 204
-        assert updated_user.status_code == 200
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert updated_user.status_code == status.HTTP_200_OK
 
     async def test_user_cant_change_others_password(
         self, client: AsyncClient, test_db: AsyncSession
@@ -503,8 +503,8 @@ class TestUserRoutes:
             json={"email": user2["email"], "password": "test12345!"},
         )
 
-        assert response.status_code == 403
-        assert test_password.status_code == 200
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert test_password.status_code == status.HTTP_200_OK
 
     async def test_admin_can_change_others_password(
         self, client: AsyncClient, test_db: AsyncSession
@@ -529,8 +529,8 @@ class TestUserRoutes:
             json={"email": normal_user["email"], "password": "new_password"},
         )
 
-        assert response.status_code == 204
-        assert test_password.status_code == 200
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert test_password.status_code == status.HTTP_200_OK
 
     # ------------------------------------------------------------------------ #
     #                      test editing user details route                     #
@@ -556,7 +556,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json()["email"] == "new@example.com"
 
     async def test_user_cant_change_others_details(
@@ -580,7 +580,7 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
 
     async def test_admin_can_change_others_details(
         self, client: AsyncClient, test_db: AsyncSession
@@ -603,4 +603,4 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
