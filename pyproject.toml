@@ -207,7 +207,7 @@ keep-runtime-typing = true
 
 [tool.mypy]
 python_version = "3.9"
-exclude = ["app/migrations/", "tests/integration/"]
+exclude = ["app/migrations/"]
 
 [[tool.mypy.overrides]]
 disable_error_code = ["method-assign", "no-untyped-def", "attr-defined"]
@@ -248,7 +248,7 @@ omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]
 venvPath = "."
 venv = ".venv"
 include = ["app"]
-exclude = ["app/migrations", "tests/integration"]
+exclude = ["app/migrations"]
 reportMissingImports = true
 reportMissingTypeStubs = true
 pythonVersion = "3.9"

@@ -254,14 +254,14 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        admin_user = await client.get(
+        check_not_banned = await client.get(
             "/users/?user_id=1",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert admin_user.status_code == status.HTTP_200_OK
-        assert admin_user.json()["banned"] is False
+        assert check_not_banned.status_code == status.HTTP_200_OK
+        assert check_not_banned.json()["banned"] is False
 
     async def test_user_cant_ban(
         self, client: AsyncClient, test_db: AsyncSession
