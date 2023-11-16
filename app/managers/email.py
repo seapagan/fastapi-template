@@ -10,7 +10,7 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
 from app.config.settings import get_settings
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 

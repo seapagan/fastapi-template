@@ -72,6 +72,7 @@ class TestAuthRoutes:
 
         assert response.status_code == status.HTTP_201_CREATED
         assert list(response.json().keys()) == ["token", "refresh"]
+
         assert isinstance(response.json()["token"], str)
         assert isinstance(response.json()["refresh"], str)
 
@@ -88,6 +89,32 @@ class TestAuthRoutes:
         assert user_from_db.role == RoleType.user
 
         mock_send.assert_called_once()
+
+    @pytest.mark.asyncio()
+    async def test_register_duplicate_user(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Ensure a duplicate user cant register."""
+        _ = mocker.patch(self.email_fn_to_patch)
+
+        post_body = {
+            "email": "testuser@testuser.com",
+            "first_name": "Test",
+            "last_name": "User",
+            "password": "test12345!",
+        }
+
+        await client.post(
+            self.register_path,
+            json=post_body,
+        )
+
+        duplicate_user = await client.post(
+            self.register_path,
+            json=post_body,
+        )
+
+        assert duplicate_user.status_code == status.HTTP_400_BAD_REQUEST
 
     @pytest.mark.asyncio()
     async def test_password_is_stored_hashed(
@@ -200,8 +227,6 @@ class TestAuthRoutes:
         test_db.add(User(**self.test_unverified_user))
         await test_db.commit()
 
-        print(self.test_unverified_user)
-
         response = await client.post(
             self.login_path,
             json={
@@ -232,6 +257,13 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == status.HTTP_200_OK
+
+        assert len(response.json()) == 2  # noqa: PLR2004
+        assert list(response.json().keys()) == ["token", "refresh"]
+
+        token, refresh = response.json().values()
+        assert isinstance(token, str)
+        assert isinstance(refresh, str)
 
     @pytest.mark.asyncio()
     @pytest.mark.parametrize(
@@ -343,8 +375,6 @@ class TestAuthRoutes:
                 "password": "test12345!",
             },
         )
-
-        print(login_response.json())
 
         refresh_response = await client.post(
             "/refresh/",

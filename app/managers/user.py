@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from asyncpg import UniqueViolationError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from passlib.context import CryptContext
@@ -85,7 +84,8 @@ class UserManager:
 
             # actually add the new user to the database
             _ = await add_new_user_(new_user, session)
-        except (UniqueViolationError, IntegrityError) as err:
+            await session.flush()
+        except IntegrityError as err:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.EMAIL_EXISTS,
