@@ -73,5 +73,5 @@ app.add_typer(
 )
 app.add_typer(test.app, name="test", help="Setup and Run tests.")
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app()

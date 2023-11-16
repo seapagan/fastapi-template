@@ -28,6 +28,7 @@
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
 - add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
+- add pagination to the user list endpoint
 
 ## Auth
 

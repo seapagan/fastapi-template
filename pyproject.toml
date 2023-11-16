@@ -220,7 +220,7 @@ module = "decouple.*"
 [tool.pytest.ini_options]
 addopts = [
   "-m",
-  "not rewrite",
+  "not rewrite",  # mark tests 'rewrite' that need work, and they wont be run
   "--cov",
   "--cov-report",
   "term-missing",
@@ -242,7 +242,8 @@ mock_use_standalone_module = true
 [tool.coverage.run]
 # source = []
 source = ["app"]
-omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]
+# omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]
+omit = ["*/tests/*"]
 concurrency = ["thread", "greenlet"]
 
 [tool.pyright]
