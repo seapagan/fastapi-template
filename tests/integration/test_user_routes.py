@@ -556,8 +556,6 @@ class TestUserRoutes:
             headers={"Authorization": f"Bearer {token}"},
         )
 
-        print(response.json())
-
         assert response.status_code == status.HTTP_200_OK
         assert response.json() == {
             "email": "new@example.com",

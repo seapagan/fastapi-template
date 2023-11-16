@@ -72,6 +72,7 @@ class TestAuthRoutes:
 
         assert response.status_code == status.HTTP_201_CREATED
         assert list(response.json().keys()) == ["token", "refresh"]
+
         assert isinstance(response.json()["token"], str)
         assert isinstance(response.json()["refresh"], str)
 
@@ -226,8 +227,6 @@ class TestAuthRoutes:
         test_db.add(User(**self.test_unverified_user))
         await test_db.commit()
 
-        print(self.test_unverified_user)
-
         response = await client.post(
             self.login_path,
             json={
@@ -376,8 +375,6 @@ class TestAuthRoutes:
                 "password": "test12345!",
             },
         )
-
-        print(login_response.json())
 
         refresh_response = await client.post(
             "/refresh/",
