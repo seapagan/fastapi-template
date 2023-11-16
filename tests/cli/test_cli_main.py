@@ -1,17 +1,8 @@
 """Test the main CLI interface."""
-import pytest
-from typer.testing import CliRunner
-
 from app.api_admin import app, cli_header
 
 
-@pytest.fixture()
-def runner() -> CliRunner:
-    """Return a CliRunner instance."""
-    return CliRunner()
-
-
-class TestCLIMain:
+class TestCLI:
     """Test the main CLI interface."""
 
     def test_cli_header(self, capsys) -> None:

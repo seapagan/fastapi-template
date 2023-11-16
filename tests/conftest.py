@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+from typer.testing import CliRunner
 
 from app.config.settings import get_settings
 from app.database.db import Base, get_database
@@ -98,3 +99,12 @@ def email_manager() -> EmailManager:
     We disable actually sending mail by setting suppress_send to True.
     """
     return EmailManager(suppress_send=True)
+
+
+@pytest.fixture()
+def runner() -> CliRunner:
+    """Return a CliRunner instance.
+
+    Used when testing the CLI.
+    """
+    return CliRunner()
