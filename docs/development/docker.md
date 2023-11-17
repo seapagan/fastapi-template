@@ -46,10 +46,10 @@ folder.
 
 ## Run Tests
 
-!!! danger "Tests Broken"
+!!! danger "Tests Broken in Docker"
 
-    The tests are currently broken due to us now using Postgres for the tests.
-    This will be fixed in an upcoming release.
+    The tests are currently broken (in Docker only) due to us now using Postgres
+    for the tests database. This will be fixed in an upcoming release.
 
 This API contains Unit and Integration tests using
 '[Pytest](https://docs.pytest.org){:target="_blank"}'
