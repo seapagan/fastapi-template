@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from typer.testing import CliRunner
 
+from app.config.helpers import get_project_root
 from app.config.settings import get_settings
 from app.database.db import Base, get_database
 from app.main import app
@@ -23,6 +24,8 @@ from app.managers.email import EmailManager
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator, Generator
+
+    from pyfakefs.fake_filesystem import FakeFilesystem
 
 
 if os.getenv("GITHUB_ACTIONS"):
@@ -108,3 +111,18 @@ def runner() -> CliRunner:
     Used when testing the CLI.
     """
     return CliRunner()
+
+
+@pytest.fixture()
+def fake_toml(fs: FakeFilesystem) -> FakeFilesystem:
+    """Fixture to create a fake toml file."""
+    toml_file = get_project_root() / "pyproject.toml"
+    print(toml_file)
+    fs.create_file(
+        toml_file,
+        contents=(
+            '[tool.poetry]\nname = "Test Runner"\nversion = "1.2.3"\n'
+            'description = "Test Description"\nauthors = ["Test Author"]\n'
+        ),
+    )
+    return fs

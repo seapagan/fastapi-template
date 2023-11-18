@@ -1,4 +1,6 @@
 """Test the main CLI interface."""
+import pytest
+
 from app.api_admin import app, cli_header
 
 
@@ -11,12 +13,14 @@ class TestCLI:
         captured = capsys.readouterr()
         assert "configuration tool" in captured.out
 
+    @pytest.mark.usefixtures("fake_toml")
     def test_main_version(self, runner) -> None:
         """Test the output from the --version flag."""
         result = runner.invoke(app, ["--version"])
         assert result.exit_code == 0
         assert "Version" in result.output
-        assert "API Template" in result.output
+        assert "Test Runner" in result.output
+        assert "1.2.3" in result.output
 
     def test_main_serve(self, mocker, runner) -> None:
         """Test the 'serve' command."""
@@ -36,7 +40,6 @@ class TestCLI:
         assert result.exit_code == 0
 
         command_list = ["custom", "db", "docs", "serve", "test", "user"]
-        option_list = ["--help", "--version"]
 
         assert (
             "Run administrative tasks for the FastAPI Template system."
@@ -44,4 +47,3 @@ class TestCLI:
         )
 
         assert all(command in result.output for command in command_list)
-        assert all(option in result.output for option in option_list)

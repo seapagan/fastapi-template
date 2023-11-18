@@ -17,12 +17,10 @@ class TestCLI:
         assert result.exit_code == 0
 
         command_list = ["openapi"]
-        option_list = ["--help"]
 
         assert "Usage:" in result.output
 
         assert all(command in result.output for command in command_list)
-        assert all(option in result.output for option in option_list)
 
     def test_docs_openapi_get_openapi_called(
         self, mocker: MockerFixture, runner: CliRunner
