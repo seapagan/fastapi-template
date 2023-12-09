@@ -30,7 +30,7 @@ tomli-w = "^1.0.0"
 typer = { extras = ["all"], version = "^0.9.0" }
 poetry = "^1.7.1"
 sqlalchemy = { extras = ["asyncio"], version = "^2.0.23" }
-pydantic = "^2.5.0"
+pydantic = "^2.5.2"
 pydantic-settings = "^2.1.0"
 openapi-readme = "^0.2.5"
 
