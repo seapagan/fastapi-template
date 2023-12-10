@@ -16,7 +16,7 @@ from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
 app = typer.Typer(no_args_is_help=True)
@@ -105,7 +105,7 @@ def create(
     """
 
     async def create_user(user_data: dict[str, str | RoleType]) -> None:
-        """Asny function to create a new user."""
+        """Async function to create a new user."""
         try:
             async with async_session() as session:
                 await UserManager.register(user_data, session)
@@ -114,10 +114,12 @@ def create(
                     f"\n[green]-> User [bold]{user_data['email']}[/bold] "
                     "added succesfully.\n"
                 )
-        except HTTPException as err:
-            print(f"\n[red]-> ERROR adding User : [bold]{err.detail}\n")
-        except SQLAlchemyError as err:
-            print(f"\n[red]-> ERROR adding User : [bold]{err}\n")
+        except HTTPException as exc:
+            print(f"\n[red]-> ERROR adding User : [bold]{exc.detail}\n")
+            raise typer.Exit(1) from exc
+        except SQLAlchemyError as exc:
+            print(f"\n[red]-> ERROR adding User : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
 
     role_type = RoleType.admin if admin else RoleType.user
 
