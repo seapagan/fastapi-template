@@ -104,7 +104,7 @@ def create(
     any that are missing.
     """
 
-    async def create_user(user_data: dict[str, str | RoleType]) -> None:
+    async def _create_user(user_data: dict[str, str | RoleType]) -> None:
         """Async function to create a new user."""
         try:
             async with async_session() as session:
@@ -131,7 +131,7 @@ def create(
         "role": role_type,
     }
 
-    aiorun(create_user(user_data))
+    aiorun(_create_user(user_data))
 
 
 @app.command(name="list")
@@ -220,6 +220,7 @@ def verify(
         )
     else:
         print("\n[red]-> ERROR verifying User : [bold]User not found\n")
+        raise typer.Exit(1)
 
 
 @app.command()
@@ -264,6 +265,7 @@ def ban(
         print(
             "\n[red]-> ERROR banning or unbanning User : [bold]User not found\n"
         )
+        raise typer.Exit(1)
 
 
 @app.command()
@@ -299,3 +301,4 @@ def delete(
         )
     else:
         print("\n[red]-> ERROR deleting that User : [bold]User not found\n")
+        raise typer.Exit(1)
