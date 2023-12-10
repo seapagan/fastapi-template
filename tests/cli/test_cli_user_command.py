@@ -291,7 +291,7 @@ class TestCLI:
     def test_verify_user(self, runner: CliRunner, mocker, test_user) -> None:
         """Test that the 'verify' command works."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.return_value = (
             test_user
@@ -316,7 +316,7 @@ class TestCLI:
     ) -> None:
         """Test that the 'verify' command exits when the user is missing."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.side_effect = (
             SQLAlchemyError("Ooooops!!")
@@ -340,7 +340,7 @@ class TestCLI:
     ) -> None:
         """Test that the 'verify' command exits when the user is missing."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.return_value = (
             None
@@ -365,7 +365,7 @@ class TestCLI:
     ) -> None:
         """Test that the 'ban' command works."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_table = mocker.patch(
             "app.commands.user.show_table",
@@ -394,7 +394,7 @@ class TestCLI:
     ) -> None:
         """Test that the 'ban' command exits when there is an error."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.side_effect = (
             SQLAlchemyError("Ooooops!!")
@@ -417,7 +417,7 @@ class TestCLI:
     ) -> None:
         """Test that the 'ban' command exits when the user is missing."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.return_value = (
             None
@@ -437,12 +437,10 @@ class TestCLI:
     # ------------------------------------------------------------------------ #
     #                         test 'delete' subcommand                         #
     # ------------------------------------------------------------------------ #
-    def test_delete_user(
-        self, runner: CliRunner, mocker, monkeypatch, test_user
-    ) -> None:
-        """Test that the 'ban' command works."""
+    def test_delete_user(self, runner: CliRunner, mocker, test_user) -> None:
+        """Test that the 'delete' command works."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
 
         mock_session.return_value.__aenter__.return_value.get.return_value = (
@@ -460,9 +458,9 @@ class TestCLI:
     def test_delete_sqlalchemy_error(
         self, runner: CliRunner, mocker, test_user
     ) -> None:
-        """Test that the 'ban' command exits when there is an error."""
+        """Test that the 'delete' command exits when there is an error."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.side_effect = (
             SQLAlchemyError("Ooooops!!")
@@ -483,9 +481,9 @@ class TestCLI:
     def test_delete_missing_user(
         self, runner: CliRunner, mocker, test_user
     ) -> None:
-        """Test that the 'ban' command exits when the user is missing."""
+        """Test that the 'delete' command exits when the user is missing."""
         mock_session = mocker.patch(
-            "app.commands.user.async_session",
+            self.patch_async_session,
         )
         mock_session.return_value.__aenter__.return_value.get.return_value = (
             None
@@ -501,3 +499,35 @@ class TestCLI:
 
         assert "ERROR deleting that User" in result.output
         assert "User not found" in result.output
+
+    # ------------------------------------------------------------------------ #
+    #                         test 'create' subcommand                         #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.skip(reason="needs work")
+    def test_create_user(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test that the 'create' command works."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+
+        result = runner.invoke(
+            app,
+            ["user", "create"],
+            input=(
+                f"{test_user.email}/n"
+                f"{test_user.first_name}/n"
+                f"{test_user.last_name}/n"
+                f"{test_user.password}/n"
+                f"{test_user.password}/n"
+                "n/n"
+            ),
+        )
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_session.return_value.__aenter__.return_value.commit.called
+
+        assert f"User {test_user.email} added succesfully" in result.output
+        print(result.output)
