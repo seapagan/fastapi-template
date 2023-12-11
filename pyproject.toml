@@ -53,7 +53,7 @@ httpx = "0.23.3"
 mypy = "^1.5.1"
 openapi-readme = "^0.2.4"
 pre-commit = "^3.4.0"
-pymarkdownlnt = "^0.9.14"
+pymarkdownlnt = "^0.9.15"
 ruff = "^0.1.7"
 pyright = "^1.1.335"
 
