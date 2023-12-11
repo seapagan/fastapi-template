@@ -50,17 +50,18 @@ def init() -> None:
             file.write(out)
     except OSError as err:
         print(f"Cannot Write the metadata : {err}")
+        raise typer.Exit(2) from err
 
 
 try:
     from app.config.metadata import custom_metadata
-except ModuleNotFoundError:
+except ModuleNotFoundError as exc:
     print(
         "[red]The metadata file could not be found, it may have been deleted.\n"
         "Recreating with defaults, please re-run the command."
     )
     init()
-    sys.exit(1)
+    raise typer.Exit(1) from exc
 
 
 def get_licenses() -> list[str]:

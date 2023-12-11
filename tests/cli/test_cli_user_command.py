@@ -504,9 +504,7 @@ class TestCLI:
     #                         test 'create' subcommand                         #
     # ------------------------------------------------------------------------ #
     @pytest.mark.skip(reason="needs work")
-    def test_create_user(
-        self, runner: CliRunner, mocker, monkeypatch, test_user
-    ) -> None:
+    def test_create_user(self, runner: CliRunner, mocker, test_user) -> None:
         """Test that the 'create' command works."""
         mock_session = mocker.patch(
             self.patch_async_session,
@@ -514,15 +512,19 @@ class TestCLI:
 
         result = runner.invoke(
             app,
-            ["user", "create"],
-            input=(
-                f"{test_user.email}/n"
-                f"{test_user.first_name}/n"
-                f"{test_user.last_name}/n"
-                f"{test_user.password}/n"
-                f"{test_user.password}/n"
-                "n/n"
-            ),
+            [
+                "user",
+                "create",
+                "--email",
+                test_user.email,
+                "--first_name",
+                test_user.first_name,
+                "--last_name",
+                test_user.last_name,
+                "--password",
+                test_user.password,
+                "--admin",
+            ],
         )
         assert result.exit_code == 0
 
