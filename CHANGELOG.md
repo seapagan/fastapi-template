@@ -1,13 +1,12 @@
 # Changelog
 
 This is an auto-generated log of all the changes that have been made to the
-project since the first release.
+project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
+## [v0.5.0-alpha3](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha3) (December 12, 2023)
 
 
 This version contains **minor breaking changes** to the way you will run the CLI
@@ -28,6 +27,8 @@ tool. See the documentation for more information.
 
 **Testing**
 
+- Add tests for the CLI functionality ([#285](https://github.com/seapagan/fastapi-template/pull/285)) by [seapagan](https://github.com/seapagan)
+- Continue improving test coverage ([#284](https://github.com/seapagan/fastapi-template/pull/284)) by [seapagan](https://github.com/seapagan)
 - Fix integration tests ([#283](https://github.com/seapagan/fastapi-template/pull/283)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
@@ -37,11 +38,19 @@ tool. See the documentation for more information.
 
 **Dependency Updates**
 
-- Update typer, openapi-readme and github-changelog-md to latest releases ([#280](https://github.com/seapagan/fastapi-template/pull/280)) by [seapagan](https://github.com/seapagan)
-- Bump faker from 19.13.0 to 20.0.0 ([#278](https://github.com/seapagan/fastapi-template/pull/278)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pydantic from 2.4.2 to 2.5.0 ([#277](https://github.com/seapagan/fastapi-template/pull/277)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump actions/setup-python from 4 to 5 ([#311](https://github.com/seapagan/fastapi-template/pull/311)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump ruff from 0.1.5 to 0.1.7 ([#300](https://github.com/seapagan/fastapi-template/pull/300)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-material from 9.4.8 to 9.5.1 ([#299](https://github.com/seapagan/fastapi-template/pull/299)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump cryptography from 41.0.4 to 41.0.6 ([#298](https://github.com/seapagan/fastapi-template/pull/298)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.5.0 to 2.5.2 ([#296](https://github.com/seapagan/fastapi-template/pull/296)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump rich from 13.6.0 to 13.7.0 ([#295](https://github.com/seapagan/fastapi-template/pull/295)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic-settings from 2.0.3 to 2.1.0 ([#294](https://github.com/seapagan/fastapi-template/pull/294)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-swagger-ui-tag from 0.6.6 to 0.6.7 ([#292](https://github.com/seapagan/fastapi-template/pull/292)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocstrings from 0.23.0 to 0.24.0 ([#291](https://github.com/seapagan/fastapi-template/pull/291)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump github-changelog-md from 0.7.2 to 0.8.0 ([#290](https://github.com/seapagan/fastapi-template/pull/290)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- *and 5 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...v0.5.0-alpha3) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...v0.5.0-alpha3.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha2...v0.5.0-alpha3.patch)
 
 ## [v0.5.0-alpha2](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha2) (November 13, 2023)
 
@@ -89,10 +98,13 @@ tool. See the documentation for more information.
 
 ## [v0.5.0-alpha0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha0) (August 27, 2023)
 
+**Breaking Changes**
+
+- Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
+
 **New Features**
 
 - Update fastapi to latest version ([#197](https://github.com/seapagan/fastapi-template/pull/197)) by [seapagan](https://github.com/seapagan)
-- Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
 
 **Testing**
 
@@ -121,20 +133,18 @@ tool. See the documentation for more information.
 
 ## [v0.4.1](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.1) (July 11, 2023)
 
-**New Features**
+**Breaking Changes**
 
 - Refactor application layout (potential BREAKING CHANGE) ([#127](https://github.com/seapagan/fastapi-template/pull/127)) by [seapagan](https://github.com/seapagan)
+- Refactor versioning ([#126](https://github.com/seapagan/fastapi-template/pull/126)) by [seapagan](https://github.com/seapagan)
 
 **Refactoring**
 
 - Migrate startup to lifespan ([#131](https://github.com/seapagan/fastapi-template/pull/131)) by [seapagan](https://github.com/seapagan)
-- Refactor application layout (potential BREAKING CHANGE) ([#127](https://github.com/seapagan/fastapi-template/pull/127)) by [seapagan](https://github.com/seapagan)
-- Refactor versioning ([#126](https://github.com/seapagan/fastapi-template/pull/126)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
 
 - Add release version to docs ([#130](https://github.com/seapagan/fastapi-template/pull/130)) by [seapagan](https://github.com/seapagan)
-- Refactor versioning ([#126](https://github.com/seapagan/fastapi-template/pull/126)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
