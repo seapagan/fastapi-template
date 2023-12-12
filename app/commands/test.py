@@ -21,16 +21,16 @@ DATABASE_URL = (
 async_engine = create_async_engine(DATABASE_URL, echo=False)
 
 
+async def prepare_database() -> None:
+    """Drop and recreate the database."""
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+
 @app.command()
 def setup() -> None:
     """Populate the test databases."""
-
-    async def prepare_database() -> None:
-        """Drop and recreate the database."""
-        async with async_engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            await conn.run_sync(Base.metadata.create_all)
-
     try:
         print("Migrating the test database ... ", end="")
         asyncio.run(prepare_database())
