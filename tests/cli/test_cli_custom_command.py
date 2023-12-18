@@ -22,9 +22,9 @@ from app.config.helpers import LICENCES
 class TestCLI:
     """Test the custom CLI commands."""
 
-    metadata_path = Path("/home/test/metadata.json")
     mock_get_config_path = "app.commands.custom.get_config_path"
-    home_dir = "/home/test"
+    home_dir = Path("/home/test")
+    metadata_path = home_dir / "metadata.json"
 
     test_data = {
         "title": "Test Title",
@@ -40,6 +40,11 @@ class TestCLI:
         "website": "https://mysite.com",
     }
 
+    test_input = (
+        "Test Title\nTest Description\n0.5.0\nhttps://myrepo.com\nMIT\ntest_user\n"
+        "test_user@test.com\nhttps://mysite.com\n\n"
+    )
+
     def test_no_command_should_give_help(self, runner: CliRunner) -> None:
         """Test that running with no command should give help."""
         result = runner.invoke(app, ["custom"])
@@ -51,6 +56,15 @@ class TestCLI:
 
         assert all(command in result.output for command in command_list)
 
+    def test_metadata_command(
+        self, runner: CliRunner, fs, mocker, capsys
+    ) -> None:
+        """Test running the 'metadata' command.
+
+        This should modify both the metadata.py and the pyproject.toml files.
+        """
+
+    # ----------------------- test the 'init' function ----------------------- #
     def test_init_function(self, fs, mocker) -> None:
         """Test that running 'init' should create a default metadata."""
         mock_get_config_path = mocker.patch(
@@ -107,12 +121,8 @@ class TestCLI:
 
     # ----------------------- test individual functions ---------------------- #
     def test_get_input_from_user(self, mocker) -> None:
-        """Test that running the ."""
-        test_input = (
-            "Test Title\nTest Description\n0.5.0\nhttps://myrepo.com\nMIT\ntest_user\n"
-            "test_user@test.com\nhttps://mysite.com\n\n"
-        )
-        mocker.patch.object(sys, "stdin", io.StringIO(test_input))
+        """Test the 'get_data' function to read from user."""
+        mocker.patch.object(sys, "stdin", io.StringIO(self.test_input))
 
         input_values = get_data()
 
