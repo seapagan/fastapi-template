@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import datetime
 import sys
-from typing import Literal, Union
+from typing import Any, Literal, Union
 
 import asyncclick as click
 import tomli
@@ -109,16 +109,13 @@ def choose_version(current_version: str) -> str:
     return choice
 
 
-@app.command()
-def metadata() -> None:
-    """Customize the Application Metadata.
-
-    This includes the title and description displayed on the root route and
-    Documentation, Author details, Repository URL and more.
-    """
-    data = {
+def get_data() -> dict[str, Any]:
+    """Get the data from the user."""
+    return {
         "title": click.prompt(
-            "Enter your API title", type=str, default=custom_metadata.title
+            "Enter your API title",
+            type=str,
+            default=custom_metadata.title,
         ),
         "desc": click.prompt(
             "Enter the description",
@@ -148,6 +145,16 @@ def metadata() -> None:
             default=custom_metadata.contact["url"],
         ),
     }
+
+
+@app.command()
+def metadata() -> None:
+    """Customize the Application Metadata.
+
+    This includes the title and description displayed on the root route and
+    Documentation, Author details, Repository URL and more.
+    """
+    data = get_data()
 
     data["this_year"] = (
         datetime.datetime.now(tz=datetime.timezone.utc).today().year
