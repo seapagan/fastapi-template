@@ -61,7 +61,7 @@ pyright = "^1.1.335"
 poethepoet = "^0.24.2"
 
 # testing
-faker = "^20.1.0"
+faker = "^21.0.0"
 mock = "^5.1.0"
 pyfakefs = "^5.3.0"
 pytest = "^7.4.3"
