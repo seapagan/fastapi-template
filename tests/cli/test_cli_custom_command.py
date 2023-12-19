@@ -1,5 +1,6 @@
 """Test the 'api-admin custom' command."""
 import io
+import os
 import sys
 from pathlib import Path
 
@@ -66,22 +67,34 @@ class TestCLI:
 
     # ----------------------- test the 'init' function ----------------------- #
     def test_init_function(self, fs, mocker) -> None:
-        """Test that running 'init' should create a default metadata."""
+        """Test that running 'init' should create a default metadata.
+
+        We use 'os.path' to check for the existence of the file, as the
+        filesystem mock does not work with Path objects created outside of
+        the test function (though seems to work in Python >=3.10).
+        """
         mock_get_config_path = mocker.patch(
             self.mock_get_config_path,
             return_value=self.metadata_path,
         )
         fs.create_dir(self.home_dir)
 
-        assert not self.metadata_path.exists()
+        assert not os.path.exists(self.metadata_path)  # noqa: PTH110
 
         init()
 
+        print(self.metadata_path)
+
         assert mock_get_config_path.called
-        assert self.metadata_path.exists()
+        assert os.path.exists(self.metadata_path)  # noqa: PTH110
 
     def test_init_function_with_existing_metadata(self, fs, mocker) -> None:
-        """Test that running 'init' should overwrite existing metadata."""
+        """Test that running 'init' should overwrite existing metadata.
+
+        We use 'os.path' to check for the existence of the file, as the
+        filesystem mock does not work with Path objects created outside of
+        the test function (though seems to work in Python >=3.10).
+        """
         mock_get_config_path = mocker.patch(
             self.mock_get_config_path,
             return_value=self.metadata_path,
@@ -92,12 +105,12 @@ class TestCLI:
             contents='{"title": "Test Title"}',
         )
 
-        assert self.metadata_path.exists()
+        assert os.path.exists(self.metadata_path)  # noqa: PTH110
 
         init()
 
         assert mock_get_config_path.called
-        assert self.metadata_path.exists()
+        assert os.path.exists(self.metadata_path)  # noqa: PTH110
 
         with self.metadata_path.open() as file:
             assert file.read() != '{"title": "Test Title"}'
