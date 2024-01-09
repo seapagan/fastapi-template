@@ -54,7 +54,7 @@ mypy = "^1.5.1"
 openapi-readme = "^0.2.4"
 pre-commit = "^3.4.0"
 pymarkdownlnt = "^0.9.14"
-ruff = "^0.1.8"
+ruff = "^0.1.11"
 pyright = "^1.1.335"
 
 # task runner
