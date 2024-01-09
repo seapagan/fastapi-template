@@ -2,6 +2,10 @@
 
 ## General
 
+- Allow a custom prefix to be added to all routes. For example `/api/v1` to
+  allow for API versioning.
+- Add an option to deactivate the root route `/` so it can be handled by a
+  frontend instead. This also removes the index boilerplate.
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
@@ -34,6 +38,8 @@
 
 - add a password recovery endpoint
 - Implement user groups and permissions, make it configurable.
+- Allow social login (eg Google, Facebook, Twitter, etc), check out
+  [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
 
 ## Testing
 
