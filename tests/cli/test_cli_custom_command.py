@@ -66,6 +66,7 @@ class TestCLI:
         """
 
     # ----------------------- test the 'init' function ----------------------- #
+    @pytest.mark.skip(reason="Issue with Path and pyfakefs")
     def test_init_function(self, fs, mocker) -> None:
         """Test that running 'init' should create a default metadata.
 
@@ -88,6 +89,7 @@ class TestCLI:
         assert mock_get_config_path.called
         assert os.path.exists(self.metadata_path)  # noqa: PTH110
 
+    @pytest.mark.skip(reason="Issue with Path and pyfakefs")
     def test_init_function_with_existing_metadata(self, fs, mocker) -> None:
         """Test that running 'init' should overwrite existing metadata.
 
