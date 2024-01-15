@@ -61,11 +61,10 @@ Check out the
 on that branch for details of what has changed since the last release.
 
 The current development release is [Version
-0.5.0-alpha2](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha2).
-This is functional but still in development and may contain bugs. It is not
-currently recommended for serious production use, though there are no known
-issues at the moment. It is not fully backware compatible with previous
-versions, if they have been customized.
+0.5.0-alpha3](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha3).
+This is functional but still in development though is functionally complete for
+the verison 0.5.0 release. It is not fully backwards compatible with previous
+versions, if they have been customized though.
 
 ## Functionality
 
