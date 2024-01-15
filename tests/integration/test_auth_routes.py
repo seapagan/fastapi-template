@@ -20,6 +20,7 @@ logging.basicConfig(
 )
 
 
+@pytest.mark.integration()
 class TestAuthRoutes:
     """Test the authentication routes of the application."""
 
