@@ -2512,13 +2512,13 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "pymarkdownlnt"
-version = "0.9.15"
+version = "0.9.16"
 description = "A GitHub Flavored Markdown compliant Markdown linter."
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "pymarkdownlnt-0.9.15-py3-none-any.whl", hash = "sha256:a6e432efc0070ac173a597abf07d99df0f33efcd8cc7a89d190d3cd46380b8b2"},
-    {file = "pymarkdownlnt-0.9.15.tar.gz", hash = "sha256:ab109d43cd2e6e7ff723217574f2ed72785c1582d0501630d7a3c2f568d92924"},
+    {file = "pymarkdownlnt-0.9.16-py3-none-any.whl", hash = "sha256:a4eb98c641f2ff7be9a335b2176d5fc57228345cd8b822aa5915febb7b6a7b6d"},
+    {file = "pymarkdownlnt-0.9.16.tar.gz", hash = "sha256:6a484e3f315eedf60bbfce1f4368eb40d1f12f0419d073001baf05d3bea73c93"},
 ]
 
 [package.dependencies]
@@ -4159,4 +4159,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "4ac67025e441aa42530fdebeb62c0414a67cded8bfcaafbd43f7a519781d871d"
+content-hash = "729f0d500c98594ba72e0724790bf3481c3b064c8d26c8376e818626396f7a78"
