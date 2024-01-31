@@ -23,9 +23,10 @@ from app.config.helpers import LICENCES
 class TestCLI:
     """Test the custom CLI commands."""
 
+    metadata_file = "metadata.json"
     mock_get_config_path = "app.commands.custom.get_config_path"
     home_dir = Path("/home/test")
-    metadata_path = home_dir / "metadata.json"
+    metadata_path = home_dir / metadata_file
 
     test_data = {
         "title": "Test Title",
@@ -66,30 +67,28 @@ class TestCLI:
         """
 
     # ----------------------- test the 'init' function ----------------------- #
-    @pytest.mark.skip(reason="Issue with Path and pyfakefs")
-    def test_init_function(self, fs, mocker) -> None:
+    def test_init_function(self, mocker, fs) -> None:
         """Test that running 'init' should create a default metadata.
 
         We use 'os.path' to check for the existence of the file, as the
         filesystem mock does not work with Path objects created outside of
         the test function (though seems to work in Python >=3.10).
         """
-        mock_get_config_path = mocker.patch(
-            self.mock_get_config_path,
-            return_value=self.metadata_path,
-        )
+        metadata_file_path = str(self.home_dir / self.metadata_file)
         fs.create_dir(self.home_dir)
 
-        assert not os.path.exists(self.metadata_path)  # noqa: PTH110
+        mock_get_config_path = mocker.patch(
+            self.mock_get_config_path,
+            return_value=self.home_dir / self.metadata_file,
+        )
+
+        assert not os.path.exists(metadata_file_path)  # noqa: PTH110
 
         init()
+        mock_get_config_path.assert_called_once()
+        assert os.path.exists(metadata_file_path)  # noqa: PTH110
 
-        print(self.metadata_path)
-
-        assert mock_get_config_path.called
-        assert os.path.exists(self.metadata_path)  # noqa: PTH110
-
-    @pytest.mark.skip(reason="Issue with Path and pyfakefs")
+    # @pytest.mark.skip(reason="Issue with Path and pyfakefs")
     def test_init_function_with_existing_metadata(self, fs, mocker) -> None:
         """Test that running 'init' should overwrite existing metadata.
 
@@ -97,25 +96,39 @@ class TestCLI:
         filesystem mock does not work with Path objects created outside of
         the test function (though seems to work in Python >=3.10).
         """
-        mock_get_config_path = mocker.patch(
-            self.mock_get_config_path,
-            return_value=self.metadata_path,
-        )
+        # Setup
         fs.create_dir(self.home_dir)
-        fs.create_file(
-            self.metadata_path,
-            contents='{"title": "Test Title"}',
+        metadata_file_path = str(
+            self.home_dir / self.metadata_file
+        )  # Use string path
+        mocker.patch(
+            self.mock_get_config_path,
+            return_value=self.home_dir / self.metadata_file,
         )
 
-        assert os.path.exists(self.metadata_path)  # noqa: PTH110
+        # Create an existing "metadata.json" with some content
+        with open(metadata_file_path, "w") as file:  # noqa: PTH123
+            file.write('{"title": "Old Title"}')
 
+        # Ensure the metadata file exists with old content
+        assert os.path.exists(metadata_file_path)  # noqa: PTH110
+        with open(metadata_file_path) as file:  # noqa: PTH123
+            assert (
+                file.read() == '{"title": "Old Title"}'
+            ), "Precondition check failed"
+
+        # Action
         init()
 
-        assert mock_get_config_path.called
-        assert os.path.exists(self.metadata_path)  # noqa: PTH110
-
-        with self.metadata_path.open() as file:
-            assert file.read() != '{"title": "Test Title"}'
+        # Assert
+        assert os.path.exists(  # noqa: PTH110
+            metadata_file_path
+        ), "Metadata file does not exist after init."
+        with open(metadata_file_path) as file:  # noqa: PTH123
+            content = file.read()
+            assert (
+                content != '{"title": "Old Title"}'
+            ), "Metadata file was not overwritten with default content."
 
     def test_init_function_fails_write(self, fs, mocker, capsys) -> None:
         """Test that running 'init' should fail if it cannot write."""
