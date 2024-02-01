@@ -135,3 +135,42 @@ class TestCLI:
         )
         assert result.exit_code == 1
         assert "ERROR adding User" in result.output
+
+    def test_create_user_interactive(
+        self, runner: CliRunner, mocker, fake_user_data
+    ) -> None:
+        """Test interactive creation of a user by simulating keyboard input."""
+        user_input = (
+            f"{fake_user_data['email']}\n{fake_user_data['first_name']}\n"
+            f"{fake_user_data['last_name']}\n{fake_user_data['password']}\n"
+            f"{fake_user_data['password']}\n"
+        )
+
+        mock_register = mocker.patch(
+            self.patch_register_user, return_value=None
+        )
+
+        result = runner.invoke(app, ["user", "create"], input=user_input)
+        assert result.exit_code == 0
+        assert "added succesfully" in result.output
+        assert mock_register.called
+
+    def test_create_admin_interactive(
+        self, runner: CliRunner, mocker, fake_user_data
+    ) -> None:
+        """Test interactive creation of an admin user."""
+        user_input = (
+            f"{fake_user_data['email']}\n{fake_user_data['first_name']}\n"
+            f"{fake_user_data['last_name']}\n{fake_user_data['password']}\n"
+            f"{fake_user_data['password']}\nYes\n"
+        )
+
+        mock_register = mocker.patch(
+            self.patch_register_user, return_value=None
+        )
+
+        result = runner.invoke(app, ["user", "create"], input=user_input)
+        assert result.exit_code == 0
+        assert "added succesfully" in result.output
+        assert "Admin" in result.output
+        assert mock_register.called
