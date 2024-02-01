@@ -23,7 +23,6 @@ def root_path(
     """Display an HTML template for a browser, JSON response otherwise."""
     if accept and accept.split(",")[0] == "text/html":
         context = {
-            "request": request,
             "title": get_settings().api_title,
             "description": get_settings().api_description,
             "repository": get_settings().repository,
@@ -32,7 +31,9 @@ def root_path(
             "year": get_settings().year,
             "version": get_api_version(),
         }
-        return templates.TemplateResponse("index.html", context)
+        return templates.TemplateResponse(
+            request=request, name="index.html", context=context
+        )
 
     return {
         "info": (
