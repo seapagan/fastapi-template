@@ -60,7 +60,7 @@ Check out the
 on that branch for details of what has changed since the last release.
 
 The current development release is [Version
-0.5.0-alpha3](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha3).
+0.5.0-beta1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-beta1).
 This is functional but still in development though is functionally complete for
 the verison 0.5.0 release. It is not fully backwards compatible with previous
 versions, if they have been customized though.
@@ -111,8 +111,9 @@ involved in dev, I'd recommend checking out the latest actual
 However, the `main` branch should be pretty stable as all development is done on
 the `develop` branch and merged into `main` when ready.
 
-The template **Requires Python 3.8.1+** or higher. It is developed under Python
-3.11.
+The template **Requires Python 3.9.0+** or higher. It is developed under Python
+3.11.x where x is the latest version available at the time, and migrating to
+the next patch version as soon as it is released.
 
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
