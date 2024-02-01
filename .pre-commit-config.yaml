@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.7
+    rev: v0.1.13
     hooks:
       - id: ruff
         name: "lint with ruff"
@@ -28,13 +28,13 @@ repos:
         args: [-d, "MD046", scan]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.7.1" # Use the sha / tag you want to point at
+    rev: "v1.8.0" # Use the sha / tag you want to point at
     hooks:
       - id: mypy
         name: "Check with Mypy"
 
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.339
+    rev: v1.1.346
     hooks:
       - id: pyright
         name: "Check with Pyright"

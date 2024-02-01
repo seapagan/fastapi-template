@@ -1,6 +1,7 @@
 """Add a user from the command line, optionally make superuser."""
 from __future__ import annotations
 
+import logging
 from asyncio import run as aiorun
 from typing import TYPE_CHECKING, Optional
 
@@ -103,6 +104,8 @@ def create(
     Values are either taken from the command line options, or interactively for
     any that are missing.
     """
+    # disable passlib logging, due to issues with latest bcrypt.
+    logging.getLogger("passlib").setLevel(logging.ERROR)
 
     async def _create_user(user_data: dict[str, str | RoleType]) -> None:
         """Async function to create a new user."""
@@ -110,9 +113,11 @@ def create(
             async with async_session() as session:
                 await UserManager.register(user_data, session)
                 await session.commit()
+
+                user_level = "Admin" if admin else ""
                 print(
-                    f"\n[green]-> User [bold]{user_data['email']}[/bold] "
-                    "added succesfully.\n"
+                    f"\n[green]-> {user_level} User [bold]{user_data['email']}"
+                    "[/bold] added succesfully.\n"
                 )
         except HTTPException as exc:
             print(f"\n[red]-> ERROR adding User : [bold]{exc.detail}\n")

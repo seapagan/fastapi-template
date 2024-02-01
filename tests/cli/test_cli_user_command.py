@@ -499,37 +499,3 @@ class TestCLI:
 
         assert "ERROR deleting that User" in result.output
         assert "User not found" in result.output
-
-    # ------------------------------------------------------------------------ #
-    #                         test 'create' subcommand                         #
-    # ------------------------------------------------------------------------ #
-    @pytest.mark.skip(reason="needs work")
-    def test_create_user(self, runner: CliRunner, mocker, test_user) -> None:
-        """Test that the 'create' command works."""
-        mock_session = mocker.patch(
-            self.patch_async_session,
-        )
-
-        result = runner.invoke(
-            app,
-            [
-                "user",
-                "create",
-                "--email",
-                test_user.email,
-                "--first_name",
-                test_user.first_name,
-                "--last_name",
-                test_user.last_name,
-                "--password",
-                test_user.password,
-                "--admin",
-            ],
-        )
-        assert result.exit_code == 0
-
-        assert mock_session.called
-        assert mock_session.return_value.__aenter__.return_value.commit.called
-
-        assert f"User {test_user.email} added succesfully" in result.output
-        print(result.output)

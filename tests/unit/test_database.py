@@ -4,6 +4,7 @@ import pytest
 from app.database import db
 
 
+@pytest.mark.unit()
 class TestDatabase:
     """Class to test the database module."""
 
