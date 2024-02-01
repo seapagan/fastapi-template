@@ -79,7 +79,7 @@ mkdocstrings = { extras = ["python"], version = "^0.24.0" }
 mkdocs-git-revision-date-localized-plugin = "^1.2.2"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.5.6"
-mkdocs-minify-plugin = "^0.7.2"
+mkdocs-minify-plugin = "^0.8.0"
 mkdocs-swagger-ui-tag = "^0.6.8"
 pymdown-extensions = "^10.3"
 pygments = "^2.16.1"
