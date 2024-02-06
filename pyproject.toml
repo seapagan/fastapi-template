@@ -76,7 +76,7 @@ pytest-watcher = "^0.3.5"
 # docs
 mkdocs = "^1.5.3"
 mkdocstrings = { extras = ["python"], version = "^0.24.0" }
-mkdocs-git-revision-date-localized-plugin = "^1.2.2"
+mkdocs-git-revision-date-localized-plugin = "^1.2.4"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.5.6"
 mkdocs-minify-plugin = "^0.8.0"
