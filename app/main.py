@@ -1,4 +1,5 @@
 """Main file for the FastAPI Template."""
+import sys
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
@@ -14,6 +15,17 @@ from app.config.settings import get_settings
 from app.database.db import async_session
 from app.resources import config_error
 from app.resources.routes import api_router
+
+# gatekeeper to ensure the user has read the docs and noted the major changes
+# since the last version.
+if not get_settings().i_read_the_damn_docs:
+    print(
+        "\n[red]ERROR:    [bold]You didn't read the docs and change the "
+        "settings in the .env file!\n"
+        "\nThe API has changed massively since version 0.4.0 and you need to "
+        "familiarize yourself with the new breaking changes.\n"
+    )
+    sys.exit(666)
 
 
 @asynccontextmanager
