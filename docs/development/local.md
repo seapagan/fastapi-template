@@ -41,7 +41,7 @@ The above command starts the server running on <http://localhost:8000>, and it
 will automatically reload when it detects any changes as you develop.
 
 **Note: Neither of these are suitable to host a project in production, see the
-next section for information.**
+[Deployment](../deployment/deployment.md) section for information.**
 
 ## Run Tests
 
