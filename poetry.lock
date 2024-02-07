@@ -99,17 +99,17 @@ trio = ["trio (>=0.23)"]
 
 [[package]]
 name = "application-properties"
-version = "0.8.1"
+version = "0.8.2"
 description = "A simple, easy to use, unified manner of accessing program properties."
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "application_properties-0.8.1-py3-none-any.whl", hash = "sha256:f442e403ab7c8f97b048cf0ab92845057d595989653f65ced48579ad7cf35607"},
-    {file = "application_properties-0.8.1.tar.gz", hash = "sha256:101667125383940651e72a2a9b3aa32225f359050c3be45b4ef4b51009930bb4"},
+    {file = "application_properties-0.8.2-py3-none-any.whl", hash = "sha256:a4fe684e4d95fc45054d3316acf763a7b0f29342ccea02eee09de53004f0139c"},
+    {file = "application_properties-0.8.2.tar.gz", hash = "sha256:e5e6918c8e29ab57175567d51dfa39c00a1d75b3205625559bb02250f50f0420"},
 ]
 
 [package.dependencies]
-pyyaml = ">=6.0"
+pyyaml = ">=5.4.1"
 tomli = ">=2.0.1"
 typing-extensions = ">=4.5.0"
 
@@ -2495,17 +2495,17 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "pymarkdownlnt"
-version = "0.9.16"
+version = "0.9.17"
 description = "A GitHub Flavored Markdown compliant Markdown linter."
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "pymarkdownlnt-0.9.16-py3-none-any.whl", hash = "sha256:a4eb98c641f2ff7be9a335b2176d5fc57228345cd8b822aa5915febb7b6a7b6d"},
-    {file = "pymarkdownlnt-0.9.16.tar.gz", hash = "sha256:6a484e3f315eedf60bbfce1f4368eb40d1f12f0419d073001baf05d3bea73c93"},
+    {file = "pymarkdownlnt-0.9.17-py3-none-any.whl", hash = "sha256:08a5c45f29b833d96f8c53c40de670b0ae221084358511c078ac36e6a7a24452"},
+    {file = "pymarkdownlnt-0.9.17.tar.gz", hash = "sha256:8479e687e8979864dc5425ee9666f6315de59168e50c08c5e4483062327902f8"},
 ]
 
 [package.dependencies]
-application-properties = ">=0.8.1"
+application-properties = ">=0.8.2"
 columnar = ">=1.4.0"
 typing-extensions = ">=4.7.0"
 
@@ -4177,4 +4177,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "c1f8953c704171fade885bcac847aa8295ea48ccc77f6cd82ae86bc720c53ea5"
+content-hash = "55bc1bfde1eb3e8196875ea961de8b390602671c54d8d74b9c23f5690adce117"
