@@ -2745,13 +2745,13 @@ dev = ["black", "flake8", "pre-commit"]
 
 [[package]]
 name = "pytest-watcher"
-version = "0.3.5"
+version = "0.4.1"
 description = "Automatically rerun your tests on file modifications"
 optional = false
 python-versions = ">=3.7.0,<4.0.0"
 files = [
-    {file = "pytest_watcher-0.3.5-py3-none-any.whl", hash = "sha256:af00ca52c7be22dc34c0fd3d7ffef99057207a73b05dc5161fe3b2fe91f58130"},
-    {file = "pytest_watcher-0.3.5.tar.gz", hash = "sha256:8896152460ba2b1a8200c12117c6611008ec96c8b2d811f0a05ab8a82b043ff8"},
+    {file = "pytest_watcher-0.4.1-py3-none-any.whl", hash = "sha256:29435669cb0124fb32d6de649fe9b1350f6dac94176313fff559ee4c2a66fd6e"},
+    {file = "pytest_watcher-0.4.1.tar.gz", hash = "sha256:5a793c4c883e3a55ab2abbfa3a8cd6fa6495b3767d5f6644052cc5f3236f511a"},
 ]
 
 [package.dependencies]
@@ -4177,4 +4177,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "d4c35e45424f0f8ac3f35ac94505a66843f3394449e44e93b6e92aa0cfc13f2f"
+content-hash = "7648e4712cb0e5ac5a1836923b12f92008b1ac3910b13db2fef68d437c3c7353"
