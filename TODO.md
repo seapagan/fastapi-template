@@ -2,6 +2,10 @@
 
 ## General
 
+- Allow a custom prefix to be added to all routes. For example `/api/v1` to
+  allow for API versioning.
+- Add an option to deactivate the root route `/` so it can be handled by a
+  frontend instead. This also removes the index boilerplate.
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
@@ -11,7 +15,8 @@
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
-- Allow to resend a registration email
+- Allow to resend a registration email (part of the code is already there for
+  this, but was not functioning properly so disabled).
 - Send an email to the **User** when they change their password or update their
   profile, are Banned/Unbanned and to **Admins** when important events happen.
 - Update current and future email templates with actual content, and change
@@ -27,17 +32,29 @@
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
 - add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
+- add pagination to the user list endpoint
 
 ## Auth
 
 - add a password recovery endpoint
 - Implement user groups and permissions, make it configurable.
+- Allow social login (eg Google, Facebook, Twitter, etc), check out
+  [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
+
+## Testing
+
+- fix all the tests that were broken by the recent changes to SQLAlchemy 2.0
+  \[`done for the existing Unit tests, but not for the Integration tests`\]
+- allow choice of Postgresql or SQLite for testing (currently only Postgresql)
 
 ## CLI
 
 - option to remove the customization functionality from the CLI. Useful once you
   have customized the template and don't want to give the end-user the ability to
   change it easily.
+- ctrl-c on the `custom metadata` command should not bring up a Rich
+  stack-trace, but exit cleanly.
+- add an option to make user an admin (or take it away)
 
 ## Documentation
 

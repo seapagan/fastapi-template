@@ -1,3 +1,5 @@
+# Metadata
+
 ## Customize the Metadata
 
 By default the Template Title, Description, Author and similar is set to my
@@ -5,7 +7,7 @@ details. Changing this is very easy though, and there are 2 ways you can do.
 
 ### Manually
 
-Metadata is stored in the `config/metadata.py` file and this
+Metadata is stored in the `app/config/metadata.py` file and this
 can be edited by hand if desired:
 
 ```python
@@ -40,7 +42,7 @@ The `api-admin` command can also do this for you, asking for the values at the
 command line and automatically updating both files:
 
 ```console
-$ ./api-admin custom metadata
+$ api-admin custom metadata
 
 API-Template : Customize application Metadata
 

@@ -3,14 +3,24 @@ site_url: https://api-template.seapagan.net/
 
 theme:
   name: material
+  palette:
+    primary: light-blue
+    accent: blue
   features:
     - navigation.footer
-    - navigation.expand
+    - content.code.copy
+    - content.code.annotate
+    - navigation.tracking
+    - navigation.indexes
+    - navigation.prune
+    - navigation.top
+    - toc.follow
+    # - navigation.expand
 
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/seapagan/fastapi-template
+      link: https://github.com/seapagan
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/gnramsay-dev
 
@@ -23,7 +33,7 @@ plugins:
       tryItOutEnabled: false
       supportedSubmitMethods: []
       defaultModelsExpandDepth: 0
-  - git-revision-date-localized
+  # - git-revision-date-localized
   - latest-git-tag
   - minify:
       minify_html: true
@@ -39,22 +49,26 @@ dev_addr: "127.0.0.1:9000"
 
 markdown_extensions:
   - admonition
+  - footnotes
   - pymdownx.snippets
   - pymdownx.superfences
+  - md_in_html
   - pymdownx.highlight:
       linenums: false
       auto_title: false
   - attr_list
+  - tables
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - FastAPI Template: index.md
+  - Introduction: index.md
+  - Breaking Changes: important.md
   - Usage:
       - Installation: usage/installation.md
       - Configuration:
-          - Environment File: usage/configuration/dot-env.md
+          - Environment File: usage/configuration/environment.md
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md
@@ -66,7 +80,7 @@ nav:
       - With a Local Server: development/local.md
       - With Docker: development/docker.md
       - Documentation: development/documentation.md
-  - How-to Guides: how-to-guides.md
+  - Guides and How-to's: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md
@@ -75,3 +89,5 @@ nav:
   - Future Plans: future.md
   - Known Issues: known-issues.md
   - Contributing: contributing.md
+  - Changelog: changelog.md
+  - License: license.md

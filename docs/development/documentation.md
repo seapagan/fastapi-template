@@ -18,13 +18,18 @@ To help with documentation development you can run a docs server on
 <http://localhost:9000> using the below command :
 
 ```console
-$ mkdocs serve
-INFO     -  Building documentation...
-INFO     -  Cleaning site directory
-INFO     -  Documentation built in 0.89 seconds
-INFO     -  [12:55:29] Watching paths for changes: 'docs', 'mkdocs.yml'
-INFO     -  [12:55:29] Serving on http://127.0.0.1:9000/
+$ poe docs:serve
+Poe => mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -w BUGS.md
+INFO    -  Building documentation...
+INFO    -  Cleaning site directory
+INFO    -  Documentation built in 1.72 seconds
+INFO    -  [11:09:51] Watching paths for changes: 'docs', 'mkdocs.yml', 'TODO.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'BUGS.md'
+INFO    -  [11:09:51] Serving on http://127.0.0.1:9000/
 ```
+
+You could run the server directly using `mkdocs serve`, but the above command
+will also watch for changes to the `TODO.md`, `CHANGELOG.md`, `CONTRIBUTING.md`
+and `BUGS.md` files, and will automatically rebuild the site when they change.
 
 !!! note
     This command will not auto-generate the OpenAPI schema, so you will need to
@@ -42,7 +47,7 @@ If you want the site to be opened to your local network (ie to test on a
 mobile or another local device), then you can use the below command :
 
 ```console
-$ poe docs:serve
+$ poe docs:serve:all
 ```
 
 This will run the `mkdocs serve` command, but will also open the site on your
@@ -55,7 +60,7 @@ The OpenAPI schema is needed for the documentation, and can be generated from
 the existing routes. To do this, run the below command :
 
 ```console
-$ ./api-admin docs openapi --prefix=docs/reference
+$ api-admin docs openapi --prefix=docs/reference
 ```
 
 For ease of use this is also run automatically when the docs are built or

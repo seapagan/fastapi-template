@@ -10,7 +10,7 @@ optionally make them Admin at the same time:
 ## Interactively
 
 ```console
-./api-admin user create
+$ api-admin user create
 ```
 
 You will be asked for the new user's email etc, and if this should be an
@@ -49,7 +49,7 @@ options that are missing will be prompted for (except for Admin, this must be
 physically specified if wanted) :
 
 ```console
-$ ./api-admin user create --email testuser@mailserver.com -f Test -l Last -p s3cr3tpassw0rd
+$ api-admin user create --email testuser@mailserver.com -f Test -l User -p s3cr3tpassw0rd
 ```
 
 In the above case a normal user will be created. You can mix long-form

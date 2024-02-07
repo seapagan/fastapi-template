@@ -1,52 +1,59 @@
 {
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    }
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "autoDocstring.startOnNewLine": true,
   "beautify.language": {
     "html": ["htm", "html", "django-html"]
   },
   "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
   "emmet.includeLanguages": {
+    "django-html": "html",
     "jinja-html": "html"
   },
   "emmet.triggerExpansionOnTab": true,
   "files.associations": {
     "**/*.html": "html",
+    "**/*.tpl": "jinja",
     "**/requirements{/**,*}.{txt,in}": "pip-requirements",
     "**/templates/**/*": "django-txt",
     "**/templates/**/*.html": "jinja-html"
   },
   "files.eol": "\n",
   "files.exclude": {
+    "**/.cache": true,
+    "**/.mypy_cache": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
     "**/__pycache__": true
   },
   "git.alwaysSignOff": true,
   "git.enableCommitSigning": true,
   "html.format.indentHandlebars": true,
   "html.format.templating": true,
+  "markdownlint.ignore": ["CHANGELOG.md"],
+  "material-icon-theme.languages.associations": {
+    "jinja-html": "django"
+  },
+  "mypy-type-checker.args": ["--strict"],
+  "mypy-type-checker.importStrategy": "useBundled",
+  "mypy-type-checker.reportingScope": "workspace",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoImportUserSymbols": true,
   "python.analysis.extraPaths": [],
+  "python.analysis.indexing": true,
   "python.analysis.stubPath": "/home/seapagan/stubs",
-  "python.analysis.typeCheckingMode": "basic",
-  "python.formatting.blackArgs": ["--line-length=80"],
-  "python.formatting.provider": "black",
+  "python.analysis.typeCheckingMode": "off",
   "python.languageServer": "Pylance",
-  "python.linting.enabled": true,
-  "python.linting.flake8Args": ["--max-line-length=80"],
-  "python.linting.flake8Enabled": true,
-  "python.linting.mypyEnabled": false,
-  "python.linting.pydocstyleArgs": ["--convention=google"],
-  "python.linting.pylintArgs": [],
-  "python.linting.pylintEnabled": false,
-  "python.linting.pylintUseMinimalCheckers": false,
-  "python.pythonPath": "/home/seapagan/.pyenv/versions/calendar/bin/python",
-  "python.sortImports.args": ["--profile", "black", "--src=${workspaceFolder}"],
-  "python.testing.nosetestsEnabled": false,
+  "python.pythonPath": "./.venv/bin/python",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
-  "python.testing.unittestArgs": ["-v", "-s", "./tests", "-p", "*_test.py"],
   "python.testing.unittestEnabled": false,
-  "testExplorer.addToEditorContextMenu": true
+  "ruff.fixAll": false,
+  "ruff.organizeImports": true
 }

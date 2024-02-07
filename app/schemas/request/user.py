@@ -1,5 +1,5 @@
 """Define Schemas used by the User routes."""
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.base import UserBase
 from app.schemas.examples import ExampleUser
@@ -8,15 +8,15 @@ from app.schemas.examples import ExampleUser
 class UserRegisterRequest(UserBase):
     """Request schema for the Register Route."""
 
-    password: str = Field(example=ExampleUser.password)
-    first_name: str = Field(example=ExampleUser.first_name)
-    last_name: str = Field(example=ExampleUser.last_name)
+    password: str = Field(examples=[ExampleUser.password])
+    first_name: str = Field(examples=[ExampleUser.first_name])
+    last_name: str = Field(examples=[ExampleUser.last_name])
 
 
 class UserLoginRequest(UserBase):
     """Request schema for the Login Route."""
 
-    password: str = Field(example=ExampleUser.password)
+    password: str = Field(examples=[ExampleUser.password])
 
 
 class UserEditRequest(UserBase):
@@ -25,18 +25,15 @@ class UserEditRequest(UserBase):
     For now just inherit everything from the UserRegisterRequest
     """
 
-    email: str = Field(example=ExampleUser.email)
-    password: str = Field(example=ExampleUser.password)
-    first_name: str = Field(example=ExampleUser.first_name)
-    last_name: str = Field(example=ExampleUser.last_name)
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        """Configure this Schema."""
-
-        orm_mode = True
+    email: str = Field(examples=[ExampleUser.email])
+    password: str = Field(examples=[ExampleUser.password])
+    first_name: str = Field(examples=[ExampleUser.first_name])
+    last_name: str = Field(examples=[ExampleUser.last_name])
 
 
 class UserChangePasswordRequest(BaseModel):
     """Request Schema for changing a user's password."""
 
-    password: str = Field(example=ExampleUser.password)
+    password: str = Field(examples=[ExampleUser.password])

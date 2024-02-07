@@ -29,7 +29,7 @@ actual work needed for the routes. Check out the `managers/auth.py` and
 **migrations/** - We use
 [Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"} to handle the
 database migrations. Check out their pages for more info. See instructions under
-[Development](../usage/configuration/dot-env) for more info.
+[Development](usage/configuration/environment.md) for more info.
 
 **models/** - Any database models used should be defined here along with
 supporting files (eq the `models/enums.py`) used here. Models are

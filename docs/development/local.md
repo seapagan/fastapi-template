@@ -8,14 +8,14 @@ used for testing the API during development. There is a built-in command to run
 this easily :
 
 ```console
-./api-admin serve
+$ api-admin serve
 ```
 
 This will by default run the server on <http://localhost:8000>, and reload after
 any change to the source code. You can add options to change this
 
 ```console
-$ ./api-admin serve --help
+$ api-admin serve --help
 
 Usage: api-admin serve [OPTIONS]
 
@@ -45,8 +45,21 @@ next section for information.**
 
 ## Run Tests
 
-This API contains Unit and Integration tests using
+This API has **Unit** and **Integration** tests using
 '[Pytest](https://docs.pytest.org){:target="_blank"}'
+
+!!! danger "Database Setup"
+
+    The tests will run using Posgresql against the database specified in the
+    `TEST_DATABASE_URL` environment variable. This should be a test database,
+    and will be cleared before each test run. **Do not use a production database
+    for testing.**
+
+    You will also need to set up your environment file with the correct
+    `DB_USER`, `DB_PASSWORD`, `DB_ADDRESS`, `DB_PORT` and `DB_NAME` values.
+
+    Tests run on GitHub Actions will ignore these settings and use their own
+    hosted Postregsql test database.
 
 To run these from within the virtual environment use the `pytest` command:
 
@@ -69,8 +82,7 @@ Coverage HTML written to dir htmlcov
 
 
 Results (36.04s):
-     157 passed
-       4 skipped
+     161 passed
 
 ```
 

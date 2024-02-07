@@ -9,7 +9,7 @@ Database setup and JWT Secret Key. See the `.env.example` file for how to use.
 !!! info
     The Database and User must already exist in your Postgres database!
 
-    **Note that if you are using the [Docker](../../../development/docker/) container,
+    **Note that if you are using the [Docker](../../development/docker.md) container,
     this is done automatically.**
 
 ## Set the Base URL
@@ -23,7 +23,7 @@ BASE_URL=https://api.my-server.com
 
 ## Configure the database Settings
 
-Edit the below part of the `.env` file to confugure your database. If this is
+Edit the below part of the `.env` file to configure your database. If this is
 incorrect, the API will clear all routes and only display an error.
 
 ```ini
@@ -124,6 +124,14 @@ Below is a full .env file. This can also be found in the root of the API as
 
 The `TEST_DB_xxx` variables are not used at the moment, they will allow the use
 of Postgres as the testing datbase instead of the default SQLite.
+
+!!! tip
+
+    If you use the `develop` branch, Postgres **is** enabled for testing and is
+    used by default.
+
+    The GitHub action will automatically create a Postgres database for testing
+    and run the tests against it.
 
 ```ini
 --8<-- ".env.example"

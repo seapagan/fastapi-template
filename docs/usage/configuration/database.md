@@ -2,11 +2,11 @@
 
 ## Migrate the Database
 
-Make sure you have [configured](../dot-env) the database. Then
+Make sure you have [configured](environment.md) the database. Then
 run the following command to set it up, applying all the required migrations:
 
 ```console
-$ ./api-admin db init
+$ api-admin db init
 ```
 
 (this is the same as running `alembic upgrade head`, though it will downgrade to
@@ -19,7 +19,7 @@ will be asked for a commit message. This will create and apply the migration in
 the same step:
 
 ```console
-$ ./api-admin db revision
+$ api-admin db revision
 Enter the commit message for the revision: Added email to the users model
 
   Generating ..._added_email_to_the_users_model.py ...  done
@@ -48,7 +48,7 @@ init` again before the database is usable.
 Look at the built-in help for more details :
 
 ```console
-$ ./api-admin db --help
+$ api-admin db --help
 Usage: api-admin db [OPTIONS] COMMAND [ARGS]...
 
  Control the Database.

@@ -6,49 +6,52 @@ repos:
     hooks:
       - id: check-yaml
         args: [--unsafe]
-      - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/psf/black
-    rev: 23.10.1
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.13
     hooks:
-      - id: black
-        args: [--line-length=80]
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        args: [--max-line-length=80]
-        additional_dependencies: [flake8-docstrings, flake8-pyproject]
-        # files: ^my_appname/|^test_suite_name/
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: [--profile=black, --line-length=80]
+      - id: ruff
+        name: "lint with ruff"
+      - id: ruff-format
+        name: "format with ruff"
+
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.13.4
+    rev: v0.9.15
     hooks:
       - id: pymarkdown
-        exclude: ^.github/|^docs/
-        args: [-d, "MD014", scan]
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
+        name: "check markdown"
+        exclude: ^.github/|CHANGELOG
+        args: [-d, "MD046", scan]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.8.0" # Use the sha / tag you want to point at
     hooks:
-      - id: pydocstyle
-        additional_dependencies: ["pydocstyle[toml]"]
-        exclude: ^app/migrations/|__init__.py
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
+      - id: mypy
+        name: "Check with Mypy"
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.346
     hooks:
-      - id: bandit
-        args: ["--silent", "-c", "pyproject.toml", "-r"]
-        additional_dependencies: ["bandit[toml]"]
+      - id: pyright
+        name: "Check with Pyright"
+        exclude: tests
+
   - repo: https://github.com/python-poetry/poetry
-    rev: "1.6.0"
+    rev: "1.7.0"
     hooks:
       - id: poetry-check
+        name: "check poetry files"
       # - id: poetry-lock
+
+  - repo: https://github.com/python-poetry/poetry-plugin-export
+    rev: "1.6.0"
+    hooks:
       - id: poetry-export
+        name: "export production dependencies"
         args:
           [
             "--without-hashes",
@@ -56,4 +59,18 @@ repos:
             "requirements.txt",
             "-o",
             "requirements.txt",
+            "--without",
+            "dev",
+          ]
+      - id: poetry-export
+        name: "export development dependencies"
+        args:
+          [
+            "--without-hashes",
+            "-f",
+            "requirements.txt",
+            "-o",
+            "requirements-dev.txt",
+            "--with",
+            "dev",
           ]

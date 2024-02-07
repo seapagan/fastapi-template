@@ -1,19 +1,23 @@
 """Define the Email Manager."""
-from pathlib import Path
+from __future__ import annotations
 
-from fastapi import BackgroundTasks
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional
+
+from fastapi import BackgroundTasks  # noqa: TCH002
 from fastapi.responses import JSONResponse
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
-from pydantic import EmailStr
 
 from app.config.settings import get_settings
-from app.schemas.email import EmailSchema, EmailTemplateSchema
+
+if TYPE_CHECKING:  # pragma: no cover
+    from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
 class EmailManager:
     """Class to manage all Email operations."""
 
-    def __init__(self, suppress_send: bool = False):
+    def __init__(self, suppress_send: Optional[bool] = False) -> None:
         """Initialize the EmailManager.
 
         Define the configuration instance.
@@ -21,7 +25,7 @@ class EmailManager:
         self.conf = ConnectionConfig(
             MAIL_USERNAME=get_settings().mail_username,
             MAIL_PASSWORD=get_settings().mail_password,
-            MAIL_FROM=EmailStr(get_settings().mail_from),
+            MAIL_FROM=get_settings().mail_from,
             MAIL_PORT=get_settings().mail_port,
             MAIL_SERVER=get_settings().mail_server,
             MAIL_FROM_NAME=get_settings().mail_from_name,
@@ -64,7 +68,7 @@ class EmailManager:
 
     def template_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailTemplateSchema
-    ):
+    ) -> None:
         """Send an email using a Jinja Template."""
         message = MessageSchema(
             subject=email_data.subject,

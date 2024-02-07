@@ -1,34 +1,34 @@
 """Helper classes and functions for config use."""
-import os
 import sys
 from dataclasses import dataclass
+from importlib import resources
 from pathlib import Path
-from typing import Dict, List
 
 import tomli
 
 
-def get_toml_path():
+def get_project_root() -> Path:
+    """Return the full path of the project root."""
+    return (Path(str(resources.files("app"))) / "..").resolve()
+
+
+def get_toml_path() -> Path:
     """Return the full path of the pyproject.toml."""
-    script_dir = Path(os.path.dirname(os.path.realpath(__name__)))
-
-    return script_dir / "pyproject.toml"
+    return get_project_root() / "pyproject.toml"
 
 
-def get_config_path():
+def get_config_path() -> Path:
     """Return the full path of the custom config file."""
-    script_dir = Path(os.path.dirname(os.path.realpath(sys.argv[0])))
-    return script_dir / "app/config" / "metadata.py"
+    return get_project_root() / "app" / "config" / "metadata.py"
 
 
 def get_api_version() -> str:
     """Return the API version from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as file:
+        toml_path = get_toml_path()
+        with toml_path.open(mode="rb") as file:
             config = tomli.load(file)
-            version = config["tool"]["poetry"]["version"]
-
-            return version
+            version: str = config["tool"]["poetry"]["version"]
 
     except KeyError as exc:
         print(f"Cannot find the API version in the pyproject.toml file : {exc}")
@@ -38,14 +38,18 @@ def get_api_version() -> str:
         print(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
 
+    else:
+        return version
 
-def get_api_details() -> tuple[str, str, List]:
+
+def get_api_details() -> tuple[str, str, list[str]]:
     """Return the API Name from the pyproject.toml file."""
     try:
-        with open(get_toml_path(), "rb") as file:
+        toml_path = get_toml_path()
+        with toml_path.open(mode="rb") as file:
             config = tomli.load(file)
-            name = config["tool"]["poetry"]["name"]
-            desc = config["tool"]["poetry"]["description"]
+            name: str = config["tool"]["poetry"]["name"]
+            desc: str = config["tool"]["poetry"]["description"]
             authors = config["tool"]["poetry"]["authors"]
 
             if not isinstance(authors, list):
@@ -79,7 +83,7 @@ class MetadataBase:
 
 
 # List of acceptable Opensource Licenses with a link to their text.
-LICENCES: List[Dict[str, str]] = [
+LICENCES: list[dict[str, str]] = [
     {"name": "Apache2", "url": "https://opensource.org/licenses/Apache-2.0"},
     {"name": "BSD3", "url": "https://opensource.org/licenses/BSD-3-Clause"},
     {"name": "BSD2", "url": "https://opensource.org/licenses/BSD-2-Clause"},
@@ -112,7 +116,7 @@ custom_metadata = MetadataBase(
         "url": "{{ website }}",
     },
     email="{{ email }}",
-    year="{{ this_year }}"
+    year="{{ this_year }}",
 )
 
 """

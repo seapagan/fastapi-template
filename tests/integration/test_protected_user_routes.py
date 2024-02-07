@@ -1,12 +1,12 @@
 """Integration tests for user routes."""
 
 import pytest
+from fastapi import status
 
 from app.managers.user import pwd_context
 
 
 @pytest.mark.integration()
-@pytest.mark.usefixtures("get_db")
 class TestProtectedUserRoutes:
     """Ensure the user routes are protected by authentication.
 
@@ -23,7 +23,7 @@ class TestProtectedUserRoutes:
     }
 
     test_routes = [
-        ["/users", "get"],
+        ["/users/", "get"],
         ["/users/me", "get"],
         ["/users/1/make-admin", "post"],
         ["/users/1/password", "post"],
@@ -33,28 +33,32 @@ class TestProtectedUserRoutes:
         ["/users/1", "delete"],
     ]
 
+    @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "route",
         test_routes,
     )
-    def test_routes_no_auth(self, test_app, route):
+    async def test_routes_no_auth(self, client, route) -> None:
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_app, method)
-        response = fn(route_name)
+        fn = getattr(client, method)
+        response = await fn(route_name)
 
-        assert response.status_code == 403
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Not authenticated"}
 
+    @pytest.mark.asyncio()
     @pytest.mark.parametrize(
         "route",
         test_routes,
     )
-    def test_routes_bad_auth(self, test_app, route):
+    async def test_routes_bad_auth(self, client, route) -> None:
         """Test that routes are protected by authentication."""
         route_name, method = route
-        fn = getattr(test_app, method)
-        response = fn(route_name, headers={"Authorization": "Bearer BADBEEF"})
+        fn = getattr(client, method)
+        response = await fn(
+            route_name, headers={"Authorization": "Bearer BADBEEF"}
+        )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json() == {"detail": "That token is Invalid"}

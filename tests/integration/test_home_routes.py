@@ -1,20 +1,23 @@
 """Test the home resource routes."""
 import pytest
+from fastapi import status
 
 
 @pytest.mark.integration()
 class TestHomeRoutes:
     """Test the home resource routes."""
 
-    def test_root_json(self, test_app):
+    @pytest.mark.asyncio()
+    async def test_root_json(self, client) -> None:
         """Test the root route returns a JSON response."""
-        response = test_app.get("/")
-        assert response.status_code == 200
+        response = await client.get("/")
+        assert response.status_code == status.HTTP_200_OK
         assert list(response.json().keys()) == ["info", "repository"]
 
-    def test_root_html(self, test_app):
+    @pytest.mark.asyncio()
+    async def test_root_html(self, client) -> None:
         """Test the root route returns an HTML response when requested."""
-        response = test_app.get("/", headers={"Accept": "text/html"})
-        assert response.status_code == 200
+        response = await client.get("/", headers={"Accept": "text/html"})
+        assert response.status_code == status.HTTP_200_OK
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         assert response.text.startswith("<!DOCTYPE html>")

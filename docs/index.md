@@ -1,9 +1,12 @@
 # Welcome to FastAPI-Template
 
-!!! warning "ALPHA Status!"
-    This documentation is currently **Alpha** status and I have much still to add.
+!!! warning "BETA Docs!"
 
-!!! danger "Version Refactor"
+    This documentation is currently **Beta** status as it
+    is still under active development. The in-depth Reference and Tutorial
+    sections are not yet written.
+
+!!! info "Version Refactor"
 
     This template versioning has been refactored to start from **Verison 0.4.0**
     . The original template was written for my own use and probably promoted to
@@ -54,7 +57,7 @@ following advantages to starting your own from scratch :
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
-The template **Requires Python 3.8.1+**
+The template **Requires Python 3.9+**
 
 ## Versioning
 
@@ -107,10 +110,9 @@ Coffee!](https://www.buymeacoffee.com/seapagan){:target="_blank"} 😃
 ## Funding Link
 
 The template does include a `.github/FUNDING.yml` file which contains a link to
-my [Buy Me A Coffee](https://www.buymeacoffee.com/seapagan) page. You can edit
-or delete this as you will or replace with your own details. If you really
-appreciate the Template, feel free to leave my details there in addition to your
-own, though this is entirely optional 😊
+some sponsor pages. You can edit or delete this as you will or replace with your
+own details. If you really appreciate the Template, feel free to leave my
+details there in addition to your own, though this is entirely optional 😊
 
 The funding file allows your GitHub visitors to sponsor or tip you as a thanks
 for your work.
