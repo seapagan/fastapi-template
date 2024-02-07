@@ -1,4 +1,5 @@
 """Add a user from the command line, optionally make superuser."""
+import logging
 from asyncio import run as aiorun
 from typing import List
 
@@ -97,6 +98,7 @@ def create(
     Values are either taken from the command line options, or interactively for
     any that are missing.
     """
+    logging.getLogger("passlib").setLevel(logging.ERROR)
 
     async def create_user(user_data: dict):
         """Asny function to create a new user."""
