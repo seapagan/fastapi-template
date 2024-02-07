@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4.0"
+python = ">=3.9.0,<4.0"
 fastapi = "^0.99.1"
 alembic = "^1.11.1"
 databases = "^0.7.0"
@@ -85,7 +85,7 @@ lint = "pylint **/*.py"
 _publish_docs = "mkdocs gh-deploy"
 _build_docs = "mkdocs build"
 openapi = "./api-admin docs openapi --prefix=docs/reference"
-"docs:publish"= ["openapi", "_publish_docs"]
+"docs:publish" = ["openapi", "_publish_docs"]
 "docs:build" = ["openapi", "_build_docs"]
 "docs:serve" = "mkdocs serve -a 0.0.0.0:9000"
 
@@ -104,21 +104,14 @@ skips = ['*_test.py', '*/test_*.py']
 # add-ignore = ["D104"]
 
 [tool.pytest.ini_options]
-addopts = [
-  "--cov",
-  "--cov-report", "term-missing",
-  "--cov-report", "html",
-  ]
+addopts = ["--cov", "--cov-report", "term-missing", "--cov-report", "html"]
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:Deprecated API features detected:DeprecationWarning",
   "ignore::sqlalchemy.exc.RemovedIn20Warning",
 ]
 mock_use_standalone_module = true
-markers = [
-  "unit: Unit tests",
-  "integration: Integration tests",
-]
+markers = ["unit: Unit tests", "integration: Integration tests"]
 testpaths = ["tests"]
 
 [tool.coverage.run]
