@@ -17,7 +17,6 @@ Partial documentation is now availiable on it's own page at
 finished will include full usage information and how-to's.
 
 - [Important note on Versioning](#important-note-on-versioning)
-- [Development Release](#development-release)
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
@@ -49,22 +48,18 @@ previous version. This will be in the form of a `.patch` file which can be
 applied to their project using the `git apply` command. This will be documented
 in the release notes.
 
-## Development Release
+If you prefer to continue using the 0.4.x branch, you can find it
+[here](https://github.com/seapagan/fastapi-template/tree/0.4.2){:target="_blank"}.
 
-Actual development work is carried out on the
-[`develop`](https://github.com/seapagan/fastapi-template/tree/develop) branch.
-When it comes time for a non-alpha/beta release, the `develop` branch will be
-merged into `main` and a new release will be made from there.
+To use this branch you will need to clone the repository and checkout the
+`0.4.2` branch.
 
-Check out the
-[CHANGELOG](https://github.com/seapagan/fastapi-template/blob/develop/CHANGELOG.md)
-on that branch for details of what has changed since the last release.
+```console
+git clone -b 0.4.2 https://github.com/seapagan/fastapi-template.git
+```
 
-The current development release is [Version
-0.5.0-beta1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-beta1).
-This is functional but still in development though is functionally complete for
-the verison 0.5.0 release. It is not fully backwards compatible with previous
-versions, if they have been customized though.
+Be aware that this branch will not be maintained and will not receive any
+updates or bug fixes.
 
 ## Functionality
 

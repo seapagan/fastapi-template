@@ -3,6 +3,21 @@
 From version **0.5.0,** there have been some **major breaking changes to the
 API**.
 
+!!! note "0.4.x Branch"
+
+    If you prefer to continue using the 0.4.x branch, you can find it
+    [here](https://github.com/seapagan/fastapi-template/tree/0.4.2){:target="_blank"}.
+
+    To use this branch you will need to clone the repository and checkout the
+    `0.4.2` branch.
+
+    ```console
+    git clone -b 0.4.2 https://github.com/seapagan/fastapi-template.git
+    ```
+
+    Be aware that this branch will not be maintained and will not receive any
+    updates or bug fixes.
+
 ## Migrated to Async SQLAlchemy 2.0 for database access
 
 Previously, we used
