@@ -5,8 +5,29 @@ project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
-## [v0.5.00-beta1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.00-beta1) (February 01, 2024)
+**_'A New Hope'_**
+
+**Breaking Changes**
+
+- Ensure user reads the release notes for the current breaking changes ([#377](https://github.com/seapagan/fastapi-template/pull/377)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Bump ruff from 0.1.15 to 0.2.0 ([#375](https://github.com/seapagan/fastapi-template/pull/375)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pyright from 1.1.349 to 1.1.350 ([#374](https://github.com/seapagan/fastapi-template/pull/374)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest-sugar from 0.9.7 to 1.0.0 ([#373](https://github.com/seapagan/fastapi-template/pull/373)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-git-revision-date-localized-plugin from 1.2.2 to 1.2.4 ([#372](https://github.com/seapagan/fastapi-template/pull/372)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump fastapi from 0.109.0 to 0.109.2 ([#371](https://github.com/seapagan/fastapi-template/pull/371)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.6.0 to 2.6.1 ([#370](https://github.com/seapagan/fastapi-template/pull/370)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-material from 9.5.6 to 9.5.7 ([#369](https://github.com/seapagan/fastapi-template/pull/369)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pyfakefs from 5.3.4 to 5.3.5 ([#368](https://github.com/seapagan/fastapi-template/pull/368)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 22.6.0 to 22.7.0 ([#367](https://github.com/seapagan/fastapi-template/pull/367)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0.patch)
+
+## [v0.5.0-beta1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-beta1) (February 01, 2024)
 
 **Closed Issues**
 
@@ -19,19 +40,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 **Dependency Updates**
 
+- Bump ruff from 0.1.13 to 0.1.15 ([#364](https://github.com/seapagan/fastapi-template/pull/364)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.5.3 to 2.6.0 ([#363](https://github.com/seapagan/fastapi-template/pull/363)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-minify-plugin from 0.7.2 to 0.8.0 ([#361](https://github.com/seapagan/fastapi-template/pull/361)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-material from 9.5.3 to 9.5.6 ([#360](https://github.com/seapagan/fastapi-template/pull/360)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pyright from 1.1.348 to 1.1.349 ([#358](https://github.com/seapagan/fastapi-template/pull/358)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest from 7.4.4 to 8.0.0 ([#357](https://github.com/seapagan/fastapi-template/pull/357)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump uvicorn from 0.27.0 to 0.27.0.post1 ([#356](https://github.com/seapagan/fastapi-template/pull/356)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest-watcher from 0.3.4 to 0.3.5 ([#355](https://github.com/seapagan/fastapi-template/pull/355)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 21.0.1 to 22.6.0 ([#354](https://github.com/seapagan/fastapi-template/pull/354)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pyright from 1.1.346 to 1.1.348 ([#351](https://github.com/seapagan/fastapi-template/pull/351)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump mkdocs-swagger-ui-tag from 0.6.7 to 0.6.8 ([#349](https://github.com/seapagan/fastapi-template/pull/349)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pymarkdownlnt from 0.9.15 to 0.9.16 ([#348](https://github.com/seapagan/fastapi-template/pull/348)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pyfakefs from 5.3.2 to 5.3.4 ([#347](https://github.com/seapagan/fastapi-template/pull/347)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump uvicorn from 0.25.0 to 0.27.0 ([#346](https://github.com/seapagan/fastapi-template/pull/346)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump asyncclick from 8.1.3.4 to 8.1.7.1 ([#345](https://github.com/seapagan/fastapi-template/pull/345)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump actions/cache from 3 to 4 ([#344](https://github.com/seapagan/fastapi-template/pull/344)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump actions/dependency-review-action from 3 to 4 ([#343](https://github.com/seapagan/fastapi-template/pull/343)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump fastapi from 0.103.0 to 0.109.0 ([#339](https://github.com/seapagan/fastapi-template/pull/339)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump jinja2 from 3.1.2 to 3.1.3 ([#336](https://github.com/seapagan/fastapi-template/pull/336)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 15 more dependency updates*
+- *and 24 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.00-beta1) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.00-beta1.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.00-beta1.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.0-beta1) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.0-beta1.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-alpha3...v0.5.0-beta1.patch)
 
 ## [v0.5.0-alpha3](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-alpha3) (December 12, 2023)
 
