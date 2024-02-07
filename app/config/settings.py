@@ -75,6 +75,10 @@ class Settings(BaseSettings):
     mail_use_credentials: bool = True
     mail_validate_certs: bool = True
 
+    # gatekeeper settings!
+    # this is to ensure that people read the damn instructions and changelogs
+    i_read_the_damn_docs: bool = False
+
 
 @lru_cache
 def get_settings() -> Settings:
