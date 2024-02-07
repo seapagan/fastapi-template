@@ -132,14 +132,11 @@ poe pre
 
 We are using [pytest](https://docs.pytest.org/) for testing.
 
-At the moment the test framework is set up but we only have about 50% coverage.
-We will be adding more tests as we go along - and most definitely welcome any
-contributions to this area!
-
 If you add any new features, please add tests for them. This will help us to
 ensure that the code is working as expected and will prevent any regressions.
-_Currently we are not enforcing this until we have better coverage of the code -
-**however if you break any existing tests, the CI will fail.**_
+
+GitHub Actions will run the tests on every commit and PR, **failing tests will
+block the PR from being merged**.
 
 There is a task set up to run tests:
 
