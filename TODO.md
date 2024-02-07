@@ -43,9 +43,9 @@
 
 ## Testing
 
-- fix all the tests that were broken by the recent changes to SQLAlchemy 2.0
-  \[`done for the existing Unit tests, but not for the Integration tests`\]
+- Speed up tests generally
 - allow choice of Postgresql or SQLite for testing (currently only Postgresql)
+- Fix tests under Docker - currently fail d/t test database not existing
 
 ## CLI
 
