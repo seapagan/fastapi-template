@@ -16,6 +16,8 @@ from app.database.db import async_session
 from app.resources import config_error
 from app.resources.routes import api_router
 
+BLIND_USER_ERROR = 66
+
 # gatekeeper to ensure the user has read the docs and noted the major changes
 # since the last version.
 if not get_settings().i_read_the_damn_docs:
@@ -25,7 +27,7 @@ if not get_settings().i_read_the_damn_docs:
         "\nThe API has changed massively since version 0.4.0 and you need to "
         "familiarize yourself with the new breaking changes.\n"
     )
-    sys.exit(666)
+    sys.exit(BLIND_USER_ERROR)
 
 
 @asynccontextmanager
