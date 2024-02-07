@@ -32,12 +32,9 @@ async def lifespan(app: FastAPI):
         )
         app.routes.clear()
         app.include_router(config_error.router)
-    finally:
-        await database.disconnect()
 
     yield
-    # we would normally put any cleanup code here, but we don't have any at the
-    # moment so we just yield.
+    await database.disconnect()
 
 
 app = FastAPI(
