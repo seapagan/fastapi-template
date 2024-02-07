@@ -33,7 +33,7 @@ finished will include full usage information and how-to's.
 
 ## Important note on Versioning
 
-This template versioning has been refactored to start from **Verison 0.4.0**.
+This template versioning has been refactored to start from **Version 0.4.0**.
 
 The original template was written for my own use and probably promoted to V1.0.0
 before it should have been, and there have been many updates and fixes since
@@ -49,7 +49,7 @@ applied to their project using the `git apply` command. This will be documented
 in the release notes.
 
 If you prefer to continue using the 0.4.x branch, you can find it
-[here](https://github.com/seapagan/fastapi-template/tree/0.4.2){:target="_blank"}.
+[here](https://github.com/seapagan/fastapi-template/tree/0.4.2).
 
 To use this branch you will need to clone the repository and checkout the
 `0.4.2` branch.
