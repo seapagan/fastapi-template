@@ -26,6 +26,7 @@ if not get_settings().i_read_the_damn_docs:
         "settings in the .env file!\n"
         "\nThe API has changed massively since version 0.4.0 and you need to "
         "familiarize yourself with the new breaking changes.\n"
+        "\nSee https://api-template.seapagan.net/important/ for information.\n"
     )
     sys.exit(BLIND_USER_ERROR)
 

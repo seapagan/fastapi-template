@@ -64,10 +64,11 @@ markdown_extensions:
 
 nav:
   - Introduction: index.md
+  - Breaking Changes: important.md
   - Usage:
       - Installation: usage/installation.md
       - Configuration:
-          - Environment File: usage/configuration/dot-env.md
+          - Environment File: usage/configuration/environment.md
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md

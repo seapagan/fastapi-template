@@ -2,7 +2,7 @@
 
 ## Migrate the Database
 
-Make sure you have [configured](dot-env.md) the database. Then
+Make sure you have [configured](environment.md) the database. Then
 run the following command to set it up, applying all the required migrations:
 
 ```console

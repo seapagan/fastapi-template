@@ -1,10 +1,12 @@
 # Welcome to FastAPI-Template
 
 !!! warning "BETA Docs!"
-    This documentation is currently **Beta** status as it is still under active
-    development.
 
-!!! danger "Version Refactor"
+    This documentation is currently **Beta** status as it
+    is still under active development. The in-depth Reference and Tutorial
+    sections are not yet written.
+
+!!! info "Version Refactor"
 
     This template versioning has been refactored to start from **Verison 0.4.0**
     . The original template was written for my own use and probably promoted to
@@ -55,7 +57,7 @@ following advantages to starting your own from scratch :
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
-The template **Requires Python 3.8.1+**
+The template **Requires Python 3.9+**
 
 ## Versioning
 
