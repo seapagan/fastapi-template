@@ -205,15 +205,12 @@ See the [TODO.md](TODO.md) file for plans.
 
 ## Testing
 
-**IMPORTANT : All tests are currently disabled on the `develop` branch until
-they are properly re-written for async support. I expect to get the Unit tests
-back quite soon, the integration tests will take a bit longer 😔**
-
 This project has a test suite for Integration and Unit tests. We use
 [pytest](https://docs.pytest.org) for this.
 
 Currently you need a Postgresql database running for this to work, however
-SQLite support is planned to be re-added.
+SQLite support is planned to be re-added. You can easily set up a Postgresql
+database using Docker.
 
 Before running the tests, you need to create a dedicated test database, in is
 assumed that the server, username and password are the same as for the main

@@ -62,6 +62,7 @@
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?
 - add commands to CLI to serve, build, publish to gh-pages etc
+- Add info how to create a temporary database for testing (eg using Docker)
 
 ## Quotas
 
