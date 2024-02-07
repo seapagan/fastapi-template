@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from rich import print  # pylint: disable=W0622
 
@@ -41,11 +40,11 @@ app = FastAPI(
     title=get_settings().api_title,
     description=get_settings().api_description,
     redoc_url=None,
-    docs_url=None,  # we customize this ourselves
     license_info=get_settings().license_info,
     contact=get_settings().contact,
     version=get_api_version(),
     lifespan=lifespan,
+    swagger_ui_parameters={"defaultModelsExpandDepth": 0},
 )
 
 app.include_router(api_router)
@@ -61,25 +60,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# --------------------- override the default Swagger docs -------------------- #
-@app.get("/docs", include_in_schema=False)
-async def custom_swagger_ui_html():
-    """Customize the default Swagger docs.
-
-    In this case we merely override the default page title.
-    """
-    return get_swagger_ui_html(
-        openapi_url=app.openapi_url,  # type: ignore
-        title=f"{app.title} | Documentation",
-        oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
-        swagger_ui_parameters={"defaultModelsExpandDepth": 0},
-        swagger_js_url=(
-            "https://cdn.jsdelivr.net/npm/"
-            "swagger-ui-dist@4/swagger-ui-bundle.js"
-        ),
-        swagger_css_url=(
-            "https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui.css"
-        ),
-    )

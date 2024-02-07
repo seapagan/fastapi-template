@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "API Template"
-version = "0.4.0"
+version = "0.4.2"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9.0,<4.0"
-fastapi = "^0.99.1"
+fastapi = "^0.109.1"
 alembic = "^1.11.1"
 databases = "^0.7.0"
 SQLAlchemy = "^1.4.49"
