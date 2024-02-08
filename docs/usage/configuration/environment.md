@@ -21,6 +21,19 @@ system. Knowing this allows the API to build paths in responses and internally.
 BASE_URL=https://api.my-server.com
 ```
 
+## Set the API Root Prefix (Optional)
+
+If you want to add a prefix to all the routes, you can set it here. This is
+useful if you are running multiple APIs on the same server and want to avoid
+route conflicts, or for versioning.
+
+```ini
+API_ROOT=/api-v1
+```
+
+This will prefix all routes with `/api-v1`, so `/users` becomes `/api-v1/users`
+and so on. If this is not set, the API will use the root `/` as the prefix.
+
 ## Configure the database Settings
 
 Edit the below part of the `.env` file to configure your database. If this is

@@ -3,6 +3,7 @@ import sys
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config.helpers import get_project_root
@@ -32,6 +33,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=env_file)
 
     base_url: str = "http://localhost:8000"
+    api_root: str = ""
 
     cors_origins: str = "*"
 
@@ -78,6 +80,13 @@ class Settings(BaseSettings):
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
+
+    @validator("api_root", pre=True)
+    def check_api_root(cls, value: str) -> str:
+        """Ensure the api_root does not end with a slash."""
+        if value and value.endswith("/"):
+            return value[:-1]
+        return value
 
 
 @lru_cache
