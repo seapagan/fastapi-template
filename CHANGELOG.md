@@ -5,13 +5,65 @@ project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+
+
+These are the changes that have been merged to the repository since the last
+release. If you want to try out these changes, you can install the latest
+version from the main branch by running:
+
+```console
+$ pip install git+https://github.com/seapagan/github-changelog-md
+```
+
+or, if using poetry:
+
+```console
+$ poetry add git+https://github.com/seapagan/github-changelog-md
+```
+Everything in this section will be included in the next official release.
+
+
+**Closed Issues**
+
+- Run Tests against Postgres database ([#102](https://github.com/seapagan/fastapi-template/issues/102)) by [pdrivom](https://github.com/pdrivom)
+
+**New Features**
+
+- Allow setting a custom API root path e.g. "/api/v1" to prepend to all routes ([#386](https://github.com/seapagan/fastapi-template/pull/386)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Bump github-changelog-md from 0.8.0 to 0.8.1 ([#387](https://github.com/seapagan/fastapi-template/pull/387)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 22.7.0 to 23.1.0 ([#385](https://github.com/seapagan/fastapi-template/pull/385)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest-watcher from 0.3.5 to 0.4.1 ([#384](https://github.com/seapagan/fastapi-template/pull/384)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pymarkdownlnt from 0.9.16 to 0.9.17 ([#383](https://github.com/seapagan/fastapi-template/pull/383)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-material from 9.5.7 to 9.5.8 ([#382](https://github.com/seapagan/fastapi-template/pull/382)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump ruff from 0.2.0 to 0.2.1 ([#380](https://github.com/seapagan/fastapi-template/pull/380)) by [dependabot[bot]](https://github.com/apps/dependabot)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.patch)
+
 ## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
 **_'A New Hope'_**
 
+This is the long-delayed release of `0.5.0` :partying_face:
+
+There are many breaking changes; check the documentation, discussions and all the 0.5.0 alpha and beta releases for information.
+
+- Make the API an installable package and CLI command ([#276](https://github.com/seapagan/fastapi-template/pull/276)) by [seapagan](https://github.com/seapagan)
+- Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
+
+## [v0.4.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.2) (February 07, 2024)
+
+**_'The Old Guard'_**
+
 **Breaking Changes**
 
 - Ensure user reads the release notes for the current breaking changes ([#377](https://github.com/seapagan/fastapi-template/pull/377)) by [seapagan](https://github.com/seapagan)
+- Merge version 0.5.0 ([#281](https://github.com/seapagan/fastapi-template/pull/281)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
@@ -25,7 +77,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Bump pyfakefs from 5.3.4 to 5.3.5 ([#368](https://github.com/seapagan/fastapi-template/pull/368)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump faker from 22.6.0 to 22.7.0 ([#367](https://github.com/seapagan/fastapi-template/pull/367)) by [dependabot[bot]](https://github.com/apps/dependabot)
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.5.0.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.4.2) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.4.2.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0-beta1...v0.4.2.patch)
 
 ## [v0.5.0-beta1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0-beta1) (February 01, 2024)
 
