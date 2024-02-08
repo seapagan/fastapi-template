@@ -2,8 +2,6 @@
 
 ## General
 
-- Allow a custom prefix to be added to all routes. For example `/api/v1` to
-  allow for API versioning.
 - Add an option to deactivate the root route `/` so it can be handled by a
   frontend instead. This also removes the index boilerplate.
 - add time-limited bans (configurable)
