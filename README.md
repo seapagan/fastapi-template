@@ -12,11 +12,12 @@ with Authorization already baked-in.
 
 <!-- Full documentation is now availiable on it's own page [here][doc]. Please visit
 this for full usage information, how-to's and more. -->
-Partial documentation is now availiable on it's own page at
+Documentation for this project is now availiable on it's own page at
 [https://api-template.seapagan.net][doc]. This is a work in progress, and when
 finished will include full usage information and how-to's.
 
 - [Important note on Versioning](#important-note-on-versioning)
+- [Changes from version 0.4.x](#changes-from-version-04x)
 - [Functionality](#functionality)
 - [Installation](#installation)
 - [Docker](#docker)
@@ -47,6 +48,15 @@ All releases from now on will also contain a Git patch to upgrade from the
 previous version. This will be in the form of a `.patch` file which can be
 applied to their project using the `git apply` command. This will be documented
 in the release notes.
+
+## Changes from version 0.4.x
+
+Starting from version 0.5.0, the template has been refactored to use SQLAlchemy
+2.0 ORM instead of `encode/databases` for database access. This allows for a
+more flexible and powerful Asynchronous database access but does need a bit of
+refactoring for any existing projects. See the [documentation][breaking] for
+more information. I will also be adding a migration guide for those who wish to
+upgrade their existing projects (time permitting).
 
 If you prefer to continue using the 0.4.x branch, you can find it
 [here](https://github.com/seapagan/fastapi-template/tree/0.4.2).
@@ -270,3 +280,4 @@ this template, please feel free to start a discussion.
 
 [doc]:https://api-template.seapagan.net
 [contrib]:https://api-template.seapagan.net/contributing/
+[breaking]:https://api-template.seapagan.net/important/
