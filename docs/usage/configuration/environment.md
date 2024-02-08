@@ -28,11 +28,13 @@ useful if you are running multiple APIs on the same server and want to avoid
 route conflicts, or for versioning.
 
 ```ini
-API_ROOT=/api-v1
+API_ROOT=/api/v1
 ```
 
-This will prefix all routes with `/api-v1`, so `/users` becomes `/api-v1/users`
-and so on. If this is not set, the API will use the root `/` as the prefix.
+This will prefix all routes with `/api/v1`, so `/users` becomes `/api/v1/users`
+and so on. If this is not set, the API will use the root `/` as the prefix. Do
+not add a trailing `/` to the prefix, though if present it will be stripped
+anyway.
 
 ## Configure the database Settings
 
