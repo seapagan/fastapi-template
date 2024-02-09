@@ -34,6 +34,7 @@ class Settings(BaseSettings):
 
     base_url: str = "http://localhost:8000"
     api_root: str = ""
+    no_root_route: bool = False
 
     cors_origins: str = "*"
 

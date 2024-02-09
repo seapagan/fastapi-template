@@ -36,6 +36,24 @@ and so on. If this is not set, the API will use the root `/` as the prefix. Do
 not add a trailing `/` to the prefix, though if present it will be stripped
 anyway.
 
+## Disable the Root Route
+
+By default, the root route `/` is enabled and returns an HTML page with a
+welcome message. If you want to disable this, set the below variable to `False`.
+
+```ini
+NO_ROOT_ROUTE=True
+```
+
+If the variable is not set, or set to `False`, the root route will be enabled as
+usual. If set to `True`, the root route will return a 404 error and a JSON
+message.
+
+!!! note "API Root Prefix"
+    This works in conjunction with the `API_ROOT` setting, so if the root route
+    is disabled and the API Root is set to `/api/v1`, the API will return a 404
+    error and a JSON message when accessing `/api/v1`.
+
 ## Configure the database Settings
 
 Edit the below part of the `.env` file to configure your database. If this is

@@ -61,6 +61,7 @@ app = FastAPI(
     title=get_settings().api_title,
     description=get_settings().api_description,
     redoc_url=None,
+    docs_url=f"{get_settings().api_root}/docs",
     license_info=get_settings().license_info,
     contact=get_settings().contact,
     version=get_api_version(),
@@ -71,7 +72,11 @@ app = FastAPI(
 app.include_router(api_router)
 
 static_dir = get_project_root() / "static"
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+app.mount(
+    f"{get_settings().api_root}/static",
+    StaticFiles(directory=static_dir),
+    name="static",
+)
 
 # set up CORS
 cors_list = (get_settings().cors_origins).split(",")
