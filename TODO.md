@@ -2,8 +2,6 @@
 
 ## General
 
-- Add an option to deactivate the root route `/` so it can be handled by a
-  frontend instead. This also removes the index boilerplate.
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
