@@ -31,6 +31,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Add option to disable the '/' route if required ([#388](https://github.com/seapagan/fastapi-template/pull/388)) by [seapagan](https://github.com/seapagan)
 - Allow setting a custom API root path e.g. "/api/v1" to prepend to all routes ([#386](https://github.com/seapagan/fastapi-template/pull/386)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
