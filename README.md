@@ -1,5 +1,6 @@
 # FastAPI Application Template <!-- omit in toc -->
 
+![GitHub Release](https://img.shields.io/github/v/release/seapagan/fastapi-template)
 [![Ruff](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml)
 [![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/seapagan/fastapi-template/branch/main/graph/badge.svg?token=IORAMTCT0X)](https://codecov.io/gh/seapagan/fastapi-template)
@@ -148,6 +149,13 @@ website .
 Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
+
+Note that when run from docker, the API is exposed on port `8001` instead of
+`8000`.
+
+Also, unlike before version 0.5.1, it is no longer required to change the
+`DB_ADDRESS` environment variable when running on docker, this is taken care of
+automatically.
 
 ### Develop on containers
 

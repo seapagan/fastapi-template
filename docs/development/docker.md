@@ -10,8 +10,14 @@ file:
 docker compose up
 ```
 
-This will by default run the server on <http://localhost:8000>, and reload after
+This will by default run the server on <http://localhost:8001>, and reload after
 any change to the source code.
+
+!!! danger "Port Change from `8000` to `8001`"
+    The default API port while running under Docker is `8001` to avoid conflicts
+    with any other services you may have running or even a local session of this
+    API. If you want to change this, you can do so by editing the
+    `docker-compose.yml` file.
 
 If you need more control, you can run `uvicorn` directly :
 
