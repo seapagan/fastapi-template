@@ -3,8 +3,8 @@
 ## Set up the `.env` file
 
 Database (and other) settings can be read from environment variables or from a
-`.env` file in the project root. By default, these are only used for the
-Database setup and JWT Secret Key. See the `.env.example` file for how to use.
+`.env` file in the project root. See the `.env.example` file for how to use, in
+fact you can just copy this file to `.env` and edit the settings as required.
 
 !!! info
     The Database (and test database if you are running the tests) and User must

@@ -150,6 +150,13 @@ Visit our [Documentation Pages][doc] for usage, how-to's and more.
 
 ## Docker
 
+Note that when run from docker, the API is exposed on port `8001` instead of
+`8000`.
+
+Also, unlike before version 0.5.1, it is no longer required to change the
+`DB_ADDRESS` environment variable when running on docker, this is taken care of
+automatically.
+
 ### Develop on containers
 
 > :warning: For local use rename `.env.example` to `.env`.

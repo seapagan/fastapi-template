@@ -55,7 +55,7 @@ $ api-admin user verify 23
 
 ## Search for a user
 
-- This functionality is #Currently not implemented*
+- This functionality is *Currently not implemented*
 
 ## Ban or Unban a specific User
 
