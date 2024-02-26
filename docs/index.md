@@ -1,5 +1,7 @@
 # Welcome to FastAPI-Template
 
+![GitHub Release](https://img.shields.io/github/v/release/seapagan/fastapi-template)
+
 !!! warning "BETA Docs!"
 
     This documentation is currently **Beta** status as it
@@ -61,9 +63,9 @@ The template **Requires Python 3.9+**
 
 ## Versioning
 
-!!! important "Current Release version is {{ latest-git-tag }}"
+!!! warning "Beta Software!"
 
-    This template is still in very active development and is not yet ready for
+    This template is still in active development and may not yet ready for
     full production use. However, I am currently using it to develop my own
     projects, which include some production API's without issues. I will update
     the template as I find bugs or add new features. I will also be adding more
