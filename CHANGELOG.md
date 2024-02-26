@@ -34,14 +34,23 @@ Everything in this section will be included in the next official release.
 - Add option to disable the '/' route if required ([#388](https://github.com/seapagan/fastapi-template/pull/388)) by [seapagan](https://github.com/seapagan)
 - Allow setting a custom API root path e.g. "/api/v1" to prepend to all routes ([#386](https://github.com/seapagan/fastapi-template/pull/386)) by [seapagan](https://github.com/seapagan)
 
+**Documentation**
+
+- Update `.env.example`, and remove references to old 'api-admin' script from docs ([#407](https://github.com/seapagan/fastapi-template/pull/407)) by [seapagan](https://github.com/seapagan)
+
 **Dependency Updates**
 
-- Bump github-changelog-md from 0.8.0 to 0.8.1 ([#387](https://github.com/seapagan/fastapi-template/pull/387)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump faker from 22.7.0 to 23.1.0 ([#385](https://github.com/seapagan/fastapi-template/pull/385)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pytest-watcher from 0.3.5 to 0.4.1 ([#384](https://github.com/seapagan/fastapi-template/pull/384)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pymarkdownlnt from 0.9.16 to 0.9.17 ([#383](https://github.com/seapagan/fastapi-template/pull/383)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump mkdocs-material from 9.5.7 to 9.5.8 ([#382](https://github.com/seapagan/fastapi-template/pull/382)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump ruff from 0.2.0 to 0.2.1 ([#380](https://github.com/seapagan/fastapi-template/pull/380)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Update the requirements files to match pyproject.toml ([#408](https://github.com/seapagan/fastapi-template/pull/408)) by [seapagan](https://github.com/seapagan)
+- Bump mkdocs-material from 9.5.9 to 9.5.11 ([#406](https://github.com/seapagan/fastapi-template/pull/406)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump cryptography from 42.0.2 to 42.0.4 ([#405](https://github.com/seapagan/fastapi-template/pull/405)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump aiosqlite from 0.19.0 to 0.20.0 ([#404](https://github.com/seapagan/fastapi-template/pull/404)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pyright from 1.1.350 to 1.1.351 ([#403](https://github.com/seapagan/fastapi-template/pull/403)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump anyio from 4.2.0 to 4.3.0 ([#402](https://github.com/seapagan/fastapi-template/pull/402)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest from 8.0.0 to 8.0.1 ([#401](https://github.com/seapagan/fastapi-template/pull/401)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump ruff from 0.2.1 to 0.2.2 ([#400](https://github.com/seapagan/fastapi-template/pull/400)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic-settings from 2.1.0 to 2.2.1 ([#399](https://github.com/seapagan/fastapi-template/pull/399)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pre-commit from 3.6.1 to 3.6.2 ([#397](https://github.com/seapagan/fastapi-template/pull/397)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- *and 12 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.patch)
 
