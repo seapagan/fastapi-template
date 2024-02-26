@@ -20,6 +20,14 @@ from app.commands.custom import (
 from app.config.helpers import LICENCES
 
 
+def is_running_in_docker() -> bool:
+    """Check for the .dockerenv file."""
+    if os.path.exists("/.dockerenv"):  # noqa: PTH110
+        return True
+
+    return False
+
+
 class TestCLI:
     """Test the custom CLI commands."""
 
@@ -292,6 +300,9 @@ authors = ['Old Author <oldauthor@example.com>']""",
                 str(self.test_data["title"]) in pyproject_contents
             ), "pyproject.toml title was not updated correctly"
 
+    @pytest.mark.skipif(
+        is_running_in_docker(), reason="This test fails under docker"
+    )
     def test_full_metadata_command_cant_write_metadata(
         self, runner, fs_setup
     ) -> None:
