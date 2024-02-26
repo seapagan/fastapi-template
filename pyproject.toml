@@ -55,7 +55,7 @@ openapi-readme = "^0.2.4"
 pre-commit = "^3.6.2"
 pymarkdownlnt = "^0.9.17"
 ruff = "^0.2.2"
-pyright = "^1.1.350"
+pyright = "^1.1.351"
 
 # task runner
 poethepoet = "^0.24.2"
