@@ -48,7 +48,7 @@ version = "^1.7.4"
 
 [tool.poetry.group.dev.dependencies]
 aiosmtpd = "^1.4.4"
-aiosqlite = "^0.19.0"
+aiosqlite = "^0.20.0"
 httpx = "0.23.3"
 mypy = "^1.8.0"
 openapi-readme = "^0.2.4"
