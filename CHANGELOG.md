@@ -6,33 +6,24 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
-
-These are the changes that have been merged to the repository since the last
-release. If you want to try out these changes, you can install the latest
-version from the main branch by running:
-
-```console
-$ pip install git+https://github.com/seapagan/github-changelog-md
-```
-
-or, if using poetry:
-
-```console
-$ poetry add git+https://github.com/seapagan/github-changelog-md
-```
-Everything in this section will be included in the next official release.
-
+## [v0.5.1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.1) (February 26, 2024)
 
 **Closed Issues**
 
 - Run Tests against Postgres database ([#102](https://github.com/seapagan/fastapi-template/issues/102)) by [pdrivom](https://github.com/pdrivom)
 
+**Breaking Changes**
+
+- Upgrade docker config to use version 15. Change some ports and env variable usage ([#410](https://github.com/seapagan/fastapi-template/pull/410)) by [seapagan](https://github.com/seapagan)
+
 **New Features**
 
 - Add option to disable the '/' route if required ([#388](https://github.com/seapagan/fastapi-template/pull/388)) by [seapagan](https://github.com/seapagan)
 - Allow setting a custom API root path e.g. "/api/v1" to prepend to all routes ([#386](https://github.com/seapagan/fastapi-template/pull/386)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Fix the Docker config so tests pass ([#409](https://github.com/seapagan/fastapi-template/pull/409)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
 
@@ -52,7 +43,7 @@ Everything in this section will be included in the next official release.
 - Bump pre-commit from 3.6.1 to 3.6.2 ([#397](https://github.com/seapagan/fastapi-template/pull/397)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - *and 12 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...v0.5.1) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...v0.5.1.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.0...v0.5.1.patch)
 
 ## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
