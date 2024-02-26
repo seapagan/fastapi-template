@@ -13,8 +13,10 @@ services:
       - .:/app/src/
     env_file:
       - .env
+    environment:
+      - DB_ADDRESS=postgres
     ports:
-      - 8000:8000
+      - 8001:8000
     networks:
       - api-network
     depends_on:
@@ -22,8 +24,8 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:13.8-bullseye
-    hostname: ${DB_ADDRESS}
+    image: postgres:15.6-bullseye
+    hostname: postgres
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
