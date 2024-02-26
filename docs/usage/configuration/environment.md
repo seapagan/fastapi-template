@@ -7,7 +7,8 @@ Database (and other) settings can be read from environment variables or from a
 Database setup and JWT Secret Key. See the `.env.example` file for how to use.
 
 !!! info
-    The Database and User must already exist in your Postgres database!
+    The Database (and test database if you are running the tests) and User must
+    already exist in your Postgres database!
 
     **Note that if you are using the [Docker](../../development/docker.md) container,
     this is done automatically.**
@@ -39,7 +40,8 @@ anyway.
 ## Disable the Root Route
 
 By default, the root route `/` is enabled and returns an HTML page with a
-welcome message. If you want to disable this, set the below variable to `False`.
+welcome message if accessed through a browser or a JSON response if accessed
+directly. If you want to disable this, set the below variable to `False`.
 
 ```ini
 NO_ROOT_ROUTE=True
@@ -66,6 +68,20 @@ DB_ADDRESS=localhost
 DB_PORT=5432
 DB_NAME=my_database_name
 ```
+
+For testing, also set the name of the test database:
+
+```ini
+TEST_DB_NAME=my_test_database_name
+```
+
+!!! danger "Database Setup"
+    The database user, and both the prod and test database must already exist,
+    and the `DB_USER` must have the correct permissions to access them. The API
+    will not create the database for you.
+
+    If you don't intend to run the tests (ie running on a production server),
+    you don't need to create the test database.
 
 ## Change the SECRET_KEY
 
@@ -154,17 +170,6 @@ MAIL_FROM_NAME="FastAPI Template"
 
 Below is a full .env file. This can also be found in the root of the API as
 `.env.example`.
-
-The `TEST_DB_xxx` variables are not used at the moment, they will allow the use
-of Postgres as the testing datbase instead of the default SQLite.
-
-!!! tip
-
-    If you use the `develop` branch, Postgres **is** enabled for testing and is
-    used by default.
-
-    The GitHub action will automatically create a Postgres database for testing
-    and run the tests against it.
 
 ```ini
 --8<-- ".env.example"
