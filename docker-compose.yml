@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     ports:
-      - 8080:8000
+      - 8000:8000
     networks:
       - api-network
     depends_on:
