@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     ports:
-      - 8000:8000
+      - 8080:8000
     networks:
       - api-network
     depends_on:
@@ -28,8 +28,10 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+      POSTGRES_TEST_DB: ${TEST_DB_NAME}
     volumes:
       - api-db-data:/var/lib/postgresql/data
+      - ./docker_support/create-test-db.sh:/docker-entrypoint-initdb.d/create-test-db.sh
     ports:
       - 5433:${DB_PORT}
     networks:
