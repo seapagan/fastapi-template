@@ -236,7 +236,7 @@ TEST_DB_NAME=api-template-test
 You can then migrate this empty database by running:
 
 ```console
-$ ./api-admin test setup
+$ api-admin test setup
 Migrating the test database ... Done!
 ```
 

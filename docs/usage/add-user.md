@@ -19,7 +19,7 @@ added from the command line too, for automated use. See the built in help for
 details :
 
 ```console
-$ ./api-admin user create --help
+$ api-admin user create --help
  API Template configuration tool 1.5.0
 
  Usage: api-admin user create [OPTIONS]

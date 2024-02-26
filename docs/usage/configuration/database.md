@@ -38,9 +38,9 @@ migrations).
 
 ## Clear or Initialise the database
 
-If you wish clear or reset the database you can do this with `./api-admin db
+If you wish clear or reset the database you can do this with `api-admin db
 drop`. This will drop all tables and reset the database, destroying all data.
-Note that you will need to either run `./api-admin db upgrade` or `api-admin db
+Note that you will need to either run `api-admin db upgrade` or `api-admin db
 init` again before the database is usable.
 
 ## CLI options for the Database
