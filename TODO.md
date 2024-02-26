@@ -41,7 +41,6 @@
 
 - Speed up tests generally
 - allow choice of Postgresql or SQLite for testing (currently only Postgresql)
-- Fix tests under Docker - currently fail d/t test database not existing
 
 ## CLI
 
