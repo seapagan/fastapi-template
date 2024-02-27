@@ -58,7 +58,7 @@ ruff = "^0.2.2"
 pyright = "^1.1.351"
 
 # task runner
-poethepoet = "^0.24.2"
+poethepoet = "^0.25.0"
 
 # testing
 faker = "^23.2.1"
