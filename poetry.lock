@@ -1049,13 +1049,13 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "github-changelog-md"
-version = "0.8.1"
+version = "0.9.0"
 description = "Generate a Markdown Changelog from your Github repository."
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "github_changelog_md-0.8.1-py3-none-any.whl", hash = "sha256:93dd3ff2d9f971401558d08195c08aeb9f801eb5c729365f85fb0b8dac7be0fc"},
-    {file = "github_changelog_md-0.8.1.tar.gz", hash = "sha256:a196c0553801bc51f9ed6c49adbbac7f43239a5e4848d0d05ce49212a8c49402"},
+    {file = "github_changelog_md-0.9.0-py3-none-any.whl", hash = "sha256:716c444a6d9fa7eda8eb4b4f05c4412b59a58e48ae69c8ef6b66540cd8f1b829"},
+    {file = "github_changelog_md-0.9.0.tar.gz", hash = "sha256:7cbb82a30cfed7e28d30e4e05a959a4e01fb3fd149be4c26338e8165804cce35"},
 ]
 
 [package.dependencies]
@@ -1063,7 +1063,7 @@ pydantic = ">=2.3.0,<3.0.0"
 pygithub = ">=1.59.1,<3.0.0"
 rich = ">=13.6.0,<14.0.0"
 rtoml = ">=0.9.0,<0.10.0"
-simple-toml-settings = ">=0.3.2,<0.4.0"
+simple-toml-settings = ">=0.4.0,<0.5.0"
 typer = ">=0.9.0,<0.10.0"
 
 [[package]]
@@ -3318,13 +3318,13 @@ files = [
 
 [[package]]
 name = "simple-toml-settings"
-version = "0.3.2"
+version = "0.4.0"
 description = "A Python library to save your settings in a TOML file."
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "simple_toml_settings-0.3.2-py3-none-any.whl", hash = "sha256:b1dfcda0cdbc6df5bf68dba1bb32f281aa5d72eb85308e7fbbe37aa7ab327020"},
-    {file = "simple_toml_settings-0.3.2.tar.gz", hash = "sha256:d4f07082b0c2ab235eb5a7bcb68b765ee2f70e3f68f4ffcc1fcdca7a5f425fb1"},
+    {file = "simple_toml_settings-0.4.0-py3-none-any.whl", hash = "sha256:b9f357ccc6978e866e01575ab84d5d885e4ea54d4f103351279a9bce3b842965"},
+    {file = "simple_toml_settings-0.4.0.tar.gz", hash = "sha256:71f8fb66a73b498a4c9c9b7754b32faa12594bb85780f70b68d7fc0bae80babe"},
 ]
 
 [package.dependencies]
@@ -4173,4 +4173,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "8e73101b2f6214c3baa97610dad032d7abc6932a572a1dfb04297c8383588a39"
+content-hash = "fe0233bd2f90bf5d3b82e08298655c5f5f0271ffb10b9d2e30e1daa2a3c36fb3"
