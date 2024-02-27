@@ -78,8 +78,8 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
           name: codecov-python-${{ matrix.python-version }}
-#       - name: Run codacy-coverage-reporter
-#         uses: codacy/codacy-coverage-reporter-action@v1
-#         with:
-#           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-#           coverage-reports: ./coverage.xml
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./coverage.xml
