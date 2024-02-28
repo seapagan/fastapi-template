@@ -2,6 +2,13 @@
 
 ![GitHub Release](https://img.shields.io/github/v/release/seapagan/fastapi-template)
 
+A Configurable template for a FastAPI application, with Authentication and User
+integration plus a CLI to manage the project.
+
+It uses FastAPI, SQLAlchemy, Pydantic, Typer, and a few other libraries to
+provide a ready-to-use boilerplate for a FastAPI project, with Async database
+access.
+
 !!! warning "BETA Docs!"
 
     This documentation is currently **Beta** status as it
@@ -42,6 +49,7 @@ following advantages to starting your own from scratch :
   (never again). This will enable easy re-authentication when the JWT expires
   without needing to send username or password again, and should be done
   automatically by the Front-End.
+- Full test coverage using `Pytest`.
 - A clean layout to help structure your project.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
