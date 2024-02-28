@@ -8,7 +8,7 @@ fact you can just copy this file to `.env` and edit the settings as required.
 
 !!! info
     The Database (and test database if you are running the tests) and User must
-    already exist in your Postgres database!
+    already exist in your Postgres system!
 
     **Note that if you are using the [Docker](../../development/docker.md) container,
     this is done automatically.**
