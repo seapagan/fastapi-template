@@ -6,11 +6,54 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+
+
+These are the changes that have been merged to the repository since the last
+release. If you want to try out these changes, you can install the latest
+version from the main branch by running:
+
+```console
+$ pip install git+https://github.com/seapagan/github-changelog-md
+```
+
+or, if using poetry:
+
+```console
+$ poetry add git+https://github.com/seapagan/github-changelog-md
+```
+Everything in this section will be included in the next official release.
+
+
+**Merged Pull Requests**
+
+- Re-enable codacy coverage reports ([#419](https://github.com/seapagan/fastapi-template/pull/419)) by [seapagan](https://github.com/seapagan)
+
+**Documentation**
+
+- Fix some wording and typos in the web docs ([#425](https://github.com/seapagan/fastapi-template/pull/425)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Bump faker from 23.2.1 to 23.3.0 ([#424](https://github.com/seapagan/fastapi-template/pull/424)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocstrings from 0.24.0 to 0.24.1 ([#423](https://github.com/seapagan/fastapi-template/pull/423)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.6.2 to 2.6.3 ([#422](https://github.com/seapagan/fastapi-template/pull/422)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump github-changelog-md from 0.8.1 to 0.9.1 ([#421](https://github.com/seapagan/fastapi-template/pull/421)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump email-validator from 2.1.0.post1 to 2.1.1 ([#420](https://github.com/seapagan/fastapi-template/pull/420)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump orjson from 3.9.10 to 3.9.15 ([#418](https://github.com/seapagan/fastapi-template/pull/418)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest from 8.0.1 to 8.0.2 ([#417](https://github.com/seapagan/fastapi-template/pull/417)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump github-changelog-md from 0.8.1 to 0.9.0 ([#416](https://github.com/seapagan/fastapi-template/pull/416)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.6.1 to 2.6.2 ([#415](https://github.com/seapagan/fastapi-template/pull/415)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump poetry from 1.7.1 to 1.8.1 ([#414](https://github.com/seapagan/fastapi-template/pull/414)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- *and 2 more dependency updates*
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.patch)
+
 ## [v0.5.1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.1) (February 26, 2024)
 
 **Closed Issues**
 
-- Run Tests against Postgres database ([#102](https://github.com/seapagan/fastapi-template/issues/102)) by [pdrivom](https://github.com/pdrivom)
+- Run Tests against Postgres database ([#102](https://github.com/seapagan/fastapi-template/issues/102)) by [seapagan](https://github.com/seapagan)
 
 **Breaking Changes**
 
@@ -269,10 +312,10 @@ tool. See the documentation for more information.
 
 **Closed Issues**
 
-- Key Management secrets engine ([#115](https://github.com/seapagan/fastapi-template/issues/115)) by [pdrivom](https://github.com/pdrivom)
+- Key Management secrets engine ([#115](https://github.com/seapagan/fastapi-template/issues/115))
 - Internal Links on the web documentation site are broken. ([#110](https://github.com/seapagan/fastapi-template/issues/110)) by [seapagan](https://github.com/seapagan)
-- Docker Support ([#99](https://github.com/seapagan/fastapi-template/issues/99)) by [pdrivom](https://github.com/pdrivom)
-- Add unit tests ([#72](https://github.com/seapagan/fastapi-template/issues/72)) by [Elia-238](https://github.com/Elia-238)
+- Docker Support ([#99](https://github.com/seapagan/fastapi-template/issues/99)) by [seapagan](https://github.com/seapagan)
+- Add unit tests ([#72](https://github.com/seapagan/fastapi-template/issues/72)) by [seapagan](https://github.com/seapagan)
 
 **Merged Pull Requests**
 
