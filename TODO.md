@@ -11,7 +11,7 @@
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
-- Allow to resend a registration email (part of the code is already there for
+- Allow to re-send a registration email (part of the code is already there for
   this, but was not functioning properly so disabled).
 - Send an email to the **User** when they change their password or update their
   profile, are Banned/Unbanned and to **Admins** when important events happen.
@@ -28,7 +28,8 @@
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
 - add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
-- add pagination to the user list endpoint
+- add pagination to the user list endpoint. Implement this in a way that is
+  generic and can be used for other custom endpoints too.
 
 ## Auth
 
@@ -50,6 +51,11 @@
 - ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
 - add an option to make user an admin (or take it away)
+- add an option to create a new JWT secret, and update the config file with it
+  automatically. This will be handy for security reasons, and general
+  deployment. The server will have to be restarted for this to take effect
+  (offer to do this?). `python-dotenv` has a `set_key` method that can be used
+  to update the `.env` file.
 
 ## Documentation
 
@@ -58,6 +64,9 @@
   video showing an example custom project based on this template?
 - add commands to CLI to serve, build, publish to gh-pages etc
 - Add info how to create a temporary database for testing (eg using Docker)
+- Update return status codes and examples in the API documentation to be more
+  accurate and useful, some of them have wrong status codes and/or examples. For
+  example, the `GET /verify/` endpoint should return a 204 status code, not 200.
 
 ## Quotas
 
@@ -73,11 +82,15 @@ Add Quota functionality.
 
 - add a Redis cache to the endpoints.
   [fastapi-redis-cache](https://pypi.org/project/fastapi-redis-cache/) should
-  make this reasonably painless.
+  make this reasonably painless. Note that project seems to be abandoned with a
+  lot of un-merged PRs so may need to fork and update it myself.
 
 ## Frontend
 
-Add integration for a proper Frontend (ie React, Vue, etc) by having a config
+- Add integration for a proper Frontend (ie React, Vue, etc) by having a config
 value to point the the location of this instead of using the default
 `templates/index.html`. Look at how to integrate API configuration values with
 this front end.
+- Also worth looking at [FastUI](https://github.com/pydantic/FastUI) which is a
+  newer system my the author of `Pydantic` that integrates React with FastAPI
+  without writing any JavaScript.
