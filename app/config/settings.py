@@ -1,9 +1,11 @@
 """Control the app settings, including reading from a .env file."""
+from __future__ import annotations
+
 import sys
 from functools import lru_cache
-from pathlib import Path
+from pathlib import Path  # noqa: TCH003
 
-from pydantic import validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config.helpers import get_project_root
@@ -82,8 +84,9 @@ class Settings(BaseSettings):
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
 
-    @validator("api_root", pre=True)
-    def check_api_root(cls, value: str) -> str:
+    @field_validator("api_root")
+    @classmethod
+    def check_api_root(cls: type[Settings], value: str) -> str:
         """Ensure the api_root does not end with a slash."""
         if value and value.endswith("/"):
             return value[:-1]
