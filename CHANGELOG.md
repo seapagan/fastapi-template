@@ -29,12 +29,17 @@ Everything in this section will be included in the next official release.
 
 - Re-enable codacy coverage reports ([#419](https://github.com/seapagan/fastapi-template/pull/419)) by [seapagan](https://github.com/seapagan)
 
+**Refactoring**
+
+- Migrate validations to Pydantic v2 syntax ([#427](https://github.com/seapagan/fastapi-template/pull/427)) by [seapagan](https://github.com/seapagan)
+
 **Documentation**
 
 - Fix some wording and typos in the web docs ([#425](https://github.com/seapagan/fastapi-template/pull/425)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
+- Bump rich from 13.7.0 to 13.7.1 ([#426](https://github.com/seapagan/fastapi-template/pull/426)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump faker from 23.2.1 to 23.3.0 ([#424](https://github.com/seapagan/fastapi-template/pull/424)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump mkdocstrings from 0.24.0 to 0.24.1 ([#423](https://github.com/seapagan/fastapi-template/pull/423)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pydantic from 2.6.2 to 2.6.3 ([#422](https://github.com/seapagan/fastapi-template/pull/422)) by [dependabot[bot]](https://github.com/apps/dependabot)
@@ -44,8 +49,7 @@ Everything in this section will be included in the next official release.
 - Bump pytest from 8.0.1 to 8.0.2 ([#417](https://github.com/seapagan/fastapi-template/pull/417)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump github-changelog-md from 0.8.1 to 0.9.0 ([#416](https://github.com/seapagan/fastapi-template/pull/416)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pydantic from 2.6.1 to 2.6.2 ([#415](https://github.com/seapagan/fastapi-template/pull/415)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump poetry from 1.7.1 to 1.8.1 ([#414](https://github.com/seapagan/fastapi-template/pull/414)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 2 more dependency updates*
+- *and 3 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.patch)
 
