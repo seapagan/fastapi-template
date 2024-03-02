@@ -1,4 +1,5 @@
 """Helper classes and functions for config use."""
+
 import sys
 from dataclasses import dataclass
 from importlib import resources

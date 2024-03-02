@@ -1,4 +1,5 @@
 """CLI commands for generating documentation."""
+
 import json
 from pathlib import Path
 

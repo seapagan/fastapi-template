@@ -1,4 +1,5 @@
 """Test the AuthManager class."""
+
 from datetime import datetime, timezone
 
 import jwt

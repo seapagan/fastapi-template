@@ -1,4 +1,5 @@
 """Define Response schemas specific to the Auth system."""
+
 from pydantic import BaseModel
 
 

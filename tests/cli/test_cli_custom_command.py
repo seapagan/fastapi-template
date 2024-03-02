@@ -1,4 +1,5 @@
 """Test the 'api-admin custom' command."""
+
 import io
 import os
 import sys

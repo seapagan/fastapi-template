@@ -1,4 +1,5 @@
 """Test the main CLI interface."""
+
 import pytest
 
 from app.api_admin import app, cli_header

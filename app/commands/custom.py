@@ -1,4 +1,5 @@
 """CLI functionality to customize the template."""
+
 from __future__ import annotations
 
 import datetime

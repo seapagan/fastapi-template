@@ -1,4 +1,5 @@
 """Define the Base Schema structures we will inherit from."""
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.examples import ExampleUser

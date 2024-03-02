@@ -1,4 +1,5 @@
 """Run administrative tasks for the Template system."""
+
 from typing import Optional
 
 import typer

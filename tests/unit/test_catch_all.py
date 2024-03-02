@@ -1,4 +1,5 @@
 """Test the 'catch all' function."""
+
 import pytest
 from fastapi import HTTPException, status
 

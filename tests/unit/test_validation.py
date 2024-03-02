@@ -1,4 +1,5 @@
 """Test the Settings module validation functions."""
+
 from app.config.settings import Settings
 
 

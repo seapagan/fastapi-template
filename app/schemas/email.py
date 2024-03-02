@@ -1,4 +1,5 @@
 """Define email Connection Schema."""
+
 from typing import Any
 
 from pydantic import BaseModel, EmailStr

@@ -1,4 +1,5 @@
 """Define Schemas used by the User routes."""
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.base import UserBase

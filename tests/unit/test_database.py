@@ -1,4 +1,5 @@
 """Test functions in the app.database module."""
+
 import pytest
 
 from app.database import db

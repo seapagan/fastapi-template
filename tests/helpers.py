@@ -1,4 +1,5 @@
 """Some helper functions for testing."""
+
 import jwt
 
 from app.config.settings import get_settings
