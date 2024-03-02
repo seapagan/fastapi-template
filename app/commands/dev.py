@@ -1,4 +1,5 @@
 """CLI command to run a dev server."""
+
 import subprocess
 from typing import Optional  # nosec
 

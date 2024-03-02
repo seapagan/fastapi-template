@@ -1,4 +1,5 @@
 """Define the Autorization Manager."""
+
 import datetime
 from typing import Optional
 

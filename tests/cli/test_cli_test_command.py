@@ -2,6 +2,7 @@
 
 This has one sub-command 'setup'.
 """
+
 from typer.testing import CliRunner
 
 from app.api_admin import app

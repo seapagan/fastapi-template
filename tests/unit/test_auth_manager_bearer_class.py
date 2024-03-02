@@ -1,4 +1,5 @@
 """Test the CustomHTTPBearer class in the auth_manager module."""
+
 from datetime import datetime, timezone
 
 import pytest

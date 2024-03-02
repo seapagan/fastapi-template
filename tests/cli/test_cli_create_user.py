@@ -1,4 +1,5 @@
 """CLI test for the 'user create' command."""
+
 import pytest
 from faker import Faker
 from fastapi import HTTPException

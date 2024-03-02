@@ -3,6 +3,7 @@
 This function ensures that the user has read the documentation, specifically the
 changes in the API stucture, datrabase and more since version 0.4.0
 """
+
 import subprocess
 
 from app.main import BLIND_USER_ERROR

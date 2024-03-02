@@ -1,4 +1,5 @@
 """CLI command for testing and test setup."""
+
 import asyncio
 
 import typer

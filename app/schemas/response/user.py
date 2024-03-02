@@ -1,4 +1,5 @@
 """Define Response schemas specific to the Users."""
+
 from pydantic import Field
 
 from app.models.enums import RoleType

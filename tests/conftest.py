@@ -1,4 +1,5 @@
 """Fixtures and configuration for the test suite."""
+
 from __future__ import annotations
 
 import asyncio

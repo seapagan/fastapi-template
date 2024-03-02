@@ -1,4 +1,5 @@
 """Add a user from the command line, optionally make superuser."""
+
 from __future__ import annotations
 
 import logging

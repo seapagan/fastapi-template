@@ -1,4 +1,5 @@
 """Routes for the home screen and templates."""
+
 from typing import Union
 
 from fastapi import APIRouter, Header, Request

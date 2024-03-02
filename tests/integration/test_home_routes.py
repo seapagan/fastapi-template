@@ -1,4 +1,5 @@
 """Test the home resource routes."""
+
 import pytest
 from fastapi import status
 

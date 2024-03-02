@@ -1,4 +1,5 @@
 """Test the authentication routes of the application."""
+
 import logging
 from typing import Union
 

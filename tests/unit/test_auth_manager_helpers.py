@@ -1,4 +1,5 @@
 """Test the AuthManager class."""
+
 import pytest
 from fastapi import HTTPException
 from pytest_mock import MockerFixture

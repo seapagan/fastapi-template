@@ -1,4 +1,5 @@
 """Main file for the FastAPI Template."""
+
 import sys
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager

@@ -1,4 +1,5 @@
 """Include all the other routes into one router."""
+
 from fastapi import APIRouter
 
 from app.config.settings import get_settings

@@ -1,4 +1,5 @@
 """Test the EmailManager class."""
+
 import json
 from typing import TypedDict
 

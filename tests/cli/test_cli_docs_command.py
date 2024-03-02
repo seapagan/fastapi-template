@@ -2,6 +2,7 @@
 
 At this point there in only the 'openapi' subcommand.
 """
+
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 

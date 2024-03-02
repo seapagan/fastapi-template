@@ -1,4 +1,5 @@
 """Define routes for Authentication."""
+
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 

@@ -1,4 +1,5 @@
 """Control the app settings, including reading from a .env file."""
+
 from __future__ import annotations
 
 import sys
