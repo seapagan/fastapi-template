@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.13
+    rev: v0.3.0
     hooks:
       - id: ruff
         name: "lint with ruff"
@@ -20,7 +20,7 @@ repos:
         name: "format with ruff"
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.15
+    rev: v0.9.17
     hooks:
       - id: pymarkdown
         name: "check markdown"
@@ -33,15 +33,8 @@ repos:
       - id: mypy
         name: "Check with Mypy"
 
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.346
-    hooks:
-      - id: pyright
-        name: "Check with Pyright"
-        exclude: tests
-
   - repo: https://github.com/python-poetry/poetry
-    rev: "1.7.0"
+    rev: "1.8.0"
     hooks:
       - id: poetry-check
         name: "check poetry files"
