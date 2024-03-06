@@ -47,7 +47,7 @@ extras = ["bcrypt"]
 version = "^1.7.4"
 
 [tool.poetry.group.dev.dependencies]
-aiosmtpd = "^1.4.4"
+aiosmtpd = "^1.4.5"
 aiosqlite = "^0.20.0"
 httpx = "0.23.3"
 mypy = "^1.8.0"
