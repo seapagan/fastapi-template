@@ -2,13 +2,13 @@
 
 [[package]]
 name = "aiosmtpd"
-version = "1.4.4.post2"
+version = "1.4.5"
 description = "aiosmtpd - asyncio based SMTP server"
 optional = false
-python-versions = "~=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "aiosmtpd-1.4.4.post2-py3-none-any.whl", hash = "sha256:f821fe424b703b2ea391dc2df11d89d2afd728af27393e13cf1a3530f19fdc5e"},
-    {file = "aiosmtpd-1.4.4.post2.tar.gz", hash = "sha256:f9243b7dfe00aaf567da8728d891752426b51392174a34d2cf5c18053b63dcbc"},
+    {file = "aiosmtpd-1.4.5-py3-none-any.whl", hash = "sha256:a196922f1903e54c4d37c53415b7613056d39e2b1e8249f324b9ee7a439be0f1"},
+    {file = "aiosmtpd-1.4.5.tar.gz", hash = "sha256:78d7b14f859ad0e6de252b47f9cf1ca6f1c82a8b0f10a9e39bec7e915a6aa5fe"},
 ]
 
 [package.dependencies]
@@ -4155,4 +4155,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "5d9991fb935f6c1538b66676614998616bd66cf838daa884a45e946b2d835ca7"
+content-hash = "988cc0a4c6496e85acead7617db78097bc8955265680826d6a5127dfc7983ca7"
