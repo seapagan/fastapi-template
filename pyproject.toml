@@ -90,7 +90,7 @@ types-passlib = "^1.7.7.13"
 asyncpg-stubs = "^0.29.1"
 
 # changelog generation
-github-changelog-md = "0.9.1"
+github-changelog-md = "0.9.2"
 
 # additional packages
 
