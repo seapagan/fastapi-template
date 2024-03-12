@@ -3567,13 +3567,13 @@ test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.
 
 [[package]]
 name = "types-passlib"
-version = "1.7.7.20240106"
+version = "1.7.7.20240311"
 description = "Typing stubs for passlib"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-passlib-1.7.7.20240106.tar.gz", hash = "sha256:2231ae83d1dd9e485b7ec6041d81b4f9c66403d1767360e860605a90db48ea27"},
-    {file = "types_passlib-1.7.7.20240106-py3-none-any.whl", hash = "sha256:347aa64d4c2bc239f3765fe38fc79dad3d67f9def7b3ea721daaaaa835a91dad"},
+    {file = "types-passlib-1.7.7.20240311.tar.gz", hash = "sha256:287dd27cec5421daf6be5c295f681baf343c146038c8bde4db783bcac1beccb7"},
+    {file = "types_passlib-1.7.7.20240311-py3-none-any.whl", hash = "sha256:cd44166e9347ae516f4830046cd1673c1ef90a5cc7ddd1356cf8a14892f29249"},
 ]
 
 [[package]]
@@ -4155,4 +4155,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "b6d1009fdb7f7ee5d822630e44d4d76acaf989d6bd63b81f7a1cc8e01a5667b9"
+content-hash = "468d309012325223784fea496dd00cdd66d213f796d62e855c563cab7911d4d2"
