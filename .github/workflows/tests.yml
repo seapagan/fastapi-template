@@ -74,7 +74,7 @@ jobs:
         run: |
           poetry run pytest --cov-report=xml
       - name: Run codacy-coverage-reporter
-        if: env.SKIP_COVERAGE_UPLOAD != 'true'
+        if: ${{ env.SKIP_COVERAGE_UPLOAD != 'true' }}
         uses: codacy/codacy-coverage-reporter-action@v1
         continue-on-error: true
         with:
