@@ -129,13 +129,13 @@ files = [
 
 [[package]]
 name = "asyncclick"
-version = "8.1.7.1"
+version = "8.1.7.2"
 description = "Composable command line interface toolkit, async version"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "asyncclick-8.1.7.1-py3-none-any.whl", hash = "sha256:e0fea5f0223ac45cfc26153cc80a58cc65fc077ac8de79be49248c918e8c3422"},
-    {file = "asyncclick-8.1.7.1.tar.gz", hash = "sha256:a47b61258a689212cf9463fbf3b4cc52d05bfd03185f6ead2315fc03fd17ef75"},
+    {file = "asyncclick-8.1.7.2-py3-none-any.whl", hash = "sha256:1ab940b04b22cb89b5b400725132b069d01b0c3472a9702c7a2c9d5d007ded02"},
+    {file = "asyncclick-8.1.7.2.tar.gz", hash = "sha256:219ea0f29ccdc1bb4ff43bcab7ce0769ac6d48a04f997b43ec6bee99a222daa0"},
 ]
 
 [package.dependencies]
@@ -4155,4 +4155,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "7795147a123b1b8027e41d98e441de6b3bb4d565c64c28602ce8051897211a71"
+content-hash = "25cf3f75bb0e27cbee9fe3f937f6c2fa19c7804de164f3e734f6772bb68d45aa"
