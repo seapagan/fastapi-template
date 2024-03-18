@@ -6,31 +6,25 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+## [v0.5.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.2) (March 18, 2024)
 
+**Closed Issues**
 
-These are the changes that have been merged to the repository since the last
-release. If you want to try out these changes, you can install the latest
-version from the main branch by running:
-
-```console
-$ pip install git+https://github.com/seapagan/github-changelog-md
-```
-
-or, if using poetry:
-
-```console
-$ poetry add git+https://github.com/seapagan/github-changelog-md
-```
-Everything in this section will be included in the next official release.
-
+- Projects generated from template fail tests d/t codacy key ([#448](https://github.com/seapagan/fastapi-template/issues/448)) by [seapagan](https://github.com/seapagan)
+- DB Connection / release error ([#331](https://github.com/seapagan/fastapi-template/issues/331)) by [seapagan](https://github.com/seapagan)
 
 **Merged Pull Requests**
 
 - Re-enable codacy coverage reports ([#419](https://github.com/seapagan/fastapi-template/pull/419)) by [seapagan](https://github.com/seapagan)
 
+**Testing**
+
+- Update the coverage action ([#454](https://github.com/seapagan/fastapi-template/pull/454)) by [seapagan](https://github.com/seapagan)
+
 **Refactoring**
 
+- Ensure docker config explicitly uses port 8001 ([#453](https://github.com/seapagan/fastapi-template/pull/453)) by [seapagan](https://github.com/seapagan)
+- Update formatting to match Ruff 3.0 and remove pyright. ([#432](https://github.com/seapagan/fastapi-template/pull/432)) by [seapagan](https://github.com/seapagan)
 - Migrate validations to Pydantic v2 syntax ([#427](https://github.com/seapagan/fastapi-template/pull/427)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
@@ -39,19 +33,19 @@ Everything in this section will be included in the next official release.
 
 **Dependency Updates**
 
-- Bump rich from 13.7.0 to 13.7.1 ([#426](https://github.com/seapagan/fastapi-template/pull/426)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump faker from 23.2.1 to 23.3.0 ([#424](https://github.com/seapagan/fastapi-template/pull/424)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump mkdocstrings from 0.24.0 to 0.24.1 ([#423](https://github.com/seapagan/fastapi-template/pull/423)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pydantic from 2.6.2 to 2.6.3 ([#422](https://github.com/seapagan/fastapi-template/pull/422)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump github-changelog-md from 0.8.1 to 0.9.1 ([#421](https://github.com/seapagan/fastapi-template/pull/421)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump email-validator from 2.1.0.post1 to 2.1.1 ([#420](https://github.com/seapagan/fastapi-template/pull/420)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump orjson from 3.9.10 to 3.9.15 ([#418](https://github.com/seapagan/fastapi-template/pull/418)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pytest from 8.0.1 to 8.0.2 ([#417](https://github.com/seapagan/fastapi-template/pull/417)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump github-changelog-md from 0.8.1 to 0.9.0 ([#416](https://github.com/seapagan/fastapi-template/pull/416)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pydantic from 2.6.1 to 2.6.2 ([#415](https://github.com/seapagan/fastapi-template/pull/415)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 3 more dependency updates*
+- Bump ruff from 0.3.2 to 0.3.3 ([#452](https://github.com/seapagan/fastapi-template/pull/452)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 24.1.0 to 24.2.0 ([#451](https://github.com/seapagan/fastapi-template/pull/451)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.6.3 to 2.6.4 ([#450](https://github.com/seapagan/fastapi-template/pull/450)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump types-passlib from 1.7.7.20240106 to 1.7.7.20240311 ([#447](https://github.com/seapagan/fastapi-template/pull/447)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump asyncclick from 8.1.7.1 to 8.1.7.2 ([#446](https://github.com/seapagan/fastapi-template/pull/446)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pytest from 8.0.2 to 8.1.1 ([#445](https://github.com/seapagan/fastapi-template/pull/445)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump uvicorn from 0.27.1 to 0.28.0 ([#444](https://github.com/seapagan/fastapi-template/pull/444)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump ruff from 0.3.0 to 0.3.2 ([#443](https://github.com/seapagan/fastapi-template/pull/443)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mypy from 1.8.0 to 1.9.0 ([#442](https://github.com/seapagan/fastapi-template/pull/442)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 24.0.0 to 24.1.0 ([#441](https://github.com/seapagan/fastapi-template/pull/441)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- *and 22 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...v0.5.2) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...v0.5.2.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.1...v0.5.2.patch)
 
 ## [v0.5.1](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.1) (February 26, 2024)
 
