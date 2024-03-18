@@ -11,9 +11,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      SKIP_COVERAGE_UPLOAD: true
+      SKIP_COVERAGE_UPLOAD: false
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
 
@@ -74,7 +74,7 @@ jobs:
         run: |
           poetry run pytest --cov-report=xml
       - name: Run codacy-coverage-reporter
-        if: ${{ env.SKIP_COVERAGE_UPLOAD != 'true' }}
+        if: ${{ env.SKIP_COVERAGE_UPLOAD != 'true'}}
         uses: codacy/codacy-coverage-reporter-action@v1
         continue-on-error: true
         with:
