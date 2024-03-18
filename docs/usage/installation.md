@@ -1,4 +1,4 @@
-# How to install this project
+# How to Use this project
 
 !!! info "Contribute!"
     If you make changes to the existing code, why not create a
@@ -6,7 +6,9 @@
 
     See [Contributing](../contributing.md) for more info.
 
-## As a GitHub template
+## Installation
+
+### As a GitHub template
 
 Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
@@ -19,19 +21,78 @@ there are very good
 [Advanced](https://fastapi.tiangolo.com/advanced/){:target="_blank"} User Guides
 on the FastAPI website .
 
-## As a Fork
+### As a Fork
 
 You can also fork this project as usual, which allows you to easily bring it up
 to date with changes and improvements as they happen. This does have the
 posibility of conflicts. As long as you stick to adding new models and routes
 but not modifying the existing base code it should be ok.
 
-## Upgrading from a Patch file
+### Upgrading from a Patch file
 
-Sometime in the next few releases I will include patch files with the release to
-upgrade from the previous release. These can be applied by Git and will upgrade
-the Template code to the latest. The same warning applies as above - your
-changes can cause merge conflicts.
+In the
+[CHANGELOG.md](https://github.com/seapagan/fastapi-template/blob/main/CHANGELOG.md){:target="_blank"}
+file, there are links to `Patch` and `Diff` files to enable you to upgrade from
+a previous release. These can be applied by Git and will upgrade the Template
+code to that release. The same warning applies as above - your changes can cause
+merge conflicts.
 
 If you were a few releases behind, you can apply the patches in ascending
-version order to get to the latest.
+version order to get to the latest release.
+
+See [git apply](https://git-scm.com/docs/git-apply){:target="_blank"} and [git
+am](https://git-scm.com/docs/git-am){:target="_blank"} for more information on
+how to apply these.
+
+## Set GitHub Actions Secrets
+
+The only secret you need to set for the GitHub Actions is for
+[Codacy](https://www.codacy.com/){:target="_blank"} which is used for automatic
+code quality checks and test coverage reports.
+
+### Codacy API Token
+
+To use this, you will need to set up a (free) acccount with
+[Codacy](https://www.codacy.com/signup-codacy) to get your project token. You
+will then need to set the following secrets in your GitHub repository settings
+(`Settings -> Secrets and variables`):
+
+- `CODACY_PROJECT_TOKEN` - Your Codacy Project Token.
+
+!!! tip
+
+    See the next section if you don't want to use Codacy for test coverage.
+
+Note that this is the specific repository secrets, not in your profile settings.
+See the [Codacy
+Docs](https://docs.codacy.com/codacy-api/api-tokens/#project-api-tokens){:target="_blank"}
+for more information and how to get your repository token.
+
+!!! danger "Important"
+
+    You will need to set the `CODACY_PROJECT_TOKEN` secret in your GitHub
+    repository settings both for `Actions` **AND** `Dependabot`. Set the same
+    variable and value in both places.
+
+    If you do not set this, the Codacy checks will fail and Dependabot will not
+    be able to merge Pull Requests.
+
+## Disable Test Coverage Reports (Optional)
+
+If you do not want to use Codacy for test coverage reports, you can disable the
+uploading of the reports by changing a variable in the
+`.github/workflows/tests.yml` file.
+
+Change the `SKIP_COVERAGE_UPLOAD` variable to `true` in the `env` section of the
+`tests` job. For example:
+
+```yaml hl_lines="5"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SKIP_COVERAGE_UPLOAD: true
+    strategy:
+```
+
+To revert this, change it back to `false`.
