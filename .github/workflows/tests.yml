@@ -71,13 +71,6 @@ jobs:
       - name: Test with pytest
         run: |
           poetry run pytest --cov-report=xml
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
-          name: codecov-python-${{ matrix.python-version }}
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1
         continue-on-error: true
