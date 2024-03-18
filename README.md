@@ -146,7 +146,8 @@ good [Basic](https://fastapi.tiangolo.com/tutorial/) and
 [Advanced](https://fastapi.tiangolo.com/advanced/) User Guides on the FastAPI
 website .
 
-Visit our [Documentation Pages][doc] for usage, how-to's and more.
+Visit the [Installation Instructions][install] for more detailed installation
+notes, including how to handle the coverage uploader.
 
 ## Docker
 
@@ -289,3 +290,4 @@ this template, please feel free to start a discussion.
 [doc]:https://api-template.seapagan.net
 [contrib]:https://api-template.seapagan.net/contributing/
 [breaking]:https://api-template.seapagan.net/important/
+[install]:https://api-template.seapagan.net/usage/installation/
