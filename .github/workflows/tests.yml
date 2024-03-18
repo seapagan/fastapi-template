@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      SKIP_COVERAGE_UPLOAD: false
+      SKIP_COVERAGE_UPLOAD: true
     strategy:
       fail-fast: false
       matrix:
