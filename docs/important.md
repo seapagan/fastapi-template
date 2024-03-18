@@ -1,4 +1,20 @@
-# Breaking Changes from 0.4.x
+# Breaking Changes
+
+This page contains information about breaking changes in the API. It is
+important to read this page if you are upgrading from a previous version of the
+API.
+
+## Breaking Changes in  0.5.1
+
+There is a minor potentially breaking change in this release.
+
+### Docker Port Change
+
+Under docker only, the API will now run on port `8001` instead of `8000`. This
+is to avoid conflicts with a local server or other services that may be running
+on the host machine.
+
+## Breaking Changes from 0.4.x
 
 From version **0.5.0,** there have been some **major breaking changes to the
 API**.
@@ -18,7 +34,7 @@ API**.
     Be aware that this branch will not be maintained and will not receive any
     updates or bug fixes.
 
-## Migrated to Async SQLAlchemy 2.0 for database access
+### Migrated to Async SQLAlchemy 2.0 for database access
 
 Previously, we used
 [encode/databases](https://www.encode.io/databases/){:target="_blank"} for the
@@ -32,7 +48,7 @@ documentation][sqlalchemy-async-orm]{:target="_blank"} for more information
 
 [sqlalchemy-async-orm]:https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html#synopsis-orm
 
-## The CLI is an installable package
+### The CLI is an installable package
 
 This means that the `api-admin` command is now a package and installed in your
 local virtual environment when you run `poetry install`. With this you can run
@@ -48,14 +64,14 @@ api-admin --help
     run the `api-admin` command as a Python module. For example, `python -m
     api-admin`.
 
-## Full Test coverage
+### Full Test coverage
 
 The API now has full test coverage (using
 [Pytest](https://pytest.org){:target="_blank"}). This means that testing will be
 enforced on all PR's and that the test suite will be run by GitHub Actions on
 every commit and PR. This is to ensure that the API is stable and reliable.
 
-## Linting Changes
+### Linting Changes
 
 The project has moved completely over to using
 [Ruff](https://docs.astral.sh/ruff/){:target="_blank"} for Linting
@@ -66,17 +82,19 @@ tool. I have set the rules quite strict also! All exisiting code passes these
 checks, or is whitelisted for a very good reason. This will be enforced for all
 PR's also. All tools are configured in the `pyproject.toml` file.
 
-## Type Hints
+### Type Hints
 
 All code now has full type hinting. This means that you can use the `mypy`
 tool to check for type errors in the code. This will be enforced for all PR's.
 
-## Dependency Updates
+### Dependency Updates
 
 All dependencies used are updated to the latest versions as of the `0.5.0`
 release and will be kept up to date using the GitHub Dependabot tool.
 
 ---
+
+## Update the `.env` file
 
 !!! danger "Did you Read all this?"
 
