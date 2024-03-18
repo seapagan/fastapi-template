@@ -16,16 +16,16 @@ any change to the source code.
 !!! danger "Port Change from `8000` to `8001`"
     The default API port while running under Docker is `8001` to avoid conflicts
     with any other services you may have running or even a local session of this
-    API. If you want to change this, you can do so by editing the
-    `docker-compose.yml` file.
+    API. If you want to change this, you can do so by editing the `Dockerfile`
+    and `docker-compose.yml` files.
 
 If you need more control, you can run `uvicorn` directly :
 
 ```console
-docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 app.main:app --reload
+docker compose run --rm --service-ports api uvicorn --host 0.0.0.0 --port 8001 app.main:app --reload
 ```
 
-The above command starts the server running on <http://localhost:8000>, and it
+The above command starts the server running on <http://localhost:8001>, and it
 will automatically reload when it detects any changes as you develop.
 
 **Note: Neither of these are suitable to host a project in production, see the
@@ -55,7 +55,8 @@ folder.
 This API contains Unit and Integration tests using
 '[Pytest](https://docs.pytest.org){:target="_blank"}'
 
-To run these from within the Docker container use the `pytest` command with `docker compose`:
+To run these from within the Docker container use the `pytest` command with
+`docker compose`:
 
 ```console
 $ docker compose run --rm api pytest
