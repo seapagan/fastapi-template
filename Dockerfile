@@ -18,4 +18,4 @@ RUN apt-get purge -y \
 # Copying actual application
 COPY . /app/src/
 ENV DOCKER_RUNNING=1
-CMD ["uvicorn", "--host", "0.0.0.0", "app.main:app", "--reload"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port","8001","app.main:app", "--reload"]
