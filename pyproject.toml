@@ -53,7 +53,7 @@ httpx = "0.23.3"
 mypy = "^1.9.0"
 openapi-readme = "^0.2.4"
 pre-commit = "^3.6.2"
-pymarkdownlnt = "^0.9.17"
+pymarkdownlnt = "^0.9.18"
 ruff = "^0.3.3"
 
 # task runner
