@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.3
+    rev: v0.3.4
     hooks:
       - id: ruff
         name: "lint with ruff"
@@ -20,7 +20,7 @@ repos:
         name: "format with ruff"
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.17
+    rev: v0.9.18
     hooks:
       - id: pymarkdown
         name: "check markdown"
@@ -41,7 +41,7 @@ repos:
       # - id: poetry-lock
 
   - repo: https://github.com/python-poetry/poetry-plugin-export
-    rev: "1.7.0"
+    rev: "1.7.1"
     hooks:
       - id: poetry-export
         name: "export production dependencies"
