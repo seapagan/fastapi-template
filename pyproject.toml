@@ -52,7 +52,7 @@ aiosqlite = "^0.20.0"
 httpx = "0.23.3"
 mypy = "^1.9.0"
 openapi-readme = "^0.2.4"
-pre-commit = "^3.6.2"
+pre-commit = "^3.7.0"
 pymarkdownlnt = "^0.9.18"
 ruff = "^0.3.4"
 
