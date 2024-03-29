@@ -42,9 +42,22 @@ services:
       timeout: 3s
       retries: 40
 
+  cache:
+    image: redis/redis-stack:latest
+    restart: always
+    ports:
+      - "6379:6379"
+      - "8002:8001"
+    volumes:
+      - cache:/data
+    networks:
+      - api-network
+
 volumes:
   api-db-data:
     name: api-db-data
+  cache:
+    driver: local
 
 networks:
   api-network:
