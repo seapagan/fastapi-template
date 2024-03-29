@@ -1,4 +1,4 @@
-FROM python:3.11.6-slim-bookworm AS dev
+FROM python:3.11.8-slim-bookworm AS dev
 RUN apt-get update -y && apt-get install -y \
     gcc \
     libpq-dev \
