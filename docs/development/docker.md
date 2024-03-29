@@ -31,6 +31,18 @@ will automatically reload when it detects any changes as you develop.
 **Note: Neither of these are suitable to host a project in production, see the
 [Deployment](../deployment/deployment.md) section for information.**
 
+This compose file will also start a `PostgreSQL` database container and a
+`Redis` container. The PostgreSQL database port is exposed on `5433` and the
+default username and password are those set in your `.env` file.
+
+The `Redis` container also contains the `RedisInsight` web interface, which can
+be accessed at <http://localhost:8002> for easy Redis database management.
+
+!!! note
+
+    The Redis server is not currently used, but will be shortly when I add
+    caching and rate-limiting.
+
 ## Updating Dependencies
 
 Every time a new dependency is installed a new image must be built:
