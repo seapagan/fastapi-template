@@ -919,13 +919,13 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "faker"
-version = "24.7.1"
+version = "24.9.0"
 description = "Faker is a Python package that generates fake data for you."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Faker-24.7.1-py3-none-any.whl", hash = "sha256:73f2bd886e8ce751e660c7d37a6c0a128aab5e1551359335bb79cfea0f4fabfc"},
-    {file = "Faker-24.7.1.tar.gz", hash = "sha256:39d34c63f0d62ed574161e23fe32008917b923d18098ce94c2650fe16463b7d5"},
+    {file = "Faker-24.9.0-py3-none-any.whl", hash = "sha256:97c7874665e8eb7b517f97bf3b59f03bf3f07513fe2c159e98b6b9ea6b9f2b3d"},
+    {file = "Faker-24.9.0.tar.gz", hash = "sha256:73b1e7967b0ceeac42fc99a8c973bb49e4499cc4044d20d17ab661d5cb7eda1d"},
 ]
 
 [package.dependencies]
@@ -4155,4 +4155,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "9b19be0fbcc372b7315e39dc6e103d74e026d4df354d6db2de277c35318b0967"
+content-hash = "d08cc5a53ab3dad0284375ca87a69e23f64c9892d257bc4fe8dee9036cb903f2"

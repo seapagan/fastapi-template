@@ -60,7 +60,7 @@ ruff = "^0.3.5"
 poethepoet = "^0.25.0"
 
 # testing
-faker = "^24.7.1"
+faker = "^24.9.0"
 mock = "^5.1.0"
 pyfakefs = "^5.4.0"
 pytest = "^8.1.1"
