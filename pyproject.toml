@@ -82,7 +82,7 @@ mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.5.18"
 mkdocs-minify-plugin = "^0.8.0"
 mkdocs-swagger-ui-tag = "^0.6.9"
-pymdown-extensions = "^10.7"
+pymdown-extensions = "^10.8"
 pygments = "^2.16.1"
 
 # for typing
