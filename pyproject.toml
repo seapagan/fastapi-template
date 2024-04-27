@@ -75,7 +75,7 @@ pytest-sugar = "^1.0.0"
 pytest-watcher = "^0.4.2"
 
 # docs
-mkdocs = "^1.5.3"
+mkdocs = "^1.6.0"
 mkdocstrings = { extras = ["python"], version = "^0.24.3" }
 mkdocs-git-revision-date-localized-plugin = "^1.2.4"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
