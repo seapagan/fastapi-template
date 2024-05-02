@@ -5,9 +5,6 @@
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
-- Replace the `toml`/`toml_w` libraries with `rtoml` for better functionality.
-  This is a Rust-based library that is very fast and very complete. It is also
-  written by the same author as `pydantic` so should be a good fit.
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)

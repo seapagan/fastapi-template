@@ -18,7 +18,7 @@ from app.config.helpers import (
 class TestConfigHelpers:
     """Test the helpers used by the config module."""
 
-    mock_load_tomli = "app.config.helpers.tomli.load"
+    mock_load_rtoml = "app.config.helpers.rtoml.load"
 
     def test_get_toml_path(self, mocker) -> None:
         """Test we get the correct toml path."""
@@ -39,14 +39,14 @@ class TestConfigHelpers:
     def test_get_api_version(self, mocker) -> None:
         """Test we get the API version."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={"tool": {"poetry": {"version": "1.2.3"}}},
         )
         assert get_api_version() == "1.2.3"
 
     def test_get_api_version_missing_toml(self, mocker, capfd) -> None:
         """Test we exit when the toml file is missing."""
-        mocker.patch(self.mock_load_tomli, side_effect=FileNotFoundError)
+        mocker.patch(self.mock_load_rtoml, side_effect=FileNotFoundError)
         with pytest.raises(SystemExit, match="2"):
             get_api_version()
         out, _ = capfd.readouterr()
@@ -55,7 +55,7 @@ class TestConfigHelpers:
     def test_get_api_version_missing_version(self, mocker, capfd) -> None:
         """Test we exit when the version is missing."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={"tool": {"poetry": {"version:": ""}}},
         )
         with pytest.raises(SystemExit, match="2"):
@@ -66,7 +66,7 @@ class TestConfigHelpers:
     def test_get_api_version_missing_key(self, mocker, capfd) -> None:
         """Test we exit when the key is missing."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={"tool": {"poetry": {}}},
         )
         with pytest.raises(SystemExit, match="2"):
@@ -77,7 +77,7 @@ class TestConfigHelpers:
     def test_get_api_details(self, mocker, capfd) -> None:
         """Test we get the API details."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={
                 "tool": {
                     "poetry": {
@@ -96,7 +96,7 @@ class TestConfigHelpers:
     def test_get_api_details_authors_is_list(self, mocker) -> None:
         """Authors should be converted to a list if not already."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={
                 "tool": {
                     "poetry": {
@@ -123,7 +123,7 @@ class TestConfigHelpers:
     ) -> None:
         """We should return an Error if any details are missing."""
         mocker.patch(
-            self.mock_load_tomli,
+            self.mock_load_rtoml,
             return_value={
                 "tool": {
                     "poetry": missing_keys,
@@ -137,7 +137,7 @@ class TestConfigHelpers:
 
     def test_get_api_details_missing_toml(self, mocker, capfd) -> None:
         """Test we exit when the toml file is missing."""
-        mocker.patch(self.mock_load_tomli, side_effect=FileNotFoundError)
+        mocker.patch(self.mock_load_rtoml, side_effect=FileNotFoundError)
         with pytest.raises(SystemExit, match="2"):
             get_api_details()
         out, _ = capfd.readouterr()

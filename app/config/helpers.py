@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
 
-import tomli
+import rtoml
 
 
 def get_project_root() -> Path:
@@ -26,10 +26,8 @@ def get_config_path() -> Path:
 def get_api_version() -> str:
     """Return the API version from the pyproject.toml file."""
     try:
-        toml_path = get_toml_path()
-        with toml_path.open(mode="rb") as file:
-            config = tomli.load(file)
-            version: str = config["tool"]["poetry"]["version"]
+        config = rtoml.load(get_toml_path())
+        version: str = config["tool"]["poetry"]["version"]
 
     except KeyError as exc:
         print(f"Cannot find the API version in the pyproject.toml file : {exc}")
@@ -46,17 +44,13 @@ def get_api_version() -> str:
 def get_api_details() -> tuple[str, str, list[str]]:
     """Return the API Name from the pyproject.toml file."""
     try:
-        toml_path = get_toml_path()
-        with toml_path.open(mode="rb") as file:
-            config = tomli.load(file)
-            name: str = config["tool"]["poetry"]["name"]
-            desc: str = config["tool"]["poetry"]["description"]
-            authors = config["tool"]["poetry"]["authors"]
+        config = rtoml.load(get_toml_path())
+        name: str = config["tool"]["poetry"]["name"]
+        desc: str = config["tool"]["poetry"]["description"]
+        authors = config["tool"]["poetry"]["authors"]
 
-            if not isinstance(authors, list):
-                authors = [authors]
-
-            return (name, desc, authors)
+        if not isinstance(authors, list):
+            authors = [authors]
 
     except KeyError as exc:
         print(
@@ -68,6 +62,8 @@ def get_api_details() -> tuple[str, str, list[str]]:
     except OSError as exc:
         print(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
+    else:
+        return (name, desc, authors)
 
 
 @dataclass
