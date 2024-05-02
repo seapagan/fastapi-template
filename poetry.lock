@@ -3527,17 +3527,6 @@ files = [
 ]
 
 [[package]]
-name = "tomli-w"
-version = "1.0.0"
-description = "A lil' TOML writer"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "tomli_w-1.0.0-py3-none-any.whl", hash = "sha256:9f2a07e8be30a0729e533ec968016807069991ae2fd921a78d42f429ae5f4463"},
-    {file = "tomli_w-1.0.0.tar.gz", hash = "sha256:f463434305e0336248cac9c2dc8076b707d8a12d019dd349f5c1e382dd1ae1b9"},
-]
-
-[[package]]
 name = "tomlkit"
 version = "0.12.3"
 description = "Style preserving TOML library"
@@ -4184,4 +4173,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "db02fc03382c9446dae22bccf55aa48e42da5f88b1d0d623c5d8431ba06b2c85"
+content-hash = "d6f1fb3faf615ee07ace77c4d7d162092da662ac66dddff56802398add46a12a"
