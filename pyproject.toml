@@ -103,6 +103,8 @@ asyncpg-stubs = "^0.29.1"
 # changelog generator
 github-changelog-md = ">=0.9.2"
 
+# additional dependencies below here
+
 [tool.poetry.group.dev.dependencies.mkdocstrings]
 extras = ["python"]
 version = "^0.25.0"
