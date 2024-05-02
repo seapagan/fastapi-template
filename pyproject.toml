@@ -81,7 +81,7 @@ mkdocs-git-revision-date-localized-plugin = "^1.2.5"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.5.20"
 mkdocs-minify-plugin = "^0.8.0"
-mkdocs-swagger-ui-tag = "^0.6.9"
+mkdocs-swagger-ui-tag = "^0.6.10"
 pymdown-extensions = "^10.8"
 pygments = "^2.16.1"
 
