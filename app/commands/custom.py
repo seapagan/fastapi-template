@@ -7,8 +7,7 @@ import sys
 from typing import Any, Literal, Union
 
 import asyncclick as click
-import tomli
-import tomli_w
+import rtoml
 import typer
 from jinja2 import Template
 from rich import print  # pylint: disable=W0622
@@ -185,16 +184,15 @@ def metadata() -> None:
 
         # update the pyproject.toml file
         try:
-            with get_toml_path().open(mode="rb") as file:
-                config = tomli.load(file)
-                config["tool"]["poetry"]["name"] = data["title"]
-                config["tool"]["poetry"]["version"] = data["version"]
-                config["tool"]["poetry"]["description"] = data["desc"]
-                config["tool"]["poetry"]["authors"] = [
-                    f"{data['author']} <{data['email']}>"
-                ]
-            with get_toml_path().open(mode="wb") as file:
-                tomli_w.dump(config, file)
+            config = rtoml.load(get_toml_path())
+            config["tool"]["poetry"]["name"] = data["title"]
+            config["tool"]["poetry"]["version"] = data["version"]
+            config["tool"]["poetry"]["description"] = data["desc"]
+            config["tool"]["poetry"]["authors"] = [
+                f"{data['author']} <{data['email']}>"
+            ]
+
+            rtoml.dump(config, get_toml_path(), pretty=False)
         except OSError as err:
             print(f"Cannot update the pyproject.toml file : {err}")
             sys.exit(3)
