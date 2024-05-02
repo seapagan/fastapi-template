@@ -33,6 +33,7 @@ sqlalchemy = { extras = ["asyncio"], version = "^2.0.29" }
 pydantic = "^2.7.1"
 pydantic-settings = "^2.2.1"
 openapi-readme = "^0.2.5"
+rtoml = ">=0.9.0,<1.0.0"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
@@ -90,7 +91,7 @@ types-passlib = "^1.7.7.20240327"
 asyncpg-stubs = "^0.29.1"
 
 # changelog generation
-github-changelog-md = "0.9.2"
+github-changelog-md = ">=0.9.2"
 
 # additional packages
 
