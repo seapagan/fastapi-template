@@ -5,16 +5,17 @@ description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "app", from = "." }]
-
 classifiers = ["Private :: Do Not Upload"]
+
+[[tool.poetry.packages]]
+include = "app"
+from = "."
 
 [tool.poetry.scripts]
 api-admin = "app.api_admin:app"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-fastapi = { extras = ["all"], version = "^0.110.3" }
 alembic = "^1.13.1"
 asyncpg = "^0.29.0"
 python-decouple = "^3.8"
@@ -27,13 +28,15 @@ anyio = "^4.3.0"
 email-validator = "^2.1.1"
 tomli = "^2.0.1"
 tomli-w = "^1.0.0"
-typer = { extras = ["all"], version = "^0.9.4" }
 poetry = "^1.8.2"
-sqlalchemy = { extras = ["asyncio"], version = "^2.0.29" }
 pydantic = "^2.7.1"
 pydantic-settings = "^2.2.1"
 openapi-readme = "^0.2.5"
 rtoml = ">=0.9.0,<1.0.0"
+
+[tool.poetry.dependencies.fastapi]
+extras = ["all"]
+version = "^0.110.3"
 
 [tool.poetry.dependencies.fastapi-mail]
 extras = ["httpx"]
@@ -46,6 +49,14 @@ version = "^0.29.0"
 [tool.poetry.dependencies.passlib]
 extras = ["bcrypt"]
 version = "^1.7.4"
+
+[tool.poetry.dependencies.sqlalchemy]
+extras = ["asyncio"]
+version = "^2.0.29"
+
+[tool.poetry.dependencies.typer]
+extras = ["all"]
+version = "^0.9.4"
 
 [tool.poetry.group.dev.dependencies]
 aiosmtpd = "^1.4.5"
@@ -77,7 +88,6 @@ pytest-watcher = "^0.4.2"
 
 # docs
 mkdocs = "^1.6.0"
-mkdocstrings = { extras = ["python"], version = "^0.25.0" }
 mkdocs-git-revision-date-localized-plugin = "^1.2.5"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
 mkdocs-material = "^9.5.20"
@@ -90,10 +100,13 @@ pygments = "^2.16.1"
 types-passlib = "^1.7.7.20240327"
 asyncpg-stubs = "^0.29.1"
 
-# changelog generation
+# changelog generator
 github-changelog-md = ">=0.9.2"
 
-# additional packages
+[tool.poetry.group.dev.dependencies.mkdocstrings]
+extras = ["python"]
+version = "^0.25.0"
+
 
 [build-system]
 requires = ["poetry-core"]
