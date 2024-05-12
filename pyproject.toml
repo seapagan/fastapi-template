@@ -21,12 +21,12 @@ asyncpg = "^0.29.0"
 python-decouple = "^3.8"
 psycopg2 = "^2.9.9"
 PyJWT = "^2.8.0"
-Jinja2 = "^3.1.2"
+Jinja2 = "^3.1.4"
 rich = "^13.7.1"
 asyncclick = "^8.1.7.2"
 anyio = "^4.3.0"
 email-validator = "^2.1.1"
-poetry = "^1.8.2"
+poetry = "^1.8.3"
 pydantic = "^2.7.1"
 pydantic-settings = "^2.2.1"
 openapi-readme = "^0.2.5"
@@ -50,7 +50,7 @@ version = "^1.7.4"
 
 [tool.poetry.dependencies.sqlalchemy]
 extras = ["asyncio"]
-version = "^2.0.29"
+version = "^2.0.30"
 
 [tool.poetry.dependencies.typer]
 extras = ["all"]
@@ -63,14 +63,14 @@ httpx = "0.23.3"
 mypy = "^1.10.0"
 openapi-readme = "^0.2.4"
 pre-commit = "^3.7.0"
-pymarkdownlnt = "^0.9.18"
-ruff = "^0.4.2"
+pymarkdownlnt = "^0.9.19"
+ruff = "^0.4.4"
 
 # task runner
 poethepoet = "^0.26.1"
 
 # testing
-faker = "^25.0.0"
+faker = "^25.1.0"
 mock = "^5.1.0"
 pyfakefs = "^5.4.1"
 pytest = "^8.2.0"
@@ -88,11 +88,11 @@ pytest-watcher = "^0.4.2"
 mkdocs = "^1.6.0"
 mkdocs-git-revision-date-localized-plugin = "^1.2.5"
 mkdocs-latest-git-tag-plugin = "^0.1.2"
-mkdocs-material = "^9.5.20"
+mkdocs-material = "^9.5.21"
 mkdocs-minify-plugin = "^0.8.0"
 mkdocs-swagger-ui-tag = "^0.6.10"
 pymdown-extensions = "^10.8"
-pygments = "^2.16.1"
+pygments = "^2.18.0"
 
 # for typing
 types-passlib = "^1.7.7.20240327"
