@@ -1,16 +1,16 @@
-FROM python:3.11.8-slim-bookworm AS dev
+FROM python:3.12-slim AS dev
 RUN apt-get update -y && apt-get install -y \
     gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
-RUN pip install poetry==1.7.0
+RUN pip install poetry==1.8.3
 # Configuring poetry
 RUN poetry config virtualenvs.create false
 # Copying requirements of a project
-COPY pyproject.toml poetry.lock /app/src/
+COPY pyproject.toml poetry.lock README.md /app/src/
 WORKDIR /app/src
 # Installing requirements
-RUN poetry install
+RUN poetry install --no-root
 # Removing gcc
 RUN apt-get purge -y \
     gcc \
