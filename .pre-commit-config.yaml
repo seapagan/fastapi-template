@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.5
+    rev: v0.4.7
     hooks:
       - id: ruff
         name: "lint with ruff"
@@ -20,7 +20,7 @@ repos:
         name: "format with ruff"
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.19
+    rev: v0.9.20
     hooks:
       - id: pymarkdown
         name: "check markdown"
