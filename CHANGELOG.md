@@ -6,44 +6,39 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+## [v0.5.3](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.3) (June 03, 2024)
 
+**Closed Issues**
 
-These are the changes that have been merged to the repository since the last
-release. If you want to try out these changes, you can install the latest
-version from the main branch by running:
-
-```console
-$ pip install git+https://github.com/seapagan/github-changelog-md
-```
-
-or, if using poetry:
-
-```console
-$ poetry add git+https://github.com/seapagan/github-changelog-md
-```
-Everything in this section will be included in the next official release.
-
+- Poetry install broken under Docker ([#534](https://github.com/seapagan/fastapi-template/issues/534)) by [seapagan](https://github.com/seapagan)
 
 **New Features**
 
 - Add a Redis server to the docker compose file ([#475](https://github.com/seapagan/fastapi-template/pull/475)) by [seapagan](https://github.com/seapagan)
 
+**Bug Fixes**
+
+- Fix Poetry install broken under Docker ([#537](https://github.com/seapagan/fastapi-template/pull/537)) by [seapagan](https://github.com/seapagan)
+
+**Refactoring**
+
+- Migrate to rtoml ([#523](https://github.com/seapagan/fastapi-template/pull/523)) by [seapagan](https://github.com/seapagan)
+
 **Dependency Updates**
 
-- Bump types-passlib from 1.7.7.20240311 to 1.7.7.20240327 ([#474](https://github.com/seapagan/fastapi-template/pull/474)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pre-commit from 3.6.2 to 3.7.0 ([#473](https://github.com/seapagan/fastapi-template/pull/473)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump mkdocs-material from 9.5.14 to 9.5.15 ([#472](https://github.com/seapagan/fastapi-template/pull/472)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump faker from 24.3.0 to 24.4.0 ([#471](https://github.com/seapagan/fastapi-template/pull/471)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pytest-cov from 4.1.0 to 5.0.0 ([#470](https://github.com/seapagan/fastapi-template/pull/470)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump mkdocs-swagger-ui-tag from 0.6.8 to 0.6.9 ([#469](https://github.com/seapagan/fastapi-template/pull/469)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump typer from 0.9.0 to 0.9.4 ([#468](https://github.com/seapagan/fastapi-template/pull/468)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump sqlalchemy from 2.0.28 to 2.0.29 ([#467](https://github.com/seapagan/fastapi-template/pull/467)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pytest-mock from 3.12.0 to 3.14.0 ([#465](https://github.com/seapagan/fastapi-template/pull/465)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump ruff from 0.3.3 to 0.3.4 ([#463](https://github.com/seapagan/fastapi-template/pull/463)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 4 more dependency updates*
+- Bump requests from 2.31.0 to 2.32.2 ([#557](https://github.com/seapagan/fastapi-template/pull/557)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump ruff from 0.4.4 to 0.4.7 ([#556](https://github.com/seapagan/fastapi-template/pull/556)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-git-revision-date-localized-plugin from 1.2.5 to 1.2.6 ([#555](https://github.com/seapagan/fastapi-template/pull/555)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pymarkdownlnt from 0.9.19 to 0.9.20 ([#554](https://github.com/seapagan/fastapi-template/pull/554)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump pydantic from 2.7.1 to 2.7.2 ([#552](https://github.com/seapagan/fastapi-template/pull/552)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump faker from 25.2.0 to 25.3.0 ([#551](https://github.com/seapagan/fastapi-template/pull/551)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump uvicorn from 0.29.0 to 0.30.0 ([#550](https://github.com/seapagan/fastapi-template/pull/550)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump mkdocs-material from 9.5.23 to 9.5.25 ([#549](https://github.com/seapagan/fastapi-template/pull/549)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump anyio from 4.3.0 to 4.4.0 ([#548](https://github.com/seapagan/fastapi-template/pull/548)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump aiosmtpd from 1.4.5 to 1.4.6 ([#543](https://github.com/seapagan/fastapi-template/pull/543)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- *and 59 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...v0.5.3) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...v0.5.3.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.2...v0.5.3.patch)
 
 ## [v0.5.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.2) (March 18, 2024)
 
