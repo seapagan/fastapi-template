@@ -57,7 +57,7 @@ extras = ["all"]
 version = "^0.9.4"
 
 [tool.poetry.group.dev.dependencies]
-aiosmtpd = "^1.4.5"
+aiosmtpd = "^1.4.6"
 aiosqlite = "^0.20.0"
 httpx = "0.23.3"
 mypy = "^1.10.0"

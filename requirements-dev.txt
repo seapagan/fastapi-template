@@ -1,4 +1,4 @@
-aiosmtpd==1.4.5 ; python_version >= "3.9" and python_version < "4.0"
+aiosmtpd==1.4.6 ; python_version >= "3.9" and python_version < "4.0"
 aiosmtplib==2.0.2 ; python_version >= "3.9" and python_version < "4.0"
 aiosqlite==0.20.0 ; python_version >= "3.9" and python_version < "4.0"
 alembic==1.13.1 ; python_version >= "3.9" and python_version < "4.0"
