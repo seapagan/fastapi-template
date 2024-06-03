@@ -1,7 +1,7 @@
 aiosmtplib==2.0.2 ; python_version >= "3.9" and python_version < "4.0"
 alembic==1.13.1 ; python_version >= "3.9" and python_version < "4.0"
 annotated-types==0.6.0 ; python_version >= "3.9" and python_version < "4.0"
-anyio==4.3.0 ; python_version >= "3.9" and python_version < "4.0"
+anyio==4.4.0 ; python_version >= "3.9" and python_version < "4.0"
 async-timeout==4.0.3 ; python_version >= "3.9" and python_version < "3.12.0"
 asyncclick==8.1.7.2 ; python_version >= "3.9" and python_version < "4.0"
 asyncpg==0.29.0 ; python_version >= "3.9" and python_version < "4.0"
