@@ -266,9 +266,7 @@ mock_use_standalone_module = true
 env = ["I_READ_THE_DAMN_DOCS=true"]
 
 [tool.coverage.run]
-# source = []
 source = ["app"]
-# omit = ["*/tests/*", "app/commands/*", "app/api_admin.py"]
 omit = ["*/tests/*"]
 concurrency = ["thread", "greenlet"]
 

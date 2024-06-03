@@ -60,7 +60,7 @@ more information. I will also be adding a migration guide for those who wish to
 upgrade their existing projects (time permitting).
 
 If you prefer to continue using the 0.4.x branch, you can find it
-[here](https://github.com/seapagan/fastapi-template/tree/0.4.2).
+[here][legacy-branch].
 
 To use this branch you will need to clone the repository and checkout the
 `0.4.2` branch.
@@ -81,7 +81,7 @@ following advantages to starting your own from scratch :
   or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
-  [Alembic](https://github.com/sqlalchemy/alembic) is used to control database
+  [Alembic][alembic] is used to control database
   migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
@@ -95,7 +95,7 @@ following advantages to starting your own from scratch :
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
   data) since it is based on the excellent
-  [asyncclick](https://github.com/python-trio/asyncclick) library.
+  [Typer][typer] library.
 - Database and Secrets are automatically read from Environment variables or a
   `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
@@ -107,20 +107,21 @@ following advantages to starting your own from scratch :
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
-**This template is still in very active development and is not yet ready for
-full production use. However, I am currently using it to develop my own
+**This template is still in very active development and probably not yet ready
+for full production use. However, I am currently using it to develop my own
 projects, which include some production API's without issues. I will update the
 template as I find bugs or add new features. I will also be adding more
 documentation as I go. For the moment, if you wish to use it without getting
 involved in dev, I'd recommend checking out the latest actual
-[Release](https://github.com/seapagan/fastapi-template/releases/latest).**
+[Release][latest-release].**
 
 However, the `main` branch should be pretty stable as all development is done on
 the `develop` branch and merged into `main` when ready.
 
-The template **Requires Python 3.9.0+** or higher. It is developed under Python
-3.11.x where x is the latest version available at the time, and migrating to
-the next patch version as soon as it is released.
+The template **Requires Python 3.9.0** or higher. I actually develop under
+Python 3.12.x where x is the latest version available at the time, and migrating
+to the next patch version as soon as it is released. CI tests are run
+automatically on Python 3.9, 3.10, 3.11 and 3.12.
 
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, please put a small note in your readme
@@ -131,8 +132,8 @@ For those who let me know they are using this Template, I'll add links back to
 your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
-appreciation for my work, why not [Buy me a
-Coffee!](https://www.buymeacoffee.com/seapagan) 😃
+appreciation for my work, why not [Sponsor my
+Work][sponsor] or [Buy me a Coffee!][coffee] 😃
 
 ## Installation
 
@@ -140,11 +141,9 @@ Click the 'Use this template' button at the top of the Repository on GitHub.
 This will create a new repository in your personal GitHub account (Not a Fork)
 which you can then Clone and start working on.
 
-It is assumed that you have at least some knowledge of
-[FastAPI](https://fastapi.tiangolo.com/) to use this template, there are very
-good [Basic](https://fastapi.tiangolo.com/tutorial/) and
-[Advanced](https://fastapi.tiangolo.com/advanced/) User Guides on the FastAPI
-website .
+It is assumed that you have at least some knowledge of [FastAPI][fastapi] to use
+this template, there are very good [Basic][tut-basic] and
+[Advanced][tut-advanced] User Guides on the FastAPI website .
 
 Visit the [Installation Instructions][install] for more detailed installation
 notes, including how to handle the coverage uploader.
@@ -225,7 +224,7 @@ See the [TODO.md](TODO.md) file for plans.
 ## Testing
 
 This project has a test suite for Integration and Unit tests. We use
-[pytest](https://docs.pytest.org) for this.
+[pytest][pytest] for this.
 
 Currently you need a Postgresql database running for this to work, however
 SQLite support is planned to be re-added. You can easily set up a Postgresql
@@ -283,7 +282,7 @@ See [Contributing][contrib] for details on how to contribute to this project.
 ## GitHub Discussions
 
 I have enabled
-[Discussions](https://github.com/seapagan/fastapi-template/discussions) on this
+[Discussions][discussions] on this
 repository, so if you have any questions, suggestions or just want to chat about
 this template, please feel free to start a discussion.
 
@@ -291,3 +290,18 @@ this template, please feel free to start a discussion.
 [contrib]:https://api-template.seapagan.net/contributing/
 [breaking]:https://api-template.seapagan.net/important/
 [install]:https://api-template.seapagan.net/usage/installation/
+[latest-release]:https://github.com/seapagan/fastapi-template/releases/latest
+[discussions]:https://github.com/seapagan/fastapi-template/discussions
+
+[legacy-branch]:https://github.com/seapagan/fastapi-template/tree/0.4.2
+
+[sponsor]:https://github.com/sponsors/seapagan
+[coffee]:https://www.buymeacoffee.com/seapagan
+
+[alembic]: https://github.com/sqlalchemy/alembic
+[typer]:https://typer.tiangolo.com/
+[fastapi]:https://fastapi.tiangolo.com/
+[pytest]:https://docs.pytest.org
+
+[tut-basic]:https://fastapi.tiangolo.com/tutorial/
+[tut-advanced]:https://fastapi.tiangolo.com/advanced/
