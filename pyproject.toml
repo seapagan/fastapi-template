@@ -27,8 +27,8 @@ asyncclick = "^8.1.7.2"
 anyio = "^4.4.0"
 email-validator = "^2.1.1"
 poetry = "^1.8.3"
-pydantic = "^2.7.2"
-pydantic-settings = "^2.2.1"
+pydantic = "^2.7.3"
+pydantic-settings = "^2.3.0"
 openapi-readme = "^0.2.5"
 rtoml = ">=0.9.0,<1.0.0"
 
@@ -42,7 +42,7 @@ version = "^1.4.1"
 
 [tool.poetry.dependencies.uvicorn]
 extras = ["standard"]
-version = "^0.30.0"
+version = "^0.30.1"
 
 [tool.poetry.dependencies.passlib]
 extras = ["bcrypt"]
@@ -70,7 +70,7 @@ ruff = "^0.4.7"
 poethepoet = "^0.26.1"
 
 # testing
-faker = "^25.3.0"
+faker = "^25.4.0"
 mock = "^5.1.0"
 pyfakefs = "^5.4.1"
 pytest = "^8.2.1"
