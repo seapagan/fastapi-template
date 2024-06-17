@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.7
+    rev: v0.4.9
     hooks:
       - id: ruff
         name: "lint with ruff"
