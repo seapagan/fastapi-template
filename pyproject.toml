@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "API Template"
-version = "0.5.3"
+version = "0.5.4"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
 license = "MIT"
