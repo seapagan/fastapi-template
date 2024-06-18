@@ -20,7 +20,7 @@ cryptography==42.0.7 ; python_version >= "3.9" and python_version < "4.0" and sy
 distlib==0.3.8 ; python_version >= "3.9" and python_version < "4.0"
 dnspython==2.6.1 ; python_version >= "3.9" and python_version < "4.0"
 dulwich==0.21.7 ; python_version >= "3.9" and python_version < "4.0"
-email-validator==2.1.1 ; python_version >= "3.9" and python_version < "4.0"
+email-validator==2.1.2 ; python_version >= "3.9" and python_version < "4.0"
 exceptiongroup==1.2.1 ; python_version >= "3.9" and python_version < "3.11"
 fastapi-mail[httpx]==1.4.1 ; python_version >= "3.9" and python_version < "4.0"
 fastapi[all]==0.110.3 ; python_version >= "3.9" and python_version < "4.0"
