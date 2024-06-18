@@ -1976,18 +1976,18 @@ setuptools = "*"
 
 [[package]]
 name = "openapi-readme"
-version = "0.2.5"
+version = "0.3.0"
 description = "Generate Markdown from an openapi JSON file."
 optional = false
-python-versions = ">=3.8.1,<4.0.0"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "openapi_readme-0.2.5-py3-none-any.whl", hash = "sha256:d78470cfeeca8a9a84d4ffd1543895c541ed3c0095db9dca75b9d0f882116bbe"},
-    {file = "openapi_readme-0.2.5.tar.gz", hash = "sha256:9fcb7dced64f4589dc4cf7a649044aa25993b37d8661b022c68733105e8a5f3b"},
+    {file = "openapi_readme-0.3.0-py3-none-any.whl", hash = "sha256:15540066af115ebade384eecfcb85d40074ec02ff6c2bee833e58fcbfe997156"},
+    {file = "openapi_readme-0.3.0.tar.gz", hash = "sha256:67fab5bde8480a891c8418dd54ddd942f3fd4071ccd647a399df504b55a85099"},
 ]
 
 [package.dependencies]
 single-source = ">=0.3.0,<0.4.0"
-typer = {version = ">=0.6.1,<0.10.0", extras = ["all"]}
+typer = {version = ">=0.6.1,<0.13.0", extras = ["all"]}
 
 [[package]]
 name = "orjson"
@@ -4160,4 +4160,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "b520578660746e6eb12daec814dbc8916b820f1ac23a206b31f87c4c49a000ce"
+content-hash = "f7f2c3e54b42da955706e7c24c33a225e89e1833b68c7a1d94fba51835b5bd41"
