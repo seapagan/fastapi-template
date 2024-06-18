@@ -62,7 +62,7 @@ pycparser==2.22 ; python_version >= "3.9" and python_version < "4.0" and (sys_pl
 pydantic-core==2.18.4 ; python_version >= "3.9" and python_version < "4.0"
 pydantic-extra-types==2.7.0 ; python_version >= "3.9" and python_version < "4.0"
 pydantic-settings==2.3.3 ; python_version >= "3.9" and python_version < "4.0"
-pydantic==2.7.3 ; python_version >= "3.9" and python_version < "4.0"
+pydantic==2.7.4 ; python_version >= "3.9" and python_version < "4.0"
 pygments==2.18.0 ; python_version >= "3.9" and python_version < "4.0"
 pyjwt==2.8.0 ; python_version >= "3.9" and python_version < "4.0"
 pyproject-hooks==1.1.0 ; python_version >= "3.9" and python_version < "4.0"
