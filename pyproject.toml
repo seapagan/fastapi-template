@@ -28,7 +28,7 @@ anyio = "^4.4.0"
 email-validator = "^2.1.2"
 poetry = "^1.8.3"
 pydantic = "^2.7.4"
-pydantic-settings = "^2.3.3"
+pydantic-settings = "^2.3.4"
 openapi-readme = "^0.3.0"
 rtoml = ">=0.9.0,<1.0.0"
 
