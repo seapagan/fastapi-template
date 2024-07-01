@@ -64,7 +64,7 @@ mypy = "^1.10.0"
 openapi-readme = "^0.3.0"
 pre-commit = "^3.7.0"
 pymarkdownlnt = "^0.9.20"
-ruff = "^0.4.9"
+ruff = "^0.5.0"
 
 # task runner
 poethepoet = "^0.26.1"
