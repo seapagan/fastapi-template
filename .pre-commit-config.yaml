@@ -12,15 +12,16 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.9
+    rev: v0.5.1
     hooks:
       - id: ruff
+        args: ["--output-format=concise"]
         name: "lint with ruff"
       - id: ruff-format
         name: "format with ruff"
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.20
+    rev: v0.9.21
     hooks:
       - id: pymarkdown
         name: "check markdown"
@@ -28,7 +29,7 @@ repos:
         args: [-d, "MD046", scan]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.10.0" # Use the sha / tag you want to point at
+    rev: "v1.10.1" # Use the sha / tag you want to point at
     hooks:
       - id: mypy
         name: "Check with Mypy"

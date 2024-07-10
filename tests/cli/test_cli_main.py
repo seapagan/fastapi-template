@@ -30,9 +30,9 @@ class TestCLI:
 
         assert result.exit_code == 0
         mock_call.assert_called_once()
-        mock_call.assert_called_with(
+        mock_call.assert_called_with(  # noqa: S604
             "uvicorn app.main:app --port=8000 --host=localhost --reload",
-            shell=True,  # noqa: S604
+            shell=True,
         )
 
     def test_no_command_should_give_help(self, runner) -> None:

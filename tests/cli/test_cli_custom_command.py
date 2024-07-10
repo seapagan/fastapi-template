@@ -23,10 +23,7 @@ from app.config.helpers import LICENCES
 
 def is_running_in_docker() -> bool:
     """Check for the .dockerenv file."""
-    if os.path.exists("/.dockerenv"):  # noqa: PTH110
-        return True
-
-    return False
+    return os.path.exists("/.dockerenv")  # noqa: PTH110
 
 
 class TestCLI:

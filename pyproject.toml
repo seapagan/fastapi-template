@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "API Template"
+name = "api-template"
 version = "0.5.4"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = ["Grant Ramsay (seapagan) <seapagan@gmail.com>"]
@@ -64,7 +64,7 @@ mypy = "^1.10.0"
 openapi-readme = "^0.3.0"
 pre-commit = "^3.7.0"
 pymarkdownlnt = "^0.9.20"
-ruff = "^0.4.9"
+ruff = ">=0.4.9"
 
 # task runner
 poethepoet = "^0.26.1"
@@ -121,7 +121,7 @@ mypy.help = "Run mypy checks"
 format.help = "Format code with Ruff"
 format.cmd = "ruff format ."
 ruff.help = "Run Ruff checks"
-ruff.cmd = "ruff check ."
+ruff.cmd = "ruff check --output-format=concise ."
 markdown.cmd = "pymarkdown --strict-config scan  -r docs/**/*.md"
 markdown.help = "Run markdown checks"
 
