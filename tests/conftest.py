@@ -91,6 +91,7 @@ async def client() -> AsyncGenerator[AsyncClient, Any]:
         app=app,
         base_url="http://testserver",
         headers={"Content-Type": "application/json"},
+        timeout=10,
     ) as client:
         yield client
     app.dependency_overrides = {}

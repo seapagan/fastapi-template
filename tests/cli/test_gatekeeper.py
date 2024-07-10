@@ -21,8 +21,8 @@ class TestCLI:
         monkeypatch.setenv("I_READ_THE_DAMN_DOCS", "False")
 
         command = ["uvicorn", "app.main:app"]
-        result = subprocess.run(
-            command,  # noqa: S603
+        result = subprocess.run(  # noqa: S603
+            command,
             capture_output=True,
             text=True,
             check=False,
