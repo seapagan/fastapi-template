@@ -227,6 +227,8 @@ These are to help with developing and updating the documentation.
 
 Here are some guidelines to follow when contributing to `fastapi-template`:
 
+- Do not update the version number in the `pyproject.toml` file. This will be
+  done by the maintainers when a new release is made.
 - Follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide. The
   pre-commit hooks will check for this. We are using the [Ruff
   Formatter](https://docs.astral.sh/ruff/formatter/).
