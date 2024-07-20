@@ -54,7 +54,7 @@ version = "^2.0.31"
 
 [tool.poetry.dependencies.typer]
 extras = ["all"]
-version = "^0.9.4"
+version = "^0.12.3"
 
 [tool.poetry.group.dev.dependencies]
 aiosmtpd = "^1.4.6"
