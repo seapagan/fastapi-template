@@ -50,7 +50,7 @@ version = "^1.7.4"
 
 [tool.poetry.dependencies.sqlalchemy]
 extras = ["asyncio"]
-version = "^2.0.31"
+version = "^2.0.32"
 
 [tool.poetry.dependencies.typer]
 extras = ["all"]
