@@ -14,7 +14,7 @@ from app.schemas.request.auth import TokenRefreshRequest
 from tests.helpers import get_token
 
 
-@pytest.mark.unit()
+@pytest.mark.unit
 class TestAuthManager:
     """Test the AuthManager class methods."""
 
@@ -100,7 +100,7 @@ class TestAuthManager:
     # ------------------------------------------------------------------------ #
     #                            test refresh token                            #
     # ------------------------------------------------------------------------ #
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh(self, test_db) -> None:
         """Test the refresh method returns a new token."""
         _, refresh = await UserManager.register(self.test_user, test_db)
@@ -110,7 +110,7 @@ class TestAuthManager:
 
         assert isinstance(new_token, str)
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_bad_token(self, test_db) -> None:
         """Test the refresh method with a bad refresh token."""
         await UserManager.register(self.test_user, test_db)
@@ -123,7 +123,7 @@ class TestAuthManager:
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
         assert new_token is None
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_expired_token(self, test_db, mocker) -> None:
         """Test the refresh method with an expired refresh token."""
         expired_refresh = get_token(
@@ -139,7 +139,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.EXPIRED_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_wrong_token(self, test_db, mocker) -> None:
         """Test the refresh method with the wrong token 'typ'."""
         await UserManager.register(self.test_user, test_db)
@@ -156,7 +156,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_empty_refresh_token(self, test_db) -> None:
         """Test the refresh method with no refresh token."""
         await UserManager.register(self.test_user, test_db)
@@ -169,7 +169,7 @@ class TestAuthManager:
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
         assert new_token is None
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_no_user(self, test_db) -> None:
         """Test the refresh method when user does not exist."""
         no_user_refresh = AuthManager.encode_refresh_token(User(id=999))
@@ -182,7 +182,7 @@ class TestAuthManager:
         assert exc_info.value.detail == ResponseMessages.USER_NOT_FOUND
         assert new_token is None
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_banned_user(self, test_db) -> None:
         """Test the refresh method with a banned user."""
         await UserManager.register(self.test_user, test_db)
@@ -200,7 +200,7 @@ class TestAuthManager:
     # ------------------------------------------------------------------------ #
     #                             test verify token                            #
     # ------------------------------------------------------------------------ #
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify(self, test_db) -> None:
         """Test the verify method."""
         background_tasks = BackgroundTasks()
@@ -214,7 +214,7 @@ class TestAuthManager:
         user_data = await UserManager.get_user_by_id(1, test_db)
         assert user_data.verified is True
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_missing_user(self, test_db) -> None:
         """Test the verify method with a missing user."""
         verify_token = AuthManager.encode_verify_token(User(id=1))
@@ -223,7 +223,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
         assert exc_info.value.detail == ResponseMessages.USER_NOT_FOUND
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_wrong_token(self, test_db) -> None:
         """Test the verify method with a bad token type."""
         background_tasks = BackgroundTasks()
@@ -238,7 +238,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_banned_user(self, test_db) -> None:
         """Test the verify method with a banned user."""
         background_tasks = BackgroundTasks()
@@ -254,7 +254,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_user_already_verified(self, test_db) -> None:
         """Test the verify method with a banned user."""
         await UserManager.register(self.test_user, test_db)
@@ -268,7 +268,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_user_invalid_token(self, test_db) -> None:
         """Test the verify method with an invalid token."""
         background_tasks = BackgroundTasks()
@@ -279,7 +279,7 @@ class TestAuthManager:
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_user_expired_token(self, test_db) -> None:
         """Test the verify method with an expired token."""
         expired_verify = get_token(

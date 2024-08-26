@@ -11,8 +11,8 @@ from app.models.user import User
 from tests.helpers import get_token
 
 
-@pytest.mark.unit()
-@pytest.mark.asyncio()
+@pytest.mark.unit
+@pytest.mark.asyncio
 class TestCustomHTTPBearer:
     """Test the CustomHTTPBearer class."""
 

@@ -17,7 +17,7 @@ class EmailData(TypedDict):
     recipients: list[str]
 
 
-@pytest.mark.unit()
+@pytest.mark.unit
 class TestEmailManager:
     """Test the EmailManager class."""
 
@@ -41,7 +41,7 @@ class TestEmailManager:
         assert get_settings().mail_from == email_manager.conf.MAIL_FROM
         assert email_manager.conf.SUPPRESS_SEND == 1
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_simple_send(self, email_manager) -> None:
         """Test the simple_send method."""
         response = await email_manager.simple_send(email_data=self.email_schema)

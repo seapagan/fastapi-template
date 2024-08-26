@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from app.resources.config_error import catch_all
 
 
-@pytest.mark.unit()
+@pytest.mark.unit
 def test_catch_all() -> None:
     """Test the catch_all function.
 
