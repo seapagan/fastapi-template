@@ -9,8 +9,8 @@ from app.models.user import User
 from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
 
 
-@pytest.mark.unit()
-@pytest.mark.asyncio()
+@pytest.mark.unit
+@pytest.mark.asyncio
 class TestUserManager:  # pylint: disable=too-many-public-methods
     """Test the UserManager class."""
 

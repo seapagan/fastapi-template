@@ -14,8 +14,8 @@ from app.models.enums import RoleType
 from app.models.user import User
 
 
-@pytest.mark.asyncio()
-@pytest.mark.integration()
+@pytest.mark.asyncio
+@pytest.mark.integration
 class TestUserRoutes:
     """Test the User routes of the application.
 

@@ -6,7 +6,7 @@ from fastapi import status
 from app.managers.user import pwd_context
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestProtectedUserRoutes:
     """Ensure the user routes are protected by authentication.
 
@@ -33,7 +33,7 @@ class TestProtectedUserRoutes:
         ["/users/1", "delete"],
     ]
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "route",
         test_routes,
@@ -47,7 +47,7 @@ class TestProtectedUserRoutes:
         assert response.status_code == status.HTTP_403_FORBIDDEN
         assert response.json() == {"detail": "Not authenticated"}
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "route",
         test_routes,

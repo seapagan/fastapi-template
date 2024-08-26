@@ -8,8 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.main import lifespan
 
 
-@pytest.mark.asyncio()
-@pytest.mark.unit()
+@pytest.mark.asyncio
+@pytest.mark.unit
 class TestLifespan:
     """Test all the functions in the lifespan module."""
 

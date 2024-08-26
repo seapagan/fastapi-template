@@ -9,14 +9,14 @@ from app.managers.auth import can_edit_user, is_admin, is_banned
 from app.models.enums import RoleType
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_req(mocker: MockerFixture) -> MockType:
     """Fixture to return a mocked Request object."""
     request_mock_path = "app.managers.auth.Request"
     return mocker.patch(request_mock_path)
 
 
-@pytest.mark.unit()
+@pytest.mark.unit
 class TestAuthManagerHelpers:
     """Test the AuthManager class."""
 

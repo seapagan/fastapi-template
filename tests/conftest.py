@@ -106,7 +106,7 @@ def email_manager() -> EmailManager:
     return EmailManager(suppress_send=True)
 
 
-@pytest.fixture()
+@pytest.fixture
 def runner() -> CliRunner:
     """Return a CliRunner instance.
 
@@ -115,7 +115,7 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-@pytest.fixture()
+@pytest.fixture
 def fake_toml(fs: FakeFilesystem) -> FakeFilesystem:
     """Fixture to create a fake toml file."""
     toml_file = get_project_root() / "pyproject.toml"

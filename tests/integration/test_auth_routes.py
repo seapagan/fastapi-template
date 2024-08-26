@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 
 
-@pytest.mark.integration()
+@pytest.mark.integration
 class TestAuthRoutes:
     """Test the authentication routes of the application."""
 
@@ -53,7 +53,7 @@ class TestAuthRoutes:
     # ------------------------------------------------------------------------ #
     #                          test '/register' route                          #
     # ------------------------------------------------------------------------ #
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_register_new_user(
         self, client: AsyncClient, test_db: AsyncSession, mocker
     ) -> None:
@@ -92,7 +92,7 @@ class TestAuthRoutes:
 
         mock_send.assert_called_once()
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_register_duplicate_user(
         self, client: AsyncClient, test_db: AsyncSession, mocker
     ) -> None:
@@ -118,7 +118,7 @@ class TestAuthRoutes:
 
         assert duplicate_user.status_code == status.HTTP_400_BAD_REQUEST
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_password_is_stored_hashed(
         self, client, test_db, mocker
     ) -> None:
@@ -142,7 +142,7 @@ class TestAuthRoutes:
         assert user_from_db.password != post_body["password"]
         assert pwd_context.verify(post_body["password"], user_from_db.password)
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_register_new_user_with_bad_email(
         self, client, test_db, mocker
     ) -> None:
@@ -198,7 +198,7 @@ class TestAuthRoutes:
             },
         ],
     )
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_register_new_user_with_missing_data(
         self, client, test_db, mocker, post_body
     ) -> None:
@@ -221,7 +221,7 @@ class TestAuthRoutes:
     # ------------------------------------------------------------------------ #
     #                            test '/login' route                           #
     # ------------------------------------------------------------------------ #
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_cant_login_before_verifying_email(
         self, client, test_db
     ) -> None:
@@ -240,7 +240,7 @@ class TestAuthRoutes:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verified_user_can_login(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
@@ -267,7 +267,7 @@ class TestAuthRoutes:
         assert isinstance(token, str)
         assert isinstance(refresh, str)
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "post_body",
         [
@@ -296,7 +296,7 @@ class TestAuthRoutes:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.AUTH_INVALID
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "post_body",
         [
@@ -324,7 +324,7 @@ class TestAuthRoutes:
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         assert "Field required" in response.json()["detail"][0]["msg"]
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_cant_login_with_unverified_email(
         self, client, test_db
     ) -> None:
@@ -343,7 +343,7 @@ class TestAuthRoutes:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json()["detail"] == UserErrorMessages.NOT_VERIFIED
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_cant_login_with_banned_user(self, client, test_db) -> None:
         """Ensure the user cant login with banned user."""
         test_db.add(User(**self.test_banned_user))
@@ -364,7 +364,7 @@ class TestAuthRoutes:
     #                           test '/refresh' route                          #
     # ------------------------------------------------------------------------ #
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_refresh_token(self, client, test_db) -> None:
         """Ensure the user can refresh the token."""
         test_db.add(User(**self.test_user))
@@ -389,7 +389,7 @@ class TestAuthRoutes:
         assert list(refresh_response.json().keys()) == ["token"]
         assert isinstance(refresh_response.json()["token"], str)
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_cant_refresh_token_with_invalid_refresh_token(
         self, client, test_db
     ) -> None:
@@ -411,7 +411,7 @@ class TestAuthRoutes:
     #                           test '/verify' route                           #
     # ------------------------------------------------------------------------ #
 
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_user(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
@@ -432,7 +432,7 @@ class TestAuthRoutes:
         "verification_token",
         ["BADBEEF", ""],
     )
-    @pytest.mark.asyncio()
+    @pytest.mark.asyncio
     async def test_verify_bad_token(
         self, client, test_db, verification_token
     ) -> None:

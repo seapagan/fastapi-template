@@ -53,8 +53,8 @@ class TestCLI:
         "test_user@test.com\nhttps://mysite.com\n\n"
     )
 
-    @pytest.fixture()
-    def fs_setup(self, fs, mocker) -> None:  # noqa: PT004
+    @pytest.fixture
+    def fs_setup(self, fs, mocker) -> None:
         """Set up the fake filesystem and patch the 'get_data' function."""
         fs.create_dir("/home/test/app/config")
         fs.create_file(
@@ -93,7 +93,7 @@ authors = ['Old Author <oldauthor@example.com>']""",
         assert all(command in result.output for command in command_list)
 
     # ----------------------- test the 'init' function ----------------------- #
-    @pytest.mark.xfail()
+    @pytest.mark.xfail
     def test_init_function(self, mocker, fs) -> None:
         """Test that running 'init' should create a default metadata.
 
@@ -115,7 +115,7 @@ authors = ['Old Author <oldauthor@example.com>']""",
         mock_get_config_path.assert_called_once()
         assert os.path.exists(metadata_file_path)  # noqa: PTH110
 
-    @pytest.mark.xfail()
+    @pytest.mark.xfail
     def test_init_function_with_existing_metadata(self, fs, mocker) -> None:
         """Test that running 'init' should overwrite existing metadata.
 
