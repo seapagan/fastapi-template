@@ -1072,18 +1072,18 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "github-changelog-md"
-version = "0.9.4"
+version = "0.9.5"
 description = "Generate a Markdown Changelog from your Github repository."
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "github_changelog_md-0.9.4-py3-none-any.whl", hash = "sha256:a433179b0c408c827ce9f1c8c3f432118ffceb0f9578ab38ae9c892f12ad2d65"},
-    {file = "github_changelog_md-0.9.4.tar.gz", hash = "sha256:e6afa45b09600d34b052c7419d7790d4e5550b5971a2e118abbd957ad2a57afe"},
+    {file = "github_changelog_md-0.9.5-py3-none-any.whl", hash = "sha256:eeae8f954a37a7fba00b922e56be7e3f89a91fc8156ce99dbd10be20e4ec1ee5"},
+    {file = "github_changelog_md-0.9.5.tar.gz", hash = "sha256:d9aaa00bbcbd1fb3aa5a30a8227ce156c7df9a0c77d92ae085204833d7c0333d"},
 ]
 
 [package.dependencies]
 pygithub = ">=1.59.1,<3.0.0"
-rich = ">=13.6.0,<14.0.0"
+rich = ">=13.6.0"
 rtoml = ">=0.9.0,<1.0.0"
 simple-toml-settings = ">=0.4.0,<1.0.0"
 typer = ">=0.9,<0.13"
