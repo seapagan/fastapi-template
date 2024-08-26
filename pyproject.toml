@@ -95,7 +95,7 @@ pymdown-extensions = "^10.9"
 pygments = "^2.18.0"
 
 # for typing
-types-passlib = "^1.7.7.20240327"
+types-passlib = "^1.7.7.20240819"
 asyncpg-stubs = "^0.29.1"
 
 # changelog generator
