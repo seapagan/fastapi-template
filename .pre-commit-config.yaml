@@ -12,7 +12,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.2
+    rev: v0.6.5
     hooks:
       - id: ruff
         args: ["--output-format=concise"]
@@ -21,7 +21,7 @@ repos:
         name: "format with ruff"
 
   - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.22
+    rev: v0.9.23
     hooks:
       - id: pymarkdown
         name: "check markdown"
