@@ -67,7 +67,7 @@ pymarkdownlnt = "^0.9.23"
 ruff = ">=0.4.9"
 
 # task runner
-poethepoet = "^0.28.0"
+poethepoet = "^0.29.0"
 
 # testing
 faker = "^28.4.1"
