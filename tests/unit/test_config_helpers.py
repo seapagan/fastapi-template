@@ -105,6 +105,36 @@ class TestConfigHelpers:
             ],
         )
 
+    def test_get_api_details_author_not_list(self, mocker, capfd) -> None:
+        """Test we get the API details."""
+        mocker.patch(
+            self.mock_load_rtoml,
+            return_value={
+                "project": {
+                    "name": "test_name",
+                    "description": "test_desc",
+                    "authors": {
+                        "name": "Grant Ramsay",
+                        "email": "seapagan@gmail.com",
+                    },
+                }
+            },
+        )
+        details = get_api_details()
+
+        assert isinstance(details, tuple)
+        assert isinstance(details[2], list)
+        assert details == (
+            "test_name",
+            "test_desc",
+            [
+                {
+                    "name": "Grant Ramsay",
+                    "email": "seapagan@gmail.com",
+                }
+            ],
+        )
+
     def test_get_api_details_authors_is_list(self, mocker) -> None:
         """Authors should be converted to a list if not already."""
         mocker.patch(

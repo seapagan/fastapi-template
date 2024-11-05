@@ -36,6 +36,7 @@ class TestCLI:
 
     test_data = {
         "title": "Test Title",
+        "name": "test-name",
         "desc": "Test Description",
         "version": "0.5.0",
         "repo": "https://myrepo.com",
@@ -49,7 +50,7 @@ class TestCLI:
     }
 
     test_input = (
-        "Test Title\nTest Description\n0.5.0\nhttps://myrepo.com\nMIT\ntest_user\n"
+        "Test Title\ntest-name\nTest Description\n0.5.0\nhttps://myrepo.com\nMIT\ntest_user\n"
         "test_user@test.com\nhttps://mysite.com\n\n"
     )
 
@@ -182,6 +183,7 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
 
         assert isinstance(input_values, dict)
         assert input_values["title"] == "Test Title"
+        assert input_values["name"] == "test-name"
         assert input_values["desc"] == "Test Description"
         assert input_values["version"] == "0.5.0"
         assert input_values["repo"] == "https://myrepo.com"
@@ -297,7 +299,7 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
                 str(self.test_data["version"]) in pyproject_contents
             ), "pyproject.toml version was not updated correctly"
             assert (
-                str(self.test_data["title"]) in pyproject_contents
+                str(self.test_data["name"]) in pyproject_contents
             ), "pyproject.toml title was not updated correctly"
 
     @pytest.mark.skipif(
