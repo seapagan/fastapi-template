@@ -3,15 +3,15 @@
 ## Set up a Virtual Environment
 
 It is always a good idea to set up dedicated Virtual Environment when you are
-developing a Python application. If you use Poetry, this will be done
-automatically for you when you run `poetry install`.
+developing a Python application. If you use `uv` or `Poetry`, this will be done
+automatically for you.
 
 !!! tip
 
-    I recommend using [Poetry](https://python-poetry.org/){:target="_blank"} for
-    this project as that is how it has been developed. Also, using Poetry will
-    automatically set up a Virtual Environment for you and install the
-    `api-admin` command (see later)
+    I recommend using [uv](https://docs.astral.sh/uv/){:target="_blank"} for
+    this project as that is how it has been developed. Also, `uv` can
+    install a version of Python for you, and will automatically set up a
+    Virtual Environment for you and install the `api-admin` command (see later)
 
 Otherwise, [Pyenv](https://github.com/pyenv/pyenv){:target="_blank"} has a
 [virtualenv](https://github.com/pyenv/pyenv-virtualenv){:target="_blank"} plugin
@@ -28,16 +28,16 @@ instead of the built in `venv` tool (which is a subset of this).
 ## Install required Dependencies
 
 The project has been set up using
-[Poetry](https://python-poetry.org/){:target="_blank"} to organize and install
-dependencies. If you have Poetry installed, simply run the following to install
+[uv](https://docs.astral.sh/uv/){:target="_blank"} to organize and install
+dependencies. If you have `uv` installed, simply run the following to install
 all that is needed.
 
 ```console
-$ poetry install
+$ uv sync
 ```
 
-If you do not (or cannot) have Poetry installed, I have provided an
-auto-generated `requirements.txt` in the project root which you can use as
+If you do not (or cannot) have `uv installed, I have provided an
+auto-generated`requirements.txt` in the project root which you can use as
 normal:
 
 ```console
@@ -53,7 +53,7 @@ $ pip install -r requirements-dev.txt
 
 !!! warning
 
-    If you are NOT using Poetry, the `api-admin` command will not be available.
+    If you are NOT using `uv`, the `api-admin` command will not be available.
     However, you can run the same command using the following from the project
     root:
 
@@ -61,13 +61,20 @@ $ pip install -r requirements-dev.txt
     $ python app/api-admin.py
     ```
 
-I definately recommend using Poetry if you can though, it makes dealing with
+I definately recommend using `uv` if you can though, it makes dealing with
 updates and conflicts very easy.
 
-If using poetry you now need to activate the VirtualEnv:
+If using `uv` or another virtual environment, you now need to activate the
+VirtualEnv:
 
-```console
-$ poetry shell
+```terminal
+$ source .venv/bin/activate
+```
+
+Under Windows, the command is slightly different:
+
+```terminal
+$ .venv\Scripts\activate
 ```
 
 ## Install Git Pre-Commit hooks
