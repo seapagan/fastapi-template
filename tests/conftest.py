@@ -123,8 +123,9 @@ def fake_toml(fs: FakeFilesystem) -> FakeFilesystem:
     fs.create_file(
         toml_file,
         contents=(
-            '[tool.poetry]\nname = "Test Runner"\nversion = "1.2.3"\n'
-            'description = "Test Description"\nauthors = ["Test Author"]\n'
+            '[project]\nname = "Test Runner"\nversion = "1.2.3"\n'
+            'description = "Test Description"\n'
+            'authors = [{name="Test Author", email="test@author.com"}]\n'
         ),
     )
     return fs

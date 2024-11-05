@@ -40,7 +40,7 @@ class TestConfigHelpers:
         """Test we get the API version."""
         mocker.patch(
             self.mock_load_rtoml,
-            return_value={"tool": {"poetry": {"version": "1.2.3"}}},
+            return_value={"project": {"version": "1.2.3"}},
         )
         assert get_api_version() == "1.2.3"
 
@@ -79,31 +79,46 @@ class TestConfigHelpers:
         mocker.patch(
             self.mock_load_rtoml,
             return_value={
-                "tool": {
-                    "poetry": {
-                        "name": "test_name",
-                        "description": "test_desc",
-                        "authors": ["test_authors"],
-                    }
+                "project": {
+                    "name": "test_name",
+                    "description": "test_desc",
+                    "authors": [
+                        {
+                            "name": "Grant Ramsay",
+                            "email": "seapagan@gmail.com",
+                        }
+                    ],
                 }
             },
         )
         details = get_api_details()
 
         assert isinstance(details, tuple)
-        assert details == ("test_name", "test_desc", ["test_authors"])
+        assert details == (
+            "test_name",
+            "test_desc",
+            [
+                {
+                    "name": "Grant Ramsay",
+                    "email": "seapagan@gmail.com",
+                }
+            ],
+        )
 
     def test_get_api_details_authors_is_list(self, mocker) -> None:
         """Authors should be converted to a list if not already."""
         mocker.patch(
             self.mock_load_rtoml,
             return_value={
-                "tool": {
-                    "poetry": {
-                        "name": "test_name",
-                        "description": "test_desc",
-                        "authors": "test_authors",
-                    }
+                "project": {
+                    "name": "test_name",
+                    "description": "test_desc",
+                    "authors": [
+                        {
+                            "name": "Grant Ramsay",
+                            "email": "seapagan@gmail.com",
+                        }
+                    ],
                 }
             },
         )

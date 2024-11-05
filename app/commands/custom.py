@@ -185,12 +185,13 @@ def metadata() -> None:
         # update the pyproject.toml file
         try:
             config = rtoml.load(get_toml_path())
-            config["tool"]["poetry"]["name"] = data["title"]
-            config["tool"]["poetry"]["version"] = data["version"]
-            config["tool"]["poetry"]["description"] = data["desc"]
-            config["tool"]["poetry"]["authors"] = [
-                f"{data['author']} <{data['email']}>"
-            ]
+            config["project"]["name"] = data["title"]
+            config["project"]["version"] = data["version"]
+            config["project"]["description"] = data["desc"]
+            config["project"]["authors"] = {
+                "name": data["author"],
+                "email": data["email"],
+            }
 
             rtoml.dump(config, get_toml_path(), pretty=False)
         except OSError as err:
