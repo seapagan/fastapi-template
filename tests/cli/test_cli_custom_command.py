@@ -65,11 +65,11 @@ class TestCLI:
         )
         fs.create_file(
             "/home/test/pyproject.toml",
-            contents="""[tool.poetry]
+            contents="""[project]
 name = 'old-project'
 version = '0.1.0'
 description = 'Initial project description'
-authors = ['Old Author <oldauthor@example.com>']""",
+authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         )
 
         mocker.patch(
@@ -260,6 +260,8 @@ authors = ['Old Author <oldauthor@example.com>']""",
     def test_full_metadata_command(self, runner, fs_setup) -> None:
         """Run the metadata command and verify the output."""
         result = runner.invoke(app, ["custom", "metadata"], input="\n")
+
+        print(result.output)
 
         # Verify command execution was successful
         assert (
