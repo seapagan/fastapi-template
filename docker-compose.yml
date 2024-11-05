@@ -5,8 +5,8 @@ services:
       context: .
       target: dev
     command:
-      bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0
-      --port 8001 --reload"
+      bash -c "uv run alembic upgrade head && uvicorn app.main:app --host
+      0.0.0.0 --port 8001 --reload"
     volumes:
       - .:/app/src/
     env_file:
