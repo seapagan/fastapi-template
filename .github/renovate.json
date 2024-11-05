@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "gitIgnoredAuthors": [
+    "66853113+pre-commit-ci[bot]@users.noreply.github.com"
+  ],
+  "enabled": true,
+  "enabledManagers": [
+    "pep621",
+    "github-actions"
+  ],
+  "ignoreDeps": []
+}
