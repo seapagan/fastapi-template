@@ -44,6 +44,34 @@ See [git apply](https://git-scm.com/docs/git-apply){:target="_blank"} and [git
 am](https://git-scm.com/docs/git-am){:target="_blank"} for more information on
 how to apply these.
 
+## Create a Virtual Environment and Install Dependencies
+
+The project uses [uv](https://docs.astral.sh/uv/){:target="_blank"} for managing
+the virtual environment and dependencies. This is a faster alternative to
+`Poetry` which was used previously.
+
+To create the virtual environment and install the dependencies, run the
+following command:
+
+```console
+uv sync
+```
+
+This will create a virtual environment in the `.venv` directory and install all
+the dependencies from the `pyproject.toml` file.
+
+You can then activate the virtual environment with:
+
+```console
+source .venv/bin/activate
+```
+
+Or on Windows:
+
+```console
+.venv\Scripts\activate
+```
+
 ## Set GitHub Actions Secrets
 
 The only secret you need to set for the GitHub Actions is for

@@ -7,7 +7,7 @@ anyio==4.6.2.post1
 async-timeout==5.0.0 ; python_full_version < '3.11'
 asyncclick==8.1.7.2
 asyncpg==0.30.0
-bcrypt==4.2.0
+bcrypt==4.0.1
 blinker==1.8.2
 certifi==2024.8.30
 click==8.1.7
