@@ -213,3 +213,4 @@ test.db
 docs/CNAME
 .python-version
 .changelog_generator.toml
+.envrc

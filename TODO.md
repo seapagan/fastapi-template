@@ -2,6 +2,9 @@
 
 ## General
 
+- Convert to an installable package that just works(tm), with all the existing
+  functionality. This will make it much easier to use and maintain. Obviously
+  everything should be able to be subclassed as required.
 - allow to tag endpoints as belonging to a group so can then have similar auth
   etc.
 - add time-limited bans (configurable)
@@ -91,8 +94,8 @@ Add Quota functionality.
 - add a Redis cache to the endpoints.
   [fastapi-redis-cache](https://pypi.org/project/fastapi-redis-cache/) should
   make this reasonably painless. Note that project seems to be abandoned with a
-  lot of un-merged PRs so I have forkd and updated the project to fix a few
-  exisitng bugs, merge some PRs and add some new features. I'm still putting the
+  lot of un-merged PRs so I have forked and updated the project to fix a few
+  existing bugs, merge some PRs and add some new features. I'm still putting the
   finishing touches on it but it should be ready soon.
 
 ## Frontend

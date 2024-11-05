@@ -11,10 +11,11 @@ Metadata is stored in the `app/config/metadata.py` file and this
 can be edited by hand if desired:
 
 ```python
-from config.helpers import MetadataBase
+from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="API Template",
+    name="api-template",
     description="Run 'api-admin custom metadata' to change this information.",
     repository="https://github.com/seapagan/fastapi-template",
     license_info={
@@ -26,7 +27,7 @@ custom_metadata = MetadataBase(
         "url": "https://www.gnramsay.com",
     },
     email="seapagan@gmail.com",
-    year="2023"
+    year="2024",
 )
 ```
 
@@ -43,12 +44,13 @@ command line and automatically updating both files:
 
 ```console
 $ api-admin custom metadata
-
-API-Template : Customize application Metadata
-
+╭───────────────────────────────────────╮
+│ api-template configuration tool 0.6.0 │
+╰───────────────────────────────────────╯
 Enter your API title [API Template]:
+Enter the project Name [api-template]:
 Enter the description [Run 'api-admin custom metadata' to change this information.]:
-Version Number (use * to reset to '0.0.1') [1.3.1]:
+Version Number (use * to reset to '0.0.1') [0.5.4]:
 URL to your Repository [https://github.com/seapagan/fastapi-template]:
 
 Choose a license from the following options:
@@ -61,18 +63,21 @@ Author Website [https://www.gnramsay.com]:
 
 You have entered the following data:
 Title       : API Template
+Name        : api-template
 Description : Run 'api-admin custom metadata' to change this information.
-Version     : 1.3.1
+Version     : 0.5.4
 Repository  : https://github.com/seapagan/fastapi-template
 License     : MIT
 Author      : Grant Ramsay (seapagan)
 Email       : seapagan@gmail.com
 Website     : https://www.gnramsay.com
-(C) Year    : 2023
+(C) Year    : 2024
 
-Is this Correct? [Y/n]: y
+Is this Correct? [Y/n]:
 
 -> Writing out Metadata .... Done!
+
+-> Remember to RESTART the API if it is running.
 ```
 
 This will also put in the correct License URL link automatically.

@@ -4,6 +4,15 @@ This page contains information about breaking changes in the API. It is
 important to read this page if you are upgrading from a previous version of the
 API.
 
+## Breaking Changes in 0.6.0
+
+### Migrated to `uv` for virtual environment management
+
+Really more of a minor one but I have migrated from `Poetry` to `uv` for the
+virtual environment management. This means that the `poetry.lock` file is now
+`uv.lock`. This speeds up the virtual environment creation and management by an
+order of magnitude. Instructions updated to reflect this change.
+
 ## Breaking Changes in  0.5.1
 
 There is a minor potentially breaking change in this release.

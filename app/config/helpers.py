@@ -27,7 +27,7 @@ def get_api_version() -> str:
     """Return the API version from the pyproject.toml file."""
     try:
         config = rtoml.load(get_toml_path())
-        version: str = config["tool"]["poetry"]["version"]
+        version: str = config["project"]["version"]
 
     except KeyError as exc:
         print(f"Cannot find the API version in the pyproject.toml file : {exc}")
@@ -41,13 +41,13 @@ def get_api_version() -> str:
         return version
 
 
-def get_api_details() -> tuple[str, str, list[str]]:
+def get_api_details() -> tuple[str, str, list[dict[str, str]]]:
     """Return the API Name from the pyproject.toml file."""
     try:
         config = rtoml.load(get_toml_path())
-        name: str = config["tool"]["poetry"]["name"]
-        desc: str = config["tool"]["poetry"]["description"]
-        authors = config["tool"]["poetry"]["authors"]
+        name: str = config["project"]["name"]
+        desc: str = config["project"]["description"]
+        authors: list[dict[str, str]] = config["project"]["authors"]
 
         if not isinstance(authors, list):
             authors = [authors]
@@ -71,6 +71,7 @@ class MetadataBase:
     """This is the base Metadata class used for customization."""
 
     title: str
+    name: str
     description: str
     repository: str
     contact: dict[str, str]
@@ -92,16 +93,17 @@ LICENCES: list[dict[str, str]] = [
     {"name": "EPL", "url": "https://opensource.org/licenses/EPL-2.0"},
 ]
 
-TEMPLATE: str = """
-\"\"\"This file contains Custom Metadata for your API Project.
+TEMPLATE = """\"\"\"This file contains Custom Metadata for your API Project.
 
 Be aware, this will be re-generated any time you run the
 'api-admin custom metadata' command!
 \"\"\"
+
 from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="{{ title }}",
+    name="{{ name }}",
     description="{{ desc }}",
     repository="{{ repo }}",
     license_info={

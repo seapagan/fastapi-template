@@ -49,6 +49,12 @@ async_test_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
 )
 
 
+@pytest.hookimpl(tryfirst=True)
+def pytest_configure(config) -> None:
+    """Clear the screen before running tests."""
+    os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
+
+
 @pytest_asyncio.fixture(scope="session")
 def event_loop(request) -> Generator[asyncio.AbstractEventLoop, Any, Any]:
     """Override the default event loop to use the async event loop.
@@ -123,8 +129,9 @@ def fake_toml(fs: FakeFilesystem) -> FakeFilesystem:
     fs.create_file(
         toml_file,
         contents=(
-            '[tool.poetry]\nname = "Test Runner"\nversion = "1.2.3"\n'
-            'description = "Test Description"\nauthors = ["Test Author"]\n'
+            '[project]\nname = "Test Runner"\nversion = "1.2.3"\n'
+            'description = "Test Description"\n'
+            'authors = [{name="Test Author", email="test@author.com"}]\n'
         ),
     )
     return fs
