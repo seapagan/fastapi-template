@@ -71,6 +71,7 @@ class MetadataBase:
     """This is the base Metadata class used for customization."""
 
     title: str
+    name: str
     description: str
     repository: str
     contact: dict[str, str]
@@ -102,6 +103,7 @@ from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="{{ title }}",
+    name="{{ name }}",
     description="{{ desc }}",
     repository="{{ repo }}",
     license_info={

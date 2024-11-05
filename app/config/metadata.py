@@ -8,6 +8,7 @@ from app.config.helpers import MetadataBase
 
 custom_metadata = MetadataBase(
     title="API Template",
+    name="api-template",
     description="Run 'api-admin custom metadata' to change this information.",
     repository="https://github.com/seapagan/fastapi-template",
     license_info={

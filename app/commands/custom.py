@@ -29,6 +29,7 @@ def init() -> None:
     """Create a default metadata file, overwrite any existing."""
     data = {
         "title": "API Template",
+        "name": "api_template",
         "desc": "Run 'api-admin custom metadata' to change this information.",
         "repo": "https://github.com/seapagan/fastapi-template",
         "license": {
@@ -117,6 +118,11 @@ def get_data() -> dict[str, Any]:
             type=str,
             default=custom_metadata.title,
         ),
+        "name": click.prompt(
+            "Enter the project Name",
+            type=str,
+            default=custom_metadata.name,
+        ),
         "desc": click.prompt(
             "Enter the description",
             type=str,
@@ -162,6 +168,7 @@ def metadata() -> None:
 
     print("\nYou have entered the following data:")
     print(f"[green]Title       : [/green]{data['title']}")
+    print(f"[green]Name        : [/green]{data['name']}")
     print(f"[green]Description : [/green]{data['desc']}")
     print(f"[green]Version     : [/green]{data['version']}")
     print(f"[green]Repository  : [/green]{data['repo']}")
@@ -185,7 +192,7 @@ def metadata() -> None:
         # update the pyproject.toml file
         try:
             config = rtoml.load(get_toml_path())
-            config["project"]["name"] = data["title"]
+            config["project"]["name"] = data["name"]
             config["project"]["version"] = data["version"]
             config["project"]["description"] = data["desc"]
             config["project"]["authors"] = {
