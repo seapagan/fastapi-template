@@ -49,6 +49,12 @@ async_test_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
 )
 
 
+@pytest.hookimpl(tryfirst=True)
+def pytest_configure(config) -> None:
+    """Clear the screen before running tests."""
+    os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
+
+
 @pytest_asyncio.fixture(scope="session")
 def event_loop(request) -> Generator[asyncio.AbstractEventLoop, Any, Any]:
     """Override the default event loop to use the async event loop.
