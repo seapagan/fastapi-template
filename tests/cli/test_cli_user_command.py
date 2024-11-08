@@ -99,9 +99,6 @@ class TestCLI:
         show_table("Test Table Title", [test_user])
         output = capsys.readouterr().out.split("\n")
 
-        print(output[4])
-        print(test_user.__dict__)
-
         assert "Test Table Title" in output[0]
         assert all(substring in output[2] for substring in self.table_titles)
 

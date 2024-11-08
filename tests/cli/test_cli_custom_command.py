@@ -203,7 +203,6 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         assert all(
             license_name in expected_licenses for license_name in licenses
         )
-        print(licenses)
 
     def test_case_insensitive_dict(self) -> None:
         """Test that the case insensitive License function works."""
@@ -262,8 +261,6 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
     def test_full_metadata_command(self, runner, fs_setup) -> None:
         """Run the metadata command and verify the output."""
         result = runner.invoke(app, ["custom", "metadata"], input="\n")
-
-        print(result.output)
 
         # Verify command execution was successful
         assert (

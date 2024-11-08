@@ -125,7 +125,6 @@ def runner() -> CliRunner:
 def fake_toml(fs: FakeFilesystem) -> FakeFilesystem:
     """Fixture to create a fake toml file."""
     toml_file = get_project_root() / "pyproject.toml"
-    print(toml_file)
     fs.create_file(
         toml_file,
         contents=(
