@@ -34,7 +34,7 @@ dnspython==2.7.0
 email-validator==2.2.0
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
 faker==30.8.2
-fastapi==0.115.4
+fastapi==0.115.6
 fastapi-cli==0.0.5
 fastapi-mail==1.4.1
 filelock==3.16.1
