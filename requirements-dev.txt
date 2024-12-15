@@ -14,7 +14,7 @@ asyncpg-stubs==0.30.0
 atpublic==5.0
 attrs==24.2.0
 babel==2.16.0
-bcrypt==4.0.1
+bcrypt==4.2.1
 beautifulsoup4==4.12.3
 blinker==1.8.2
 certifi==2024.8.30
