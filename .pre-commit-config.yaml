@@ -21,6 +21,7 @@ repos:
     rev: v0.8.3
     hooks:
       - id: ruff
+        args: ["--output-format=concise"]
         name: "lint with ruff"
       - id: ruff-format
         name: "format with ruff"

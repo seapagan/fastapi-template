@@ -149,7 +149,6 @@ quote-style = "double"
 [tool.ruff.lint]
 select = ["ALL"] # we are being very strict!
 ignore = [
-  "ANN101",
   "PGH003",
   "FBT002",
   "FBT003",

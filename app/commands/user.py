@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Optional
 
 import typer
 from fastapi import HTTPException
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 from rich.console import Console
 from rich.table import Table
 from sqlalchemy.exc import SQLAlchemyError
@@ -116,15 +116,15 @@ def create(
                 await session.commit()
 
                 user_level = "Admin" if admin else ""
-                print(
+                rprint(
                     f"\n[green]-> {user_level} User [bold]{user_data['email']}"
                     "[/bold] added succesfully.\n"
                 )
         except HTTPException as exc:
-            print(f"\n[red]-> ERROR adding User : [bold]{exc.detail}\n")
+            rprint(f"\n[red]-> ERROR adding User : [bold]{exc.detail}\n")
             raise typer.Exit(1) from exc
         except SQLAlchemyError as exc:
-            print(f"\n[red]-> ERROR adding User : [bold]{exc}\n")
+            rprint(f"\n[red]-> ERROR adding User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
 
     role_type = RoleType.admin if admin else RoleType.user
@@ -155,7 +155,7 @@ def list_all_users() -> None:
                 user_list = await UserManager.get_all_users(session)
 
         except SQLAlchemyError as exc:
-            print(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
+            rprint(f"\n[red]-> ERROR listing Users : [bold]{exc}\n")
             raise typer.Exit(1) from exc
         else:
             return user_list
@@ -164,7 +164,7 @@ def list_all_users() -> None:
     if user_list:
         show_table("Registered Users", user_list)
     else:
-        print("\n[red]-> ERROR listing Users : [bold]No Users found\n")
+        rprint("\n[red]-> ERROR listing Users : [bold]No Users found\n")
 
 
 @app.command()
@@ -183,7 +183,7 @@ def show(
             async with async_session() as session:
                 user = await UserManager.get_user_by_id(user_id, session)
         except HTTPException as exc:
-            print(
+            rprint(
                 f"\n[red]-> ERROR getting User details : [bold]{exc.detail}\n"
             )
             raise typer.Exit(1) from exc
@@ -214,18 +214,18 @@ def verify(
                     user.verified = True
                     await session.commit()
         except SQLAlchemyError as exc:
-            print(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
+            rprint(f"\n[red]-> ERROR verifying User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
         else:
             return user
 
     user = aiorun(_verify_user(user_id))
     if user:
-        print(
+        rprint(
             f"\n[green]-> User [bold]{user_id}[/bold] verified succesfully.\n"
         )
     else:
-        print("\n[red]-> ERROR verifying User : [bold]User not found\n")
+        rprint("\n[red]-> ERROR verifying User : [bold]User not found\n")
         raise typer.Exit(1)
 
 
@@ -255,20 +255,20 @@ def ban(
                     user.banned = not unban
                     await session.commit()
         except SQLAlchemyError as exc:
-            print(f"\n[RED]-> ERROR banning or unbanning User : [bold]{exc}\n")
+            rprint(f"\n[RED]-> ERROR banning or unbanning User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
         else:
             return user
 
     user = aiorun(_ban_user(user_id, unban))
     if user:
-        print(
+        rprint(
             f"\n[green]-> User [bold]{user_id}[/bold] "
             f"[red]{'UN' if unban else ''}BANNED[/red] succesfully."
         )
         show_table("", [user])
     else:
-        print(
+        rprint(
             "\n[red]-> ERROR banning or unbanning User : [bold]User not found\n"
         )
         raise typer.Exit(1)
@@ -293,7 +293,7 @@ def delete(
                     await session.delete(user)
                     await session.commit()
         except SQLAlchemyError as exc:
-            print(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
+            rprint(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
         else:
             return user
@@ -301,10 +301,10 @@ def delete(
     user = aiorun(_delete_user(user_id))
 
     if user:
-        print(
+        rprint(
             f"\n[green]-> User [bold]{user_id}[/bold] "
             f"[red]DELETED[/red] succesfully."
         )
     else:
-        print("\n[red]-> ERROR deleting that User : [bold]User not found\n")
+        rprint("\n[red]-> ERROR deleting that User : [bold]User not found\n")
         raise typer.Exit(1)

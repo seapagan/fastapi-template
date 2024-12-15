@@ -10,7 +10,7 @@ import asyncclick as click
 import rtoml
 import typer
 from jinja2 import Template
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 
 from app.config.helpers import (
     LICENCES,
@@ -50,14 +50,14 @@ def init() -> None:
         with get_config_path().open("w", encoding="UTF-8") as file:
             file.write(out)
     except OSError as err:
-        print(f"Cannot Write the metadata : {err}")
+        rprint(f"Cannot Write the metadata : {err}")
         raise typer.Exit(2) from err
 
 
 try:
     from app.config.metadata import custom_metadata
 except ModuleNotFoundError as exc:
-    print(
+    rprint(
         "[red]The metadata file could not be found, it may have been deleted.\n"
         "Recreating with defaults, please re-run the command."
     )
@@ -166,27 +166,27 @@ def metadata() -> None:
         datetime.datetime.now(tz=datetime.timezone.utc).today().year
     )
 
-    print("\nYou have entered the following data:")
-    print(f"[green]Title       : [/green]{data['title']}")
-    print(f"[green]Name        : [/green]{data['name']}")
-    print(f"[green]Description : [/green]{data['desc']}")
-    print(f"[green]Version     : [/green]{data['version']}")
-    print(f"[green]Repository  : [/green]{data['repo']}")
-    print(f"[green]License     : [/green]{data['license']['name']}")
-    print(f"[green]Author      : [/green]{data['author']}")
-    print(f"[green]Email       : [/green]{data['email']}")
-    print(f"[green]Website     : [/green]{data['website']}")
-    print(f"[green](C) Year    : [/green]{data['this_year']}")
+    rprint("\nYou have entered the following data:")
+    rprint(f"[green]Title       : [/green]{data['title']}")
+    rprint(f"[green]Name        : [/green]{data['name']}")
+    rprint(f"[green]Description : [/green]{data['desc']}")
+    rprint(f"[green]Version     : [/green]{data['version']}")
+    rprint(f"[green]Repository  : [/green]{data['repo']}")
+    rprint(f"[green]License     : [/green]{data['license']['name']}")
+    rprint(f"[green]Author      : [/green]{data['author']}")
+    rprint(f"[green]Email       : [/green]{data['email']}")
+    rprint(f"[green]Website     : [/green]{data['website']}")
+    rprint(f"[green](C) Year    : [/green]{data['this_year']}")
 
     if click.confirm("\nIs this Correct?", abort=True, default=True):
         # write the metadata
-        print("\n[green]-> Writing out Metadata .... ", end="")
+        rprint("\n[green]-> Writing out Metadata .... ", end="")
         out = Template(TEMPLATE).render(data)
         try:
             with get_config_path().open(mode="w", encoding="UTF-8") as file:
                 file.write(out)
         except OSError as err:
-            print(f"Cannot Write the metadata : {err}")
+            rprint(f"Cannot Write the metadata : {err}")
             sys.exit(2)
 
         # update the pyproject.toml file
@@ -202,7 +202,7 @@ def metadata() -> None:
 
             rtoml.dump(config, get_toml_path(), pretty=False)
         except OSError as err:
-            print(f"Cannot update the pyproject.toml file : {err}")
+            rprint(f"Cannot update the pyproject.toml file : {err}")
             sys.exit(3)
-        print("Done!")
-        print("\n[cyan]-> Remember to RESTART the API if it is running.\n")
+        rprint("Done!")
+        rprint("\n[cyan]-> Remember to RESTART the API if it is running.\n")

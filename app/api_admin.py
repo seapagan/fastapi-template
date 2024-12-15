@@ -3,7 +3,7 @@
 from typing import Optional
 
 import typer
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 from rich.panel import Panel
 
 from app.commands import custom, db, dev, docs, test, user
@@ -15,7 +15,7 @@ app = typer.Typer(add_completion=False, no_args_is_help=True)
 def cli_header() -> None:
     """Show a common header for all commands."""
     name, _, _ = get_api_details()
-    print(
+    rprint(
         Panel(
             f"[bold]{name} configuration tool[/bold] {get_api_version()}",
             highlight=True,
@@ -40,7 +40,7 @@ def main(
         name, desc, _ = get_api_details()
         output = f"[bold]{name}[/bold] v{get_api_version()}\n{desc}"
 
-        print(
+        rprint(
             Panel(
                 output,
                 title="Version",

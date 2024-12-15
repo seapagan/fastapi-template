@@ -4,7 +4,7 @@ import subprocess
 from typing import Optional  # nosec
 
 import typer
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 
 app = typer.Typer()
 
@@ -29,7 +29,7 @@ def serve(
 
     This will auto-refresh on any changes to the source in real-time.
     """
-    print("\n[cyan] -> Running a development server.\n")
+    rprint("\n[cyan] -> Running a development server.\n")
     cmd_line = (
         f"uvicorn app.main:app --port={port} --host={host} "
         f"{'--reload' if reload else ''}"
