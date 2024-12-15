@@ -1,6 +1,6 @@
 """Routes for the home screen and templates."""
 
-from typing import Union
+from typing import Annotated, Union
 
 from fastapi import APIRouter, Header, Request
 from fastapi.templating import Jinja2Templates
@@ -19,7 +19,8 @@ RootResponse = Union[dict[str, str], _TemplateResponse]
 
 @router.get("/", include_in_schema=False, response_model=None)
 def root_path(
-    request: Request, accept: Union[str, None] = Header(default="text/html")
+    request: Request,
+    accept: Annotated[Union[str, None], Header()] = "text/html",
 ) -> RootResponse:
     """Display an HTML template for a browser, JSON response otherwise."""
     if accept and accept.split(",")[0] == "text/html":

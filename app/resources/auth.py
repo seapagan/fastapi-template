@@ -1,5 +1,7 @@
 """Define routes for Authentication."""
 
+from typing import Annotated
+
 from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,7 +24,7 @@ router = APIRouter(tags=["Authentication"])
 async def register(
     background_tasks: BackgroundTasks,
     user_data: UserRegisterRequest,
-    session: AsyncSession = Depends(get_database),
+    session: Annotated[AsyncSession, Depends(get_database)],
 ) -> dict[str, str]:
     """Register a new User and return a JWT token plus a Refresh Token.
 
@@ -48,7 +50,8 @@ async def register(
     status_code=status.HTTP_200_OK,
 )
 async def login(
-    user_data: UserLoginRequest, session: AsyncSession = Depends(get_database)
+    user_data: UserLoginRequest,
+    session: Annotated[AsyncSession, Depends(get_database)],
 ) -> dict[str, str]:
     """Login an existing User and return a JWT token plus a Refresh Token.
 
@@ -70,7 +73,7 @@ async def login(
 )
 async def generate_refresh_token(
     refresh_token: TokenRefreshRequest,
-    session: AsyncSession = Depends(get_database),
+    session: Annotated[AsyncSession, Depends(get_database)],
 ) -> dict[str, str]:
     """Return a new JWT, given a valid Refresh token.
 
@@ -83,7 +86,7 @@ async def generate_refresh_token(
 
 @router.get("/verify/", status_code=status.HTTP_200_OK)
 async def verify(
-    code: str = "", session: AsyncSession = Depends(get_database)
+    session: Annotated[AsyncSession, Depends(get_database)], code: str = ""
 ) -> None:
     """Verify a new user.
 

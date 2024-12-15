@@ -1,7 +1,7 @@
 """Routes for User listing and control."""
 
 from collections.abc import Sequence
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,7 +23,8 @@ router = APIRouter(tags=["Users"], prefix="/users")
     response_model=Union[UserResponse, list[UserResponse]],
 )
 async def get_users(
-    user_id: Optional[int] = None, db: AsyncSession = Depends(get_database)
+    db: Annotated[AsyncSession, Depends(get_database)],
+    user_id: Optional[int] = None,
 ) -> Union[Sequence[User], User]:
     """Get all users or a specific user by their ID.
 
@@ -43,7 +44,7 @@ async def get_users(
     name="get_my_user_data",
 )
 async def get_my_user(
-    request: Request, db: AsyncSession = Depends(get_database)
+    request: Request, db: Annotated[AsyncSession, Depends(get_database)]
 ) -> User:
     """Get the current user's data only."""
     my_user: int = request.state.user.id
@@ -56,7 +57,7 @@ async def get_my_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def make_admin(
-    user_id: int, db: AsyncSession = Depends(get_database)
+    user_id: int, db: Annotated[AsyncSession, Depends(get_database)]
 ) -> None:
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id, db)
@@ -70,7 +71,7 @@ async def make_admin(
 async def change_password(
     user_id: int,
     user_data: UserChangePasswordRequest,
-    db: AsyncSession = Depends(get_database),
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Change the password for the specified user.
 
@@ -85,7 +86,9 @@ async def change_password(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def ban_user(
-    request: Request, user_id: int, db: AsyncSession = Depends(get_database)
+    request: Request,
+    user_id: int,
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Ban the specific user Id.
 
@@ -100,7 +103,9 @@ async def ban_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def unban_user(
-    request: Request, user_id: int, db: AsyncSession = Depends(get_database)
+    request: Request,
+    user_id: int,
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Ban the specific user Id.
 
@@ -118,7 +123,7 @@ async def unban_user(
 async def edit_user(
     user_id: int,
     user_data: UserEditRequest,
-    db: AsyncSession = Depends(get_database),
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> Union[User, None]:
     """Update the specified User's data.
 
@@ -134,7 +139,7 @@ async def edit_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(
-    user_id: int, db: AsyncSession = Depends(get_database)
+    user_id: int, db: Annotated[AsyncSession, Depends(get_database)]
 ) -> None:
     """Delete the specified User by user_id.
 
