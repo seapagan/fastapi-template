@@ -4,7 +4,7 @@ import asyncio
 
 import typer
 from asyncpg.exceptions import InvalidCatalogNameError, InvalidPasswordError
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.config.settings import get_settings
@@ -33,14 +33,14 @@ async def prepare_database() -> None:
 def setup() -> None:
     """Populate the test databases."""
     try:
-        print("Migrating the test database ... ", end="")
+        rprint("Migrating the test database ... ", end="")
         asyncio.run(prepare_database())
-        print("Done!")
+        rprint("Done!")
     except (
         InvalidCatalogNameError,
         ConnectionRefusedError,
         InvalidPasswordError,
     ) as exc:
-        print(f"\n[red]  -> Error: {exc}")
-        print("Failed to migrate the test database.")
+        rprint(f"\n[red]  -> Error: {exc}")
+        rprint("Failed to migrate the test database.")
         raise typer.Exit(1) from exc

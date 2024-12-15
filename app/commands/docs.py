@@ -5,7 +5,7 @@ from pathlib import Path
 
 import typer
 from fastapi.openapi.utils import get_openapi
-from rich import print  # pylint: disable=W0622
+from rich import print as rprint
 
 from app.main import app as main_app
 
@@ -27,7 +27,7 @@ def openapi(
     You can also specify a filename using `--filename`.
     """
     openapi_file = Path(prefix, filename)
-    print(
+    rprint(
         "Generating OpenAPI schema at [bold]"
         f"{openapi_file.resolve()}[/bold]\n"
     )

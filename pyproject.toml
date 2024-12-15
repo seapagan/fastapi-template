@@ -12,6 +12,7 @@ dependencies = [
   "anyio>=4.6.2.post1",
   "asyncclick>=8.1.7.2",
   "asyncpg>=0.30.0",
+  "bcrypt==4.0.1",
   "email-validator>=2.2.0",
   "fastapi[standard]>=0.115.4",
   "psycopg2>=2.9.10",
@@ -149,7 +150,6 @@ quote-style = "double"
 [tool.ruff.lint]
 select = ["ALL"] # we are being very strict!
 ignore = [
-  "ANN101",
   "PGH003",
   "FBT002",
   "FBT003",
