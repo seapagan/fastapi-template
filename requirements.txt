@@ -11,7 +11,7 @@ bcrypt==4.0.1
 blinker==1.8.2
 certifi==2024.8.30
 click==8.1.7
-colorama==0.4.6 ; platform_system == 'Windows' or sys_platform == 'win32'
+colorama==0.4.6 ; sys_platform == 'win32'
 dnspython==2.7.0
 email-validator==2.2.0
 exceptiongroup==1.2.2 ; python_full_version < '3.11'

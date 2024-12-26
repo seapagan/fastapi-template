@@ -43,7 +43,7 @@ class Settings(BaseSettings):
 
     # Setup the Postgresql database.
     db_user: str = "my_db_username"
-    db_password: str = "Sup3rS3cr3tP455w0rd"  # nosec
+    db_password: str = "Sup3rS3cr3tP455w0rd"  # noqa: S105
     db_address: str = "localhost"
     db_port: str = "5432"
     db_name: str = "api-template"
@@ -52,13 +52,13 @@ class Settings(BaseSettings):
 
     # Setup the TEST Postgresql database.
     test_db_user: str = "my_db_username"
-    test_db_password: str = "Sup3rS3cr3tP455w0rd"  # nosec
+    test_db_password: str = "Sup3rS3cr3tP455w0rd"  # noqa: S105
     test_db_address: str = "localhost"
     test_db_port: str = "5432"
     test_db_name: str = "api-template-test"
 
     # JTW secret Key
-    secret_key: str = "32DigitsofSecretNumbers"  # nosec
+    secret_key: str = "32DigitsofSecretNumbers"  # noqa: S105
     access_token_expire_minutes: int = 120
 
     # Custom Metadata
@@ -71,7 +71,7 @@ class Settings(BaseSettings):
 
     # email settings
     mail_username: str = "test_username"
-    mail_password: str = "s3cr3tma1lp@ssw0rd"  # nosec
+    mail_password: str = "s3cr3tma1lp@ssw0rd"  # noqa: S105
     mail_from: str = "test@email.com"
     mail_port: int = 587
     mail_server: str = "mail.server.com"
