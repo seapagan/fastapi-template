@@ -115,8 +115,7 @@ class UserManager:
                         "user": new_user["email"],
                         "base_url": get_settings().base_url,
                         "name": (
-                            f"{new_user['first_name']}"
-                            f"{new_user['last_name']}"
+                            f"{new_user['first_name']}{new_user['last_name']}"
                         ),
                         "verification": AuthManager.encode_verify_token(
                             user_do

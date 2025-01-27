@@ -28,8 +28,7 @@ def openapi(
     """
     openapi_file = Path(prefix, filename)
     rprint(
-        "Generating OpenAPI schema at [bold]"
-        f"{openapi_file.resolve()}[/bold]\n"
+        f"Generating OpenAPI schema at [bold]{openapi_file.resolve()}[/bold]\n"
     )
     with openapi_file.open(mode="w") as f:
         json.dump(
