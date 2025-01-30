@@ -34,7 +34,10 @@ class TestAuthManager:
         token = AuthManager.encode_token(User(id=1))
 
         payload = jwt.decode(
-            token, get_settings().secret_key, algorithms=["HS256"]
+            token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
         assert payload["sub"] == 1
         assert isinstance(payload["exp"], int)
@@ -56,7 +59,10 @@ class TestAuthManager:
         refresh_token = AuthManager.encode_refresh_token(User(id=1))
 
         payload = jwt.decode(
-            refresh_token, get_settings().secret_key, algorithms=["HS256"]
+            refresh_token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
 
         assert payload["sub"] == 1
@@ -79,7 +85,10 @@ class TestAuthManager:
         verify_token = AuthManager.encode_verify_token(User(id=1))
 
         payload = jwt.decode(
-            verify_token, get_settings().secret_key, algorithms=["HS256"]
+            verify_token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
 
         assert payload["sub"] == 1
