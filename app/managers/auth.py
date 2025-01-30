@@ -181,6 +181,7 @@ class AuthManager:
                     verified=True,
                 )
             )
+            await session.commit()
 
             raise HTTPException(
                 status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
