@@ -107,6 +107,7 @@ class AuthManager:
                 refresh_token.refresh,
                 get_settings().secret_key,
                 algorithms=["HS256"],
+                options={"verify_sub": False},
             )
 
             if payload["typ"] != "refresh":
@@ -147,6 +148,7 @@ class AuthManager:
                 code,
                 get_settings().secret_key,
                 algorithms=["HS256"],
+                options={"verify_sub": False},
             )
 
             user_data = await session.get(User, payload["sub"])
@@ -179,6 +181,7 @@ class AuthManager:
                     verified=True,
                 )
             )
+            await session.commit()
 
             raise HTTPException(
                 status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
@@ -260,6 +263,7 @@ class CustomHTTPBearer(HTTPBearer):
                     res.credentials,
                     get_settings().secret_key,
                     algorithms=["HS256"],
+                    options={"verify_sub": False},
                 )
                 user_data = await get_user_by_id_(payload["sub"], db)
                 # block a banned or unverified user

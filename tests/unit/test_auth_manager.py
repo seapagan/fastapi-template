@@ -34,7 +34,10 @@ class TestAuthManager:
         token = AuthManager.encode_token(User(id=1))
 
         payload = jwt.decode(
-            token, get_settings().secret_key, algorithms=["HS256"]
+            token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
         assert payload["sub"] == 1
         assert isinstance(payload["exp"], int)
@@ -56,7 +59,10 @@ class TestAuthManager:
         refresh_token = AuthManager.encode_refresh_token(User(id=1))
 
         payload = jwt.decode(
-            refresh_token, get_settings().secret_key, algorithms=["HS256"]
+            refresh_token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
 
         assert payload["sub"] == 1
@@ -79,7 +85,10 @@ class TestAuthManager:
         verify_token = AuthManager.encode_verify_token(User(id=1))
 
         payload = jwt.decode(
-            verify_token, get_settings().secret_key, algorithms=["HS256"]
+            verify_token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
         )
 
         assert payload["sub"] == 1
@@ -291,3 +300,25 @@ class TestAuthManager:
             await AuthManager.verify(expired_verify, test_db)
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.EXPIRED_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_verify_updates_database(self, test_db) -> None:
+        """Test that verify() successfully updates the database."""
+        # Register a new user (defaults to verified=False)
+        background_tasks = BackgroundTasks()
+        await UserManager.register(self.test_user, test_db, background_tasks)
+
+        # Get initial user state and verify it's not verified
+        user_before = await UserManager.get_user_by_id(1, test_db)
+        assert user_before.verified is False
+
+        # Create and use a verification token
+        verify_token = AuthManager.encode_verify_token(User(id=1))
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(verify_token, test_db)
+        assert exc_info.value.status_code == status.HTTP_200_OK
+        assert exc_info.value.detail == ResponseMessages.VERIFICATION_SUCCESS
+
+        # Get updated user state and verify the field was updated
+        user_after = await UserManager.get_user_by_id(1, test_db)
+        assert user_after.verified is True

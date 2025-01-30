@@ -37,7 +37,10 @@ class TestEmailManager:
     def test_init(self, email_manager) -> None:
         """Test the EmailManager constructor."""
         assert get_settings().mail_username == email_manager.conf.MAIL_USERNAME
-        assert get_settings().mail_password == email_manager.conf.MAIL_PASSWORD
+        assert (
+            get_settings().mail_password
+            == email_manager.conf.MAIL_PASSWORD.get_secret_value()
+        )
         assert get_settings().mail_from == email_manager.conf.MAIL_FROM
         assert email_manager.conf.SUPPRESS_SEND == 1
 
