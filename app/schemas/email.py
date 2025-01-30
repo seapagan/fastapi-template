@@ -1,4 +1,4 @@
-"""Define email Connection Schema."""
+"""Define email Connection Schema."""  # noqa: A005
 
 from typing import Any
 

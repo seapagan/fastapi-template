@@ -24,7 +24,7 @@ dependencies = [
   "rtoml>=0.11.0",
   "jinja2>=3.1.4",
   "fastapi-mail>=1.4.1",
-  "httpx>=0.23.3",
+  "httpx==0.27.2",
   "uvicorn[standard]>=0.32.0",
   "passlib[bcrypt]>=1.7.4",
   "sqlalchemy[asyncio]>=2.0.36",
