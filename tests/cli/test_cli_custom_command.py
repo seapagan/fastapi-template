@@ -153,9 +153,9 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         ), "Metadata file does not exist after init."
         with open(metadata_file_path) as file:  # noqa: PTH123
             content = file.read()
-            assert (
-                content != original_content
-            ), "Metadata file was not overwritten with default content."
+            assert content != original_content, (
+                "Metadata file was not overwritten with default content."
+            )
 
     def test_init_function_fails_write(self, fs, mocker, capsys) -> None:
         """Test that running 'init' should fail if it cannot write."""
@@ -263,12 +263,12 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         result = runner.invoke(app, ["custom", "metadata"], input="\n")
 
         # Verify command execution was successful
-        assert (
-            result.exit_code == 0
-        ), "The command did not complete successfully"
-        assert (
-            "You have entered the following data:" in result.output
-        ), "Expected output was not found"
+        assert result.exit_code == 0, (
+            "The command did not complete successfully"
+        )
+        assert "You have entered the following data:" in result.output, (
+            "Expected output was not found"
+        )
 
         # Verify the contents of metadata.py in the app/config subdirectory
         metadata_path = "/home/test/app/config/metadata.py"
@@ -281,23 +281,23 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
                     value, dict
                 ):  # For nested structures like 'license'
                     for nested_key, nested_value in value.items():
-                        assert (
-                            str(nested_value) in metadata_contents
-                        ), f"{nested_key} was not updated in metadata.py"
+                        assert str(nested_value) in metadata_contents, (
+                            f"{nested_key} was not updated in metadata.py"
+                        )
                 else:
-                    assert (
-                        str(value) in metadata_contents
-                    ), f"{key} was not updated correctly in metadata.py"
+                    assert str(value) in metadata_contents, (
+                        f"{key} was not updated correctly in metadata.py"
+                    )
 
         # Verify the contents of pyproject.toml were updated
         with open("/home/test/pyproject.toml") as f:  # noqa: PTH123
             pyproject_contents = f.read()
-            assert (
-                str(self.test_data["version"]) in pyproject_contents
-            ), "pyproject.toml version was not updated correctly"
-            assert (
-                str(self.test_data["name"]) in pyproject_contents
-            ), "pyproject.toml title was not updated correctly"
+            assert str(self.test_data["version"]) in pyproject_contents, (
+                "pyproject.toml version was not updated correctly"
+            )
+            assert str(self.test_data["name"]) in pyproject_contents, (
+                "pyproject.toml title was not updated correctly"
+            )
 
     @pytest.mark.skipif(
         is_running_in_docker(), reason="This test fails under docker"
