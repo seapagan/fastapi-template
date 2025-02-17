@@ -22,7 +22,7 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:15.6-bullseye
+    image: postgres:17.3-bullseye
     hostname: postgres
     environment:
       POSTGRES_USER: ${DB_USER}
