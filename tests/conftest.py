@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -93,8 +93,11 @@ async def test_db() -> AsyncGenerator[AsyncSession, Any]:
 async def client() -> AsyncGenerator[AsyncClient, Any]:
     """Fixture to yield a test client for the app."""
     app.dependency_overrides[get_database] = get_database_override
+
+    transport = ASGITransport(app=app)
+
     async with AsyncClient(
-        app=app,
+        transport=transport,
         base_url="http://testserver",
         headers={"Content-Type": "application/json"},
         timeout=10,
