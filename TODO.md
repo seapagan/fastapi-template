@@ -30,13 +30,12 @@
 - add pagination to the user list endpoint. Implement this in a way that is
   generic and can be used for other custom endpoints too. The library
   'fastapi-pagination' is really good and performant.
-- remove all the `print` statements and replace with proper logging. Hook into
-  the `uvicorn` logger for this, and offer alternative if uvicorn is not being
-  used for some reason.
+- use an alternative loggier if uvicorn is not being used for some reason.
 
 ## Bugs/Annoyances
 
-See [BUGS.md](BUGS.md) for a list of known bugs and annoyances.
+- If a user is deleted while logged in, the API returns a 500 (Internal Server
+   Error).
 
 ## Auth
 
