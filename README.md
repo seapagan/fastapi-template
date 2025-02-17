@@ -91,6 +91,8 @@ following advantages to starting your own from scratch :
   without needing to send username or password again, and should be done
   automatically by the Front-End.
 - A clean layout to help structure your project.
+- Uses the python logger for info/warning/error logging - tying transparently in
+  to the `uvicorn` logger.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add

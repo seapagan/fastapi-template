@@ -7,6 +7,8 @@ from pathlib import Path
 
 import rtoml
 
+from app.logs import logger
+
 
 def get_project_root() -> Path:
     """Return the full path of the project root."""
@@ -29,12 +31,12 @@ def get_api_version() -> str:
         config = rtoml.load(get_toml_path())
         version: str = config["project"]["version"]
 
-    except KeyError as exc:
-        print(f"Cannot find the API version in the pyproject.toml file : {exc}")
+    except KeyError:
+        logger.error("Cannot find the API version in the pyproject.toml file")
         sys.exit(2)
 
     except OSError as exc:
-        print(f"Cannot read the pyproject.toml file : {exc}")
+        logger.error(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
 
     else:
@@ -52,15 +54,14 @@ def get_api_details() -> tuple[str, str, list[dict[str, str]]]:
         if not isinstance(authors, list):
             authors = [authors]
 
-    except KeyError as exc:
-        print(
-            "Missing name/description or authors in the pyproject.toml file "
-            f": {exc}"
+    except KeyError:
+        logger.error(
+            "Missing name/description or authors in the pyproject.toml file"
         )
         sys.exit(2)
 
     except OSError as exc:
-        print(f"Cannot read the pyproject.toml file : {exc}")
+        logger.error(f"Cannot read the pyproject.toml file : {exc}")
         sys.exit(2)
     else:
         return (name, desc, authors)
