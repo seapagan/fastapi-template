@@ -30,6 +30,13 @@
 - add pagination to the user list endpoint. Implement this in a way that is
   generic and can be used for other custom endpoints too. The library
   'fastapi-pagination' is really good and performant.
+- remove all the `print` statements and replace with proper logging. Hook into
+  the `uvicorn` logger for this, and offer alternative if uvicorn is not being
+  used for some reason.
+
+## Bugs/Annoyances
+
+See [BUGS.md](BUGS.md) for a list of known bugs and annoyances.
 
 ## Auth
 
@@ -37,10 +44,10 @@
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
+  Redis would be a good choice for this.
 - Once the above is done, if a user deletes themselves (or is deleted), their
   tokens should be invalidated immediately, this wil fix the Internal Server
   Error if they try to keep connecting with their old tokens.
-- when a user
 - Implement user groups and permissions, make it configurable.
 - Allow social login (eg Google, Facebook, Twitter, etc), check out
   [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
