@@ -27,23 +27,29 @@ Everything in this section will be included in the next official release.
 
 - Migrate from poetry to uv ([#703](https://github.com/seapagan/fastapi-template/pull/703)) by [seapagan](https://github.com/seapagan)
 
+**New Features**
+
+- Fix deprecation warning in tests due to httpx ([#727](https://github.com/seapagan/fastapi-template/pull/727)) by [seapagan](https://github.com/seapagan)
+- Use the python logger in the API instead of print statements ([#726](https://github.com/seapagan/fastapi-template/pull/726)) by [seapagan](https://github.com/seapagan)
+- Update 'Ruff' to latest version and fix any linting issues ([#713](https://github.com/seapagan/fastapi-template/pull/713)) by [seapagan](https://github.com/seapagan)
+
 **Documentation**
 
 - Clarify docs ([#595](https://github.com/seapagan/fastapi-template/pull/595)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
+- Bump cryptography from 44.0.0 to 44.0.1 ([#725](https://github.com/seapagan/fastapi-template/pull/725)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Update dependencies and fix issues caused by new package versions ([#722](https://github.com/seapagan/fastapi-template/pull/722)) by [seapagan](https://github.com/seapagan)
+- Bump python-multipart from 0.0.17 to 0.0.18 ([#720](https://github.com/seapagan/fastapi-template/pull/720)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump jinja2 from 3.1.4 to 3.1.5 ([#719](https://github.com/seapagan/fastapi-template/pull/719)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Update astral-sh/ruff-action action to v3 ([#717](https://github.com/seapagan/fastapi-template/pull/717)) by [renovate[bot]](https://github.com/apps/renovate)
+- Update astral-sh/setup-uv action to v5 ([#716](https://github.com/seapagan/fastapi-template/pull/716)) by [renovate[bot]](https://github.com/apps/renovate)
+- Bump python-multipart from 0.0.17 to 0.0.18 ([#715](https://github.com/seapagan/fastapi-template/pull/715)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Update postgres Docker tag to v17 ([#706](https://github.com/seapagan/fastapi-template/pull/706)) by [renovate[bot]](https://github.com/apps/renovate)
 - Bump sqlalchemy from 2.0.32 to 2.0.35 ([#679](https://github.com/seapagan/fastapi-template/pull/679)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump pymdown-extensions from 10.9 to 10.10.2 ([#671](https://github.com/seapagan/fastapi-template/pull/671)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump alembic from 1.13.2 to 1.13.3 ([#670](https://github.com/seapagan/fastapi-template/pull/670)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump ruff from 0.6.5 to 0.6.7 ([#669](https://github.com/seapagan/fastapi-template/pull/669)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pydantic-settings from 2.4.0 to 2.5.2 ([#667](https://github.com/seapagan/fastapi-template/pull/667)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pymarkdownlnt from 0.9.22 to 0.9.23 ([#666](https://github.com/seapagan/fastapi-template/pull/666)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pytest-env from 1.1.4 to 1.1.5 ([#665](https://github.com/seapagan/fastapi-template/pull/665)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump rich from 13.8.0 to 13.8.1 ([#664](https://github.com/seapagan/fastapi-template/pull/664)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump anyio from 4.4.0 to 4.6.0 ([#663](https://github.com/seapagan/fastapi-template/pull/663)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 57 more dependency updates*
+- *and 64 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.patch)
 
