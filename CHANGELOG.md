@@ -25,6 +25,7 @@ Everything in this section will be included in the next official release.
 
 **Breaking Changes**
 
+- Use latest versions of postgresql and python in docker ([#728](https://github.com/seapagan/fastapi-template/pull/728)) by [seapagan](https://github.com/seapagan)
 - Migrate from poetry to uv ([#703](https://github.com/seapagan/fastapi-template/pull/703)) by [seapagan](https://github.com/seapagan)
 
 **New Features**

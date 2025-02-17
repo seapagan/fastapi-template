@@ -36,6 +36,10 @@
 
 - If a user is deleted while logged in, the API returns a 500 (Internal Server
    Error).
+- `passlib`, used to hash passwords, is pretty much abandoned, we should
+  probably just use `bcrypt` directly. This would allow us to upgrade to the
+  latest `bcrypt` package too. [NOTE: There is also a fork `libpass` that fixes
+  this and continues the project.]
 
 ## Auth
 
