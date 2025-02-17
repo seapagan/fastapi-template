@@ -1,5 +1,25 @@
 # Run a server using Docker
 
+## PostgreSQL versions
+
+At times we will update the Docker configurations to use a newer version of
+PostgreSQL. Often, the newer version will be incompatible with the existing
+database, and you will need to create a new database.
+
+For example between releases `0.5.4` and `0.6.0` I updated the docker config to
+use PostgreSQL **17** instead of **15**. In this case the existing database was
+not compatible.
+
+You have 3 options in this case:
+
+1. delete the docker volume `api-db-data` and just start again. This is fine if
+   you are only using docker for testing.
+2. change the `docker-compose.yml` to use the previous version of PostgreSQL
+   instead. In the case of `0.6.0` you can change back to `15.6-bullseye`. This
+   is on line **25** (as of version `0.6.0` anyway).
+3. log into the docker instance and migrate the data to version 17. There are
+   several guides for this if you search.
+
 ## Run a Server
 
 Docker containers can be used for testing the API during development just make

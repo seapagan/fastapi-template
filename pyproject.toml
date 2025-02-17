@@ -114,9 +114,9 @@ lint.help = "Run all linting checks"
 "docs:publish".help = "Publish documentation to GitHub Pages"
 "docs:build".cmd = "mkdocs build"
 "docs:build".help = "Build documentation locally to './site' folder"
-"docs:serve".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -w BUGS.md"
+"docs:serve".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md"
 "docs:serve".help = "Serve documentation locally"
-"docs:serve:all".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -w BUGS.md -a 0.0.0.0:8000"
+"docs:serve:all".cmd = "mkdocs serve -w TODO.md -w CHANGELOG.md -w CONTRIBUTING.md -a 0.0.0.0:8000"
 "docs:serve:all".help = "Serve documentation locally on all interfaces"
 
 # regenerate the openapi.json file

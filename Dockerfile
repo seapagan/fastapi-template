@@ -1,4 +1,4 @@
-FROM python:3.12-slim AS dev
+FROM python:3.13-slim AS dev
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 RUN apt-get update -y && apt-get install -y \
