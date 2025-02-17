@@ -1,5 +1,7 @@
 """Tests for the 'lifespan' function in the main module."""
 
+import logging
+
 import pytest
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
@@ -29,7 +31,7 @@ class TestLifespan:
         mock_session.return_value.__aenter__.return_value.connection.assert_called_once()
 
     async def test_lifespan_prints_informational_message(
-        self, capsys, mocker
+        self, caplog, mocker
     ) -> None:
         """Ensure the lifespan function prints an informational message."""
         app = FastAPI()
@@ -38,10 +40,17 @@ class TestLifespan:
             mock_session.return_value.__aenter__.return_value.connection
         )
         mock_connection.return_value = None
+
+        caplog.set_level(logging.INFO)
+
         async with lifespan(app):
             pass  # NOSONAR
-        captured = capsys.readouterr()
-        assert "Database configuration Tested." in captured.out
+
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+
+        assert ("INFO", "Database configuration Tested.") in log_messages
 
     async def test_lifespan_yields_control(self, mocker) -> None:
         """Ensure the lifespan function yields control to the caller."""
@@ -55,17 +64,31 @@ class TestLifespan:
             assert result is None
 
     async def test_lifespan_raises_sqlachemy_error(
-        self, capsys, mocker
+        self, caplog, mocker
     ) -> None:
         """Ensure the lifespan function prints an error if fails."""
         app = FastAPI()
         mock_session = mocker.patch(self.mock_session)
         mock_session.return_value.__aenter__.side_effect = SQLAlchemyError
+
+        caplog.set_level(logging.WARNING)
+
         async with lifespan(app):
             pass  # NOSONAR
-        captured = capsys.readouterr()
-        assert "Have you set up your .env file??" in captured.out
-        assert "Clearing routes and enabling error message." in captured.out
+
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+
+        assert any(
+            record.levelname == "ERROR"
+            and "Have you set up your .env file??" in record.message
+            for record in caplog.records
+        ), "Expected error log not found"
+        assert (
+            "WARNING",
+            "Clearing routes and enabling error message.",
+        ) in log_messages, "Expected warning log not found"
 
     async def test_lifespan_clears_routes_and_enables_error_message(
         self, mocker

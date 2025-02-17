@@ -29,4 +29,4 @@ class TestCLI:
         )
 
         assert result.returncode == BLIND_USER_ERROR
-        assert "You didn't read the docs" in result.stdout
+        assert "You didn't read the docs" in result.stderr

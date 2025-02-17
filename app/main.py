@@ -8,12 +8,12 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from rich import print as rprint
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
+from app.logs import logger
 from app.resources import config_error
 from app.resources.routes import api_router
 
@@ -22,12 +22,15 @@ BLIND_USER_ERROR = 66
 # gatekeeper to ensure the user has read the docs and noted the major changes
 # since the last version.
 if not get_settings().i_read_the_damn_docs:
-    print(
-        "\n[red]ERROR:    [bold]You didn't read the docs and change the "
-        "settings in the .env file!\n"
-        "\nThe API has changed massively since version 0.4.0 and you need to "
-        "familiarize yourself with the new breaking changes.\n"
-        "\nSee https://api-template.seapagan.net/important/ for information.\n"
+    logger.error(
+        "You didn't read the docs and change the settings in the .env file!"
+    )
+    logger.error(
+        "The API has changed massively since version 0.4.0 and you need to "
+        "familiarize yourself with the new breaking changes."
+    )
+    logger.error(
+        "See https://api-template.seapagan.net/important/ for information."
     )
     sys.exit(BLIND_USER_ERROR)
 
@@ -43,13 +46,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         async with async_session() as session:
             await session.connection()
 
-        rprint("[green]INFO:     [/green][bold]Database configuration Tested.")
+        logger.info("Database configuration Tested.")
     except SQLAlchemyError as exc:
-        rprint(f"[red]ERROR:    [bold]Have you set up your .env file?? ({exc})")
-        rprint(
-            "[yellow]WARNING:  [/yellow]Clearing routes and enabling "
-            "error message."
-        )
+        logger.error(f"Have you set up your .env file?? ({exc})")
+        logger.warning("Clearing routes and enabling error message.")
         app.routes.clear()
         app.include_router(config_error.router)
 

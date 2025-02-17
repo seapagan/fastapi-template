@@ -1,5 +1,6 @@
 """Test config/helpers.py."""
 
+import logging
 from pathlib import Path
 
 import pytest
@@ -44,15 +45,26 @@ class TestConfigHelpers:
         )
         assert get_api_version() == "1.2.3"
 
-    def test_get_api_version_missing_toml(self, mocker, capfd) -> None:
+    def test_get_api_version_missing_toml(self, mocker, caplog) -> None:
         """Test we exit when the toml file is missing."""
         mocker.patch(self.mock_load_rtoml, side_effect=FileNotFoundError)
+
+        caplog.set_level(logging.ERROR)
+
         with pytest.raises(SystemExit, match="2"):
             get_api_version()
-        out, _ = capfd.readouterr()
-        assert "Cannot read the pyproject.toml file" in out
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
 
-    def test_get_api_version_missing_version(self, mocker, capfd) -> None:
+        assert len(log_messages) == 1
+        assert any(
+            record.levelname == "ERROR"
+            and "Cannot read the pyproject.toml file" in record.message
+            for record in caplog.records
+        ), "Expected error log not found"
+
+    def test_get_api_version_missing_version(self, mocker, caplog) -> None:
         """Test we exit when the version is missing."""
         mocker.patch(
             self.mock_load_rtoml,
@@ -60,19 +72,38 @@ class TestConfigHelpers:
         )
         with pytest.raises(SystemExit, match="2"):
             get_api_version()
-        out, _ = capfd.readouterr()
-        assert "Cannot find the API version in the pyproject.toml file" in out
 
-    def test_get_api_version_missing_key(self, mocker, capfd) -> None:
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+
+        assert len(log_messages) == 1
+        assert (
+            "ERROR",
+            "Cannot find the API version in the pyproject.toml file",
+        ) in log_messages, "Expected error log not found"
+
+    def test_get_api_version_missing_key(self, mocker, caplog) -> None:
         """Test we exit when the key is missing."""
         mocker.patch(
             self.mock_load_rtoml,
             return_value={"tool": {"poetry": {}}},
         )
+
+        caplog.set_level(logging.ERROR)
+
         with pytest.raises(SystemExit, match="2"):
             get_api_version()
-        out, _ = capfd.readouterr()
-        assert "Cannot find the API version in the pyproject.toml file" in out
+
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+
+        assert len(log_messages) == 1
+        assert (
+            "ERROR",
+            "Cannot find the API version in the pyproject.toml file",
+        ) in log_messages
 
     def test_get_api_details(self, mocker, capfd) -> None:
         """Test we get the API details."""
@@ -164,7 +195,7 @@ class TestConfigHelpers:
         ],
     )
     def test_get_api_details_missing_key(
-        self, mocker, capfd, missing_keys
+        self, mocker, caplog, missing_keys
     ) -> None:
         """We should return an Error if any details are missing."""
         mocker.patch(
@@ -175,18 +206,36 @@ class TestConfigHelpers:
                 }
             },
         )
+
+        caplog.set_level(logging.ERROR)
+
         with pytest.raises(SystemExit, match="2"):
             get_api_details()
-        out, _ = capfd.readouterr()
-        assert "Missing name/description or authors" in out
 
-    def test_get_api_details_missing_toml(self, mocker, capfd) -> None:
+        logger_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+        assert len(logger_messages) == 1
+        assert (
+            "ERROR",
+            "Missing name/description or authors in the pyproject.toml file",
+        ) in logger_messages
+
+    def test_get_api_details_missing_toml(self, mocker, caplog) -> None:
         """Test we exit when the toml file is missing."""
         mocker.patch(self.mock_load_rtoml, side_effect=FileNotFoundError)
+
+        caplog.set_level(logging.ERROR)
+
         with pytest.raises(SystemExit, match="2"):
             get_api_details()
-        out, _ = capfd.readouterr()
-        assert "Cannot read the pyproject.toml file" in out
+
+        assert len(caplog.records) == 1
+        assert any(
+            record.levelname == "ERROR"
+            and "Cannot read the pyproject.toml file" in record.message
+            for record in caplog.records
+        )
 
     def test_licences_structure(self) -> None:
         """Test the licences structure."""
