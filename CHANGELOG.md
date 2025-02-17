@@ -40,6 +40,7 @@ Everything in this section will be included in the next official release.
 
 **Dependency Updates**
 
+- Bump the project dependencies across the board ([#729](https://github.com/seapagan/fastapi-template/pull/729)) by [seapagan](https://github.com/seapagan)
 - Bump cryptography from 44.0.0 to 44.0.1 ([#725](https://github.com/seapagan/fastapi-template/pull/725)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Update dependencies and fix issues caused by new package versions ([#722](https://github.com/seapagan/fastapi-template/pull/722)) by [seapagan](https://github.com/seapagan)
 - Bump python-multipart from 0.0.17 to 0.0.18 ([#720](https://github.com/seapagan/fastapi-template/pull/720)) by [dependabot[bot]](https://github.com/apps/dependabot)
@@ -49,8 +50,7 @@ Everything in this section will be included in the next official release.
 - Bump python-multipart from 0.0.17 to 0.0.18 ([#715](https://github.com/seapagan/fastapi-template/pull/715)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Update postgres Docker tag to v17 ([#706](https://github.com/seapagan/fastapi-template/pull/706)) by [renovate[bot]](https://github.com/apps/renovate)
 - Bump sqlalchemy from 2.0.32 to 2.0.35 ([#679](https://github.com/seapagan/fastapi-template/pull/679)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- Bump pymdown-extensions from 10.9 to 10.10.2 ([#671](https://github.com/seapagan/fastapi-template/pull/671)) by [dependabot[bot]](https://github.com/apps/dependabot)
-- *and 64 more dependency updates*
+- *and 65 more dependency updates*
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.patch)
 
