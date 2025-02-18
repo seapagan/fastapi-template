@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from asyncio import run as aiorun
 from typing import TYPE_CHECKING, Optional
 
@@ -105,8 +104,6 @@ def create(
     Values are either taken from the command line options, or interactively for
     any that are missing.
     """
-    # disable passlib logging, due to issues with latest bcrypt.
-    logging.getLogger("passlib").setLevel(logging.ERROR)
 
     async def _create_user(user_data: dict[str, str | RoleType]) -> None:
         """Async function to create a new user."""
