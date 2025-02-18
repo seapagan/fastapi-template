@@ -50,7 +50,7 @@ async def add_new_api_key_(
         insert(ApiKey).values(api_key_data).returning(ApiKey)
     )
     api_key = result.scalar_one()
-    await session.commit()
+    await session.flush()
     return api_key
 
 
@@ -68,7 +68,7 @@ async def update_api_key_(
     )
     api_key = result.scalar_one_or_none()
     if api_key:
-        await session.commit()
+        await session.flush()
     return api_key
 
 

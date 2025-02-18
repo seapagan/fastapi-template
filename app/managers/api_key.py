@@ -111,7 +111,7 @@ class ApiKeyManager:
         hashed_key = cls._hash_key(raw_key)
         key = await get_api_key_by_hash_(hashed_key, session)
 
-        if not key or not key.is_active:
+        if not key:
             return None
 
         return key

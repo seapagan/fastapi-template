@@ -1,6 +1,6 @@
 """API Key routes."""
 
-from typing import Annotated
+from typing import Annotated, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -81,7 +81,7 @@ async def update_api_key(
         )
 
     # Build update data
-    update_data: dict[str, str | bool] = {}
+    update_data: dict[str, Union[str, bool]] = {}
     if request.name is not None:
         update_data["name"] = request.name
     if request.is_active is not None:
