@@ -35,6 +35,10 @@ Everything in this section will be included in the next official release.
 - Use the python logger in the API instead of print statements ([#726](https://github.com/seapagan/fastapi-template/pull/726)) by [seapagan](https://github.com/seapagan)
 - Update 'Ruff' to latest version and fix any linting issues ([#713](https://github.com/seapagan/fastapi-template/pull/713)) by [seapagan](https://github.com/seapagan)
 
+**Bug Fixes**
+
+- Fix deprecation warning in docs build d/t mkdocs swagger plugin ([#731](https://github.com/seapagan/fastapi-template/pull/731)) by [seapagan](https://github.com/seapagan)
+
 **Documentation**
 
 - Clarify docs ([#595](https://github.com/seapagan/fastapi-template/pull/595)) by [seapagan](https://github.com/seapagan)
