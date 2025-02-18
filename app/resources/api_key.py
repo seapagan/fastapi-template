@@ -1,6 +1,6 @@
 """API Key routes."""
 
-from typing import Annotated
+from typing import Annotated, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -81,11 +81,18 @@ async def update_api_key(
         )
 
     # Build update data
-    update_data: dict[str, str | bool] = {}
+    update_data: dict[str, Union[str, bool]] = {}
     if request.name is not None:
         update_data["name"] = request.name
     if request.is_active is not None:
         update_data["is_active"] = request.is_active
+
+    # Ensure at least one field is being updated
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="At least one field must be provided for update",
+        )
 
     # Update the key
     updated_key = await update_api_key_(key_id, update_data, db)

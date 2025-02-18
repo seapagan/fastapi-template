@@ -1,7 +1,7 @@
 """Define the API Keys model."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
@@ -22,7 +22,7 @@ class ApiKey(Base):
     key: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.utcnow
+        DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     scopes: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=True)
