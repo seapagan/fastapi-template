@@ -71,14 +71,17 @@ dev-dependencies = [
   "mkdocs-latest-git-tag-plugin>=0.1.2",
   "mkdocs-material>=9.5.43",
   "mkdocs-minify-plugin>=0.8.0",
-  "mkdocs-swagger-ui-tag>=0.6.11",
   "pymdown-extensions>=10.12",
   "pygments>=2.18.0",
   "types-passlib>=1.7.7.20240819",
   "asyncpg-stubs>=0.30.0",
   "github-changelog-md>=0.9.5",
   "mkdocstrings[python]>=0.26.2",
+  "mkdocs-swagger-ui-tag",
 ]
+
+[tool.uv.sources]
+mkdocs-swagger-ui-tag = { git = "https://github.com/iTrooz/mkdocs-swagger-ui-tag", rev = "0ea154a44042d9ff049a5fced93b89180783123f" }
 
 
 [tool.poe.tasks]

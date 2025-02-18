@@ -175,7 +175,7 @@ dev = [
     { name = "mkdocs-latest-git-tag-plugin", specifier = ">=0.1.2" },
     { name = "mkdocs-material", specifier = ">=9.5.43" },
     { name = "mkdocs-minify-plugin", specifier = ">=0.8.0" },
-    { name = "mkdocs-swagger-ui-tag", specifier = ">=0.6.11" },
+    { name = "mkdocs-swagger-ui-tag", git = "https://github.com/iTrooz/mkdocs-swagger-ui-tag?rev=0ea154a44042d9ff049a5fced93b89180783123f" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.26.2" },
     { name = "mock", specifier = ">=5.1.0" },
     { name = "mypy", specifier = ">=1.13.0" },
@@ -1465,13 +1465,9 @@ wheels = [
 [[package]]
 name = "mkdocs-swagger-ui-tag"
 version = "0.6.11"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/iTrooz/mkdocs-swagger-ui-tag?rev=0ea154a44042d9ff049a5fced93b89180783123f#0ea154a44042d9ff049a5fced93b89180783123f" }
 dependencies = [
     { name = "beautifulsoup4" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/b7/4f13d618ded55f35977b26d844e2d488f8a2f14c02803777f0d21a3393b2/mkdocs_swagger_ui_tag-0.6.11.tar.gz", hash = "sha256:31681821d7f56a38379eb793abb3e035595df2043732a7db28e357dca2a0d566", size = 1287064 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/16/908dab5d37715aeea87e3307248a7107b05332e324c1f465907117eb9962/mkdocs_swagger_ui_tag-0.6.11-py3-none-any.whl", hash = "sha256:eb7e0d6e14c793ec3430a6916dff6d8d1a0b3fd88ac6e909fa493f218685d12f", size = 2767168 },
 ]
 
 [[package]]
