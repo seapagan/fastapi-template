@@ -4,7 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| >=0.5.0 | :white_check_mark: |
+| >=0.6.0 | :white_check_mark: |
 
 Until we reach a 1.0 milestone, we will generally only support the latest
 release of the project. If you are having issues with an older version, please
@@ -12,7 +12,9 @@ upgrade to the latest version and see if the issue is resolved. If not, please
 open an Issue.
 
 If the latest full release does not help, try the latest alpha or beta version
-(if available) to see if that fixes the issue. If not, please open an Issue.
+(if available) or the `main` branch on the repository to see if that fixes your
+problem (often the `main` branch will have several merged PR's or fixes that
+have not yet been released). If not, please open an Issue.
 
 ## Reporting a Vulnerability
 
