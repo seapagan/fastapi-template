@@ -44,8 +44,10 @@ class TestProtectedUserRoutes:
         fn = getattr(client, method)
         response = await fn(route_name)
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert response.json() == {"detail": "Not authenticated"}
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.json() == {
+            "detail": "Not authenticated. Use either JWT token or API key."
+        }
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(

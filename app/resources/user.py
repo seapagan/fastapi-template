@@ -7,7 +7,8 @@ from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
-from app.managers.auth import can_edit_user, is_admin, oauth2_schema
+from app.managers.auth import can_edit_user, is_admin
+from app.managers.security import get_current_user
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -19,7 +20,7 @@ router = APIRouter(tags=["Users"], prefix="/users")
 
 @router.get(
     "/",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
     response_model=Union[UserResponse, list[UserResponse]],
 )
 async def get_users(
@@ -39,7 +40,7 @@ async def get_users(
 
 @router.get(
     "/me",
-    dependencies=[Depends(oauth2_schema)],
+    dependencies=[Depends(get_current_user)],
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
@@ -53,7 +54,7 @@ async def get_my_user(
 
 @router.post(
     "/{user_id}/make-admin",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def make_admin(
@@ -65,7 +66,7 @@ async def make_admin(
 
 @router.post(
     "/{user_id}/password",
-    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
+    dependencies=[Depends(get_current_user), Depends(can_edit_user)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def change_password(
@@ -82,7 +83,7 @@ async def change_password(
 
 @router.post(
     "/{user_id}/ban",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def ban_user(
@@ -99,7 +100,7 @@ async def ban_user(
 
 @router.post(
     "/{user_id}/unban",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def unban_user(
@@ -116,7 +117,7 @@ async def unban_user(
 
 @router.put(
     "/{user_id}",
-    dependencies=[Depends(oauth2_schema), Depends(can_edit_user)],
+    dependencies=[Depends(get_current_user), Depends(can_edit_user)],
     status_code=status.HTTP_200_OK,
     response_model=MyUserResponse,
 )
@@ -135,7 +136,7 @@ async def edit_user(
 
 @router.delete(
     "/{user_id}",
-    dependencies=[Depends(oauth2_schema), Depends(is_admin)],
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(

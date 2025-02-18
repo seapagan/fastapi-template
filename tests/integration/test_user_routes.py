@@ -68,8 +68,10 @@ class TestUserRoutes:
 
         response = await client.get("/users/me")
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
-        assert response.json() == {"detail": "Not authenticated"}
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.json() == {
+            "detail": "Not authenticated. Use either JWT token or API key."
+        }
 
     # ------------------------------------------------------------------------ #
     #                           test get users route                           #

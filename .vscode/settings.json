@@ -55,5 +55,7 @@
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
   "ruff.fixAll": false,
-  "ruff.organizeImports": true
+  "ruff.organizeImports": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.shellIntegration.enabled": true
 }
