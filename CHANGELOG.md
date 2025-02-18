@@ -9,18 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
 
 These are the changes that have been merged to the repository since the last
-release. If you want to try out these changes, you can install the latest
-version from the main branch by running:
+release.
 
-```console
-$ pip install git+https://github.com/seapagan/github-changelog-md
-```
-
-or, if using poetry:
-
-```console
-$ poetry add git+https://github.com/seapagan/github-changelog-md
-```
 Everything in this section will be included in the next official release.
 
 **Breaking Changes**
