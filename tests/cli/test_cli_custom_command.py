@@ -312,3 +312,16 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
 
         # Verify command execution was not successful
         assert result.exit_code == 2, "The metadata file should not be writable"  # noqa: PLR2004
+        assert "Cannot Write the metadata" in result.output
+
+    def test_metadata_command_cant_write_toml(self, runner, fs_setup) -> None:
+        """Test the metadata command fails if pyproject.toml is not writable."""
+        # Make the file readable but not writable
+        os.chmod("/home/test/pyproject.toml", 0o444)  # noqa: PTH101
+
+        result = runner.invoke(app, ["custom", "metadata"], input="\n")
+
+        assert result.exit_code == 3, (  # noqa: PLR2004
+            "The pyproject.toml file should not be writable"
+        )
+        assert "Cannot update the pyproject.toml file" in result.output
