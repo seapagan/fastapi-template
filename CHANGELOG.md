@@ -30,6 +30,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Migrate from `passlib` to `libpass` ([#730](https://github.com/seapagan/fastapi-template/pull/730)) by [seapagan](https://github.com/seapagan)
 - Fix deprecation warning in tests due to httpx ([#727](https://github.com/seapagan/fastapi-template/pull/727)) by [seapagan](https://github.com/seapagan)
 - Use the python logger in the API instead of print statements ([#726](https://github.com/seapagan/fastapi-template/pull/726)) by [seapagan](https://github.com/seapagan)
 - Update 'Ruff' to latest version and fix any linting issues ([#713](https://github.com/seapagan/fastapi-template/pull/713)) by [seapagan](https://github.com/seapagan)

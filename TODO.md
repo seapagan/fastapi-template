@@ -37,7 +37,6 @@
 - If a user is deleted while logged in, the API returns a 500 (Internal Server
    Error).
 
-
 ## Auth
 
 - add a password recovery endpoint
