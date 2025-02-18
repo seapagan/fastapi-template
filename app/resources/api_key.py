@@ -1,12 +1,13 @@
 """API Key routes."""
 
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
+from app.database.helpers import update_api_key_
 from app.managers.api_key import ApiKeyManager
 from app.managers.security import get_current_user
 from app.models.user import User
@@ -80,14 +81,21 @@ async def update_api_key(
             detail="API key not found",
         )
 
+    # Build update data
+    update_data = {}  # type: dict[str, Union[str, bool]]
     if request.name is not None:
-        key.name = request.name
+        update_data["name"] = request.name
     if request.is_active is not None:
-        key.is_active = request.is_active
+        update_data["is_active"] = request.is_active
 
-    await db.commit()
-    await db.refresh(key)
-    return ApiKeyResponse.model_validate(key.__dict__)
+    # Update the key
+    updated_key = await update_api_key_(key_id, update_data, db)
+    if not updated_key:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="API key not found",
+        )
+    return ApiKeyResponse.model_validate(updated_key.__dict__)
 
 
 @router.delete("/{key_id}", status_code=status.HTTP_204_NO_CONTENT)

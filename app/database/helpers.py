@@ -3,7 +3,7 @@
 from typing import Any, Optional, Sequence
 from uuid import UUID
 
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.api_key import ApiKey
@@ -52,6 +52,24 @@ async def add_new_api_key_(
     )
     api_key = result.scalar_one()
     await session.commit()
+    return api_key
+
+
+async def update_api_key_(
+    key_id: UUID,
+    update_data: dict[str, Any],
+    session: AsyncSession,
+) -> Optional[ApiKey]:
+    """Update an API key in the database."""
+    result = await session.execute(
+        update(ApiKey)
+        .where(ApiKey.id == key_id)
+        .values(update_data)
+        .returning(ApiKey)
+    )
+    api_key = result.scalar_one_or_none()
+    if api_key:
+        await session.commit()
     return api_key
 
 
