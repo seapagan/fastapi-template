@@ -2,11 +2,10 @@
 
 import hashlib
 import secrets
-from typing import Any, Optional, Union
+from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
-from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
@@ -121,13 +120,13 @@ class ApiKeyManager:
 class ApiKeyAuth:
     """API Key authentication handler."""
 
-    def __init__(self, auto_error: bool = True) -> None:
+    def __init__(self, *, auto_error: bool = True) -> None:
         """Initialize the auth handler."""
         self.auto_error = auto_error
 
     async def __call__(
         self, request: Request, db: AsyncSession = Depends(get_database)
-    ) -> Any:  # FastAPI's security schemes require Any return type
+    ) -> Optional[User]:
         """Validate API key and return the associated user."""
         api_key = request.headers.get("X-API-Key")
         if not api_key:

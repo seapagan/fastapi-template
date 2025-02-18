@@ -283,7 +283,6 @@ async def get_jwt_user(
 
         # Store user in request state
         request.state.user = user_data
-        return user_data
 
     except jwt.ExpiredSignatureError as exc:
         raise HTTPException(
@@ -295,6 +294,8 @@ async def get_jwt_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ResponseMessages.INVALID_TOKEN,
         ) from exc
+    else:
+        return user_data
 
 
 oauth2_schema = get_jwt_user

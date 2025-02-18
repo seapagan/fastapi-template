@@ -1,6 +1,7 @@
 """Database helper functions."""
 
-from typing import Any, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any, Optional
 from uuid import UUID
 
 from sqlalchemy import insert, select, update
@@ -38,9 +39,7 @@ async def add_new_user_(
     result = await session.execute(
         insert(User).values(user_data).returning(User)
     )
-    user = result.scalar_one()
-    await session.commit()
-    return user
+    return result.scalar_one()
 
 
 async def add_new_api_key_(

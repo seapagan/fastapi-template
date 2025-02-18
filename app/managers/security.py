@@ -4,16 +4,14 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.requests import Request
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.db import get_database
 from app.managers.api_key import api_key_scheme
 from app.managers.auth import oauth2_schema
 from app.models.user import User
 
 
 async def get_current_user(
-    request: Request,
+    _request: Request,
     jwt_user: Optional[User] = Depends(oauth2_schema),
     api_key_user: Optional[User] = Depends(api_key_scheme),
 ) -> User:
