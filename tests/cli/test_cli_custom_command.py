@@ -1,13 +1,15 @@
 """Test the 'api-admin custom' command."""
 
+from __future__ import annotations
+
 import io
 import os
 import sys
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 import typer
-from typer.testing import CliRunner
 
 from app.api_admin import app
 from app.commands.custom import (
@@ -19,6 +21,12 @@ from app.commands.custom import (
     init,
 )
 from app.config.helpers import LICENCES
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+    from types import ModuleType
+
+    from typer.testing import CliRunner
 
 
 def is_running_in_docker() -> bool:
@@ -312,3 +320,87 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
 
         # Verify command execution was not successful
         assert result.exit_code == 2, "The metadata file should not be writable"  # noqa: PLR2004
+        assert "Cannot Write the metadata" in result.output
+
+    def test_metadata_command_cant_write_toml(self, runner, fs_setup) -> None:
+        """Test the metadata command fails if pyproject.toml is not writable."""
+        # Make the file readable but not writable
+        os.chmod("/home/test/pyproject.toml", 0o444)  # noqa: PTH101
+
+        result = runner.invoke(app, ["custom", "metadata"], input="\n")
+
+        assert result.exit_code == 3, (  # noqa: PLR2004
+            "The pyproject.toml file should not be writable"
+        )
+        assert "Cannot update the pyproject.toml file" in result.output
+
+    def test_metadata_module_not_found(
+        self, monkeypatch, fs_setup, capsys
+    ) -> None:
+        """This is a convoluted (hacky!) test to simulate a ModuleNotFoundError.
+
+        It tests the case where the 'metadata' module is not found. Note that if
+        this test is run asynchonously, it will most likely cause many other
+        tests to fail!
+        """
+        # Store references to the original modules
+        original_modules = {}
+        for name in list(sys.modules.keys()):
+            if name == "app.config.metadata" or name.startswith(
+                "app.config.metadata."
+            ):
+                original_modules[name] = sys.modules.pop(name)
+
+        # Define a custom import function that raises ModuleNotFoundError for
+        # our metadate module
+        def mock_import(
+            name: str,
+            globals: Mapping[str, object] | None = None,  # noqa: A002
+            locals: Mapping[str, object] | None = None,  # noqa: A002
+            fromlist: Sequence[str] = (),
+            level: int = 0,
+        ) -> ModuleType:
+            """Mock the import mechanism.
+
+            We want to to raise ModuleNotFoundError for our specific module.
+            """
+            if name == "app.config.metadata" or name.startswith(
+                "app.config.metadata."
+            ):
+                err = f"No module named '{name}'"
+                raise ModuleNotFoundError(err)
+            return original_import(name, globals, locals, fromlist, level)
+
+        def reimport_custom_module() -> None:
+            """Re-import or import the app.commands.custom module.
+
+            Putting it in a separate function to avoid multiple statements in
+            the 'pytest.raises' context manager and upsetting 'ruff' linter.
+            """
+            if "app.commands.custom" in sys.modules:
+                import importlib
+
+                importlib.reload(sys.modules["app.commands.custom"])
+            else:
+                import app.commands.custom  # noqa: F401
+
+        # Store and patch the import mechanism
+        original_import = __import__
+        monkeypatch.setattr("builtins.__import__", mock_import)
+
+        try:
+            # We want to capture the Exit exception but let everything else run
+            # normally
+            with pytest.raises(typer.Exit) as excinfo:
+                reimport_custom_module()
+
+            # Verify the exit code is 1
+            assert excinfo.value.exit_code == 1
+
+            captured = capsys.readouterr()
+            assert "metadata file could not be found" in captured.out
+
+        finally:
+            # Restore the original modules
+            for name, module in original_modules.items():
+                sys.modules[name] = module
