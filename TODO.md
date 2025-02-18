@@ -30,7 +30,7 @@
 - add pagination to the user list endpoint. Implement this in a way that is
   generic and can be used for other custom endpoints too. The library
   'fastapi-pagination' is really good and performant.
-- use an alternative loggier if uvicorn is not being used for some reason.
+- use an alternative logger if uvicorn is not being used for some reason.
 
 ## Bugs/Annoyances
 

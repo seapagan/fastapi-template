@@ -6,12 +6,7 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
-These are the changes that have been merged to the repository since the last
-release.
-
-Everything in this section will be included in the next official release.
+## [v0.6.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.6.0) (February 18, 2025)
 
 **Breaking Changes**
 
@@ -24,6 +19,10 @@ Everything in this section will be included in the next official release.
 - Fix deprecation warning in tests due to httpx ([#727](https://github.com/seapagan/fastapi-template/pull/727)) by [seapagan](https://github.com/seapagan)
 - Use the python logger in the API instead of print statements ([#726](https://github.com/seapagan/fastapi-template/pull/726)) by [seapagan](https://github.com/seapagan)
 - Update 'Ruff' to latest version and fix any linting issues ([#713](https://github.com/seapagan/fastapi-template/pull/713)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Get test coverage up to 100% by testing the last uncovered blocks ([#732](https://github.com/seapagan/fastapi-template/pull/732)) by [seapagan](https://github.com/seapagan)
 
 **Bug Fixes**
 
@@ -47,7 +46,7 @@ Everything in this section will be included in the next official release.
 - Bump sqlalchemy from 2.0.32 to 2.0.35 ([#679](https://github.com/seapagan/fastapi-template/pull/679)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - *and 65 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...v0.6.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...v0.6.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.5.4...v0.6.0.patch)
 
 ## [v0.5.4](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.4) (June 18, 2024)
 

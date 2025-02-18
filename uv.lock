@@ -76,7 +76,7 @@ wheels = [
 
 [[package]]
 name = "api-template"
-version = "0.5.4"
+version = "0.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
