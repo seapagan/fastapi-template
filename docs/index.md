@@ -45,6 +45,9 @@ following advantages to starting your own from scratch :
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
+- **API Keys** are fully implemented and can be used by registered users instead
+  of the JTW. These will **not expire** at present though adding expiry is a
+  future plan. API keys are passed using the `X-API-Key` header.
 - A `Refresh Token` with 30 day expiry is sent at time of register or login
   (never again). This will enable easy re-authentication when the JWT expires
   without needing to send username or password again, and should be done

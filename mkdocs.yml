@@ -73,6 +73,7 @@ nav:
           - Setup Database: usage/configuration/database.md
       - Add a User: usage/add-user.md
       - User Control via the CLI: usage/user-control.md
+      - API Keys: usage/api-keys.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
@@ -85,9 +86,8 @@ nav:
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md
   - API Reference: reference/api.md
-  - Interactive API Docs: reference/swagger.md
-  - Future Plans: future.md
-  - Known Issues: known-issues.md
+  - Swagger API Docs: reference/swagger.md
+  - Future Plans and Bugs: future.md
   - Contributing: contributing.md
   - Changelog: changelog.md
   - License: license.md

@@ -1,7 +1,7 @@
 """Define the Users model."""
 
 from sqlalchemy import Boolean, Enum, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.db import Base
 from app.models.enums import RoleType
@@ -25,6 +25,11 @@ class User(Base):
     )
     banned: Mapped[bool] = mapped_column(Boolean, default=False)
     verified: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    # Relationships
+    api_keys = relationship(
+        "ApiKey", back_populates="user", cascade="all, delete"
+    )
 
     def __repr__(self) -> str:
         """Define the model representation."""

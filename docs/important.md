@@ -4,6 +4,25 @@ This page contains information about breaking changes in the API. It is
 important to read this page if you are upgrading from a previous version of the
 API.
 
+## Breaking Changes in 0.7.0
+
+### Modified the Authentication backend
+
+This version introduces **API Keys** that can be created and used by a
+registered user to avoid having to keep refreshing the JWT. They are sent using
+the `X-API-Key` header.
+
+As a result of this, the authentication backend needed to be refactored quite a
+bit. Specifically, the `CustomHTTPBearer` was renamed to simply `HTTPBearer` and
+the usage changes slightly, though you should have been using the
+`oauth2_schema` helper instead of this class directly anyway.
+
+1. If you do NOT want to use the API key functionality, keep using the
+   `Depends(oauth2_schema)` in your route dependencies as before. These routes
+   will not be able to be accessed by an API Key.
+2. To migrate to use **BOTH** JWT and API Keys, change this to
+   `Depends(get_current_user)`.
+
 ## Breaking Changes in 0.6.0
 
 ### Migrated to `uv` for virtual environment management
