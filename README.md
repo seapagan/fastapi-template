@@ -124,14 +124,15 @@ However, the `main` branch should be pretty stable as all development is done on
 the `develop` branch and merged into `main` when ready.
 
 The template **Requires Python 3.9.0** or higher. I actually develop under
-Python 3.12.x where x is the latest version available at the time, and migrating
-to the next patch version as soon as it is released. CI tests are run
-automatically on Python 3.9, 3.10, 3.11 and 3.12.
+Python 3.13.x where x is the latest patch version available at the time, and
+migrating to the next patch version as soon as it is released. CI tests are run
+automatically on the latest patch levels of Python 3.9 to 3.13.
 
 This template is free to use but I would request some accreditation. If you do
-use it in one of your applications, please put a small note in your readme
-stating that you based your project on this Template, with a link back to this
-repository. Thank You 😊
+use it in one of your applications, or even some of the unique code from the
+template, or you learn something from it, please put a small note in your readme
+or blog post/whatever stating that you used this Template or code therein, with
+a link back to this repository. Thank You 😊
 
 For those who let me know they are using this Template, I'll add links back to
 your project in this documentation.

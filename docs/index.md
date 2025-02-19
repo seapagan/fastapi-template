@@ -111,9 +111,10 @@ updates, bug fixes or new functionality :+1:
 ## Accreditation
 
 This template is free to use but I would request some accreditation. If you do
-use it in one of your applications, please put a small note in your readme
-stating that you based your project on this Template, with a link back to this
-repository. Thank You 😊
+use it in one of your applications, or even some of the unique code from the
+template, or you learn something from it, please put a small note in your readme
+or blog post/whatever stating that you used this Template or code therein, with
+a link back to this repository. Thank You 😊
 
 For those who let me know they are using this Template, I'll add links back to
 your project in this documentation.
