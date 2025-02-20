@@ -8,12 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
 from app.database.helpers import update_api_key_
-from app.managers.api_key import ApiKeyManager
+from app.managers.api_key import ApiKeyErrorMessages, ApiKeyManager
 from app.managers.security import get_current_user
 from app.models.user import User
 from app.schemas.request.api_key import ApiKeyCreate, ApiKeyUpdate
 from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
 
+# the prefix will later become configurable in the settings
 router = APIRouter(tags=["API Keys"], prefix="/keys")
 
 
@@ -77,7 +78,7 @@ async def update_api_key(
     if not key or key.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
 
     # Build update data
@@ -99,7 +100,7 @@ async def update_api_key(
     if not updated_key:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
@@ -115,6 +116,6 @@ async def delete_api_key(
     if not key or key.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     await ApiKeyManager.delete_key(key_id, db)

@@ -6,7 +6,7 @@ import pytest
 from fastapi import HTTPException, status
 from sqlalchemy import delete
 
-from app.managers.api_key import ApiKeyAuth, ApiKeyManager, ResponseMessages
+from app.managers.api_key import ApiKeyAuth, ApiKeyErrorMessages, ApiKeyManager
 from app.managers.user import UserManager
 from app.models.api_key import ApiKey
 from app.models.user import User
@@ -120,7 +120,7 @@ class TestApiKeyManager:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.INVALID_KEY
+        assert exc.value.detail == ApiKeyErrorMessages.INVALID_KEY
 
     async def test_api_key_auth_inactive_key_no_auto_error(
         self, test_db, mocker
@@ -171,7 +171,7 @@ class TestApiKeyManager:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.KEY_INACTIVE
+        assert exc.value.detail == ApiKeyErrorMessages.KEY_INACTIVE
 
     async def test_api_key_auth_user_not_found(self, test_db, mocker) -> None:
         """Test API key auth when user is not found."""
@@ -199,7 +199,7 @@ class TestApiKeyManager:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.INVALID_KEY
+        assert exc.value.detail == ApiKeyErrorMessages.INVALID_KEY
 
     async def test_api_key_auth_user_not_found_no_auto_error(
         self, test_db, mocker
@@ -293,7 +293,7 @@ class TestApiKeyManager:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.INVALID_KEY
+        assert exc.value.detail == ApiKeyErrorMessages.INVALID_KEY
 
     async def test_api_key_auth_user_not_found_in_db_no_auto_error(
         self, test_db, mocker
