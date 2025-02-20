@@ -25,10 +25,9 @@ finished will include full usage information and how-to's.
   - [Develop on containers](#develop-on-containers)
   - [Migrations on containers](#migrations-on-containers)
   - [Testing on containers](#testing-on-containers)
-- [Planned Functionality](#planned-functionality)
+- [Planned Functionality and Known Bugs](#planned-functionality-and-known-bugs)
 - [Testing](#testing)
 - [Code Quality](#code-quality)
-- [Known Bugs](#known-bugs)
 - [Who is Using this Template?](#who-is-using-this-template)
 - [Contributing](#contributing)
 - [GitHub Discussions](#github-discussions)
@@ -223,9 +222,9 @@ Running tests on Docker container is also possible:
 docker compose run --rm api pytest
 ```
 
-## Planned Functionality
+## Planned Functionality and Known Bugs
 
-See the [TODO.md](TODO.md) file for plans.
+See the [TODO.md](TODO.md) file for plans and known issues.
 
 ## Testing
 
@@ -270,10 +269,6 @@ after each test suite is run.
 ## Code Quality
 
 `To be written`
-
-## Known Bugs
-
-See the [BUGS.md](BUGS.md) file for known bugs.
 
 ## Who is Using this Template?
 
