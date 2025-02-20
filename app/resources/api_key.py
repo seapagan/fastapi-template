@@ -84,19 +84,15 @@ async def get_api_key(
     return ApiKeyResponse.model_validate(key.__dict__)
 
 
-@router.patch(
-    "/{key_id}",
-    summary="Update an API key's name or active status for the current user",
-)
-async def update_api_key(
+async def _update_api_key_common(
     key_id: UUID,
+    user_id: int,
     request: ApiKeyUpdate,
-    user: Annotated[User, Depends(get_current_user)],
-    db: Annotated[AsyncSession, Depends(get_database)],
+    db: AsyncSession,
 ) -> ApiKeyResponse:
-    """Update an API key's name or active status."""
+    """Common functionality for updating API keys."""
     key = await ApiKeyManager.get_key(key_id, db)
-    if not key or key.user_id != user.id:
+    if not key or key.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
@@ -127,6 +123,20 @@ async def update_api_key(
 
 
 @router.patch(
+    "/{key_id}",
+    summary="Update an API key's name or active status for the current user",
+)
+async def update_api_key(
+    key_id: UUID,
+    request: ApiKeyUpdate,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_database)],
+) -> ApiKeyResponse:
+    """Update an API key's name or active status."""
+    return await _update_api_key_common(key_id, user.id, request, db)
+
+
+@router.patch(
     "/by-user/{user_id}/{key_id}",
     summary="Update another user's API key (admin only)",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
@@ -138,33 +148,22 @@ async def update_user_api_key(
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> ApiKeyResponse:
     """Update another user's API key (admin only)."""
+    return await _update_api_key_common(key_id, user_id, request, db)
+
+
+async def _delete_api_key_common(
+    key_id: UUID,
+    user_id: int,
+    db: AsyncSession,
+) -> None:
+    """Common functionality for deleting API keys."""
     key = await ApiKeyManager.get_key(key_id, db)
     if not key or key.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
-
-    # Build update data
-    update_data: dict[str, Union[str, bool]] = {}
-    if request.name is not None:
-        update_data["name"] = request.name
-    if request.is_active is not None:
-        update_data["is_active"] = request.is_active
-
-    if not update_data:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="At least one field must be provided for update",
-        )
-
-    updated_key = await update_api_key_(key_id, update_data, db)
-    if not updated_key:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
-        )
-    return ApiKeyResponse.model_validate(updated_key.__dict__)
+    await ApiKeyManager.delete_key(key_id, db)
 
 
 @router.delete(
@@ -178,13 +177,7 @@ async def delete_api_key(
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Delete an API key."""
-    key = await ApiKeyManager.get_key(key_id, db)
-    if not key or key.user_id != user.id:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
-        )
-    await ApiKeyManager.delete_key(key_id, db)
+    await _delete_api_key_common(key_id, user.id, db)
 
 
 @router.delete(
@@ -199,11 +192,4 @@ async def delete_user_api_key(
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Delete another user's API key (admin only)."""
-    key = await ApiKeyManager.get_key(key_id, db)
-    if not key or key.user_id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
-        )
-
-    await ApiKeyManager.delete_key(key_id, db)
+    await _delete_api_key_common(key_id, user_id, db)

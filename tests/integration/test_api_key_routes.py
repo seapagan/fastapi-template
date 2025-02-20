@@ -435,7 +435,7 @@ class TestApiKeyRoutes:
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        assert len(data) == 2
+        assert len(data) == 2  # noqa: PLR2004
         assert all(isinstance(UUID(key["id"]), UUID) for key in data)
         assert "key" not in data[0]
         assert "key" not in data[1]
