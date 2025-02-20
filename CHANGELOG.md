@@ -17,6 +17,10 @@ Everything in this section will be included in the next official release.
 
 - Implement API Keys. ([#734](https://github.com/seapagan/fastapi-template/pull/734)) by [seapagan](https://github.com/seapagan)
 
+**New Features**
+
+- Allow Admin users to list/edit/delete other users API keys ([#735](https://github.com/seapagan/fastapi-template/pull/735)) by [seapagan](https://github.com/seapagan)
+
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.patch)
 
 ## [v0.6.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.6.0) (February 18, 2025)

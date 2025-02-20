@@ -59,9 +59,7 @@
 - Implement user groups and permissions, make it configurable.
 - Allow social login (eg Google, Facebook, Twitter, etc), check out
   [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
-- allow admin users to list, delete or change active status for other users API
-  keys.
-- add the above to the CLI too, working on both user and global scope.
+- add API key management to the CLI too, working on both user and global scope.
 
 ## Testing
 
@@ -81,6 +79,8 @@
   deployment. The server will have to be restarted for this to take effect
   (offer to do this?). `python-dotenv` has a `set_key` method that can be used
   to update the `.env` file.
+- add an option to the `db` command to fill the database with some fake data
+  that can be used for development.
 
 ## Documentation
 
