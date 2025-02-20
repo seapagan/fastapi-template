@@ -4,7 +4,7 @@ import pytest
 from fastapi import HTTPException, status
 
 from app.database.helpers import update_api_key_
-from app.managers.api_key import ApiKeyAuth, ApiKeyManager, ResponseMessages
+from app.managers.api_key import ApiKeyAuth, ApiKeyErrorMessages, ApiKeyManager
 from app.managers.user import UserManager
 from app.models.user import User
 
@@ -30,7 +30,7 @@ class TestApiKeyAuth:
         user = await UserManager.get_user_by_email(
             self.test_user["email"], test_db
         )
-        api_key, raw_key = await ApiKeyManager.create_key(
+        _, raw_key = await ApiKeyManager.create_key(
             user, "Test Key", None, test_db
         )
 
@@ -55,7 +55,7 @@ class TestApiKeyAuth:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.INVALID_KEY
+        assert exc.value.detail == ApiKeyErrorMessages.INVALID_KEY
 
     async def test_api_key_auth_no_header(self, test_db, mocker) -> None:
         """Test with no API key header."""
@@ -91,4 +91,4 @@ class TestApiKeyAuth:
             await auth(request=mock_req, db=test_db)
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc.value.detail == ResponseMessages.KEY_INACTIVE
+        assert exc.value.detail == ApiKeyErrorMessages.KEY_INACTIVE

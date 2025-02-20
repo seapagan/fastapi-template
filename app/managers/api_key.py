@@ -20,8 +20,8 @@ from app.models.api_key import ApiKey
 from app.models.user import User
 
 
-class ResponseMessages:
-    """Error strings for different circumstances."""
+class ApiKeyErrorMessages:
+    """Error strings for API Key failures."""
 
     INVALID_KEY = "Invalid API key"
     KEY_INACTIVE = "API key is inactive"
@@ -139,7 +139,7 @@ class ApiKeyAuth:
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=ResponseMessages.INVALID_KEY,
+                    detail=ApiKeyErrorMessages.INVALID_KEY,
                 )
             return None
 
@@ -148,7 +148,7 @@ class ApiKeyAuth:
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=ResponseMessages.KEY_INACTIVE,
+                    detail=ApiKeyErrorMessages.KEY_INACTIVE,
                 )
             return None
 
@@ -158,7 +158,7 @@ class ApiKeyAuth:
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=ResponseMessages.INVALID_KEY,
+                    detail=ApiKeyErrorMessages.INVALID_KEY,
                 )
             return None
 

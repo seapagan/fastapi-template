@@ -8,16 +8,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
 from app.database.helpers import update_api_key_
-from app.managers.api_key import ApiKeyManager
+from app.managers.api_key import ApiKeyErrorMessages, ApiKeyManager
+from app.managers.auth import is_admin
 from app.managers.security import get_current_user
 from app.models.user import User
 from app.schemas.request.api_key import ApiKeyCreate, ApiKeyUpdate
 from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
 
-router = APIRouter(tags=["API Keys"], prefix="/api/keys")
+# the prefix will later become configurable in the settings
+router = APIRouter(tags=["API Keys"], prefix="/users/keys")
 
 
-@router.post("")
+@router.post("", summary="Create a new API key for the authenticated user")
 async def create_api_key(
     request: ApiKeyCreate,
     user: Annotated[User, Depends(get_current_user)],
@@ -39,17 +41,34 @@ async def create_api_key(
     return ApiKeyCreateResponse.model_validate(response_data)
 
 
-@router.get("")
+@router.get("", summary="List API keys for the authenticated user")
 async def list_api_keys(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> list[ApiKeyResponse]:
-    """List all API keys for the authenticated user."""
+    """List API keys for the authenticated user."""
     keys = await ApiKeyManager.get_user_keys(user.id, db)
     return [ApiKeyResponse.model_validate(key.__dict__) for key in keys]
 
 
-@router.get("/{key_id}")
+@router.get(
+    "/by-user/{user_id}",
+    summary="List API keys for a specific user (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+)
+async def list_user_api_keys(
+    user_id: int,
+    db: Annotated[AsyncSession, Depends(get_database)],
+) -> list[ApiKeyResponse]:
+    """List API keys for a specific user (admin only)."""
+    keys = await ApiKeyManager.get_user_keys(user_id, db)
+    return [ApiKeyResponse.model_validate(key.__dict__) for key in keys]
+
+
+@router.get(
+    "/{key_id}",
+    summary="Get a specific API key by ID for the authenticated user",
+)
 async def get_api_key(
     key_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
@@ -60,24 +79,23 @@ async def get_api_key(
     if not key or key.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     return ApiKeyResponse.model_validate(key.__dict__)
 
 
-@router.patch("/{key_id}")
-async def update_api_key(
+async def _update_api_key_common(
     key_id: UUID,
+    user_id: int,
     request: ApiKeyUpdate,
-    user: Annotated[User, Depends(get_current_user)],
-    db: Annotated[AsyncSession, Depends(get_database)],
+    db: AsyncSession,
 ) -> ApiKeyResponse:
-    """Update an API key's name or active status."""
+    """Common functionality for updating API keys."""
     key = await ApiKeyManager.get_key(key_id, db)
-    if not key or key.user_id != user.id:
+    if not key or key.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
 
     # Build update data
@@ -99,22 +117,79 @@ async def update_api_key(
     if not updated_key:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
 
-@router.delete("/{key_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch(
+    "/{key_id}",
+    summary="Update an API key's name or active status for the current user",
+)
+async def update_api_key(
+    key_id: UUID,
+    request: ApiKeyUpdate,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_database)],
+) -> ApiKeyResponse:
+    """Update an API key's name or active status."""
+    return await _update_api_key_common(key_id, user.id, request, db)
+
+
+@router.patch(
+    "/by-user/{user_id}/{key_id}",
+    summary="Update another user's API key (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+)
+async def update_user_api_key(
+    user_id: int,
+    key_id: UUID,
+    request: ApiKeyUpdate,
+    db: Annotated[AsyncSession, Depends(get_database)],
+) -> ApiKeyResponse:
+    """Update another user's API key (admin only)."""
+    return await _update_api_key_common(key_id, user_id, request, db)
+
+
+async def _delete_api_key_common(
+    key_id: UUID,
+    user_id: int,
+    db: AsyncSession,
+) -> None:
+    """Common functionality for deleting API keys."""
+    key = await ApiKeyManager.get_key(key_id, db)
+    if not key or key.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
+        )
+    await ApiKeyManager.delete_key(key_id, db)
+
+
+@router.delete(
+    "/{key_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete an API key for the authenticated user",
+)
 async def delete_api_key(
     key_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Delete an API key."""
-    key = await ApiKeyManager.get_key(key_id, db)
-    if not key or key.user_id != user.id:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
-        )
-    await ApiKeyManager.delete_key(key_id, db)
+    await _delete_api_key_common(key_id, user.id, db)
+
+
+@router.delete(
+    "/by-user/{user_id}/{key_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete another user's API key (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+)
+async def delete_user_api_key(
+    user_id: int,
+    key_id: UUID,
+    db: Annotated[AsyncSession, Depends(get_database)],
+) -> None:
+    """Delete another user's API key (admin only)."""
+    await _delete_api_key_common(key_id, user_id, db)
