@@ -15,7 +15,7 @@ from app.schemas.request.api_key import ApiKeyCreate, ApiKeyUpdate
 from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
 
 # the prefix will later become configurable in the settings
-router = APIRouter(tags=["API Keys"], prefix="/keys")
+router = APIRouter(tags=["API Keys"], prefix="/users/keys")
 
 
 @router.post("")

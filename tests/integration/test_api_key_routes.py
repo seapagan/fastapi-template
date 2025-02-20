@@ -15,7 +15,7 @@ from app.models.user import User
 
 # this should become a config setting later, so we can change the route and
 # tests in one place.
-API_KEY_ROUTE = "/keys"
+API_KEY_ROUTE = "/users/keys"
 
 
 @pytest.mark.integration
