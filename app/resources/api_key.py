@@ -14,7 +14,7 @@ from app.models.user import User
 from app.schemas.request.api_key import ApiKeyCreate, ApiKeyUpdate
 from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
 
-router = APIRouter(tags=["API Keys"], prefix="/api/keys")
+router = APIRouter(tags=["API Keys"], prefix="/keys")
 
 
 @router.post("")
