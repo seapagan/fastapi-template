@@ -45,11 +45,11 @@ Now, you can access this route using an **API Key** OR a **JWT** token.
 
 There are 5 routes for managing API Keys and are **USER Specific**:
 
-1. **List All API Keys** - `GET /api/keys/`
-2. **Create a new API Key** - `POST /api/keys/`
-3. **Get a single API Key** - `GET /api/keys/{key_id}`
-4. **Update a single API Key** - `PATCH /api/keys/{key_id}`
-5. **Delete a single API Key** - `DELETE /api/keys/{key_id}`
+1. **List All API Keys** - `GET /users/keys/`
+2. **Create a new API Key** - `POST /users/keys/`
+3. **Get a single API Key** - `GET /users/keys/{key_id}`
+4. **Update a single API Key** - `PATCH /users/keys/{key_id}`
+5. **Delete a single API Key** - `DELETE /users/keys/{key_id}`
 
 !!! danger
     The `POST` route will return the API Key in the response. **This is
