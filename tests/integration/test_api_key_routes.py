@@ -13,6 +13,10 @@ from app.managers.user import pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
+# this should become a config setting later, so we can change the route and
+# tests in one place.
+API_KEY_ROUTE = "/keys"
+
 
 @pytest.mark.integration
 class TestApiKeyRoutes:
@@ -46,7 +50,7 @@ class TestApiKeyRoutes:
 
         # Create API key
         response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users", "write:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -73,19 +77,19 @@ class TestApiKeyRoutes:
 
         # Create an API key first
         await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key 1", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
         await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key 2", "scopes": ["write:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
 
         # List API keys
         response = await client.get(
-            "/api/keys",
+            API_KEY_ROUTE,
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -109,7 +113,7 @@ class TestApiKeyRoutes:
 
         # Create an API key
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -117,7 +121,7 @@ class TestApiKeyRoutes:
 
         # Get the specific key
         response = await client.get(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -140,7 +144,7 @@ class TestApiKeyRoutes:
 
         # Create an API key
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -148,7 +152,7 @@ class TestApiKeyRoutes:
 
         # Update the key
         response = await client.patch(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             json={"name": "Updated Key", "is_active": False},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -171,7 +175,7 @@ class TestApiKeyRoutes:
 
         # Create an API key
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -179,7 +183,7 @@ class TestApiKeyRoutes:
 
         # Delete the key
         response = await client.delete(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -187,7 +191,7 @@ class TestApiKeyRoutes:
 
         # Verify key is deleted
         get_response = await client.get(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             headers={"Authorization": f"Bearer {token}"},
         )
         assert get_response.status_code == status.HTTP_404_NOT_FOUND
@@ -210,7 +214,7 @@ class TestApiKeyRoutes:
 
         # Create an API key for user1
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "User1 Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token1}"},
         )
@@ -218,7 +222,7 @@ class TestApiKeyRoutes:
 
         # Try to access user1's key with user2's token
         response = await client.get(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             headers={"Authorization": f"Bearer {token2}"},
         )
 
@@ -230,7 +234,7 @@ class TestApiKeyRoutes:
     ) -> None:
         """Test creating an API key without authentication."""
         response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
         )
 
@@ -249,7 +253,7 @@ class TestApiKeyRoutes:
 
         # Try to update a non-existent key
         response = await client.patch(
-            "/api/keys/00000000-0000-0000-0000-000000000000",
+            f"{API_KEY_ROUTE}/00000000-0000-0000-0000-000000000000",
             json={"name": "Updated Key", "is_active": False},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -270,7 +274,7 @@ class TestApiKeyRoutes:
 
         # Try to delete a non-existent key
         response = await client.delete(
-            "/api/keys/00000000-0000-0000-0000-000000000000",
+            f"{API_KEY_ROUTE}/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -290,7 +294,7 @@ class TestApiKeyRoutes:
 
         # Test with missing required field
         response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"scopes": ["read:users"]},  # Missing 'name' field
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -298,7 +302,7 @@ class TestApiKeyRoutes:
 
         # Test with invalid scopes format
         response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={
                 "name": "Test Key",
                 "scopes": "invalid",
@@ -320,7 +324,7 @@ class TestApiKeyRoutes:
 
         # Create an API key first
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -328,7 +332,7 @@ class TestApiKeyRoutes:
 
         # Test with invalid is_active type
         response = await client.patch(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             json={
                 "name": "Updated Key",
                 "is_active": "invalid",
@@ -339,7 +343,7 @@ class TestApiKeyRoutes:
 
         # Test with invalid name length
         response = await client.patch(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             json={"name": ""},  # Empty name is not allowed
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -347,7 +351,7 @@ class TestApiKeyRoutes:
 
         # Test with empty update data
         response = await client.patch(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             json={},  # Empty update data
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -370,7 +374,7 @@ class TestApiKeyRoutes:
 
         # Create an API key
         create_response = await client.post(
-            "/api/keys",
+            API_KEY_ROUTE,
             json={"name": "Test Key", "scopes": ["read:users"]},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -381,7 +385,7 @@ class TestApiKeyRoutes:
 
         # Try to update the key
         response = await client.patch(
-            f"/api/keys/{key_id}",
+            f"{API_KEY_ROUTE}/{key_id}",
             json={"name": "Updated Key"},
             headers={"Authorization": f"Bearer {token}"},
         )
