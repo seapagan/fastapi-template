@@ -1,6 +1,6 @@
 """API Key routes."""
 
-from typing import Annotated, Optional, Union
+from typing import Annotated, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db import get_database
 from app.database.helpers import update_api_key_
 from app.managers.api_key import ApiKeyErrorMessages, ApiKeyManager
+from app.managers.auth import is_admin
 from app.managers.security import get_current_user
-from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.request.api_key import ApiKeyCreate, ApiKeyUpdate
 from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
@@ -19,7 +19,7 @@ from app.schemas.response.api_key import ApiKeyCreateResponse, ApiKeyResponse
 router = APIRouter(tags=["API Keys"], prefix="/users/keys")
 
 
-@router.post("")
+@router.post("", summary="Create a new API key for the authenticated user")
 async def create_api_key(
     request: ApiKeyCreate,
     user: Annotated[User, Depends(get_current_user)],
@@ -41,7 +41,7 @@ async def create_api_key(
     return ApiKeyCreateResponse.model_validate(response_data)
 
 
-@router.get("")
+@router.get("", summary="List API keys for the authenticated user")
 async def list_api_keys(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
@@ -51,24 +51,24 @@ async def list_api_keys(
     return [ApiKeyResponse.model_validate(key.__dict__) for key in keys]
 
 
-@router.get("/by-user/{user_id}")
+@router.get(
+    "/by-user/{user_id}",
+    summary="List API keys for a specific user (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+)
 async def list_user_api_keys(
     user_id: int,
-    user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> list[ApiKeyResponse]:
     """List API keys for a specific user (admin only)."""
-    if user.role != RoleType.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only administrators can view other users' API keys",
-        )
-
     keys = await ApiKeyManager.get_user_keys(user_id, db)
     return [ApiKeyResponse.model_validate(key.__dict__) for key in keys]
 
 
-@router.get("/{key_id}")
+@router.get(
+    "/{key_id}",
+    summary="Get a specific API key by ID for the authenticated user",
+)
 async def get_api_key(
     key_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
@@ -79,12 +79,15 @@ async def get_api_key(
     if not key or key.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="API key not found",
+            detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     return ApiKeyResponse.model_validate(key.__dict__)
 
 
-@router.patch("/{key_id}")
+@router.patch(
+    "/{key_id}",
+    summary="Update an API key's name or active status for the current user",
+)
 async def update_api_key(
     key_id: UUID,
     request: ApiKeyUpdate,
@@ -123,21 +126,18 @@ async def update_api_key(
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
 
-@router.patch("/by-user/{user_id}/{key_id}")
+@router.patch(
+    "/by-user/{user_id}/{key_id}",
+    summary="Update another user's API key (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+)
 async def update_user_api_key(
     user_id: int,
     key_id: UUID,
     request: ApiKeyUpdate,
-    user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> ApiKeyResponse:
     """Update another user's API key (admin only)."""
-    if user.role != RoleType.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only administrators can modify other users' API keys",
-        )
-
     key = await ApiKeyManager.get_key(key_id, db)
     if not key or key.user_id != user_id:
         raise HTTPException(
@@ -167,7 +167,11 @@ async def update_user_api_key(
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
 
-@router.delete("/{key_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{key_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete an API key for the authenticated user",
+)
 async def delete_api_key(
     key_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
@@ -186,20 +190,15 @@ async def delete_api_key(
 @router.delete(
     "/by-user/{user_id}/{key_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete another user's API key (admin only)",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
 )
 async def delete_user_api_key(
     user_id: int,
     key_id: UUID,
-    user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Delete another user's API key (admin only)."""
-    if user.role != RoleType.admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only administrators can delete other users' API keys",
-        )
-
     key = await ApiKeyManager.get_key(key_id, db)
     if not key or key.user_id != user_id:
         raise HTTPException(
