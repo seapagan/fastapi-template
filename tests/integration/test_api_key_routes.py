@@ -1,6 +1,6 @@
 """Integration tests for API key routes."""
 
-from typing import Any
+from typing import Any, Union
 from uuid import UUID
 
 import pytest
@@ -23,11 +23,15 @@ class TestApiKeyRoutes:
     """Test the API key routes of the application."""
 
     def get_test_user(
-        self, *, hashed: bool = True, admin: bool = False
+        self,
+        *,
+        hashed: bool = True,
+        admin: bool = False,
+        email: Union[str, None] = None,
     ) -> dict[str, Any]:
         """Return a test user dictionary."""
         return {
-            "email": "testuser@usertest.com",
+            "email": email or "testuser@usertest.com",
             "first_name": "Test",
             "last_name": "User",
             "password": pwd_context.hash("test12345!")
@@ -203,8 +207,8 @@ class TestApiKeyRoutes:
         """Test that a user cannot access another user's API keys."""
         # Create two users
         user1 = User(**self.get_test_user())
-        test_db.add(user1)
         user2 = User(**{**self.get_test_user(), "email": "user2@test.com"})
+        test_db.add(user1)
         test_db.add(user2)
         await test_db.commit()
 
@@ -388,6 +392,327 @@ class TestApiKeyRoutes:
             f"{API_KEY_ROUTE}/{key_id}",
             json={"name": "Updated Key"},
             headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json()["detail"] == "API key not found"
+
+    @pytest.mark.asyncio
+    async def test_admin_can_list_user_api_keys(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that an admin can list another user's API key."""
+        # Create a regular user and an admin
+        regular_user = User(**self.get_test_user(email="regular@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(regular_user)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user_token = AuthManager.encode_token(regular_user)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create API keys for the regular user
+        await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key 1", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key 2", "scopes": ["write:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+
+        # Admin lists the user's API keys
+        response = await client.get(
+            f"{API_KEY_ROUTE}/by-user/{regular_user.id}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert len(data) == 2
+        assert all(isinstance(UUID(key["id"]), UUID) for key in data)
+        assert "key" not in data[0]
+        assert "key" not in data[1]
+
+    @pytest.mark.asyncio
+    async def test_admin_can_update_user_api_key(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that an admin can update another user's API key."""
+        # Create a regular user and an admin
+        regular_user = User(**self.get_test_user(email="regular@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(regular_user)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user_token = AuthManager.encode_token(regular_user)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for the regular user
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Admin updates the user's API key
+        response = await client.patch(
+            f"{API_KEY_ROUTE}/by-user/{regular_user.id}/{key_id}",
+            json={"name": "Updated By Admin", "is_active": False},
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["name"] == "Updated By Admin"
+        assert data["is_active"] is False
+
+    @pytest.mark.asyncio
+    async def test_admin_can_delete_user_api_key(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that an admin can delete another user's API key."""
+        # Create a regular user and an admin
+        regular_user = User(**self.get_test_user(email="regular@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(regular_user)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user_token = AuthManager.encode_token(regular_user)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for the regular user
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Admin deletes the user's API key
+        response = await client.delete(
+            f"{API_KEY_ROUTE}/by-user/{regular_user.id}/{key_id}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        # Verify key is deleted
+        get_response = await client.get(
+            f"{API_KEY_ROUTE}/{key_id}",
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        assert get_response.status_code == status.HTTP_404_NOT_FOUND
+
+    @pytest.mark.asyncio
+    async def test_non_admin_cannot_access_admin_api_key_routes(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that non-admin users cannot access admin API key routes."""
+        # Create two regular users
+        user1 = User(**self.get_test_user(email="user1@test.com"))
+        user2 = User(**self.get_test_user(email="user2@test.com"))
+        test_db.add(user1)
+        test_db.add(user2)
+        await test_db.commit()
+
+        # Get token for user1
+        user1_token = AuthManager.encode_token(user1)
+
+        # Create an API key for user2
+        user2_token = AuthManager.encode_token(user2)
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User2 Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user2_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Try to list user2's keys
+        list_response = await client.get(
+            f"{API_KEY_ROUTE}/by-user/{user2.id}",
+            headers={"Authorization": f"Bearer {user1_token}"},
+        )
+        assert list_response.status_code == status.HTTP_403_FORBIDDEN
+
+        # Try to update user2's key
+        update_response = await client.patch(
+            f"{API_KEY_ROUTE}/by-user/{user2.id}/{key_id}",
+            json={"name": "Updated Name"},
+            headers={"Authorization": f"Bearer {user1_token}"},
+        )
+        assert update_response.status_code == status.HTTP_403_FORBIDDEN
+
+        # Try to delete user2's key
+        delete_response = await client.delete(
+            f"{API_KEY_ROUTE}/by-user/{user2.id}/{key_id}",
+            headers={"Authorization": f"Bearer {user1_token}"},
+        )
+        assert delete_response.status_code == status.HTTP_403_FORBIDDEN
+
+    @pytest.mark.asyncio
+    async def test_admin_update_key_wrong_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test admin trying to update a key with wrong user ID."""
+        # Create two regular users and an admin
+        user1 = User(**self.get_test_user(email="user1@test.com"))
+        user2 = User(**self.get_test_user(email="user2@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(user1)
+        test_db.add(user2)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user1_token = AuthManager.encode_token(user1)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for user1
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User1 Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user1_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Admin tries to update the key but associates it with user2
+        response = await client.patch(
+            f"{API_KEY_ROUTE}/by-user/{user2.id}/{key_id}",
+            json={"name": "Updated Name"},
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json()["detail"] == "API key not found"
+
+    @pytest.mark.asyncio
+    async def test_admin_update_key_no_fields(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test admin trying to update a key without providing any fields."""
+        # Create a regular user and an admin
+        regular_user = User(**self.get_test_user(email="regular@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(regular_user)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user_token = AuthManager.encode_token(regular_user)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for the regular user
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Admin tries to update the key without providing any fields
+        response = await client.patch(
+            f"{API_KEY_ROUTE}/by-user/{regular_user.id}/{key_id}",
+            json={},
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert (
+            response.json()["detail"]
+            == "At least one field must be provided for update"
+        )
+
+    @pytest.mark.asyncio
+    async def test_admin_delete_key_wrong_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test admin trying to delete a key with wrong user ID."""
+        # Create two regular users and an admin
+        user1 = User(**self.get_test_user(email="user1@test.com"))
+        user2 = User(**self.get_test_user(email="user2@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(user1)
+        test_db.add(user2)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user1_token = AuthManager.encode_token(user1)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for user1
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User1 Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user1_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Admin tries to delete the key but associates it with user2
+        response = await client.delete(
+            f"{API_KEY_ROUTE}/by-user/{user2.id}/{key_id}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json()["detail"] == "API key not found"
+
+    @pytest.mark.asyncio
+    async def test_admin_update_key_update_failure(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Test admin updating an API key when the update operation fails."""
+        # Create a regular user and an admin
+        regular_user = User(**self.get_test_user(email="regular@test.com"))
+        admin_user = User(
+            **self.get_test_user(admin=True, email="admin@test.com")
+        )
+        test_db.add(regular_user)
+        test_db.add(admin_user)
+        await test_db.commit()
+
+        # Get tokens
+        user_token = AuthManager.encode_token(regular_user)
+        admin_token = AuthManager.encode_token(admin_user)
+
+        # Create an API key for the regular user
+        create_response = await client.post(
+            API_KEY_ROUTE,
+            json={"name": "User Key", "scopes": ["read:users"]},
+            headers={"Authorization": f"Bearer {user_token}"},
+        )
+        key_id = create_response.json()["id"]
+
+        # Mock update_api_key_ to return None (simulating update failure)
+        mocker.patch("app.resources.api_key.update_api_key_", return_value=None)
+
+        # Admin tries to update the key
+        response = await client.patch(
+            f"{API_KEY_ROUTE}/by-user/{regular_user.id}/{key_id}",
+            json={"name": "Updated Name"},
+            headers={"Authorization": f"Bearer {admin_token}"},
         )
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
