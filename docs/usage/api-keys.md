@@ -51,6 +51,12 @@ There are 5 routes for managing API Keys and are **USER Specific**:
 4. **Update a single API Key** - `PATCH /users/keys/{key_id}`
 5. **Delete a single API Key** - `DELETE /users/keys/{key_id}`
 
+There are also 3 related routes that can only be accessed by an admin user:
+
+1. **List API Keys for a specific user** - `GET /users/keys/by-user/{user_id}`
+2. **Update another user's API key** - `PATCH /users/keys/by-user/{user_id}/{key_id}`
+3. **Delete another user's API key** - `DELETE /users/keys/by-user/{user_id}/{key_id}`
+
 !!! danger
     The `POST` route will return the API Key in the response. **This is
     the only time the key is shown**. If you lose it, you will have to delete
