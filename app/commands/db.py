@@ -17,13 +17,6 @@ ALEMBIC_CFG = Config("alembic_scripting.ini")
 DONE_MSG = "[green]Done!"
 
 
-async def _drop_enum_type() -> None:
-    """Drop the roletype enum type."""
-    async with async_session() as session:
-        await session.execute(text("DROP TYPE IF EXISTS roletype CASCADE;"))
-        await session.commit()
-
-
 @app.command()
 def init(
     force: Optional[bool] = typer.Option(
@@ -45,7 +38,6 @@ def init(
         rprint("\nInitialising Database ... ", end="")
 
         command.downgrade(ALEMBIC_CFG, "base")
-        asyncio.run(_drop_enum_type())
         command.upgrade(ALEMBIC_CFG, "head")
         rprint(DONE_MSG)
     else:
@@ -72,7 +64,6 @@ def drop(
         rprint("\nDropping all tables ... ", end="")
 
         command.downgrade(ALEMBIC_CFG, "base")
-        asyncio.run(_drop_enum_type())
         rprint(DONE_MSG)
     else:
         rprint("[cyan]Operation Cancelled.")
