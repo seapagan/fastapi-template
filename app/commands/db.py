@@ -1,16 +1,27 @@
 """CLI command to control the Database."""
 
+import asyncio
 from typing import Optional
 
 import typer
 from alembic import command
 from alembic.config import Config
 from rich import print as rprint
+from sqlalchemy import text
+
+from app.database.db import async_session
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
 ALEMBIC_CFG = Config("alembic_scripting.ini")
 DONE_MSG = "[green]Done!"
+
+
+async def _drop_enum_type() -> None:
+    """Drop the roletype enum type."""
+    async with async_session() as session:
+        await session.execute(text("DROP TYPE IF EXISTS roletype CASCADE;"))
+        await session.commit()
 
 
 @app.command()
@@ -34,6 +45,7 @@ def init(
         rprint("\nInitialising Database ... ", end="")
 
         command.downgrade(ALEMBIC_CFG, "base")
+        asyncio.run(_drop_enum_type())
         command.upgrade(ALEMBIC_CFG, "head")
         rprint(DONE_MSG)
     else:
@@ -60,6 +72,7 @@ def drop(
         rprint("\nDropping all tables ... ", end="")
 
         command.downgrade(ALEMBIC_CFG, "base")
+        asyncio.run(_drop_enum_type())
         rprint(DONE_MSG)
     else:
         rprint("[cyan]Operation Cancelled.")
