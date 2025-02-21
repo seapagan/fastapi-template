@@ -3,14 +3,12 @@
 from typing import Any, ClassVar, Union
 
 from fastapi import Request
-from passlib.context import CryptContext
 from sqladmin import ModelView
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
+from app.database.helpers import hash_password
 from app.models.api_key import ApiKey
 from app.models.user import User
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class KeysAdmin(ModelView, model=ApiKey):
@@ -19,8 +17,8 @@ class KeysAdmin(ModelView, model=ApiKey):
     column_list: ClassVar[list[Any]] = [
         ApiKey.id,
         ApiKey.name,
-        ApiKey.user_id,
         ApiKey.is_active,
+        ApiKey.user,
     ]
 
     column_details_exclude_list: ClassVar[list[Any]] = [
@@ -105,4 +103,4 @@ class UserAdmin(ModelView, model=User):
         """Customize the password hash before saving into DB."""
         if is_created:
             # Hash the password before saving into DB !
-            data["password"] = pwd_context.hash(data["password"])
+            data["password"] = hash_password(data["password"])

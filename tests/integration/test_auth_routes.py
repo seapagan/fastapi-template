@@ -8,9 +8,9 @@ from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
 from app.managers.user import ErrorMessages as UserErrorMessages
-from app.managers.user import pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -36,7 +36,7 @@ class TestAuthRoutes:
         "email": "testuser@usertest.com",
         "first_name": "Test",
         "last_name": "User",
-        "password": pwd_context.hash("test12345!"),
+        "password": hash_password("test12345!"),
         "verified": True,
     }
 
@@ -83,8 +83,6 @@ class TestAuthRoutes:
         if user_from_db is None:
             pytest.fail("User was not added to the database")
 
-        # shouldn't be needed but pre-commit mypy is flagging these as possible
-        # 'None'
         assert user_from_db is not None
 
         assert user_from_db.email == post_body["email"]
@@ -144,7 +142,7 @@ class TestAuthRoutes:
         user_from_db = await test_db.get(User, 1)
 
         assert user_from_db.password != post_body["password"]
-        assert pwd_context.verify(post_body["password"], user_from_db.password)
+        assert verify_password(post_body["password"], user_from_db.password)
 
     @pytest.mark.asyncio
     async def test_register_new_user_with_bad_email(

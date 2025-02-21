@@ -4,11 +4,24 @@ from collections.abc import Sequence
 from typing import Any, Optional
 from uuid import UUID
 
+from passlib.context import CryptContext
 from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.api_key import ApiKey
 from app.models.user import User
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    """Hash a password."""
+    return pwd_context.hash(password)
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    """Verify a password."""
+    return pwd_context.verify(password, hashed_password)
 
 
 async def get_user_by_id_(

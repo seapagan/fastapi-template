@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
-from passlib.context import CryptContext
 from sqlalchemy import delete, update
 from sqlalchemy.exc import IntegrityError
 
@@ -16,6 +15,8 @@ from app.database.helpers import (
     get_all_users_,
     get_user_by_email_,
     get_user_by_id_,
+    hash_password,
+    verify_password,
 )
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
@@ -32,8 +33,6 @@ if TYPE_CHECKING:  # pragma: no cover
         UserChangePasswordRequest,
         UserEditRequest,
     )
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class ErrorMessages:
@@ -69,7 +68,7 @@ class UserManager:
         # and can cause random testing issues
         new_user = user_data.copy()
 
-        new_user["password"] = pwd_context.hash(user_data["password"])
+        new_user["password"] = hash_password(user_data["password"])
         new_user["banned"] = False
 
         if background_tasks:
@@ -139,9 +138,7 @@ class UserManager:
 
         if (
             not user_do
-            or not pwd_context.verify(
-                user_data["password"], str(user_do.password)
-            )
+            or not verify_password(user_data["password"], str(user_do.password))
             or bool(user_do.banned)
         ):
             raise HTTPException(
@@ -185,7 +182,7 @@ class UserManager:
                 email=user_data.email,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
-                password=pwd_context.hash(user_data.password),
+                password=hash_password(user_data.password),
             )
         )
 
@@ -204,7 +201,7 @@ class UserManager:
         await session.execute(
             update(User)
             .where(User.id == user_id)
-            .values(password=pwd_context.hash(user_data.password))
+            .values(password=hash_password(user_data.password))
         )
 
     @staticmethod

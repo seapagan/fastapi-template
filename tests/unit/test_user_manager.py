@@ -3,7 +3,8 @@
 import pytest
 from fastapi import BackgroundTasks, HTTPException
 
-from app.managers.user import ErrorMessages, UserManager, pwd_context
+from app.database.helpers import verify_password
+from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
@@ -32,7 +33,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         assert new_user.last_name == self.test_user["last_name"]
         assert new_user.password != self.test_user["password"]
 
-        assert pwd_context.verify(self.test_user["password"], new_user.password)
+        assert verify_password(self.test_user["password"], new_user.password)
 
     async def test_create_user_with_bad_email(self, test_db) -> None:
         """Ensure you cant create a user with a bad email."""

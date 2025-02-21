@@ -8,8 +8,9 @@ from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.database.helpers import hash_password
 from app.managers.auth import AuthManager
-from app.managers.user import ErrorMessages, pwd_context
+from app.managers.user import ErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -33,9 +34,7 @@ class TestUserRoutes:
             "email": fake.email(),
             "first_name": "Test",
             "last_name": "User",
-            "password": pwd_context.hash("test12345!")
-            if hashed
-            else "test12345!",
+            "password": hash_password("test12345!") if hashed else "test12345!",
             "verified": True,
             "role": RoleType.admin if admin else RoleType.user,
         }
@@ -579,7 +578,7 @@ class TestUserRoutes:
             "/users/2",
             json={
                 "email": "new@example.com",
-                "password": pwd_context.hash("new_password"),
+                "password": hash_password("new_password"),
                 "first_name": "new_name",
                 "last_name": "new_surname",
             },
