@@ -3,6 +3,7 @@
 from typing import Annotated, Union
 
 from fastapi import APIRouter, Header, Request
+from fastapi.responses import FileResponse
 from fastapi.templating import Jinja2Templates
 from starlette.templating import _TemplateResponse
 
@@ -43,3 +44,9 @@ def root_path(
         ),
         "repository": get_settings().repository,
     }
+
+
+@router.get("/favicon.ico", include_in_schema=False)
+async def favicon() -> FileResponse:
+    """Serve the favicon for the API."""
+    return FileResponse("static/favicon.ico")
