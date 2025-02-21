@@ -15,13 +15,47 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
-    """Hash a password."""
+    """Hash a password.
+
+    Args:
+        password: The password to hash
+
+    Returns:
+        str: The hashed password
+
+    Raises:
+        ValueError: If password is empty
+    """
+    value_error = "Password cannot be empty"
+
+    if not password:
+        raise ValueError(value_error)
     return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    """Verify a password."""
-    return pwd_context.verify(password, hashed_password)
+    """Verify a password.
+
+    Args:
+        password: The password to verify
+        hashed_password: The hashed password to verify against
+
+    Returns:
+        bool: True if password matches, False otherwise
+
+    Raises:
+        ValueError: If password or hash is empty
+    """
+    error_empty = "Password and hash cannot be empty"
+    error_invalid = "Invalid hash format"
+
+    if not password or not hashed_password:
+        raise ValueError(error_empty)
+    try:
+        return pwd_context.verify(password, hashed_password)
+    except Exception as exc:
+        # Handle malformed hash errors from passlib
+        raise ValueError(error_invalid) from exc
 
 
 async def get_user_by_id_(

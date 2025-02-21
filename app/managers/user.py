@@ -46,6 +46,9 @@ class ErrorMessages:
     NOT_VERIFIED = "You need to verify your Email before logging in"
     EMPTY_FIELDS = "You must supply all fields and they cannot be empty"
     ALREADY_BANNED_OR_UNBANNED = "This User is already banned/unbanned"
+    PASSWORD_MISSING = "Password is required"  # noqa: S105
+    PASSWORD_INVALID = "Invalid password format"  # noqa: S105
+    USER_NOT_FOUND = "User not found"
 
 
 class UserManager:
@@ -58,6 +61,23 @@ class UserManager:
         background_tasks: Optional[BackgroundTasks] = None,
     ) -> tuple[str, str]:
         """Register a new user."""
+        # Check for missing password first
+        if "password" not in user_data:
+            raise HTTPException(
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
+                ErrorMessages.PASSWORD_MISSING,
+            )
+
+        try:
+            # Hash password before checking other fields, to catch
+            # password-specific errors
+            hashed_password = hash_password(user_data["password"])
+        except ValueError as exc:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.PASSWORD_INVALID,
+            ) from exc
+
         # make sure relevant fields are not empty
         if not all(user_data.values()):
             raise HTTPException(
@@ -67,8 +87,8 @@ class UserManager:
         # create a new dictionary to return, otherwise the original is modified
         # and can cause random testing issues
         new_user = user_data.copy()
+        new_user["password"] = hashed_password
 
-        new_user["password"] = hash_password(user_data["password"])
         new_user["banned"] = False
 
         if background_tasks:
@@ -136,14 +156,22 @@ class UserManager:
         """Log in an existing User."""
         user_do = await get_user_by_email_(user_data["email"], session)
 
-        if (
-            not user_do
-            or not verify_password(user_data["password"], str(user_do.password))
-            or bool(user_do.banned)
-        ):
+        try:
+            if (
+                not user_do
+                or not verify_password(
+                    user_data["password"], str(user_do.password)
+                )
+                or bool(user_do.banned)
+            ):
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+                )
+        except ValueError as err:
             raise HTTPException(
-                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
-            )
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.PASSWORD_INVALID,
+            ) from err
 
         if not bool(user_do.verified):
             raise HTTPException(
@@ -167,14 +195,31 @@ class UserManager:
 
     @staticmethod
     async def update_user(
-        user_id: int, user_data: UserEditRequest, session: AsyncSession
-    ) -> None:
-        """Update the User with specified ID."""
-        check_user = await get_user_by_id_(user_id, session)
-        if not check_user:
+        user_id: int,
+        user_data: UserEditRequest,
+        session: AsyncSession,
+    ) -> Optional[User]:
+        """Update a user."""
+        user = await UserManager.get_user_by_id(user_id, session)
+
+        if not user:
             raise HTTPException(
-                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
+                status.HTTP_404_NOT_FOUND, ErrorMessages.USER_NOT_FOUND
             )
+
+        try:
+            # Hash password if provided
+            hashed_password = (
+                hash_password(user_data.password)
+                if user_data.password
+                else user.password
+            )
+        except ValueError as exc:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.PASSWORD_INVALID,
+            ) from exc
+
         await session.execute(
             update(User)
             .where(User.id == user_id)
@@ -182,9 +227,12 @@ class UserManager:
                 email=user_data.email,
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
-                password=hash_password(user_data.password),
+                password=hashed_password,
             )
         )
+
+        # Return the updated user
+        return await UserManager.get_user_by_id(user_id, session)
 
     @staticmethod
     async def change_password(
@@ -198,10 +246,18 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
+        try:
+            hashed_password = hash_password(user_data.password)
+        except ValueError as exc:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.PASSWORD_INVALID,
+            ) from exc
+
         await session.execute(
             update(User)
             .where(User.id == user_id)
-            .values(password=hash_password(user_data.password))
+            .values(password=hashed_password)
         )
 
     @staticmethod

@@ -1,7 +1,7 @@
 """Test the UserManager class."""
 
 import pytest
-from fastapi import BackgroundTasks, HTTPException
+from fastapi import BackgroundTasks, HTTPException, status
 
 from app.database.helpers import verify_password
 from app.managers.user import ErrorMessages, UserManager
@@ -81,8 +81,18 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         self, test_db, create_data
     ) -> None:
         """Test creating a user with missing values."""
-        with pytest.raises(HTTPException, match=ErrorMessages.EMPTY_FIELDS):
-            await UserManager.register(create_data, test_db)
+        # If password is empty, we should get PASSWORD_INVALID error
+        if "password" in create_data and not create_data["password"]:
+            with pytest.raises(HTTPException) as exc_info:
+                await UserManager.register(create_data, test_db)
+            assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+            assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+        else:
+            # For other empty fields, we should get EMPTY_FIELDS error
+            with pytest.raises(HTTPException) as exc_info:
+                await UserManager.register(create_data, test_db)
+            assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+            assert exc_info.value.detail == ErrorMessages.EMPTY_FIELDS
 
     async def test_create_duplicate_user(self, test_db) -> None:
         """Test creating a duplicate user."""
@@ -191,12 +201,11 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         edited_user = self.test_user.copy()
         edited_user["first_name"] = "Edited"
 
-        await UserManager.update_user(
+        updated_user = await UserManager.update_user(
             1, UserEditRequest(**edited_user), test_db
         )
-        edited_user = await test_db.get(User, 1)
-
-        assert edited_user.first_name == "Edited"
+        assert updated_user is not None
+        assert updated_user.first_name == "Edited"
 
     async def test_update_user_not_found(self, test_db) -> None:
         """Test updating a user that doesn't exist."""
@@ -204,6 +213,54 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
             await UserManager.update_user(
                 1, UserEditRequest(**self.test_user), test_db
             )
+
+    async def test_update_user_not_found_raises_correct_error(
+        self, test_db
+    ) -> None:
+        """Test that updating a non-existent user raises USER_INVALID."""
+        non_existent_id = 999
+        user_data = UserEditRequest(
+            email="new@email.com",
+            first_name="New",
+            last_name="Name",
+            password="newpassword123!",  # noqa: S106
+        )
+
+        # Ensure we go through the actual UserManager.get_user_by_id method
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.update_user(non_existent_id, user_data, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert exc_info.value.detail == ErrorMessages.USER_INVALID
+
+    async def test_update_user_with_invalid_password_format(
+        self, test_db, mocker
+    ) -> None:
+        """Test updating a user with an invalid password format raises error."""
+        # First create a user
+        await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+
+        # Mock hash_password to raise ValueError
+        mocker.patch(
+            "app.managers.user.hash_password",
+            side_effect=ValueError("Invalid password"),
+        )
+
+        user_data = UserEditRequest(
+            email=self.test_user["email"],
+            first_name=self.test_user["first_name"],
+            last_name=self.test_user["last_name"],
+            password="invalid",  # noqa: S106
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.update_user(user.id, user_data, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
 
     # ------------------------ test changing password ------------------------ #
     async def test_change_password(self, test_db) -> None:
@@ -331,3 +388,113 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         users = await UserManager.get_all_users(test_db)
 
         assert len(users) == 0
+
+    async def test_register_with_invalid_password_format(self, test_db) -> None:
+        """Test registering with an invalid password format."""
+        test_data = self.test_user.copy()
+        test_data["password"] = ""  # Empty password
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.register(test_data, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
+    async def test_register_with_none_password(self, test_db) -> None:
+        """Test registering with a None password."""
+        test_data = self.test_user.copy()
+        del test_data["password"]  # This will cause password to be None
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.register(test_data, test_db)
+
+        assert (
+            exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_MISSING
+
+    async def test_update_user_with_empty_password(self, test_db) -> None:
+        """Test updating a user with an empty password."""
+        # First create a user
+        await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+
+        # Try to update with empty password - should keep existing password
+        user_data = UserEditRequest(
+            email=self.test_user["email"],
+            first_name=self.test_user["first_name"],
+            last_name=self.test_user["last_name"],
+            password="",  # Empty password should keep existing password
+        )
+
+        updated_user = await UserManager.update_user(
+            user.id, user_data, test_db
+        )
+        assert updated_user is not None
+        # Password should remain unchanged
+        assert verify_password(
+            self.test_user["password"], updated_user.password
+        )
+
+    async def test_change_password_with_invalid_format(self, test_db) -> None:
+        """Test changing password with an invalid format."""
+        await UserManager.register(self.test_user, test_db)
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.change_password(
+                1,
+                UserChangePasswordRequest(password=""),  # Empty password
+                test_db,
+            )
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
+    async def test_change_password_with_none_password(self, test_db) -> None:
+        """Test changing password with a None value."""
+        await UserManager.register(self.test_user, test_db)
+
+        # Create request without password to simulate None
+        request = UserChangePasswordRequest.model_construct()
+        request.password = None  # type: ignore
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.change_password(1, request, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
+    async def test_login_with_invalid_password_format(self, test_db) -> None:
+        """Test login with an invalid password format."""
+        await UserManager.register(self.test_user, test_db)
+
+        # Mock verify_password to raise ValueError
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.login(
+                {"email": self.test_user["email"], "password": ""}, test_db
+            )
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
+    async def test_update_user_raises_not_found(self, test_db, mocker) -> None:
+        """Test update_user raises USER_NOT_FOUND if get_user_by_id is None."""
+        # Mock get_user_by_id to return None
+        mocker.patch(
+            "app.managers.user.UserManager.get_user_by_id", return_value=None
+        )
+
+        user_data = UserEditRequest(
+            email="new@email.com",
+            first_name="New",
+            last_name="Name",
+            password="newpassword123!",  # noqa: S106
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.update_user(1, user_data, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert exc_info.value.detail == ErrorMessages.USER_NOT_FOUND
