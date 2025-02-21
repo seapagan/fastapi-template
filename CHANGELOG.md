@@ -19,7 +19,12 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Add a favicon for when the API is viewed through a web browser ([#736](https://github.com/seapagan/fastapi-template/pull/736)) by [seapagan](https://github.com/seapagan)
 - Allow Admin users to list/edit/delete other users API keys ([#735](https://github.com/seapagan/fastapi-template/pull/735)) by [seapagan](https://github.com/seapagan)
+
+**Bug Fixes**
+
+- Fix crash when running 'db init' from the CLI ([#737](https://github.com/seapagan/fastapi-template/pull/737)) by [seapagan](https://github.com/seapagan)
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.patch)
 
