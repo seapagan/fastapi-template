@@ -1,10 +1,11 @@
 """Set up the admin interface."""
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Union
 
 from fastapi import Request
 from passlib.context import CryptContext
 from sqladmin import ModelView
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 from app.models.api_key import ApiKey
 from app.models.user import User
@@ -27,7 +28,9 @@ class KeysAdmin(ModelView, model=ApiKey):
         ApiKey.user_id,
         ApiKey.scopes,
     ]
-    column_labels: ClassVar[dict[str, str]] = {
+    column_labels: ClassVar[
+        dict[Union[str, InstrumentedAttribute[Any]], str]
+    ] = {
         "user": "Owner",
         "id": "Key ID",
         "name": "Key Name",
@@ -57,6 +60,19 @@ class UserAdmin(ModelView, model=User):
         User.role,
         User.banned,
     ]
+
+    column_labels: ClassVar[
+        dict[Union[str, InstrumentedAttribute[Any]], str]
+    ] = {
+        "id": "User ID",
+        "email": "Email",
+        "verified": "Verified",
+        "role": "Role",
+        "banned": "Banned",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "api_keys": "API Keys",
+    }
 
     column_details_exclude_list: ClassVar[list[Any]] = [User.password]
     form_excluded_columns: ClassVar[list[Any]] = [User.api_keys]

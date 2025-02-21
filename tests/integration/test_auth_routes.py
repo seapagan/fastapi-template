@@ -83,6 +83,10 @@ class TestAuthRoutes:
         if user_from_db is None:
             pytest.fail("User was not added to the database")
 
+        # shouldn't be needed but pre-commit mypy is flagging these as possible
+        # 'None'
+        assert user_from_db is not None
+
         assert user_from_db.email == post_body["email"]
         assert user_from_db.first_name == post_body["first_name"]
         assert user_from_db.last_name == post_body["last_name"]

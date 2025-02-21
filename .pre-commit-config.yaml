@@ -33,6 +33,7 @@ repos:
         name: "run mypy"
         additional_dependencies:
           - pydantic
+          - sqladmin
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
