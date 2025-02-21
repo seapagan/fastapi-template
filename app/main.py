@@ -8,6 +8,7 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqladmin import Admin
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.config.helpers import get_api_version, get_project_root
@@ -15,6 +16,7 @@ from app.config.settings import get_settings
 from app.database.db import async_session
 from app.logs import logger
 from app.resources import config_error
+from app.resources.admin import KeysAdmin, UserAdmin
 from app.resources.routes import api_router
 
 BLIND_USER_ERROR = 66
@@ -71,6 +73,10 @@ app = FastAPI(
 )
 
 app.include_router(api_router)
+
+admin = Admin(app, session_maker=async_session)
+admin.add_view(UserAdmin)
+admin.add_view(KeysAdmin)
 
 static_dir = get_project_root() / "static"
 app.mount(
