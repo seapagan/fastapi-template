@@ -43,8 +43,6 @@
 - Admin users CAN delete themselves, but this should not be allowed. They should
   be able to delete other users, but not themselves. Or should they?? Need to
   think about this.
-- running the `api-admin db init` command fails because the roles already
-  exist. We need to ensure we delete the roles too.
 
 ## Auth
 
