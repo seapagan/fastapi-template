@@ -1,15 +1,11 @@
 """CLI command to control the Database."""
 
-import asyncio
 from typing import Optional
 
 import typer
 from alembic import command
 from alembic.config import Config
 from rich import print as rprint
-from sqlalchemy import text
-
-from app.database.db import async_session
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
