@@ -11,6 +11,7 @@ from app.config.settings import get_settings
 from app.database.db import async_session
 from app.database.helpers import (
     get_user_by_email_,
+    get_user_by_id_,
     hash_password,
     verify_password,
 )
@@ -30,9 +31,9 @@ class AdminAuth(AuthenticationBackend):
         """Login the user.
 
         This method is called when the user tries to login to the admin
-        interface and returns True if successful otherwise False.
+        interface and returns True if successful otherwise False. It sets the
+        user_id into the session if successful.
         """
-        db = async_session()
         form = await request.form()
         email = form.get("username")
         password = form.get("password")
@@ -43,18 +44,33 @@ class AdminAuth(AuthenticationBackend):
             or not isinstance(password, str)
         ):
             return False
+
+        db = async_session()
         user = await get_user_by_email_(email, db)
         await db.close()
-        if (
-            not user
-            or not verify_password(password, user.password)
-            or user.role != RoleType.admin
-            or user.banned
-        ):
+
+        if not user or not self._validate_user(password, user):
             return False
 
         request.session.update({"user_id": user.id})
         return True
+
+    def _validate_user(self, password: str, user: User | None) -> bool:
+        """Validate if the user can access admin interface.
+
+        Args:
+            password: The password to verify
+            user: The user to validate
+
+        Returns:
+            bool: True if user is valid admin and not banned, False otherwise
+        """
+        return not (
+            not user
+            or not verify_password(password, user.password)
+            or user.role != RoleType.admin
+            or user.banned
+        )
 
     async def logout(self, request: Request) -> bool:
         """Logout the user."""
@@ -62,9 +78,22 @@ class AdminAuth(AuthenticationBackend):
         return True
 
     async def authenticate(self, request: Request) -> bool:
-        """Authenticate the user."""
+        """Authenticate the user.
+
+        This is quite simple for now. We get the user ID from the session and
+        check if the user exists and is an admin (and not banned).
+        """
         user_id = request.session.get("user_id")
-        return user_id is not None
+        if not user_id:
+            return False
+
+        db = async_session()
+        user = await get_user_by_id_(user_id, db)
+        await db.close()
+
+        return (
+            user is not None and user.role == RoleType.admin and not user.banned
+        )
 
 
 class KeysAdmin(ModelView, model=ApiKey):
@@ -171,5 +200,8 @@ def register_admin(app: FastAPI) -> None:
         session_maker=async_session,
         authentication_backend=authentication_backend,
     )
-    admin.add_view(UserAdmin)
-    admin.add_view(KeysAdmin)
+
+    views = (UserAdmin, KeysAdmin)
+
+    for view in views:
+        admin.add_view(view)
