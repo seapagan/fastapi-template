@@ -10,12 +10,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
 from app.logs import logger
 from app.resources import config_error
-from app.resources.admin import register_admin
 from app.resources.routes import api_router
 
 BLIND_USER_ERROR = 66
@@ -74,7 +74,7 @@ app = FastAPI(
 # register the API routes
 app.include_router(api_router)
 
-# register the admin views
+# register the admin views (if enabled)
 register_admin(app)
 
 static_dir = get_project_root() / "static"

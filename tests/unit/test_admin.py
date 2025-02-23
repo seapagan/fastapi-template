@@ -3,9 +3,9 @@
 import pytest
 from fastapi import Request
 
+from app.admin.models import UserAdmin
 from app.database.helpers import verify_password
 from app.models.user import User
-from app.resources.admin import UserAdmin
 
 
 @pytest.mark.unit

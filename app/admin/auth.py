@@ -1,12 +1,11 @@
-"""Set up the admin interface."""
+"""Handle the authentication for the admin interface."""
 
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any, ClassVar, Union
+from typing import TYPE_CHECKING, Any
 
 from cryptography.fernet import Fernet, InvalidToken
-from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
 
 from app.config.settings import get_settings
@@ -14,17 +13,15 @@ from app.database.db import async_session
 from app.database.helpers import (
     get_user_by_email_,
     get_user_by_id_,
-    hash_password,
     verify_password,
 )
 from app.logs import logger
-from app.models.api_key import ApiKey
 from app.models.enums import RoleType
-from app.models.user import User
 
 if TYPE_CHECKING:  # pragma: no cover
-    from fastapi import FastAPI, Request
-    from sqlalchemy.orm.attributes import InstrumentedAttribute
+    from fastapi import Request
+
+    from app.models.user import User
 
 
 class AdminAuth(AuthenticationBackend):
@@ -130,123 +127,3 @@ class AdminAuth(AuthenticationBackend):
         return (
             user is not None and user.role == RoleType.admin and not user.banned
         )
-
-
-class KeysAdmin(ModelView, model=ApiKey):
-    """Admin view for the ApiKey model."""
-
-    column_list: ClassVar[list[Any]] = [
-        ApiKey.id,
-        ApiKey.name,
-        ApiKey.is_active,
-        ApiKey.user,
-    ]
-
-    column_details_exclude_list: ClassVar[list[Any]] = [
-        ApiKey.key,
-        ApiKey.user_id,
-        ApiKey.scopes,
-    ]
-    column_labels: ClassVar[
-        dict[Union[str, InstrumentedAttribute[Any]], str]
-    ] = {
-        "user": "Owner",
-        "id": "Key ID",
-        "name": "Key Name",
-        "is_active": "Active",
-        "created_at": "Created At",
-    }
-
-    form_create_rules: ClassVar[list[str]] = [
-        "name",
-        "user",
-        "is_active",
-    ]
-
-    form_edit_rules: ClassVar[list[str]] = [
-        "name",
-        "is_active",
-    ]
-
-    icon = "fa-solid fa-key"
-
-
-class UserAdmin(ModelView, model=User):
-    """Admin view for the User model."""
-
-    column_list: ClassVar[list[Any]] = [
-        User.id,
-        User.email,
-        User.verified,
-        User.role,
-        User.banned,
-    ]
-
-    column_labels: ClassVar[
-        dict[Union[str, InstrumentedAttribute[Any]], str]
-    ] = {
-        "id": "User ID",
-        "email": "Email",
-        "verified": "Verified",
-        "role": "Role",
-        "banned": "Banned",
-        "first_name": "First Name",
-        "last_name": "Last Name",
-        "api_keys": "API Keys",
-    }
-
-    column_details_exclude_list: ClassVar[list[Any]] = [User.password]
-    form_excluded_columns: ClassVar[list[Any]] = [User.api_keys]
-
-    form_create_rules: ClassVar[list[str]] = [
-        "email",
-        "password",
-        "first_name",
-        "last_name",
-        "verified",
-        "role",
-        "banned",
-    ]
-    form_edit_rules: ClassVar[list[str]] = [
-        "email",
-        "first_name",
-        "last_name",
-        "verified",
-        "role",
-        "banned",
-    ]
-
-    icon = "fa-solid fa-user"
-
-    async def on_model_change(
-        self,
-        data: dict[str, Any],
-        _model: User,
-        is_created: bool,  # noqa: FBT001
-        _request: Request,
-    ) -> None:
-        """Customize the password hash before saving into DB."""
-        if is_created:
-            # Hash the password before saving into DB !
-            data["password"] = hash_password(data["password"])
-
-
-def register_admin(app: FastAPI) -> None:
-    """Register the admin views."""
-    authentication_backend = AdminAuth(secret_key=get_settings().secret_key)
-
-    if not get_settings().admin_pages_enabled:
-        return
-
-    admin = Admin(
-        app,
-        session_maker=async_session,
-        authentication_backend=authentication_backend,
-        base_url=get_settings().admin_pages_route,
-        title=get_settings().admin_pages_title,
-    )
-
-    views = (UserAdmin, KeysAdmin)
-
-    for view in views:
-        admin.add_view(view)
