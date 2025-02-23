@@ -82,6 +82,11 @@ class Settings(BaseSettings):
     mail_use_credentials: bool = True
     mail_validate_certs: bool = True
 
+    # admin pages settings
+    admin_pages_enabled: bool = False
+    admin_pages_route: str = "/admin"
+    admin_pages_title: str = "API Administration"
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
