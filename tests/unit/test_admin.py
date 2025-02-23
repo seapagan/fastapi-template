@@ -1,10 +1,17 @@
 """Unit tests for the admin interface."""
 
-import pytest
-from fastapi import Request
+# ruff: noqa: SLF001
+import json
+from datetime import datetime, timedelta, timezone
 
+import pytest
+from fastapi import FastAPI, Request
+
+from app.admin.admin import register_admin
+from app.admin.auth import AdminAuth
 from app.admin.models import UserAdmin
-from app.database.helpers import verify_password
+from app.database.helpers import hash_password, verify_password
+from app.models.enums import RoleType
 from app.models.user import User
 
 
@@ -63,3 +70,116 @@ class TestUserAdmin:
 
         # Data should be unchanged
         assert data == original_data
+
+
+@pytest.mark.unit
+class TestAdminRegistration:
+    """Test the admin registration functionality."""
+
+    def test_admin_pages_disabled(self, mocker) -> None:
+        """Test that admin pages are not registered when disabled."""
+        app = FastAPI(
+            docs_url=None,
+            redoc_url=None,
+            openapi_url=None,
+        )
+
+        mock_settings = mocker.patch("app.admin.admin.get_settings")
+        mock_settings.return_value.admin_pages_enabled = False
+        mock_settings.return_value.secret_key = "test_key"  # noqa: S105
+
+        register_admin(app)
+
+        # No routes should be added when admin is disabled
+        assert len(app.routes) == 0
+
+
+@pytest.mark.unit
+class TestAdminAuth:
+    """Test the AdminAuth class methods."""
+
+    @pytest.fixture
+    def auth_backend(self, mocker) -> AdminAuth:
+        """Create an AdminAuth instance for testing."""
+        mock_settings = mocker.patch("app.admin.auth.get_settings")
+        mock_settings.return_value.admin_pages_encryption_key = (
+            "VZaGj3U1NiIxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ="
+        )
+        mock_settings.return_value.admin_pages_timeout = 3600
+        return AdminAuth(secret_key="test_key")  # noqa: S106
+
+    def test_create_and_decode_token(self, auth_backend: AdminAuth) -> None:
+        """Test token creation and decoding."""
+        user_id = 123
+        token = auth_backend._create_token(user_id)
+        decoded = auth_backend._decode_token(token)
+
+        assert decoded is not None
+        assert decoded["user_id"] == user_id
+
+    def test_decode_invalid_token(self, auth_backend: AdminAuth) -> None:
+        """Test decoding an invalid token."""
+        assert auth_backend._decode_token("invalid_token") is None
+
+    def test_decode_expired_token(self, auth_backend: AdminAuth) -> None:
+        """Test decoding an expired token."""
+        # Create a token that's already expired
+        user_id = 123
+        token_data = {"user_id": user_id}
+        expired_time = datetime.now(tz=timezone.utc) - timedelta(days=2)
+        token = auth_backend.fernet.encrypt_at_time(
+            json.dumps(token_data).encode(),
+            current_time=int(expired_time.timestamp()),
+        ).decode()
+
+        assert auth_backend._decode_token(token) is None
+
+    def test_validate_user(self, auth_backend: AdminAuth) -> None:
+        """Test user validation."""
+        # Create test users
+        admin_user = User(
+            id=1,
+            email="admin@test.com",
+            password=hash_password("password123"),
+            role=RoleType.admin,
+            banned=False,
+            first_name="Admin",
+            last_name="User",
+        )
+
+        banned_admin = User(
+            id=2,
+            email="banned@test.com",
+            password=hash_password("password123"),
+            role=RoleType.admin,
+            banned=True,
+            first_name="Banned",
+            last_name="Admin",
+        )
+
+        regular_user = User(
+            id=3,
+            email="user@test.com",
+            password=hash_password("password123"),
+            role=RoleType.user,
+            banned=False,
+            first_name="Regular",
+            last_name="User",
+        )
+
+        # Test valid admin user
+        assert auth_backend._validate_user("password123", admin_user) is True
+
+        # Test banned admin user
+        assert auth_backend._validate_user("password123", banned_admin) is False
+
+        # Test regular user
+        assert auth_backend._validate_user("password123", regular_user) is False
+
+        # Test wrong password
+        assert (
+            auth_backend._validate_user("wrong_password", admin_user) is False
+        )
+
+        # Test None user
+        assert auth_backend._validate_user("any_password", None) is False

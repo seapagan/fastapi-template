@@ -70,21 +70,20 @@ class AdminAuth(AuthenticationBackend):
         ):
             return False
 
-        db = async_session()
-        user = await get_user_by_email_(email, db)
-        await db.close()
+        async with async_session() as db:
+            user = await get_user_by_email_(email, db)
 
-        if not user or not self._validate_user(password, user):
-            logger.error(
-                "Failed admin site login attempt by %s",
-                email,
-            )
-            return False
+            if not user or not self._validate_user(password, user):
+                logger.error(
+                    "Failed admin site login attempt by %s",
+                    email,
+                )
+                return False
 
-        # Create and store encrypted token instead of just user_id
-        token = self._create_token(user.id)
-        request.session.update({"token": token})
-        return True
+            # Create and store encrypted token instead of just user_id
+            token = self._create_token(user.id)
+            request.session.update({"token": token})
+            return True
 
     def _validate_user(self, password: str, user: User | None) -> bool:
         """Validate if the user can access admin interface.
@@ -120,10 +119,11 @@ class AdminAuth(AuthenticationBackend):
             request.session.clear()
             return False
 
-        db = async_session()
-        user = await get_user_by_id_(token_data["user_id"], db)
-        await db.close()
+        async with async_session() as db:
+            user = await get_user_by_id_(token_data["user_id"], db)
 
-        return (
-            user is not None and user.role == RoleType.admin and not user.banned
-        )
+            if not user or user.role != RoleType.admin or user.banned:
+                request.session.clear()
+                return False
+
+            return True
