@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING, Any, ClassVar, Union
 
+from cryptography.fernet import Fernet, InvalidToken
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
 
@@ -15,11 +17,12 @@ from app.database.helpers import (
     hash_password,
     verify_password,
 )
+from app.logs import logger
 from app.models.api_key import ApiKey
 from app.models.enums import RoleType
 from app.models.user import User
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from fastapi import FastAPI, Request
     from sqlalchemy.orm.attributes import InstrumentedAttribute
 
@@ -27,13 +30,38 @@ if TYPE_CHECKING:
 class AdminAuth(AuthenticationBackend):
     """Setup the authentication backend for the admin interface."""
 
-    async def login(self, request: Request) -> bool:
-        """Login the user.
+    def __init__(self, secret_key: str) -> None:
+        """Initialize the auth backend with encryption key."""
+        super().__init__(secret_key)
+        # Use the configured encryption key
+        self.fernet = Fernet(get_settings().admin_pages_encryption_key.encode())
+        self._timeout = get_settings().admin_pages_timeout
 
-        This method is called when the user tries to login to the admin
-        interface and returns True if successful otherwise False. It sets the
-        user_id into the session if successful.
-        """
+    def _create_token(self, user_id: int) -> str:
+        """Create an encrypted token containing user data."""
+        token_data = {"user_id": user_id}
+        return self.fernet.encrypt(json.dumps(token_data).encode()).decode()
+
+    def _decode_token(self, token: str) -> dict[str, Any] | None:
+        """Decode and validate the token."""
+        try:
+            # TTL - defaults to 24 hours (in seconds) but can be overridden by
+            # the .env file
+            decoded = self.fernet.decrypt(
+                token.encode(), ttl=self._timeout
+            ).decode()
+            data: dict[str, Any] = json.loads(decoded)
+        except (
+            json.JSONDecodeError,  # Invalid JSON
+            InvalidToken,  # Invalid or expired token
+            UnicodeError,  # Invalid string encoding
+        ):
+            return None
+        else:
+            return data
+
+    async def login(self, request: Request) -> bool:
+        """Login the user with encrypted token."""
         form = await request.form()
         email = form.get("username")
         password = form.get("password")
@@ -50,9 +78,15 @@ class AdminAuth(AuthenticationBackend):
         await db.close()
 
         if not user or not self._validate_user(password, user):
+            logger.error(
+                "Failed admin site login attempt by %s",
+                email,
+            )
             return False
 
-        request.session.update({"user_id": user.id})
+        # Create and store encrypted token instead of just user_id
+        token = self._create_token(user.id)
+        request.session.update({"token": token})
         return True
 
     def _validate_user(self, password: str, user: User | None) -> bool:
@@ -78,17 +112,19 @@ class AdminAuth(AuthenticationBackend):
         return True
 
     async def authenticate(self, request: Request) -> bool:
-        """Authenticate the user.
+        """Authenticate using the encrypted token."""
+        token = request.session.get("token")
+        if not token:
+            return False
 
-        This is quite simple for now. We get the user ID from the session and
-        check if the user exists and is an admin (and not banned).
-        """
-        user_id = request.session.get("user_id")
-        if not user_id:
+        token_data = self._decode_token(token)
+        if not token_data:
+            # Token invalid or expired
+            request.session.clear()
             return False
 
         db = async_session()
-        user = await get_user_by_id_(user_id, db)
+        user = await get_user_by_id_(token_data["user_id"], db)
         await db.close()
 
         return (
@@ -131,6 +167,8 @@ class KeysAdmin(ModelView, model=ApiKey):
         "name",
         "is_active",
     ]
+
+    icon = "fa-solid fa-key"
 
 
 class UserAdmin(ModelView, model=User):
@@ -177,6 +215,8 @@ class UserAdmin(ModelView, model=User):
         "role",
         "banned",
     ]
+
+    icon = "fa-solid fa-user"
 
     async def on_model_change(
         self,
