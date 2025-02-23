@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Union
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
 
+from app.config.settings import get_settings
 from app.database.db import async_session
 from app.database.helpers import (
     get_user_by_email_,
@@ -26,12 +27,21 @@ class AdminAuth(AuthenticationBackend):
     """Setup the authentication backend for the admin interface."""
 
     async def login(self, request: Request) -> bool:
-        """Login the user."""
+        """Login the user.
+
+        This method is called when the user tries to login to the admin
+        interface and returns True if successful otherwise False.
+        """
         db = async_session()
         form = await request.form()
         email = form.get("username")
         password = form.get("password")
-        if not email or not password:
+        if (
+            not email
+            or not password
+            or not isinstance(email, str)
+            or not isinstance(password, str)
+        ):
             return False
         user = await get_user_by_email_(email, db)
         await db.close()
@@ -154,7 +164,7 @@ class UserAdmin(ModelView, model=User):
 
 def register_admin(app: FastAPI) -> None:
     """Register the admin views."""
-    authentication_backend = AdminAuth(secret_key="secret")
+    authentication_backend = AdminAuth(secret_key=get_settings().secret_key)
 
     admin = Admin(
         app,
