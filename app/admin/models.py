@@ -49,6 +49,10 @@ class KeysAdmin(ModelView, model=ApiKey):
 
     icon = "fa-solid fa-key"
 
+    # disable the ability to create new API keys until I can work out how best
+    # to show the newly generated key to the user
+    can_create = False
+
 
 class UserAdmin(ModelView, model=User):
     """Admin view for the User model."""
