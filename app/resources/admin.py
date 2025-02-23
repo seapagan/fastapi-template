@@ -2,10 +2,11 @@
 
 from typing import Any, ClassVar, Union
 
-from fastapi import Request
-from sqladmin import ModelView
+from fastapi import FastAPI, Request
+from sqladmin import Admin, ModelView
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 
+from app.database.db import async_session
 from app.database.helpers import hash_password
 from app.models.api_key import ApiKey
 from app.models.user import User
@@ -104,3 +105,10 @@ class UserAdmin(ModelView, model=User):
         if is_created:
             # Hash the password before saving into DB !
             data["password"] = hash_password(data["password"])
+
+
+def register_admin(app: FastAPI) -> None:
+    """Register the admin views."""
+    admin = Admin(app, session_maker=async_session)
+    admin.add_view(UserAdmin)
+    admin.add_view(KeysAdmin)

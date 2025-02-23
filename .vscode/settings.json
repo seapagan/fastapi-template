@@ -49,7 +49,6 @@
   "python.analysis.indexing": true,
   "python.analysis.stubPath": "/home/seapagan/stubs",
   "python.analysis.typeCheckingMode": "off",
-  "python.languageServer": "Pylance",
   "python.pythonPath": "./.venv/bin/python",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.pytestEnabled": true,
@@ -57,5 +56,6 @@
   "ruff.fixAll": false,
   "ruff.organizeImports": true,
   "terminal.integrated.defaultProfile.linux": "bash",
-  "terminal.integrated.shellIntegration.enabled": true
+  "terminal.integrated.shellIntegration.enabled": true,
+  "codeQL.githubDatabase.download": "never"
 }
