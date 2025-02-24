@@ -9,17 +9,10 @@ from typing import TYPE_CHECKING, Any
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
 from typer.testing import CliRunner
 
 from app.config.helpers import get_project_root
-from app.config.settings import get_settings
-from app.database.db import Base, get_database
+from app.database.db import Base, create_session_maker, get_database
 from app.main import app
 from app.managers.email import EmailManager
 
@@ -27,26 +20,15 @@ if TYPE_CHECKING:
     from collections.abc import AsyncGenerator, Generator
 
     from pyfakefs.fake_filesystem import FakeFilesystem
-
-
-if os.getenv("GITHUB_ACTIONS"):
-    DATABASE_URL = (
-        "postgresql+asyncpg://postgres:postgres"
-        "@localhost:5432/fastapi-template-test"
-    )
-else:
-    DATABASE_URL = (
-        "postgresql+asyncpg://"
-        f"{get_settings().db_user}:{get_settings().db_password}@"
-        f"{get_settings().db_address}:{get_settings().db_port}/"
-        f"{get_settings().test_db_name}"
+    from sqlalchemy.ext.asyncio import (
+        AsyncSession,
     )
 
 
-async_engine: AsyncEngine = create_async_engine(DATABASE_URL, echo=False)
-async_test_session: async_sessionmaker[AsyncSession] = async_sessionmaker(
-    async_engine, expire_on_commit=False
-)
+# Create session maker using the function that handles environment detection
+# Pass use_test_db=True to ensure we use the test database
+async_test_session = create_session_maker(use_test_db=True)
+async_engine = async_test_session.kw["bind"]
 
 
 @pytest.hookimpl(tryfirst=True)

@@ -235,7 +235,7 @@ markers = [
 ]
 testpaths = ["tests"]
 mock_use_standalone_module = true
-env = ["I_READ_THE_DAMN_DOCS=true"]
+env = ["I_READ_THE_DAMN_DOCS=true", "ADMIN_PAGES_ENABLED=true"]
 
 [tool.coverage.run]
 source = ["app"]

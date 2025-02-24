@@ -91,7 +91,21 @@ class TestAdminRegistration:
         register_admin(app)
 
         # No routes should be added when admin is disabled
+        admin_routes = [route for route in app.routes if "admin" in route.path]
+        assert len(admin_routes) == 0
         assert len(app.routes) == 0
+
+    def test_admin_pages_enabled(self, mocker) -> None:
+        """Test we do have the admin page routes when enabled."""
+        app = FastAPI()
+
+        # we dont need to mock anything, though admin is disabled by default in
+        # the settings, it is force enabled for all tests.
+        register_admin(app)
+
+        all_routes = [route.path for route in app.routes]
+
+        assert "/admin" in all_routes
 
 
 @pytest.mark.unit

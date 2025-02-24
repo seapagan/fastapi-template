@@ -83,6 +83,7 @@ class AdminAuth(AuthenticationBackend):
             # Create and store encrypted token instead of just user_id
             token = self._create_token(user.id)
             request.session.update({"token": token})
+
             return True
 
     def _validate_user(self, password: str, user: User | None) -> bool:
@@ -110,7 +111,9 @@ class AdminAuth(AuthenticationBackend):
     async def authenticate(self, request: Request) -> bool:
         """Authenticate using the encrypted token."""
         token = request.session.get("token")
+
         if not token:
+            logger.error("No token found in session")
             return False
 
         token_data = self._decode_token(token)
