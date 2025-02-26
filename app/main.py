@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
@@ -70,7 +71,11 @@ app = FastAPI(
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
 )
 
+# register the API routes
 app.include_router(api_router)
+
+# register the admin views (if enabled)
+register_admin(app)
 
 static_dir = get_project_root() / "static"
 app.mount(

@@ -12,7 +12,7 @@ from app.main import BLIND_USER_ERROR
 class TestCLI:
     """Test the 'gatekeeper' functionality."""
 
-    def test_getkeeper(self, runner, monkeypatch) -> None:
+    def test_getkeeper(self, monkeypatch) -> None:
         """Test the gatekeeper.
 
         We set the env variable 'I_HAVE_READ_THE_DOCS' to false and run the

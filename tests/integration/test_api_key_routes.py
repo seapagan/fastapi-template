@@ -8,8 +8,8 @@ from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.database.helpers import hash_password
 from app.managers.auth import AuthManager
-from app.managers.user import pwd_context
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -34,9 +34,7 @@ class TestApiKeyRoutes:
             "email": email or "testuser@usertest.com",
             "first_name": "Test",
             "last_name": "User",
-            "password": pwd_context.hash("test12345!")
-            if hashed
-            else "test12345!",
+            "password": hash_password("test12345!") if hashed else "test12345!",
             "verified": True,
             "role": RoleType.admin if admin else RoleType.user,
         }

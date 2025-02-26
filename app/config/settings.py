@@ -6,7 +6,8 @@ import sys
 from functools import lru_cache
 from pathlib import Path  # noqa: TC003
 
-from pydantic import field_validator
+from cryptography.fernet import Fernet
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config.helpers import get_project_root
@@ -81,6 +82,16 @@ class Settings(BaseSettings):
     mail_ssl_tls: bool = False
     mail_use_credentials: bool = True
     mail_validate_certs: bool = True
+
+    # admin pages settings
+    admin_pages_enabled: bool = False
+    admin_pages_route: str = "/admin"
+    admin_pages_title: str = "API Administration"
+    admin_pages_encryption_key: str = Field(
+        default_factory=lambda: Fernet.generate_key().decode(),
+        description="Encryption key for admin session tokens",
+    )
+    admin_pages_timeout: int = 86400
 
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs

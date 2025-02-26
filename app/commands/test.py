@@ -7,19 +7,13 @@ from asyncpg.exceptions import InvalidCatalogNameError, InvalidPasswordError
 from rich import print as rprint
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.config.settings import get_settings
-from app.database.db import Base
+from app.database.db import Base, get_database_url
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
-DATABASE_URL = (
-    "postgresql+asyncpg://"
-    f"{get_settings().db_user}:{get_settings().db_password}@"
-    f"{get_settings().db_address}:{get_settings().db_port}/"
-    f"{get_settings().test_db_name}"
+async_engine = create_async_engine(
+    get_database_url(use_test_db=True), echo=False
 )
-
-async_engine = create_async_engine(DATABASE_URL, echo=False)
 
 
 async def prepare_database() -> None:

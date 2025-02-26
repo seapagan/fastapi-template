@@ -29,6 +29,7 @@ dependencies = [
   "typer>=0.12.5",
   "libpass[bcrypt]>=1.9.0",
   "bcrypt>=4.0.1",
+  "sqladmin[full]>=0.20.1",
 ]
 
 [project.scripts]
@@ -234,7 +235,7 @@ markers = [
 ]
 testpaths = ["tests"]
 mock_use_standalone_module = true
-env = ["I_READ_THE_DAMN_DOCS=true"]
+env = ["I_READ_THE_DAMN_DOCS=true", "ADMIN_PAGES_ENABLED=true"]
 
 [tool.coverage.run]
 source = ["app"]

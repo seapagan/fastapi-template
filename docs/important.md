@@ -4,7 +4,7 @@ This page contains information about breaking changes in the API. It is
 important to read this page if you are upgrading from a previous version of the
 API.
 
-## Breaking Changes in 0.7.0
+## Breaking Changes in 0.7.0 (And current HEAD)
 
 ### Modified the Authentication backend
 
@@ -22,6 +22,18 @@ the usage changes slightly, though you should have been using the
    will not be able to be accessed by an API Key.
 2. To migrate to use **BOTH** JWT and API Keys, change this to
    `Depends(get_current_user)`.
+
+### Removed the DATABASE_URL constant
+
+The `DATABASE_URL` constant has been removed from the `app.database.db` module.
+The URL can now be accessed using the `get_database_url()` function from the
+same module. This also has an optional parameter flag of `use_test_db` (defaults
+to `False`) that can be set to `True` to use the test database URL instead of
+the production database URL.
+
+This change simplifies testing and allowed to test the Admin pages easier.
+Otherwise, it should be transparent unless you were accessing the `DATABASE_URL`
+directly.
 
 ## Breaking Changes in 0.6.0
 

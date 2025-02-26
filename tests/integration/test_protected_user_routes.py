@@ -3,7 +3,7 @@
 import pytest
 from fastapi import status
 
-from app.managers.user import pwd_context
+from app.database.helpers import hash_password
 
 
 @pytest.mark.integration
@@ -18,7 +18,7 @@ class TestProtectedUserRoutes:
         "email": "testuser@usertest.com",
         "first_name": "Test",
         "last_name": "User",
-        "password": pwd_context.hash("test12345!"),
+        "password": hash_password("test12345!"),
         "verified": True,
     }
 
