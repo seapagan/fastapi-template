@@ -74,6 +74,7 @@ nav:
       - Add a User: usage/add-user.md
       - User Control via the CLI: usage/user-control.md
       - API Keys: usage/api-keys.md
+      - Admin Panel: usage/admin-panel.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md

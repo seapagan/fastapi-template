@@ -93,6 +93,8 @@ following advantages to starting your own from scratch :
   without needing to send username or password again, and should be done
   automatically by the Front-End.
 - A clean layout to help structure your project.
+- An optional **Admin site** to manage users and API keys. This uses the
+  `sqladmin` package to give you an easy way to manage your database.
 - Uses the python logger for info/warning/error logging - tying transparently in
   to the `uvicorn` logger.
 - **A command-line admin tool**. This allows to configure the project metadata
