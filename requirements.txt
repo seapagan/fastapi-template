@@ -18,6 +18,7 @@ exceptiongroup==1.2.2 ; python_full_version < '3.11'
 fastapi==0.115.8
 fastapi-cli==0.0.7
 fastapi-mail==1.4.2
+fastapi-pagination==0.12.34
 greenlet==3.1.1
 h11==0.14.0
 httpcore==1.0.7

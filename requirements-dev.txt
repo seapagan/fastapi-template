@@ -37,6 +37,7 @@ faker==36.1.1
 fastapi==0.115.8
 fastapi-cli==0.0.7
 fastapi-mail==1.4.2
+fastapi-pagination==0.12.34
 filelock==3.17.0
 ghp-import==2.1.0
 gitdb==4.0.12
