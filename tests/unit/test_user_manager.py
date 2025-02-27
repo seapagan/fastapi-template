@@ -7,7 +7,11 @@ from app.database.helpers import verify_password
 from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
 from app.models.user import User
-from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
+from app.schemas.request.user import (
+    SearchField,
+    UserChangePasswordRequest,
+    UserEditRequest,
+)
 
 
 @pytest.mark.unit
@@ -498,3 +502,165 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
         assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
         assert exc_info.value.detail == ErrorMessages.USER_NOT_FOUND
+
+    # ----------------------- test search users method ----------------------- #
+    async def test_search_users_all_fields_exact_match(self, test_db) -> None:
+        """Test searching all fields with exact match."""
+        # Create test users
+        await UserManager.register(self.test_user, test_db)
+        user2 = self.test_user.copy()
+        user2["email"] = "john.doe@example.com"
+        user2["first_name"] = "John"
+        user2["last_name"] = "Doe"
+        await UserManager.register(user2, test_db)
+
+        # Test exact match on email
+        query = await UserManager.search_users(
+            "john.doe@example.com", SearchField.ALL, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].email == "john.doe@example.com"
+
+        # Test exact match on first name
+        query = await UserManager.search_users(
+            "John", SearchField.ALL, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].first_name == "John"
+
+    async def test_search_users_all_fields_partial_match(self, test_db) -> None:
+        """Test searching all fields with partial match."""
+        # Create test users
+        await UserManager.register(self.test_user, test_db)
+        user2 = self.test_user.copy()
+        user2["email"] = "john.doe@example.com"
+        user2["first_name"] = "John"
+        user2["last_name"] = "Doe"
+        await UserManager.register(user2, test_db)
+
+        # Test partial match
+        query = await UserManager.search_users(
+            "john", SearchField.ALL, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].email == "john.doe@example.com"
+
+        # Test partial match in email
+        query = await UserManager.search_users(
+            "example", SearchField.ALL, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].email == "john.doe@example.com"
+
+    async def test_search_users_specific_field_exact_match(
+        self, test_db
+    ) -> None:
+        """Test searching specific fields with exact match."""
+        # Create test users
+        await UserManager.register(self.test_user, test_db)
+        user2 = self.test_user.copy()
+        user2["email"] = "john.doe@example.com"
+        user2["first_name"] = "John"
+        user2["last_name"] = "Doe"
+        await UserManager.register(user2, test_db)
+
+        # Test exact match on email field
+        query = await UserManager.search_users(
+            "john.doe@example.com", SearchField.EMAIL, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].email == "john.doe@example.com"
+
+        # Test exact match on first name field
+        query = await UserManager.search_users(
+            "John", SearchField.FIRST_NAME, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].first_name == "John"
+
+        # Test exact match on last name field
+        query = await UserManager.search_users(
+            "Doe", SearchField.LAST_NAME, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].last_name == "Doe"
+
+    async def test_search_users_specific_field_partial_match(
+        self, test_db
+    ) -> None:
+        """Test searching specific fields with partial match."""
+        # Create test users
+        await UserManager.register(self.test_user, test_db)
+        user2 = self.test_user.copy()
+        user2["email"] = "john.doe@example.com"
+        user2["first_name"] = "John"
+        user2["last_name"] = "Doe"
+        await UserManager.register(user2, test_db)
+
+        # Test partial match on email field
+        query = await UserManager.search_users(
+            "example", SearchField.EMAIL, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].email == "john.doe@example.com"
+
+        # Test partial match on first name field
+        query = await UserManager.search_users(
+            "Jo", SearchField.FIRST_NAME, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].first_name == "John"
+
+    async def test_search_users_no_match(self, test_db) -> None:
+        """Test search with no matching results."""
+        # Create test users
+        await UserManager.register(self.test_user, test_db)
+        user2 = self.test_user.copy()
+        user2["email"] = "john.doe@example.com"
+        user2["first_name"] = "John"
+        user2["last_name"] = "Doe"
+        await UserManager.register(user2, test_db)
+
+        # Test no match in all fields
+        query = await UserManager.search_users(
+            "nonexistent", SearchField.ALL, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 0
+
+        # Test no match in specific field
+        query = await UserManager.search_users(
+            "nonexistent", SearchField.EMAIL, exact_match=True
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 0
+
+    async def test_search_users_case_insensitive(self, test_db) -> None:
+        """Test case-insensitive search."""
+        # Create test user
+        await UserManager.register(self.test_user, test_db)
+
+        # Test case-insensitive search
+        query = await UserManager.search_users(
+            "TEST", SearchField.FIRST_NAME, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].first_name == "Test"
+
+        # Test with mixed case
+        query = await UserManager.search_users(
+            "tEsT", SearchField.FIRST_NAME, exact_match=False
+        )
+        result = (await test_db.execute(query)).scalars().all()
+        assert len(result) == 1
+        assert result[0].first_name == "Test"

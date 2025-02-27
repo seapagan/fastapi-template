@@ -1,9 +1,11 @@
 """Routes for User listing and control."""
 
 from collections.abc import Sequence
-from typing import Annotated, Optional, Union
+from typing import Annotated, Optional, Union, cast
 
 from fastapi import APIRouter, Depends, Request, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
@@ -12,7 +14,11 @@ from app.managers.security import get_current_user
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
-from app.schemas.request.user import UserChangePasswordRequest, UserEditRequest
+from app.schemas.request.user import (
+    SearchField,
+    UserChangePasswordRequest,
+    UserEditRequest,
+)
 from app.schemas.response.user import MyUserResponse, UserResponse
 
 router = APIRouter(tags=["Users"], prefix="/users")
@@ -147,3 +153,32 @@ async def delete_user(
     Admin only.
     """
     await UserManager.delete_user(user_id, db)
+
+
+@router.get(
+    "/search",
+    dependencies=[Depends(get_current_user), Depends(is_admin)],
+    summary="Search users",
+    description="Search for users with various criteria. Admin only endpoint.",
+)
+async def search_users(
+    db: Annotated[AsyncSession, Depends(get_database)],
+    search_term: str,
+    field: str = "all",
+    *,
+    exact_match: bool = False,
+) -> Page[UserResponse]:
+    """Search for users with pagination and filtering."""
+    # Convert string field to enum
+    try:
+        field_enum = SearchField[field.upper()]
+    except (KeyError, AttributeError):
+        field_enum = SearchField.ALL
+
+    query = await UserManager.search_users(
+        search_term,
+        field_enum,
+        exact_match=exact_match,
+    )
+    # Use cast to help mypy understand the return type
+    return cast(Page[UserResponse], await paginate(db, query))

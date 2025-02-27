@@ -76,8 +76,8 @@ updates or bug fixes.
 This template is a ready-to-use boilerplate for a FastAPI project. It has the
 following advantages to starting your own from scratch :
 
-- Baked-in User database and management. Routes are provided to add/edit/delete
-  or ban (and unban) Users.
+- Baked-in User database and management. Routes are provided to
+  add/edit/delete/search or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
   [Alembic][alembic] is used to control database

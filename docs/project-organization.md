@@ -17,6 +17,10 @@ suitable defaults. Non-secret (or depoloyment independent) settings should go
 in the `metadata` file, while secrets (or deployment specific) should go in the
 `settings` and `.env` files
 
+**admin/** - This directory contains the Admin interface setup. You can add more
+models here, or modify the existing ones. The Admin interface is used to manage
+the database content, and is available at the `/admin` route.
+
 **commands/** - This directory can hold any **CLI** commands you need to write,
 for example populating a database, create a superuser or other housekeeping
 tasks.

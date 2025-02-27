@@ -455,6 +455,185 @@ class TestUserRoutes:
         assert response.json()["detail"] == ErrorMessages.USER_INVALID
 
     # ------------------------------------------------------------------------ #
+    #                           test search route                              #
+    # ------------------------------------------------------------------------ #
+    async def test_admin_can_search_users(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that an admin can search for users."""
+        # Create test users
+        test_users = [
+            {**self.get_test_user(), "email": "test1@example.com"},
+            {**self.get_test_user(), "email": "test2@example.com"},
+            {**self.get_test_user(), "email": "other@example.com"},
+        ]
+        for user in test_users:
+            test_db.add(User(**user))
+
+        # Create admin user
+        admin_user = User(**self.get_test_user(admin=True))
+        test_db.add(admin_user)
+        await test_db.commit()
+        token = AuthManager.encode_token(admin_user)
+
+        # Test search by email with exact match
+        response = await client.get(
+            "/users/search?search_term=test1@example.com&field=email&exact_match=true",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 1
+        assert data["items"][0]["email"] == "test1@example.com"
+
+        # Test partial search
+        response = await client.get(
+            "/users/search?search_term=test&field=email",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 2  # noqa: PLR2004
+        emails = [item["email"] for item in data["items"]]
+        assert "test1@example.com" in emails
+        assert "test2@example.com" in emails
+
+    async def test_non_admin_cannot_search_users(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that a non-admin user cannot search users."""
+        # Create regular user
+        test_db.add(User(**self.get_test_user()))
+        token = AuthManager.encode_token(User(id=1))
+
+        await test_db.commit()
+
+        response = await client.get(
+            "/users/search?search_term=test",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    async def test_search_users_by_name(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test searching users by first and last name."""
+        # Create test users
+        test_users = [
+            {**self.get_test_user(), "first_name": "John", "last_name": "Doe"},
+            {**self.get_test_user(), "first_name": "Jane", "last_name": "Doe"},
+            {
+                **self.get_test_user(),
+                "first_name": "Alice",
+                "last_name": "Smith",
+            },
+        ]
+        for user in test_users:
+            test_db.add(User(**user))
+
+        # Create admin user
+        admin_user = User(**self.get_test_user(admin=True))
+        test_db.add(admin_user)
+        await test_db.commit()
+        token = AuthManager.encode_token(admin_user)
+
+        # Test search by first name
+        response = await client.get(
+            "/users/search?search_term=John&field=first_name",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 1
+        assert data["items"][0]["first_name"] == "John"
+
+        # Test search by last name
+        response = await client.get(
+            "/users/search?search_term=Doe&field=last_name",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 2  # noqa: PLR2004
+        assert all(item["last_name"] == "Doe" for item in data["items"])
+
+    async def test_search_users_invalid_field(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that invalid search field defaults to ALL."""
+        # Create test user with a unique searchable term
+        test_user = {
+            **self.get_test_user(),
+            "email": "unique123@example.com",
+            "first_name": "Unique",
+            "last_name": "User",
+        }
+        test_db.add(User(**test_user))
+
+        # Create admin user
+        admin_user = User(**self.get_test_user(admin=True))
+        test_db.add(admin_user)
+        await test_db.commit()
+        token = AuthManager.encode_token(admin_user)
+
+        response = await client.get(
+            "/users/search?search_term=unique&field=invalid_field",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 1
+        assert data["items"][0]["email"] == "unique123@example.com"
+
+    async def test_search_users_no_results(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test search with no matching results."""
+        # Create test user
+        test_db.add(User(**self.get_test_user()))
+
+        # Create admin user
+        admin_user = User(**self.get_test_user(admin=True))
+        test_db.add(admin_user)
+        await test_db.commit()
+        token = AuthManager.encode_token(admin_user)
+
+        response = await client.get(
+            "/users/search?search_term=nonexistent",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 0
+        assert len(data["items"]) == 0
+
+    async def test_search_users_empty_term(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test search with empty search term."""
+        # Create admin user
+        admin_user = User(**self.get_test_user(admin=True))
+        test_db.add(admin_user)
+        await test_db.commit()
+        token = AuthManager.encode_token(admin_user)
+
+        response = await client.get(
+            "/users/search?search_term=",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["total"] == 1  # Only admin user exists
+
+    # ------------------------------------------------------------------------ #
     #                        test change password route                        #
     # ------------------------------------------------------------------------ #
     async def test_user_can_change_own_password(

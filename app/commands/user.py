@@ -16,9 +16,11 @@ from app.database.db import async_session
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
+from app.schemas.request.user import SearchField
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
+
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -351,3 +353,62 @@ def delete(
     else:
         rprint("\n[red]-> ERROR deleting that User : [bold]User not found\n")
         raise typer.Exit(1)
+
+
+@app.command()
+def search(
+    search_term: str = typer.Argument(
+        ...,
+        help="Search term to find users",
+        show_default=False,
+    ),
+    field: str = typer.Option(
+        "all",
+        "--field",
+        "-f",
+        help="Field to search in (all, email, first_name, last_name)",
+    ),
+    *,
+    exact: bool = typer.Option(
+        False,
+        "--exact",
+        "-e",
+        help="Use exact matching instead of partial matching",
+        is_flag=True,
+    ),
+) -> None:
+    """Search for users by email, first name, or last name."""
+    # Convert string field to enum and get display name
+    field_enum = getattr(SearchField, field.upper(), SearchField.ALL)
+    field_display = (
+        "all fields"
+        if field_enum == SearchField.ALL
+        else field_enum.name.lower()
+    )
+
+    async def _search_users() -> list[User]:
+        """Async function to search for users."""
+        try:
+            async with async_session() as session:
+                query = await UserManager.search_users(
+                    search_term, field_enum, exact_match=exact
+                )
+                result = await session.execute(query)
+                return list(result.scalars().all())
+        except SQLAlchemyError as exc:
+            rprint(f"\n[red]-> ERROR searching Users : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+
+    users = aiorun(_search_users())
+    if users:
+        match_type = "exact" if exact else "partial"
+        show_table(
+            f"Users matching '{search_term}' in {field_display} "
+            f"({match_type} match)",
+            users,
+        )
+    else:
+        rprint(
+            "\n[yellow]-> No users found matching "
+            f"'[bold]{search_term}[/bold]'\n"
+        )

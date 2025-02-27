@@ -55,7 +55,41 @@ $ api-admin user verify 23
 
 ## Search for a user
 
-- This functionality is *Currently not implemented*
+You can search for users using various criteria. The search command supports
+partial matching by default and can search across all fields or a specific
+field.
+
+Basic search (searches all fields):
+
+```console
+$ api-admin user search "john"
+```
+
+!!! tip
+    The quotes around the search term are optional if the term does not contain
+    spaces. For example, both `api-admin user search john` and `api-admin user
+    search "john"` are valid.
+
+Search in a specific field:
+
+```console
+$ api-admin user search "john" --field first_name
+```
+
+The available fields are:
+
+- `email`
+- `first_name`
+- `last_name`
+- `all` (default)
+
+For exact matching, use the `--exact` flag:
+
+```console
+$ api-admin user search "john.doe@example.com" --exact
+```
+
+The search results will be displayed in a table showing the user's Id, Email address, First and Last name, Role, and the Verified and Banned Status.
 
 ## Ban or Unban a specific User
 
