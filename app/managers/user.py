@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
-from sqlalchemy import delete, or_, select, update
+from sqlalchemy import Select, delete, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.config.settings import get_settings
@@ -26,6 +26,7 @@ from app.schemas.request.user import SearchField
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
+    from typing import Any
 
     from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -324,7 +325,7 @@ class UserManager:
         field: SearchField,
         *,
         exact_match: bool,
-    ) -> Any:  # Using Any to avoid mypy issues with SQLAlchemy types
+    ) -> Select[tuple[User]]:
         """Create a search query for users.
 
         Returns the query for pagination to handle.
