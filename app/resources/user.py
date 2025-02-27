@@ -179,7 +179,6 @@ async def search_users(
         search_term,
         field_enum,
         exact_match=exact_match,
-        session=db,
     )
     # Use cast to help mypy understand the return type
     return cast(Page[UserResponse], await paginate(db, query))

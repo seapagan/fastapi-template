@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
-from sqlalchemy import delete, func, or_, select, update
+from sqlalchemy import delete, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.config.settings import get_settings
@@ -28,7 +28,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession
-    from sqlalchemy.sql import Select
 
     from app.models.enums import RoleType
     from app.schemas.request.user import (
@@ -325,10 +324,9 @@ class UserManager:
         field: SearchField,
         *,
         exact_match: bool,
-        session: AsyncSession,
     ) -> Any:  # Using Any to avoid mypy issues with SQLAlchemy types
-        """
-        Create a search query for users.
+        """Create a search query for users.
+
         Returns the query for pagination to handle.
         """
         query = select(User)
