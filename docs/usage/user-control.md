@@ -14,7 +14,7 @@ command-line.
 ## Add a User
 
 This is described in the [previous page](add-user.md). It is important to
-note that any user added this was will be **automatically verified**.
+note that any user added this way will be **automatically verified**.
 
 ## List All Users
 
@@ -70,6 +70,20 @@ or to unban:
 
 ```console
 $ api-admin user ban 23 -u
+```
+
+## Make a User an Admin or Remove Admin Status
+
+Grant admin privileges to a user or remove them. You can also remove admin status by adding the `-r` or `--remove` flag.
+
+```console
+$ api-admin user admin 23
+```
+
+or to remove admin status:
+
+```console
+$ api-admin user admin 23 -r
 ```
 
 ## Delete a specific User
