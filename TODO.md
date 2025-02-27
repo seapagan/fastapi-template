@@ -70,7 +70,6 @@
   change it easily.
 - ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
-- add an option to make user an admin (or take it away)
 - add an option to create a new JWT secret, and update the config file with it
   automatically. This will be handy for security reasons, and general
   deployment. The server will have to be restarted for this to take effect
