@@ -19,7 +19,6 @@
 - Add an option to the command line to bump the version number in API docs and
   the TOML file (can be done using the `poetry version` command already,
   document this).
-- add verified status to CLI user list for admins only.
 - implement rate-limiting - auto block abusers - would help if `quotas`
   implemented first (see below).
 - users should be able to get others (limited) profile data in some cases -
