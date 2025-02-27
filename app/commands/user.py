@@ -272,6 +272,52 @@ def ban(
 
 
 @app.command()
+def admin(
+    user_id: int = typer.Argument(
+        ...,
+        help="The user's id",
+        show_default=False,
+    ),
+    remove: Optional[bool] = typer.Option(
+        False,
+        "--remove",
+        "-r",
+        flag_value=True,
+        help="Remove admin status from this user",
+    ),
+) -> None:
+    """Make a user an admin or remove admin status."""
+
+    async def _toggle_admin(
+        user_id: int, remove: Optional[bool]
+    ) -> User | None:
+        """Async function to toggle admin status for a user."""
+        try:
+            async with async_session() as session:
+                user = await session.get(User, user_id)
+                if user:
+                    user.role = RoleType.user if remove else RoleType.admin
+                    await session.commit()
+        except SQLAlchemyError as exc:
+            rprint(f"\n[RED]-> ERROR changing admin status : [bold]{exc}\n")
+            raise typer.Exit(1) from exc
+        else:
+            return user
+
+    user = aiorun(_toggle_admin(user_id, remove))
+    if user:
+        status = "removed from" if remove else "granted to"
+        rprint(
+            f"\n[green]-> Admin status [bold]{status}[/bold] "
+            f"User [bold]{user_id}[/bold] succesfully."
+        )
+        show_table("", [user])
+    else:
+        rprint("\n[red]-> ERROR changing admin status : [bold]User not found\n")
+        raise typer.Exit(1)
+
+
+@app.command()
 def delete(
     user_id: int = typer.Argument(
         ...,

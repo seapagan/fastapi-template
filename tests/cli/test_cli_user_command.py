@@ -87,7 +87,15 @@ class TestCLI:
         result = runner.invoke(app, ["user"])
         assert result.exit_code == 0
 
-        command_list = ["ban", "create", "delete", "list", "show", "verify"]
+        command_list = [
+            "admin",
+            "ban",
+            "create",
+            "delete",
+            "list",
+            "show",
+            "verify",
+        ]
 
         assert "Usage:" in result.output
 
@@ -429,6 +437,116 @@ class TestCLI:
         )
 
         assert "ERROR banning or unbanning User" in result.output
+        assert "User not found" in result.output
+
+    # ------------------------------------------------------------------------ #
+    #                         test 'admin' subcommand                          #
+    # ------------------------------------------------------------------------ #
+    def test_admin_user(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test that the 'admin' command works."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        mock_table = mocker.patch(
+            "app.commands.user.show_table",
+        )
+        mock_session.return_value.__aenter__.return_value.get.return_value = (
+            test_user
+        )
+
+        result = runner.invoke(app, ["user", "admin", str(test_user.id)])
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_session.return_value.__aenter__.return_value.commit.called
+        assert mock_table.called
+
+        # Check that the 'role' value in the returned user is RoleType.admin
+        admin_user = (
+            mock_session.return_value.__aenter__.return_value.get.return_value
+        )
+        assert admin_user.role == RoleType.admin
+
+        assert f"Admin status granted to User {test_user.id}" in result.output
+
+    def test_admin_remove(
+        self, runner: CliRunner, mocker, monkeypatch, test_admin
+    ) -> None:
+        """Test that the 'admin' command with --remove flag works."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        mock_table = mocker.patch(
+            "app.commands.user.show_table",
+        )
+        mock_session.return_value.__aenter__.return_value.get.return_value = (
+            test_admin
+        )
+
+        result = runner.invoke(
+            app, ["user", "admin", str(test_admin.id), "--remove"]
+        )
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_session.return_value.__aenter__.return_value.commit.called
+        assert mock_table.called
+
+        # Check that the 'role' value in the returned user is RoleType.user
+        user = (
+            mock_session.return_value.__aenter__.return_value.get.return_value
+        )
+        assert user.role == RoleType.user
+
+        assert (
+            f"Admin status removed from User {test_admin.id}" in result.output
+        )
+
+    def test_admin_sqlalchemy_error(
+        self, runner: CliRunner, mocker, test_user
+    ) -> None:
+        """Test that the 'admin' command exits when there is an error."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        mock_session.return_value.__aenter__.return_value.get.side_effect = (
+            SQLAlchemyError("Ooooops!!")
+        )
+        result = runner.invoke(app, ["user", "admin", str(test_user.id)])
+        assert result.exit_code == 1
+
+        assert mock_session.called
+        assert (
+            not mock_session.return_value.__aenter__.return_value.commit.called
+        )
+
+        assert result.exit_code == 1
+
+        assert "ERROR changing admin status" in result.output
+        assert "Ooooops!!" in result.output
+
+    def test_admin_missing_user(
+        self, runner: CliRunner, mocker, test_user
+    ) -> None:
+        """Test that the 'admin' command exits when the user is missing."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        mock_session.return_value.__aenter__.return_value.get.return_value = (
+            None
+        )
+
+        result = runner.invoke(app, ["user", "admin", str(test_user.id)])
+        assert result.exit_code == 1
+
+        assert mock_session.called
+        assert (
+            not mock_session.return_value.__aenter__.return_value.commit.called
+        )
+
+        assert "ERROR changing admin status" in result.output
         assert "User not found" in result.output
 
     # ------------------------------------------------------------------------ #

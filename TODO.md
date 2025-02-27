@@ -17,21 +17,19 @@
 - Update current and future email templates with actual content, and change
   their markup to latest best practices.
 - Add an option to the command line to bump the version number in API docs and
-  the TOML file (can be done using the `poetry version` command already,
-  document this).
-- add verified status to CLI user list for admins only.
-- implement rate-limiting - auto block abusers - would help if `quotas`
+  the TOML file.
+- Implement rate-limiting - auto block abusers - would help if `quotas`
   implemented first (see below).
-- users should be able to get others (limited) profile data in some cases -
+- Users should be able to get others (limited) profile data in some cases -
   public data should be ok (eg in a front-end profile page). Think about how
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
-- add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
-- add pagination to the user list endpoint. Implement this in a way that is
+- Add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
+- Add pagination to the user list endpoint. Implement this in a way that is
   generic and can be used for other custom endpoints too. The library
   'fastapi-pagination' is really good and performant.
-- use an alternative logger if uvicorn is not being used for some reason.
-- allow the option of using auto-incerement integers for the User ID (as it is
+- Use an alternative logger if uvicorn is not being used for some reason.
+- Allow the option of using auto-incerement integers for the User ID (as it is
   now) or UUID's which is more secure and common these days. This should be
   configurable in the settings, and (for now) the default should be the current
   auto-incrementing integer.
@@ -46,7 +44,7 @@
 
 ## Auth
 
-- add a password recovery endpoint
+- Add a password recovery endpoint
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)
@@ -57,35 +55,35 @@
 - Implement user groups and permissions, make it configurable.
 - Allow social login (eg Google, Facebook, Twitter, etc), check out
   [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
-- add API key management to the CLI too, working on both user and global scope.
+- Add API key management to the CLI too, working on both user and global scope.
 
 ## Testing
 
 - Speed up tests generally
-- allow choice of Postgresql or SQLite for testing (currently only Postgresql)
+- Allow choice of Postgresql or SQLite for testing (currently only Postgresql)
 
 ## CLI
 
-- option to remove the customization functionality from the CLI. Useful once you
+- Option to remove the customization functionality from the CLI. Useful once you
   have customized the template and don't want to give the end-user the ability to
   change it easily.
-- ctrl-c on the `custom metadata` command should not bring up a Rich
+- Ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
-- add an option to make user an admin (or take it away)
-- add an option to create a new JWT secret, and update the config file with it
-  automatically. This will be handy for security reasons, and general
-  deployment. The server will have to be restarted for this to take effect
-  (offer to do this?). `python-dotenv` has a `set_key` method that can be used
-  to update the `.env` file.
-- add an option to the `db` command to fill the database with some fake data
+- Add an option to create a new JWT secret or Admin Pages secret, and update the
+  config file with it automatically. This will be handy for security reasons,
+  and general deployment. The server will have to be restarted for this to take
+  effect (offer to do this?). `python-dotenv` has a `set_key` method that can be
+  used to update the `.env` file.
+- Add an option to the `db` command to fill the database with some fake data
   that can be used for development.
+- Add commands to the CLI to serve, build, publish to gh-pages the API
+  documentation site.
 
 ## Documentation
 
 - Add proper documentation with examples showing how to use the User & Auth
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?
-- add commands to CLI to serve, build, publish to gh-pages etc
 - Add info how to create a temporary database for testing (eg using Docker)
 - Update return status codes and examples in the API documentation to be more
   accurate and useful, some of them have wrong status codes and/or examples. For
@@ -95,15 +93,15 @@
 
 Add Quota functionality.
 
-- limit number of API calls per user per day/hour
-- different user groups have different quotas (configurable)
-- allow endpoint with no Quota
-- option to block altogether or seriously slow users access to the API for a
+- Limit number of API calls per user per day/hour
+- Different user groups have different quotas (configurable)
+- Allow endpoint with no Quota
+- Option to block altogether or seriously slow users access to the API for a
   period of time
 
 ## Caching
 
-- add a Redis cache to the endpoints.
+- Add a Redis cache to the endpoints.
   [fastapi-redis-cache](https://pypi.org/project/fastapi-redis-cache/) should
   make this reasonably painless. Note that project seems to be abandoned with a
   lot of un-merged PRs so I have forked and updated the project to fix a few
