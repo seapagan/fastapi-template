@@ -636,7 +636,8 @@ class TestCLI:
         # Mock the execute chain to return test_user
         mock_result = mocker.MagicMock()
         mock_result.scalars.return_value.all.return_value = [test_user]
-        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.return_value = mock_result
         result = runner.invoke(app, ["user", "search", "test@example.com"])
         assert result.exit_code == 0
 
@@ -679,7 +680,8 @@ class TestCLI:
         # Mock the execute chain to return test_user
         mock_result = mocker.MagicMock()
         mock_result.scalars.return_value.all.return_value = [test_user]
-        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.return_value = mock_result
         result = runner.invoke(
             app, ["user", "search", "john", "--field", "first_name"]
         )
@@ -714,7 +716,8 @@ class TestCLI:
         # Mock the execute chain to return test_user
         mock_result = mocker.MagicMock()
         mock_result.scalars.return_value.all.return_value = [test_user]
-        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.return_value = mock_result
         result = runner.invoke(
             app, ["user", "search", "john@example.com", "--exact"]
         )
@@ -745,7 +748,8 @@ class TestCLI:
         # Mock the execute chain to return empty list
         mock_result = mocker.MagicMock()
         mock_result.scalars.return_value.all.return_value = []
-        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.return_value = mock_result
         result = runner.invoke(app, ["user", "search", "nonexistent"])
         assert result.exit_code == 0
 
@@ -772,7 +776,8 @@ class TestCLI:
         # Mock the execute chain to return test_user
         mock_result = mocker.MagicMock()
         mock_result.scalars.return_value.all.return_value = [test_user]
-        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.return_value = mock_result
 
         result = runner.invoke(
             app, ["user", "search", "test", "--field", "invalid_field"]
@@ -796,9 +801,8 @@ class TestCLI:
         mock_session = mocker.patch(
             self.patch_async_session,
         )
-        mock_session.return_value.__aenter__.return_value.execute.side_effect = SQLAlchemyError(
-            "Database connection failed"
-        )
+        mock_execute = mock_session.return_value.__aenter__.return_value.execute
+        mock_execute.side_effect = SQLAlchemyError("Database connection failed")
 
         result = runner.invoke(app, ["user", "search", "test"])
         assert result.exit_code == 1

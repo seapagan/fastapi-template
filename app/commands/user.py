@@ -378,7 +378,6 @@ def search(
     ),
 ) -> None:
     """Search for users by email, first name, or last name."""
-
     # Convert string field to enum and get display name
     field_enum = getattr(SearchField, field.upper(), SearchField.ALL)
     field_display = (
