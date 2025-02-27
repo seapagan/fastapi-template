@@ -11,6 +11,7 @@ from app.commands.user import show_table
 from app.managers.user import ErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
+from app.schemas.request.user import SearchField
 
 
 @pytest.fixture(scope="module")
@@ -614,3 +615,196 @@ class TestCLI:
 
         assert "ERROR deleting that User" in result.output
         assert "User not found" in result.output
+
+    # ------------------------------------------------------------------------ #
+    #                         test 'search' subcommand                         #
+    # ------------------------------------------------------------------------ #
+    def test_search_users_basic(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test that the basic search command works."""
+        monkeypatch.setenv("COLUMNS", "120")
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        # Mock the search_users function to return an async mock
+        mock_query = mocker.AsyncMock()
+        mock_search = mocker.patch(
+            "app.commands.user.UserManager.search_users",
+            return_value=mock_query,
+        )
+        # Mock the execute chain to return test_user
+        mock_result = mocker.MagicMock()
+        mock_result.scalars.return_value.all.return_value = [test_user]
+        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        result = runner.invoke(app, ["user", "search", "test@example.com"])
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_search.called
+
+        # Verify search parameters
+        mock_search.assert_called_once_with(
+            "test@example.com", SearchField.ALL, exact_match=False
+        )
+
+        # Check output contains user details and search info
+        assert all(
+            substring in result.output
+            for substring in [
+                str(test_user.id),
+                test_user.email,
+                test_user.first_name,
+                test_user.last_name,
+                "test@example.com",
+                "all fields",
+                "partial match",
+            ]
+        )
+
+    def test_search_users_with_field(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test search with specific field parameter."""
+        monkeypatch.setenv("COLUMNS", "120")
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        # Mock the search_users function to return an async mock
+        mock_query = mocker.AsyncMock()
+        mock_search = mocker.patch(
+            "app.commands.user.UserManager.search_users",
+            return_value=mock_query,
+        )
+        # Mock the execute chain to return test_user
+        mock_result = mocker.MagicMock()
+        mock_result.scalars.return_value.all.return_value = [test_user]
+        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        result = runner.invoke(
+            app, ["user", "search", "john", "--field", "first_name"]
+        )
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_search.called
+
+        # Verify search parameters
+        mock_search.assert_called_once_with(
+            "john", SearchField.FIRST_NAME, exact_match=False
+        )
+
+        # Check output shows correct field
+        assert "first_name" in result.output
+        assert "partial match" in result.output
+
+    def test_search_users_exact_match(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test search with exact matching enabled."""
+        monkeypatch.setenv("COLUMNS", "120")
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        # Mock the search_users function to return an async mock
+        mock_query = mocker.AsyncMock()
+        mock_search = mocker.patch(
+            "app.commands.user.UserManager.search_users",
+            return_value=mock_query,
+        )
+        # Mock the execute chain to return test_user
+        mock_result = mocker.MagicMock()
+        mock_result.scalars.return_value.all.return_value = [test_user]
+        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        result = runner.invoke(
+            app, ["user", "search", "john@example.com", "--exact"]
+        )
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_search.called
+
+        # Verify search parameters
+        mock_search.assert_called_once_with(
+            "john@example.com", SearchField.ALL, exact_match=True
+        )
+
+        # Check output shows exact match
+        assert "exact match" in result.output
+
+    def test_search_users_no_results(self, runner: CliRunner, mocker) -> None:
+        """Test search when no users are found."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        # Mock the search_users function to return an async mock
+        mock_query = mocker.AsyncMock()
+        mock_search = mocker.patch(
+            "app.commands.user.UserManager.search_users",
+            return_value=mock_query,
+        )
+        # Mock the execute chain to return empty list
+        mock_result = mocker.MagicMock()
+        mock_result.scalars.return_value.all.return_value = []
+        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+        result = runner.invoke(app, ["user", "search", "nonexistent"])
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_search.called
+
+        # Check output shows no users found message
+        assert "No users found matching 'nonexistent'" in result.output
+
+    def test_search_users_invalid_field(
+        self, runner: CliRunner, mocker, monkeypatch, test_user
+    ) -> None:
+        """Test that invalid field defaults to searching all fields."""
+        monkeypatch.setenv("COLUMNS", "120")
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        # Mock the search_users function to return an async mock
+        mock_query = mocker.AsyncMock()
+        mock_search = mocker.patch(
+            "app.commands.user.UserManager.search_users",
+            return_value=mock_query,
+        )
+        # Mock the execute chain to return test_user
+        mock_result = mocker.MagicMock()
+        mock_result.scalars.return_value.all.return_value = [test_user]
+        mock_session.return_value.__aenter__.return_value.execute.return_value = mock_result
+
+        result = runner.invoke(
+            app, ["user", "search", "test", "--field", "invalid_field"]
+        )
+        assert result.exit_code == 0
+
+        assert mock_session.called
+        assert mock_search.called
+
+        # Verify search parameters - should default to ALL when field is invalid
+        mock_search.assert_called_once_with(
+            "test", SearchField.ALL, exact_match=False
+        )
+
+        # Check output shows all fields was used
+        assert "all fields" in result.output
+        assert "partial match" in result.output
+
+    def test_search_users_db_error(self, runner: CliRunner, mocker) -> None:
+        """Test search when database error occurs."""
+        mock_session = mocker.patch(
+            self.patch_async_session,
+        )
+        mock_session.return_value.__aenter__.return_value.execute.side_effect = SQLAlchemyError(
+            "Database connection failed"
+        )
+
+        result = runner.invoke(app, ["user", "search", "test"])
+        assert result.exit_code == 1
+
+        assert mock_session.called
+
+        # Check error message
+        assert "ERROR searching Users" in result.output
+        assert "Database connection failed" in result.output

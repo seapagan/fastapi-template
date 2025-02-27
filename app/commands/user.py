@@ -379,18 +379,18 @@ def search(
 ) -> None:
     """Search for users by email, first name, or last name."""
 
+    # Convert string field to enum and get display name
+    field_enum = getattr(SearchField, field.upper(), SearchField.ALL)
+    field_display = (
+        "all fields"
+        if field_enum == SearchField.ALL
+        else field_enum.name.lower()
+    )
+
     async def _search_users() -> list[User]:
         """Async function to search for users."""
         try:
             async with async_session() as session:
-                # Convert string field to enum
-                try:
-                    field_enum = getattr(
-                        SearchField, field.upper(), SearchField.ALL
-                    )
-                except (KeyError, AttributeError):
-                    field_enum = SearchField.ALL
-
                 query = await UserManager.search_users(
                     search_term, field_enum, exact_match=exact
                 )
@@ -402,13 +402,10 @@ def search(
 
     users = aiorun(_search_users())
     if users:
-        field_display = field if field != "all" else "all fields"
         match_type = "exact" if exact else "partial"
         show_table(
-            (
-                f"Users matching '{search_term}' in {field_display} "
-                f"({match_type} match)"
-            ),
+            f"Users matching '{search_term}' in {field_display} "
+            f"({match_type} match)",
             users,
         )
     else:
