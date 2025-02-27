@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
-from sqlalchemy import delete, update
+from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.config.settings import get_settings
@@ -22,11 +22,13 @@ from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
+from app.schemas.request.user import SearchField
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession
+    from sqlalchemy.sql import Select
 
     from app.models.enums import RoleType
     from app.schemas.request.user import (
@@ -316,3 +318,47 @@ class UserManager:
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
         return user
+
+    @staticmethod
+    async def search_users(
+        search_term: str,
+        field: SearchField,
+        *,
+        exact_match: bool,
+        session: AsyncSession,
+    ) -> Any:  # Using Any to avoid mypy issues with SQLAlchemy types
+        """
+        Create a search query for users.
+        Returns the query for pagination to handle.
+        """
+        query = select(User)
+
+        if field == SearchField.ALL:
+            if exact_match:
+                query = query.where(
+                    or_(
+                        User.email == search_term,
+                        User.first_name == search_term,
+                        User.last_name == search_term,
+                    )
+                )
+            else:
+                query = query.where(
+                    or_(
+                        User.email.ilike(f"%{search_term}%"),
+                        User.first_name.ilike(f"%{search_term}%"),
+                        User.last_name.ilike(f"%{search_term}%"),
+                    )
+                )
+        else:
+            field_map = {
+                SearchField.EMAIL: User.email,
+                SearchField.FIRST_NAME: User.first_name,
+                SearchField.LAST_NAME: User.last_name,
+            }
+            if exact_match:
+                query = query.where(field_map[field] == search_term)
+            else:
+                query = query.where(field_map[field].ilike(f"%{search_term}%"))
+
+        return query

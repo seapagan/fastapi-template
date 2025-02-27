@@ -30,6 +30,7 @@ dependencies = [
   "libpass[bcrypt]>=1.9.0",
   "bcrypt>=4.0.1",
   "sqladmin[full]>=0.20.1",
+  "fastapi-pagination>=0.12.34",
 ]
 
 [project.scripts]

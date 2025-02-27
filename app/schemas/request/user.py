@@ -1,9 +1,34 @@
 """Define Schemas used by the User routes."""
 
+from enum import Enum
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.base import UserBase
 from app.schemas.examples import ExampleUser
+
+
+class SearchField(str, Enum):
+    """Enum for user search fields."""
+
+    ALL = "all"
+    EMAIL = "email"
+    FIRST_NAME = "first_name"
+    LAST_NAME = "last_name"
+
+
+class UserSearchParams(BaseModel):
+    """Parameters for searching users."""
+
+    search_term: str = Field(
+        ..., min_length=1, description="Term to search for"
+    )
+    field: SearchField = Field(
+        default=SearchField.ALL, description="Field to search in"
+    )
+    exact_match: bool = Field(
+        default=False, description="Whether to perform exact matching"
+    )
 
 
 class UserRegisterRequest(UserBase):
