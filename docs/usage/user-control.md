@@ -74,7 +74,8 @@ $ api-admin user ban 23 -u
 
 ## Make a User an Admin or Remove Admin Status
 
-Grant admin privileges to a user or remove them. You can also remove admin status by adding the `-r` or `--remove` flag.
+Grant admin privileges to a user. You can also remove admin status by adding the
+`-r` or `--remove` flag.
 
 ```console
 $ api-admin user admin 23
