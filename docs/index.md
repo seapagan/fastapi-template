@@ -63,8 +63,8 @@ following advantages to starting your own from scratch :
   can easily be modified to add your own functionality (for example bulk add
   data) since it is based on the excellent
   [Typer](https://typer.tiangolo.com/){:target="_blank"} library.
-- Easily add test users to the database for testing/development purposes using
-  the CLI.
+- Easily batch-add random test users to the database for testing/development
+  purposes using the CLI.
 - Database and Secrets are automatically read from Environment variables or a
   `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are

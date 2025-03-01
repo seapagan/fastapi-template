@@ -20,6 +20,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- CLI: add a command to batch-populate random test users into the database ([#742](https://github.com/seapagan/fastapi-template/pull/742)) by [seapagan](https://github.com/seapagan)
 - Add user search endpoint with pagination and CLI command for same ([#741](https://github.com/seapagan/fastapi-template/pull/741)) by [seapagan](https://github.com/seapagan)
 - CLI: add command to add or remove admin status for a user ([#740](https://github.com/seapagan/fastapi-template/pull/740)) by [seapagan](https://github.com/seapagan)
 - Add a favicon for when the API is viewed through a web browser ([#736](https://github.com/seapagan/fastapi-template/pull/736)) by [seapagan](https://github.com/seapagan)
