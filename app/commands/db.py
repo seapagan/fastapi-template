@@ -128,7 +128,7 @@ def populate(
         5,
         "--count",
         "-c",
-        help="Number of users to create (default: 5)",
+        help="Number of users to create",
     ),
 ) -> None:
     """Populate the database with random test users.
