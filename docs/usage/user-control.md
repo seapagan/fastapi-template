@@ -131,3 +131,31 @@ $ api-admin user delete 23
 
 They will no longer be able to access the API, this CANNOT BE UNDONE. It's
 probably better to BAN a user unless you are very sure.
+
+## Populate Database with Test Users
+
+You can quickly populate your database with random test users using the `db populate` command:
+
+```console
+$ api-admin db populate
+```
+
+This will create 5 users by default (4 regular users and 1 admin). You can specify a different number of users with the `--count` or `-c` flag:
+
+```console
+$ api-admin db populate --count 10
+```
+
+The command will automatically create admin users based on the total count:
+
+- 1 admin per 5 users (rounded up)
+- Maximum of 3 admin users
+- If only 1 user is requested, it will be a regular user
+
+For example:
+
+- 5 users = 4 regular + 1 admin
+- 10 users = 8 regular + 2 admins
+- 20 users = 17 regular + 3 admins (maximum admins)
+
+All users are created with the default password `Password123!` and are automatically verified. The command generates realistic email addresses using various patterns and common email domains.

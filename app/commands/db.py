@@ -1,11 +1,21 @@
 """CLI command to control the Database."""
 
+import random
+from asyncio import run as aiorun
 from typing import Optional
 
 import typer
 from alembic import command
 from alembic.config import Config
+from faker import Faker
+from fastapi import HTTPException
 from rich import print as rprint
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database.db import async_session
+from app.managers.user import ErrorMessages, UserManager
+from app.models.enums import RoleType
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
@@ -92,3 +102,188 @@ def revision(
     rprint()
     command.revision(ALEMBIC_CFG, message=message, autogenerate=True)
     command.upgrade(ALEMBIC_CFG, "head")
+
+
+def calc_admin_count(count: int) -> tuple[int, int]:
+    """Calculate the number of admin users to create."""
+    if count < 1:
+        rprint("[red]Error: count must be greater than 0")
+        raise typer.Exit(1)
+
+    # Calculate number of admins (1 per 5 users, max 3)
+    # Special case: if count=1, create a regular user not an admin
+    if count == 1:
+        num_admins = 0
+        num_regular_users = 1
+    else:
+        num_admins = min(count // 5 + (1 if count % 5 > 0 else 0), 3)
+        num_regular_users = count - num_admins
+
+    return num_admins, num_regular_users
+
+
+@app.command()
+def populate(
+    count: int = typer.Option(
+        5,
+        "--count",
+        "-c",
+        help="Number of users to create",
+    ),
+) -> None:
+    """Populate the database with random test users.
+
+    This will create the specified number of users with random data. At least 1
+    admin will be created for every 5 users, up to a maximum of 3 admins.
+    """
+    num_admins, num_regular_users = calc_admin_count(count)
+
+    rprint(
+        f"\nCreating {num_regular_users} regular users "
+        f"and {num_admins} admins..."
+    )
+
+    # Run the async function to populate the database
+    aiorun(_populate_db(num_regular_users, num_admins))
+
+    rprint(DONE_MSG)
+
+
+async def _create_single_user(
+    fake: Faker,
+    session: AsyncSession,
+    max_retries: int = 5,
+    *,
+    is_admin: bool = False,
+) -> bool:
+    """Create a single user with retry logic for duplicate emails."""
+    retries = 0
+
+    # List of common email domains
+    domains = [
+        "gmail.com",
+        "yahoo.com",
+        "hotmail.com",
+        "outlook.com",
+        "icloud.com",
+        "example.com",
+        "company.com",
+        "fastmail.com",
+        "protonmail.com",
+        "mail.com",
+        "aol.com",
+        "zoho.com",
+    ]
+
+    # Email patterns to use with first and last names
+    # {f} = first name,
+    # {l} = last name,
+    # {fi} = first initial,
+    # {li} = last initial
+    email_patterns = [
+        "{f}.{l}@{d}",  # john.doe@gmail.com
+        "{f}{l}@{d}",  # johndoe@gmail.com
+        "{fi}.{l}@{d}",  # j.doe@gmail.com
+        "{f}{li}@{d}",  # johnd@gmail.com
+        "{f}_{l}@{d}",  # john_doe@gmail.com
+        "{f}.{l}2023@{d}",  # john.doe2023@gmail.com
+        "{f}{l}123@{d}",  # johndoe123@gmail.com
+    ]
+
+    while retries < max_retries:
+        try:
+            # Generate name data
+            first_name = fake.first_name()
+            last_name = fake.last_name()
+
+            # Generate email based on name
+            domain = random.choice(domains)  # noqa: S311
+            pattern = random.choice(email_patterns)  # noqa: S311
+
+            email = pattern.format(
+                f=first_name.lower(),
+                l=last_name.lower(),
+                fi=first_name[0].lower(),
+                li=last_name[0].lower(),
+                d=domain,
+            )
+
+            user_data = {
+                "email": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "password": "Password123!",  # Default password for test users
+                "role": RoleType.admin if is_admin else RoleType.user,
+            }
+
+            await UserManager.register(user_data, session)
+
+            user_type = "admin" if is_admin else "regular user"
+            rprint(f"  Created {user_type}: {user_data['email']}")
+
+        except HTTPException as exc:  # noqa: PERF203
+            # If it's a duplicate email error, retry with a new email
+            if exc.detail == ErrorMessages.EMAIL_EXISTS:
+                retries += 1
+                if retries < max_retries:
+                    rprint(
+                        "  [yellow]Email already exists, retrying... "
+                        f"({retries}/{max_retries})"
+                    )
+                else:
+                    rprint(
+                        "  [red]Failed to create user after "
+                        f"{max_retries} attempts"
+                    )
+                    return False
+            else:
+                # For other HTTP exceptions, raise them
+                rprint(f"\n[red]-> ERROR adding user: [bold]{exc.detail}\n")
+                return False
+
+        except SQLAlchemyError as exc:
+            rprint(f"\n[red]-> Database error adding user: [bold]{exc}\n")
+            return False
+        else:
+            return True
+
+    # we should never reach this point but it simplifies typing
+    return False  # pragma: no cover
+
+
+async def _populate_db(num_regular_users: int, num_admins: int) -> None:
+    """Populate the database with random users."""
+    # Initialize Faker
+    fake = Faker()
+
+    try:
+        async with async_session() as session:
+            # Create admin users
+            admin_count = 0
+            for _ in range(num_admins):
+                success = await _create_single_user(
+                    fake, session, is_admin=True
+                )
+                if success:
+                    admin_count += 1
+
+            # Create regular users
+            user_count = 0
+            for _ in range(num_regular_users):
+                success = await _create_single_user(
+                    fake, session, is_admin=False
+                )
+                if success:
+                    user_count += 1
+
+            await session.commit()
+
+            # Final summary
+            rprint(
+                f"\nSuccessfully created {user_count} regular users "
+                f"and {admin_count} admins"
+            )
+
+    except SQLAlchemyError as exc:
+        rprint(f"\n[red]-> Database error: [bold]{exc}\n")
+        raise typer.Exit(1) from exc

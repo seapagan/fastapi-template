@@ -214,3 +214,4 @@ docs/CNAME
 .python-version
 .changelog_generator.toml
 .envrc
+.clinerules

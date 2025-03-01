@@ -91,8 +91,8 @@ documentation][sqlalchemy-async-orm]{:target="_blank"} for more information
 ### The CLI is an installable package
 
 This means that the `api-admin` command is now a package and installed in your
-local virtual environment when you run `poetry install`. With this you can run
-the `api-admin` command from the command line anywhere inside the virtual
+local virtual environment when you run `uv sync`. With this you can run the
+`api-admin` command from the command line anywhere inside the virtual
 environment.
 
 ```bash
@@ -100,7 +100,7 @@ api-admin --help
 ```
 
 !!! warning "Pip users"
-    If you are not using Poetry, but the requirements.txt file, you will need to
+    If you are not using `uv`, but the requirements.txt file, you will need to
     run the `api-admin` command as a Python module. For example, `python -m
     api-admin`.
 
@@ -118,7 +118,7 @@ The project has moved completely over to using
 **and** Formatting.
 
 This relaces `Flake8`, `Black`, `isort` and many other tools with a single
-tool. I have set the rules quite strict also! All exisiting code passes these
+tool. I have set the rules quite strict also! All existing code passes these
 checks, or is whitelisted for a very good reason. This will be enforced for all
 PR's also. All tools are configured in the `pyproject.toml` file.
 
@@ -130,7 +130,7 @@ tool to check for type errors in the code. This will be enforced for all PR's.
 ### Dependency Updates
 
 All dependencies used are updated to the latest versions as of the `0.5.0`
-release and will be kept up to date using the GitHub Dependabot tool.
+release and will be kept up to date automatically using the `Renovate` tool.
 
 ---
 
