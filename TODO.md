@@ -74,8 +74,6 @@
   and general deployment. The server will have to be restarted for this to take
   effect (offer to do this?). `python-dotenv` has a `set_key` method that can be
   used to update the `.env` file.
-- Add an option to the `db` command to fill the database with some fake data
-  that can be used for development.
 - Add commands to the CLI to serve, build, publish to gh-pages the API
   documentation site.
 
