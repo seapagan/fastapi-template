@@ -1,8 +1,10 @@
 """CLI command to control the Database."""
 
+import csv
 import random
 from asyncio import run as aiorun
-from typing import Optional
+from pathlib import Path
+from typing import Annotated, Optional
 
 import typer
 from alembic import command
@@ -286,4 +288,173 @@ async def _populate_db(num_regular_users: int, num_admins: int) -> None:
 
     except SQLAlchemyError as exc:
         rprint(f"\n[red]-> Database error: [bold]{exc}\n")
+        raise typer.Exit(1) from exc
+
+
+@app.command()
+def seed(
+    csv_file: Annotated[
+        Path,
+        typer.Argument(
+            ...,
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            help="Path to the CSV file containing user data",
+        ),
+    ] = Path("users.seed"),
+    force: Optional[bool] = typer.Option(
+        False,
+        "--force",
+        "-f",
+        help="Do not ask for confirmation before importing users",
+    ),
+) -> None:
+    """Seed the database with users from a CSV file.
+
+    The CSV file should have a header row with the following columns:
+    email,password,first_name,last_name,role
+
+    The role column should contain either 'user' or 'admin'.
+    If the role column is empty or invalid, 'user' will be used as the default.
+
+    If no CSV file is specified, the command will look for 'users.seed' in the
+    current directory.
+    """
+    # Display which file we're using
+    rprint(f"Using seed file: [green]{csv_file}\n")
+
+    if not force:
+        confirm = typer.confirm(
+            "This will add new users to the database. Continue?",
+            default=False,
+        )
+        if not confirm:
+            rprint("[cyan]Operation Cancelled.")
+            return
+
+    rprint("\nImporting users from CSV file ... ")
+
+    # Run the async function to import users
+    aiorun(_seed_users_from_csv(csv_file))
+
+    rprint(DONE_MSG)
+
+
+def _validate_csv_file(csv_file: Path) -> list:
+    """Validate CSV file and return rows if valid."""
+    with csv_file.open(encoding="utf-8") as file:
+        csv_reader = csv.DictReader(file)
+
+        # Check if fieldnames is None
+        if csv_reader.fieldnames is None:
+            rprint("[red]Error: CSV file has no header row")
+            raise typer.Exit(1)
+
+        # Check if required fields are present in the CSV
+        required_fields = [
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+        ]
+        if not all(field in csv_reader.fieldnames for field in required_fields):
+            rprint(
+                "[red]Error: CSV file must contain the following "
+                "columns: "
+                f"{', '.join(required_fields)}"
+            )
+            raise typer.Exit(1)
+
+        # Convert to list to avoid reading the file twice
+        return list(csv_reader)
+
+
+async def _seed_users_from_csv(csv_file: Path) -> None:
+    """Import users from a CSV file into the database."""
+    try:
+        # Validate the CSV file and get rows
+        rows = _validate_csv_file(csv_file)
+
+        success_count = 0
+        error_count = 0
+        duplicate_count = 0
+
+        # Process each user in its own transaction
+        for row in rows:
+            # Create a new session for each user to prevent transaction issues
+            async with async_session() as session:
+                try:
+                    # Prepare user data
+                    user_data = {
+                        "email": row["email"].strip(),
+                        "password": row["password"].strip(),
+                        "first_name": row["first_name"].strip(),
+                        "last_name": row["last_name"].strip(),
+                    }
+
+                    # Handle role (default to 'user' if not specified or
+                    # invalid)
+                    role = row.get("role", "").strip().lower()
+                    if role == "admin":
+                        user_data["role"] = RoleType.admin
+                    else:
+                        user_data["role"] = RoleType.user
+
+                    # Register the user
+                    await UserManager.register(user_data, session)
+                    await session.commit()
+
+                    rprint(f"  Created user: [green]{user_data['email']}")
+                    success_count += 1
+
+                except HTTPException as exc:
+                    # Check for duplicate email error specifically
+                    if exc.detail == ErrorMessages.EMAIL_EXISTS:
+                        rprint(
+                            f"  [yellow]Skipped: {user_data['email']} "
+                            "(already exists)"
+                        )
+                        duplicate_count += 1
+                    else:
+                        rprint(
+                            f"  [yellow]Failed: {user_data['email']} - "
+                            f"{exc.detail}"
+                        )
+                        error_count += 1
+                    # Rollback this transaction
+                    await session.rollback()
+
+                except (ValueError, KeyError) as e:
+                    # Handle validation errors
+                    rprint(
+                        f"  [yellow]Failed: {row.get('email', 'unknown')} - "
+                        f"{e!r}"
+                    )
+                    error_count += 1
+                    await session.rollback()
+
+                except SQLAlchemyError as e:
+                    # Handle database errors with a cleaner message
+                    error_msg = str(e).split("\n")[0]  # Just get the first line
+                    rprint(
+                        f"  [yellow]Database error: "
+                        f"{row.get('email', 'unknown')} - {error_msg}"
+                    )
+                    error_count += 1
+                    await session.rollback()
+
+        # Final summary with more detailed information
+        rprint(
+            f"\nSummary: {success_count} users created, "
+            f"{duplicate_count} duplicates skipped, "
+            f"{error_count} errors"
+        )
+
+    except SQLAlchemyError as exc:
+        rprint(f"\n[red]-> Database error: [bold]{exc}\n")
+        raise typer.Exit(1) from exc
+    except Exception as exc:
+        rprint(f"\n[red]-> Error processing CSV file: [bold]{exc}\n")
         raise typer.Exit(1) from exc
