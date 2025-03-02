@@ -20,7 +20,7 @@ from app.database.db import async_session
 from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from sqlalchemy.ext.asyncio import AsyncSession
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
