@@ -20,6 +20,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- CLI: add a 'seed' command to the 'db' group to populate the User table ([#743](https://github.com/seapagan/fastapi-template/pull/743)) by [seapagan](https://github.com/seapagan)
 - CLI: add a command to batch-populate random test users into the database ([#742](https://github.com/seapagan/fastapi-template/pull/742)) by [seapagan](https://github.com/seapagan)
 - Add user search endpoint with pagination and CLI command for same ([#741](https://github.com/seapagan/fastapi-template/pull/741)) by [seapagan](https://github.com/seapagan)
 - CLI: add command to add or remove admin status for a user ([#740](https://github.com/seapagan/fastapi-template/pull/740)) by [seapagan](https://github.com/seapagan)
