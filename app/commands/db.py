@@ -301,7 +301,6 @@ def seed(
         Path,
         typer.Argument(
             ...,
-            exists=True,
             file_okay=True,
             dir_okay=False,
             readable=True,
@@ -326,6 +325,11 @@ def seed(
     If no CSV file is specified, the command will look for 'users.seed' in the
     current directory.
     """
+    # Check if the file exists
+    if not csv_file.exists():
+        rprint(f"[red]Error: File '{csv_file}' does not exist")
+        raise typer.Exit(1)
+
     # Display which file we're using
     rprint(f"Using seed file: [green]{csv_file}")
 
@@ -336,7 +340,7 @@ def seed(
         )
         if not confirm:
             rprint("[cyan]Operation Cancelled.")
-            return
+            raise typer.Exit(0)
 
     rprint("\nImporting users from CSV file ... ")
 

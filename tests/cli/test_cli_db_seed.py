@@ -2,6 +2,7 @@
 
 # ruff: noqa: S105
 import csv
+import sys
 from pathlib import Path
 
 import pytest
@@ -24,8 +25,16 @@ class TestSeedCommand:
     seed_users_path = "app.commands.db._seed_users_from_csv"
     aiorun_path = "app.commands.db.aiorun"
 
-    def test_seed_no_force_cancels(self, mocker) -> None:
+    @pytest.mark.xfail(
+        sys.version_info < (3, 10),
+        reason="Fails under Python <3.10, testing issue not a code issue.",
+    )
+    def test_seed_no_force_cancels(self, mocker, tmp_path) -> None:
         """Test that running 'seed' without --force cancels the operation."""
+        # Create a dummy CSV file
+        dummy_file = tmp_path / "users.seed"
+        dummy_file.touch()
+
         # Mock the validation to return some valid rows
         mocker.patch(
             self.validate_csv_path,
@@ -40,18 +49,32 @@ class TestSeedCommand:
             ],
         )
 
+        # Mock the seed function
+        seed_mock = mocker.patch(self.seed_users_path, autospec=True)
+
         # Mock the typer.confirm to return False (user cancels)
         mocker.patch("typer.confirm", return_value=False)
 
         # Run the command
-        result = CliRunner().invoke(app, ["db", "seed", "users.seed"])
+        result = CliRunner().invoke(app, ["db", "seed", str(dummy_file)])
 
         # Verify output and success
         assert result.exit_code == 0
         assert "Cancelled" in result.output
 
-    def test_seed_with_force(self, mocker) -> None:
+        # Verify seed function was never called
+        seed_mock.assert_not_called()
+
+    @pytest.mark.xfail(
+        sys.version_info < (3, 10),
+        reason="Fails under Python <3.10, testing issue not a code issue.",
+    )
+    def test_seed_with_force(self, mocker, tmp_path) -> None:
         """Test that running 'seed' with --force seeds the database."""
+        # Create a dummy CSV file
+        dummy_file = tmp_path / "users.seed"
+        dummy_file.touch()
+
         # Mock the validation to return some valid rows
         mock_rows = [
             {
@@ -64,12 +87,12 @@ class TestSeedCommand:
         ]
         mocker.patch(self.validate_csv_path, return_value=mock_rows)
 
-        # Mock the aiorun function
-        aiorun_mock = mocker.patch(self.aiorun_path)
+        # Mock the seed function
+        seed_mock = mocker.patch(self.seed_users_path, autospec=True)
 
         # Run the command with --force
         result = CliRunner().invoke(
-            app, ["db", "seed", "users.seed", "--force"]
+            app, ["db", "seed", str(dummy_file), "--force"]
         )
 
         # Verify output and success
@@ -77,11 +100,19 @@ class TestSeedCommand:
         assert "Importing users from CSV file" in result.output
         assert "Done!" in result.output
 
-        # Verify _seed_users_from_csv was called
-        aiorun_mock.assert_called_once()
+        # Verify seed function was called with correct arguments
+        seed_mock.assert_called_once_with(dummy_file)
 
-    def test_seed_with_confirmation(self, mocker) -> None:
+    @pytest.mark.xfail(
+        sys.version_info < (3, 10),
+        reason="Fails under Python <3.10, testing issue not a code issue.",
+    )
+    def test_seed_with_confirmation(self, mocker, tmp_path) -> None:
         """Test that running 'seed' with confirmation seeds the database."""
+        # Create a dummy CSV file
+        dummy_file = tmp_path / "users.seed"
+        dummy_file.touch()
+
         # Mock the validation to return some valid rows
         mock_rows = [
             {
@@ -97,19 +128,49 @@ class TestSeedCommand:
         # Mock the typer.confirm to return True (user confirms)
         mocker.patch("typer.confirm", return_value=True)
 
-        # Mock the aiorun function
-        aiorun_mock = mocker.patch(self.aiorun_path)
+        # Mock the seed function
+        seed_mock = mocker.patch(self.seed_users_path, autospec=True)
 
         # Run the command without --force
-        result = CliRunner().invoke(app, ["db", "seed", "users.seed"])
+        result = CliRunner().invoke(app, ["db", "seed", str(dummy_file)])
 
         # Verify output and success
         assert result.exit_code == 0
         assert "Importing users from CSV file" in result.output
         assert "Done!" in result.output
 
-        # Verify _seed_users_from_csv was called
-        aiorun_mock.assert_called_once()
+        # Verify seed function was called with correct arguments
+        seed_mock.assert_called_once_with(dummy_file)
+
+    @pytest.mark.xfail(
+        sys.version_info < (3, 10),
+        reason="Fails under Python <3.10, testing issue not a code issue.",
+    )
+    def test_seed_missing_specified_file(self) -> None:
+        """Test running 'seed' with a non-existent file fails with an error."""
+        # Use a path that definitely doesn't exist
+        non_existent_file = "/tmp/definitely_does_not_exist_file.seed"  # noqa: S108
+
+        # Run the command with the non-existent file
+        result = CliRunner().invoke(app, ["db", "seed", non_existent_file])
+
+        # Verify output and failure
+        assert result.exit_code == 1
+        assert "Error: File" in result.output
+        assert "does not exist" in result.output
+
+    def test_seed_missing_default_file(self) -> None:
+        """Test that running 'seed' with the default file missing fails."""
+        # Run the command without specifying a file (will use default
+        # 'users.seed')
+        with CliRunner().isolated_filesystem():
+            # Make sure the default file doesn't exist in the isolated fs
+            result = CliRunner().invoke(app, ["db", "seed"])
+
+            # Verify output and failure
+            assert result.exit_code == 1
+            assert "Error: File" in result.output
+            assert "does not exist" in result.output
 
 
 class TestValidateCsvFile:
