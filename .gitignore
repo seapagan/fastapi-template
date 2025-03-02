@@ -215,3 +215,5 @@ docs/CNAME
 .changelog_generator.toml
 .envrc
 .clinerules
+.cursorrules
+.windsurfrules
