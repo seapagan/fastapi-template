@@ -1,10 +1,12 @@
 """CLI command to control the Database."""
 
+from __future__ import annotations
+
 import csv
 import random
 from asyncio import run as aiorun
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import TYPE_CHECKING, Annotated, Optional
 
 import typer
 from alembic import command
@@ -13,11 +15,13 @@ from faker import Faker
 from fastapi import HTTPException
 from rich import print as rprint
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import async_session
 from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
 
 app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
@@ -323,7 +327,7 @@ def seed(
     current directory.
     """
     # Display which file we're using
-    rprint(f"Using seed file: [green]{csv_file}\n")
+    rprint(f"Using seed file: [green]{csv_file}")
 
     if not force:
         confirm = typer.confirm(
@@ -342,7 +346,7 @@ def seed(
     rprint(DONE_MSG)
 
 
-def _validate_csv_file(csv_file: Path) -> list:
+def _validate_csv_file(csv_file: Path) -> list[dict[str, str]]:
     """Validate CSV file and return rows if valid."""
     with csv_file.open(encoding="utf-8") as file:
         csv_reader = csv.DictReader(file)
@@ -387,7 +391,7 @@ async def _seed_users_from_csv(csv_file: Path) -> None:
             async with async_session() as session:
                 try:
                     # Prepare user data
-                    user_data = {
+                    user_data: dict[str, str | RoleType] = {
                         "email": row["email"].strip(),
                         "password": row["password"].strip(),
                         "first_name": row["first_name"].strip(),
@@ -449,7 +453,7 @@ async def _seed_users_from_csv(csv_file: Path) -> None:
         rprint(
             f"\nSummary: {success_count} users created, "
             f"{duplicate_count} duplicates skipped, "
-            f"{error_count} errors"
+            f"{error_count} errors\n"
         )
 
     except SQLAlchemyError as exc:
