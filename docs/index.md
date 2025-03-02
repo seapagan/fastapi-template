@@ -40,7 +40,7 @@ following advantages to starting your own from scratch :
   or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
   (unless you want to!). All database usage is Asynchronous.
-  [Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"} is used to
+  [Alembic](https://github.com/sqlalchemy/alembic){:target="\_blank"} is used to
   control database migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
@@ -62,17 +62,18 @@ following advantages to starting your own from scratch :
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
   data) since it is based on the excellent
-  [Typer](https://typer.tiangolo.com/){:target="_blank"} library.
+  [Typer](https://typer.tiangolo.com/){:target="\_blank"} library.
 - Easily batch-add random test users to the database for testing/development
-  purposes using the CLI.
+  purposes using the CLI or seed the database with pre-set users from a CSV
+  file.
 - Database and Secrets are automatically read from Environment variables or a
   `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.
 - Manager class set up to send emails to users, and by default an email is sent
-  when new users register. The content is set by a template (currently a
-  basic placeholder). This email has a link for the user to confirm their email
+  when new users register. The content is set by a template (currently a basic
+  placeholder). This email has a link for the user to confirm their email
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
@@ -92,9 +93,9 @@ This project uses [Semantic Versioning 2.0.0](https://semver.org/)
 
 Given a version number `MAJOR`.`MINOR`.`PATCH`, increment the:
 
-  1. `MAJOR` version when you make incompatible API changes
-  2. `MINOR` version when you add functionality in a backward compatible manner
-  3. `PATCH` version when you make backward compatible bug fixes
+1. `MAJOR` version when you make incompatible API changes
+2. `MINOR` version when you add functionality in a backward compatible manner
+3. `PATCH` version when you make backward compatible bug fixes
 
 Additional labels for pre-release and build metadata are available as extensions
 to the MAJOR.MINOR.PATCH format.
@@ -124,8 +125,8 @@ For those who let me know they are using this Template, I'll add links back to
 your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
-appreciation for my work, why not [Buy me a
-Coffee!](https://www.buymeacoffee.com/seapagan){:target="_blank"} 😃
+appreciation for my work, why not
+[Buy me a Coffee!](https://www.buymeacoffee.com/seapagan){:target="\_blank"} 😃
 
 ## Funding Link
 

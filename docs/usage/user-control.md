@@ -13,8 +13,8 @@ command-line.
 
 ## Add a User
 
-This is described in the [previous page](add-user.md). It is important to
-note that any user added this way will be **automatically verified**.
+This is described in the [previous page](add-user.md). It is important to note
+that any user added this way will be **automatically verified**.
 
 ## List All Users
 
@@ -65,10 +65,9 @@ Basic search (searches all fields):
 $ api-admin user search "john"
 ```
 
-!!! tip
-    The quotes around the search term are optional if the term does not contain
-    spaces. For example, both `api-admin user search john` and `api-admin user
-    search "john"` are valid.
+!!! tip The quotes around the search term are optional if the term does not
+contain spaces. For example, both `api-admin user search john` and
+`api-admin user search "john"` are valid.
 
 Search in a specific field:
 
@@ -89,7 +88,8 @@ For exact matching, use the `--exact` flag:
 $ api-admin user search "john.doe@example.com" --exact
 ```
 
-The search results will be displayed in a table showing the user's Id, Email address, First and Last name, Role, and the Verified and Banned Status.
+The search results will be displayed in a table showing the user's Id, Email
+address, First and Last name, Role, and the Verified and Banned Status.
 
 ## Ban or Unban a specific User
 
@@ -132,15 +132,68 @@ $ api-admin user delete 23
 They will no longer be able to access the API, this CANNOT BE UNDONE. It's
 probably better to BAN a user unless you are very sure.
 
+## Seed Database with Users from a File
+
+You can import users from a CSV file using the `db seed` command:
+
+```console
+$ api-admin db seed users.seed
+```
+
+This is useful for quickly populating a database with local users.
+
+By default, the command looks for a file named `users.seed` in the current
+directory, but you can specify a different file path as an argument.
+
+The CSV file should have a header row with the following columns:
+
+- `email` - User's email address (required)
+- `password` - User's password in **PLAIN TEXT** (required)
+- `first_name` - User's first name (required)
+- `last_name` - User's last name (required)
+- `role` - User's role, either 'user' or 'admin' (optional, defaults to 'user')
+
+Example `users.seed` file:
+
+```csv
+email,password,first_name,last_name,role
+john.doe@example.com,SecurePassword123!,John,Doe,user
+jane.smith@example.com,AnotherPassword456!,Jane,Smith,admin
+alex.wilson@example.com,StrongPassword789!,Alex,Wilson,user
+```
+
+!!! important
+    This seed file has passwords in **PLAIN TEXT** and should not be added
+    to source control, ESPECIALLY if they are stored in an external service like
+    GitHub.
+
+The command will:
+
+- Create new users from the CSV file
+- Skip users with email addresses that already exist in the database
+- Report any errors that occur during the import process
+- Display a summary of created users, skipped duplicates, and errors
+
+You can use the `--force` or `-f` flag to skip the confirmation prompt:
+
+```console
+$ api-admin db seed users.seed --force
+```
+
+All users created with this command are automatically verified and can log in
+immediately.
+
 ## Populate Database with Test Users
 
-You can quickly populate your database with random test users using the `db populate` command:
+You can quickly populate your database with random test users using the
+`db populate` command:
 
 ```console
 $ api-admin db populate
 ```
 
-This will create 5 users by default (4 regular users and 1 admin). You can specify a different number of users with the `--count` or `-c` flag:
+This will create 5 users by default (4 regular users and 1 admin). You can
+specify a different number of users with the `--count` or `-c` flag:
 
 ```console
 $ api-admin db populate --count 10
@@ -158,4 +211,6 @@ For example:
 - 10 users = 8 regular + 2 admins
 - 20 users = 17 regular + 3 admins (maximum admins)
 
-All users are created with the default password `Password123!` and are automatically verified. The command generates realistic email addresses using various patterns and common email domains.
+All users are created with the default password `Password123!` and are
+automatically verified. The command generates realistic email addresses using
+various patterns and common email domains.

@@ -13,6 +13,7 @@ with Authorization already baked-in.
 
 <!-- Full documentation is now availiable on it's own page [here][doc]. Please visit
 this for full usage information, how-to's and more. -->
+
 Documentation for this project is now availiable on it's own page at
 [https://api-template.seapagan.net][doc]. This is a work in progress, and when
 finished will include full usage information and how-to's.
@@ -79,9 +80,8 @@ following advantages to starting your own from scratch :
 - Baked-in User database and management. Routes are provided to
   add/edit/delete/search or ban (and unban) Users.
 - Postgresql Integration, using SQLAlchemy ORM, no need for raw SQL queries
-  (unless you want to!). All database usage is Asynchronous.
-  [Alembic][alembic] is used to control database
-  migrations.
+  (unless you want to!). All database usage is Asynchronous. [Alembic][alembic]
+  is used to control database migrations.
 - Register and Login routes provided, both of which return a JWT token to be
   used in all future requests. JWT Token expires 120 minutes after issue.
 - JWT-based security as a Bearer Token to control access to all your routes.
@@ -100,18 +100,18 @@ following advantages to starting your own from scratch :
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
-  data) since it is based on the excellent
-  [Typer][typer] library.
+  data) since it is based on the excellent [Typer][typer] library.
 - Easily batch-add random test users to the database for testing/development
-  purposes using the CLI.
+  purposes using the CLI or seed the database with pre-set users from a CSV
+  file.
 - Database and Secrets are automatically read from Environment variables or a
   `.env` file if that is provided.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.
 - Manager class set up to send emails to users, and by default an email is sent
-  when new users register. The content is set by a template (currently a
-  basic placeholder). This email has a link for the user to confirm their email
+  when new users register. The content is set by a template (currently a basic
+  placeholder). This email has a link for the user to confirm their email
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
@@ -141,8 +141,8 @@ For those who let me know they are using this Template, I'll add links back to
 your project in this documentation.
 
 If this template saves you time/effort/money, or you just wish to show your
-appreciation for my work, why not [Sponsor my
-Work][sponsor] or [Buy me a Coffee!][coffee] 😃
+appreciation for my work, why not [Sponsor my Work][sponsor] or [Buy me a
+Coffee!][coffee] 😃
 
 ## Installation
 
@@ -286,27 +286,22 @@ See [Contributing][contrib] for details on how to contribute to this project.
 
 ## GitHub Discussions
 
-I have enabled
-[Discussions][discussions] on this
-repository, so if you have any questions, suggestions or just want to chat about
-this template, please feel free to start a discussion.
+I have enabled [Discussions][discussions] on this repository, so if you have any
+questions, suggestions or just want to chat about this template, please feel
+free to start a discussion.
 
-[doc]:https://api-template.seapagan.net
-[contrib]:https://api-template.seapagan.net/contributing/
-[breaking]:https://api-template.seapagan.net/important/
-[install]:https://api-template.seapagan.net/usage/installation/
-[latest-release]:https://github.com/seapagan/fastapi-template/releases/latest
-[discussions]:https://github.com/seapagan/fastapi-template/discussions
-
-[legacy-branch]:https://github.com/seapagan/fastapi-template/tree/0.4.2
-
-[sponsor]:https://github.com/sponsors/seapagan
-[coffee]:https://www.buymeacoffee.com/seapagan
-
+[doc]: https://api-template.seapagan.net
+[contrib]: https://api-template.seapagan.net/contributing/
+[breaking]: https://api-template.seapagan.net/important/
+[install]: https://api-template.seapagan.net/usage/installation/
+[latest-release]: https://github.com/seapagan/fastapi-template/releases/latest
+[discussions]: https://github.com/seapagan/fastapi-template/discussions
+[legacy-branch]: https://github.com/seapagan/fastapi-template/tree/0.4.2
+[sponsor]: https://github.com/sponsors/seapagan
+[coffee]: https://www.buymeacoffee.com/seapagan
 [alembic]: https://github.com/sqlalchemy/alembic
-[typer]:https://typer.tiangolo.com/
-[fastapi]:https://fastapi.tiangolo.com/
-[pytest]:https://docs.pytest.org
-
-[tut-basic]:https://fastapi.tiangolo.com/tutorial/
-[tut-advanced]:https://fastapi.tiangolo.com/advanced/
+[typer]: https://typer.tiangolo.com/
+[fastapi]: https://fastapi.tiangolo.com/
+[pytest]: https://docs.pytest.org
+[tut-basic]: https://fastapi.tiangolo.com/tutorial/
+[tut-advanced]: https://fastapi.tiangolo.com/advanced/
