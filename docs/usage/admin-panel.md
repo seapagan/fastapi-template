@@ -59,7 +59,8 @@ them in your environment or `.env` file.
 - `ADMIN_PAGES_TITLE` - The title of the admin site
 - `ADMIN_PAGES_ENCRYPTION_KEY` - The (OPTIONAL)key used to encrypt the session
   data (see below)
-- `ADMIN_PAGES_TIMEOUT` - The timeout for the session data
+- `ADMIN_PAGES_TIMEOUT` - The timeout for the session data (in seconds,
+  defaults to 86400 seconds which is 24 hours)
 
 ## Session Encryption
 
@@ -67,14 +68,33 @@ By default, the admin site uses the `Fernet` encryption method to encrypt the
 session data. You can set the `ADMIN_PAGES_ENCRYPTION_KEY` to a secret key to
 use for this encryption. If you do not set this, a random secure key will be
 generated for you each time the server is restarted (which will invalidate any
-current sessions).
+current sessions so users just will need to log back in again).
 
-If this is an issue, you can manually generate a key using the following code:
+### Automatically Generating a Key
+
+To ensure that active sessions will persist after a server restart, you can
+generate a key using the CLI:
+
+```console
+api-admin keys -a
+```
+
+This will generate a secure key, and optionally update the `.env` file. If you
+choose not to update the file, you can copy the key from the console output and
+paste it into the `.env` file:
+
+```ini
+ADMIN_PAGES_ENCRYPTION_KEY=your_generated_key_here
+```
+
+### Manually Generating a Key
+
+You can also manually generate a key using the `Fernet` library in Python:
 
 ```python
 from cryptography.fernet import Fernet
 key = Fernet.generate_key().decode()
-print(key)
+print(key)```
 ```
 
 You can then set this key in your environment or `.env` file:
@@ -82,7 +102,3 @@ You can then set this key in your environment or `.env` file:
 ```ini
 ADMIN_PAGES_ENCRYPTION_KEY=your_generated_key_here
 ```
-
-!!! tip "Future Plans"
-    I'll most likely add an option to the CLI to generate this key in the future
-    (and a good SECRET_KEY for the JWT tokens too.)
