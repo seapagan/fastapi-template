@@ -1,12 +1,37 @@
 """CLI command to generate security keys."""
 
 import secrets
+from pathlib import Path
 
 import typer
 from cryptography.fernet import Fernet
+from dotenv import set_key
 from rich import print as rprint
 
 app = typer.Typer(no_args_is_help=True)
+
+
+def update_env_file(key: str, value: str) -> None:
+    """Update the .env file with the new key value pair.
+
+    Args:
+        key (str): The environment variable name
+        value (str): The value to set
+    """
+    rprint(f"[yellow]Random {key} : {value}\n")
+
+    if typer.confirm("Would you like to update the .env file with this key?"):
+        env_path = Path(".env")
+        if not env_path.exists():
+            rprint("[yellow]Warning: .env file not found, creating new one")
+            env_path.touch()
+
+        set_key(env_path, key, value)
+        rprint(f"[green]Successfully updated {key} in .env file")
+    else:
+        rprint(
+            f"Add/modify the [green]{key}[/green] in the .env file to use this key:"
+        )
 
 
 @app.callback(invoke_without_command=True)
@@ -36,19 +61,11 @@ def keys(
         raise typer.Exit(1)
 
     if secret:
-        # Placeholder for secret key generation
+        # Generate secret key
         secret_key = secrets.token_hex(32)
-        rprint(f"[yellow]Random Secret key : {secret_key}\n")
-        rprint(
-            "Add/modify the [green]SECRET_KEY[/green] in the .env file to "
-            "use this key:"
-        )
+        update_env_file("SECRET_KEY", secret_key)
 
     if admin:
-        # Placeholder for admin key generation
+        # Generate admin key
         admin_key = Fernet.generate_key().decode()
-        rprint(f"[yellow]Random Admin key : {admin_key}\n")
-        rprint(
-            "Add/modify the [green]ADMIN_PAGES_ENCRYPTION_KEY[/green] in the "
-            ".env file to use this key:"
-        )
+        update_env_file("ADMIN_PAGES_ENCRYPTION_KEY", admin_key)
