@@ -6,7 +6,7 @@ import typer
 from rich import print as rprint
 from rich.panel import Panel
 
-from app.commands import custom, db, dev, docs, test, user
+from app.commands import custom, db, dev, docs, keys, test, user
 from app.config.helpers import get_api_details, get_api_version
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -73,6 +73,11 @@ app.add_typer(
     docs.app, name="docs", help="Generate and upload API documentation."
 )
 app.add_typer(test.app, name="test", help="Setup and Run tests.")
+app.add_typer(
+    keys.app,
+    name="keys",
+    help="Generate security keys for the application.",
+)
 
 if __name__ == "__main__":  # pragma: no cover
     app()
