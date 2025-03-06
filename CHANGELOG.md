@@ -20,6 +20,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- CLI: add commands to create the secret and admin keys ([#746](https://github.com/seapagan/fastapi-template/pull/746)) by [seapagan](https://github.com/seapagan)
 - CLI: add a 'seed' command to the 'db' group to populate the User table ([#743](https://github.com/seapagan/fastapi-template/pull/743)) by [seapagan](https://github.com/seapagan)
 - CLI: add a command to batch-populate random test users into the database ([#742](https://github.com/seapagan/fastapi-template/pull/742)) by [seapagan](https://github.com/seapagan)
 - Add user search endpoint with pagination and CLI command for same ([#741](https://github.com/seapagan/fastapi-template/pull/741)) by [seapagan](https://github.com/seapagan)
@@ -30,6 +31,10 @@ Everything in this section will be included in the next official release.
 **Bug Fixes**
 
 - Fix crash when running 'db init' from the CLI ([#737](https://github.com/seapagan/fastapi-template/pull/737)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Bump jinja2 from 3.1.5 to 3.1.6 ([#745](https://github.com/seapagan/fastapi-template/pull/745)) by [dependabot[bot]](https://github.com/apps/dependabot)
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.patch)
 
