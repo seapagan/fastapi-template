@@ -105,7 +105,8 @@ following advantages to starting your own from scratch :
   purposes using the CLI or seed the database with pre-set users from a CSV
   file.
 - Database and Secrets are automatically read from Environment variables or a
-  `.env` file if that is provided.
+  `.env` file if that is provided. The CLI can generate and set the JTW Secret
+  and Admin pages encryption keys.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
 - Control permitted CORS Origin through Environment variables.

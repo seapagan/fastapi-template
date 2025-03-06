@@ -30,7 +30,8 @@ def update_env_file(key: str, value: str) -> None:
         rprint(f"[green]Successfully updated {key} in .env file")
     else:
         rprint(
-            f"Add/modify the [green]{key}[/green] in the .env file to use this key:"
+            f"Add/modify the [green]{key}[/green] in the .env file to use "
+            "this key."
         )
 
 

@@ -86,7 +86,29 @@ TEST_DB_NAME=my_test_database_name
 ## Change the SECRET_KEY
 
 Do not leave this as default, generate a new unique key for each of your
-projects!
+projects! This key is used to sign the JWT tokens and should be kept secret, and
+be unique for each project.
+
+### Through the CLI
+
+You can do this by running the below command in the root of the project:
+
+```console
+api-admin keys -s
+```
+
+This will generate a new key and optionally update the `.env` file with the new
+value. If you choose not to do the update automatically, you can copy the key
+from the console output and paste it into the `.env` file.
+
+```ini
+SECRET_KEY=d0d83c7ac2f3e4dfa205dc3c51b4952ad57fa8a842c8417168dc46bc07fbc1f8
+```
+
+### Manually
+
+If you prefer to do this manually, you can generate a new key using the below
+commands:
 
 To generate a good secret key you can use the below command on Linux
 or Mac:
