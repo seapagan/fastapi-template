@@ -69,11 +69,6 @@
   change it easily.
 - Ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
-- Add an option to create a new JWT secret or Admin Pages secret, and update the
-  config file with it automatically. This will be handy for security reasons,
-  and general deployment. The server will have to be restarted for this to take
-  effect (offer to do this?). `python-dotenv` has a `set_key` method that can be
-  used to update the `.env` file.
 - Add commands to the CLI to serve, build, publish to gh-pages the API
   documentation site.
 
