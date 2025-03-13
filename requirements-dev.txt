@@ -125,7 +125,7 @@ requests==2.32.3
 rich==13.9.4
 rich-toolkit==0.13.2
 rtoml==0.12.0
-ruff==0.9.7
+ruff==0.9.10
 shellingham==1.5.4
 simple-toml-settings==0.9.0
 six==1.17.0
