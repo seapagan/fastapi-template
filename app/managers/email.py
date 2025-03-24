@@ -1,4 +1,4 @@
-"""Define the Email Manager."""  # noqa: A005
+"""Define the Email Manager."""
 
 from __future__ import annotations
 

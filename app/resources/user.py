@@ -181,4 +181,4 @@ async def search_users(
         exact_match=exact_match,
     )
     # Use cast to help mypy understand the return type
-    return cast(Page[UserResponse], await paginate(db, query))
+    return cast("Page[UserResponse]", await paginate(db, query))
