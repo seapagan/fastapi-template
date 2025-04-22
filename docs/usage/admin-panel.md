@@ -94,7 +94,7 @@ You can also manually generate a key using the `Fernet` library in Python:
 ```python
 from cryptography.fernet import Fernet
 key = Fernet.generate_key().decode()
-print(key)```
+print(key)
 ```
 
 You can then set this key in your environment or `.env` file:
