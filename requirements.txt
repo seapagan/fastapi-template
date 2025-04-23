@@ -171,7 +171,7 @@ typing-extensions==4.12.2
     #   starlette
     #   typer
     #   uvicorn
-uvicorn==0.34.0
+uvicorn==0.34.2
     # via
     #   api-template
     #   fastapi

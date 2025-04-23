@@ -433,7 +433,7 @@ urllib3==2.3.0
     # via
     #   pygithub
     #   requests
-uvicorn==0.34.0
+uvicorn==0.34.2
     # via
     #   api-template
     #   fastapi
