@@ -2,108 +2,302 @@
 #    uv export --no-hashes --no-emit-project --output-file=requirements-dev.txt
 aiosmtpd==1.4.6
 aiosmtplib==3.0.2
+    # via fastapi-mail
 aiosqlite==0.21.0
 alembic==1.14.1
+    # via api-template
 annotated-types==0.7.0
+    # via pydantic
 anyio==4.8.0
+    # via
+    #   api-template
+    #   asyncclick
+    #   httpx
+    #   openai
+    #   starlette
+    #   watchfiles
 application-properties==0.8.2
+    # via pymarkdownlnt
 async-timeout==5.0.1 ; python_full_version < '3.11'
+    # via asyncpg
 asyncclick==8.1.8
+    # via api-template
 asyncpg==0.30.0
+    # via
+    #   api-template
+    #   asyncpg-stubs
 asyncpg-stubs==0.30.0
 atpublic==5.1
+    # via aiosmtpd
 attrs==25.1.0
+    # via aiosmtpd
 babel==2.17.0
+    # via
+    #   mkdocs-git-revision-date-localized-plugin
+    #   mkdocs-material
 bcrypt==4.2.1
+    # via
+    #   api-template
+    #   libpass
 beautifulsoup4==4.13.3
+    # via mkdocs-swagger-ui-tag
 blinker==1.9.0
+    # via fastapi-mail
 certifi==2025.1.31
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 cffi==1.17.1
+    # via
+    #   cryptography
+    #   pynacl
 cfgv==3.4.0
+    # via pre-commit
 charset-normalizer==3.4.1
+    # via requests
 click==8.1.8
+    # via
+    #   mkdocs
+    #   rich-toolkit
+    #   typer
+    #   uvicorn
 colorama==0.4.6
+    # via
+    #   asyncclick
+    #   click
+    #   griffe
+    #   mkdocs
+    #   mkdocs-material
+    #   pytest
+    #   tqdm
+    #   uvicorn
 columnar==1.4.1
+    # via pymarkdownlnt
 coverage==7.6.12
+    # via pytest-cov
 cryptography==44.0.1
+    # via pyjwt
 csscompressor==0.9.5
+    # via mkdocs-minify-plugin
 deprecated==1.2.18
+    # via pygithub
 distlib==0.3.9
+    # via virtualenv
 distro==1.9.0
+    # via openai
 dnspython==2.7.0
+    # via email-validator
 email-validator==2.2.0
+    # via
+    #   api-template
+    #   fastapi
+    #   fastapi-mail
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
+    # via
+    #   anyio
+    #   pytest
 faker==36.1.1
 fastapi==0.115.8
+    # via api-template
 fastapi-cli==0.0.7
+    # via fastapi
 fastapi-mail==1.4.2
+    # via api-template
 fastapi-pagination==0.12.34
+    # via api-template
 filelock==3.17.0
+    # via virtualenv
 ghp-import==2.1.0
+    # via mkdocs
 gitdb==4.0.12
+    # via gitpython
 github-changelog-md==0.9.5
 gitpython==3.1.44
+    # via
+    #   mkdocs-git-revision-date-localized-plugin
+    #   mkdocs-latest-git-tag-plugin
 greenlet==3.1.1
+    # via sqlalchemy
 griffe==1.5.7
+    # via mkdocstrings-python
 h11==0.14.0
+    # via
+    #   httpcore
+    #   uvicorn
 htmlmin2==0.1.13
+    # via mkdocs-minify-plugin
 httpcore==1.0.7
+    # via httpx
 httptools==0.6.4
+    # via uvicorn
 httpx==0.28.1
+    # via
+    #   api-template
+    #   fastapi
+    #   openai
 identify==2.6.7
+    # via pre-commit
 idna==3.10
+    # via
+    #   anyio
+    #   email-validator
+    #   httpx
+    #   requests
 importlib-metadata==8.6.1 ; python_full_version < '3.10'
+    # via
+    #   markdown
+    #   mkdocs
+    #   mkdocs-get-deps
+    #   mkdocstrings
+    #   pytest-randomly
 iniconfig==2.0.0
+    # via pytest
 itsdangerous==2.2.0
+    # via sqladmin
 jinja2==3.1.5
+    # via
+    #   api-template
+    #   fastapi
+    #   fastapi-mail
+    #   mkdocs
+    #   mkdocs-material
+    #   mkdocstrings
+    #   sqladmin
 jiter==0.8.2
+    # via openai
 jsmin==3.0.1
+    # via mkdocs-minify-plugin
 libpass==1.9.0
+    # via api-template
 mako==1.3.9
+    # via alembic
 markdown==3.7
+    # via
+    #   mkdocs
+    #   mkdocs-autorefs
+    #   mkdocs-material
+    #   mkdocstrings
+    #   pymdown-extensions
 markdown-it-py==3.0.0
+    # via rich
 markupsafe==3.0.2
+    # via
+    #   jinja2
+    #   mako
+    #   mkdocs
+    #   mkdocs-autorefs
+    #   mkdocstrings
+    #   wtforms
 mdurl==0.1.2
+    # via markdown-it-py
 mergedeep==1.3.4
+    # via
+    #   mkdocs
+    #   mkdocs-get-deps
 mkdoc==0.1
 mkdocs==1.6.1
+    # via
+    #   mkdocs-autorefs
+    #   mkdocs-git-revision-date-localized-plugin
+    #   mkdocs-latest-git-tag-plugin
+    #   mkdocs-material
+    #   mkdocs-minify-plugin
+    #   mkdocstrings
 mkdocs-autorefs==1.3.1
+    # via
+    #   mkdocstrings
+    #   mkdocstrings-python
 mkdocs-get-deps==0.2.0
+    # via
+    #   mkdocs
+    #   mkdocstrings
 mkdocs-git-revision-date-localized-plugin==1.3.0
 mkdocs-latest-git-tag-plugin==0.1.2
 mkdocs-material==9.6.4
 mkdocs-material-extensions==1.3.1
+    # via mkdocs-material
 mkdocs-minify-plugin==0.8.0
 mkdocs-swagger-ui-tag @ git+https://github.com/seapagan/mkdocs-swagger-ui-tag@ade4e15cd6b9643df762823c9853b5b13df29578
 mkdocstrings==0.28.1
+    # via mkdocstrings-python
 mkdocstrings-python==1.16.0
+    # via mkdocstrings
 mock==5.1.0
 mypy==1.15.0
 mypy-extensions==1.0.0
+    # via mypy
 nodeenv==1.9.1
+    # via pre-commit
 openai==1.63.2
+    # via mkdoc
 packaging==24.2
+    # via
+    #   mkdocs
+    #   pytest
+    #   pytest-sugar
 paginate==0.5.7
+    # via mkdocs-material
 pastel==0.2.1
+    # via poethepoet
 pathspec==0.12.1
+    # via mkdocs
 platformdirs==4.3.6
+    # via
+    #   mkdocs-get-deps
+    #   virtualenv
 pluggy==1.5.0
+    # via pytest
 poethepoet==0.32.2
 pprintpp==0.4.0
+    # via pytest-clarity
 pre-commit==4.1.0
 psycopg2==2.9.10
+    # via api-template
 pycparser==2.22
+    # via cffi
 pydantic==2.10.6
+    # via
+    #   api-template
+    #   fastapi
+    #   fastapi-mail
+    #   fastapi-pagination
+    #   openai
+    #   pydantic-settings
 pydantic-core==2.27.2
+    # via pydantic
 pydantic-settings==2.7.1
+    # via
+    #   api-template
+    #   fastapi-mail
 pyfakefs==5.7.4
 pygithub==2.6.0
+    # via github-changelog-md
 pygments==2.19.1
+    # via
+    #   mkdocs-material
+    #   rich
 pyjwt==2.10.1
+    # via
+    #   api-template
+    #   pygithub
 pymarkdownlnt==0.9.28
 pymdown-extensions==10.14.3
+    # via
+    #   mkdocs-material
+    #   mkdocstrings
 pynacl==1.5.0
+    # via pygithub
 pytest==8.3.4
+    # via
+    #   pytest-asyncio
+    #   pytest-clarity
+    #   pytest-cov
+    #   pytest-env
+    #   pytest-mock
+    #   pytest-randomly
+    #   pytest-reverse
+    #   pytest-sugar
 pytest-asyncio==0.21.2
 pytest-clarity==1.0.1
 pytest-cov==6.0.0
@@ -114,43 +308,153 @@ pytest-reverse==1.8.0
 pytest-sugar==1.0.0
 pytest-watcher==0.4.3
 python-dateutil==2.9.0.post0
+    # via ghp-import
 python-decouple==3.8
+    # via api-template
 python-dotenv==1.0.1
+    # via
+    #   mkdoc
+    #   pydantic-settings
+    #   uvicorn
 python-multipart==0.0.20
+    # via
+    #   fastapi
+    #   sqladmin
 pytz==2025.1
+    # via mkdocs-git-revision-date-localized-plugin
 pyyaml==6.0.2
+    # via
+    #   application-properties
+    #   mkdocs
+    #   mkdocs-get-deps
+    #   poethepoet
+    #   pre-commit
+    #   pymdown-extensions
+    #   pyyaml-env-tag
+    #   uvicorn
 pyyaml-env-tag==0.1
+    # via mkdocs
 regex==2024.11.6
+    # via mkdocs-material
 requests==2.32.3
+    # via
+    #   mkdocs-material
+    #   pygithub
 rich==13.9.4
+    # via
+    #   api-template
+    #   github-changelog-md
+    #   pytest-clarity
+    #   rich-toolkit
+    #   typer
 rich-toolkit==0.13.2
+    # via fastapi-cli
 rtoml==0.12.0
+    # via
+    #   api-template
+    #   github-changelog-md
+    #   simple-toml-settings
 ruff==0.11.2
 shellingham==1.5.4
+    # via typer
 simple-toml-settings==0.9.0
+    # via github-changelog-md
 six==1.17.0
+    # via python-dateutil
 smmap==5.0.2
+    # via gitdb
 sniffio==1.3.1
+    # via
+    #   anyio
+    #   openai
 soupsieve==2.6
+    # via beautifulsoup4
 sqladmin==0.20.1
+    # via api-template
 sqlalchemy==2.0.38
+    # via
+    #   alembic
+    #   api-template
+    #   sqladmin
 starlette==0.45.3
+    # via
+    #   fastapi
+    #   fastapi-mail
+    #   sqladmin
 termcolor==2.5.0
+    # via pytest-sugar
 tomli==2.2.1
+    # via
+    #   application-properties
+    #   coverage
+    #   mypy
+    #   poethepoet
+    #   pytest
+    #   pytest-env
+    #   pytest-watcher
 toolz==1.0.0
+    # via columnar
 tqdm==4.67.1
+    # via openai
 typer==0.12.5
+    # via
+    #   api-template
+    #   fastapi-cli
+    #   github-changelog-md
 types-passlib==1.7.7.20241221
 typing-extensions==4.12.2
+    # via
+    #   aiosqlite
+    #   alembic
+    #   anyio
+    #   application-properties
+    #   asyncpg-stubs
+    #   beautifulsoup4
+    #   fastapi
+    #   fastapi-pagination
+    #   libpass
+    #   mkdocstrings
+    #   mkdocstrings-python
+    #   mypy
+    #   openai
+    #   pydantic
+    #   pydantic-core
+    #   pygithub
+    #   pymarkdownlnt
+    #   rich
+    #   rich-toolkit
+    #   sqlalchemy
+    #   starlette
+    #   typer
+    #   uvicorn
 tzdata==2025.1
+    # via faker
 urllib3==2.3.0
+    # via
+    #   pygithub
+    #   requests
 uvicorn==0.34.0
+    # via
+    #   api-template
+    #   fastapi
+    #   fastapi-cli
 uvloop==0.21.0 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'
+    # via uvicorn
 virtualenv==20.29.2
+    # via pre-commit
 watchdog==6.0.0
+    # via
+    #   mkdocs
+    #   pytest-watcher
 watchfiles==1.0.4
+    # via uvicorn
 wcwidth==0.2.13
+    # via columnar
 websockets==15.0
+    # via uvicorn
 wrapt==1.17.2
+    # via deprecated
 wtforms==3.1.2
+    # via sqladmin
 zipp==3.21.0 ; python_full_version < '3.10'
+    # via importlib-metadata
