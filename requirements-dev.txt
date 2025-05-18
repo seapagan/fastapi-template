@@ -354,7 +354,7 @@ rtoml==0.12.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.11.2
+ruff==0.11.11
 shellingham==1.5.4
     # via typer
 simple-toml-settings==0.9.0
