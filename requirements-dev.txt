@@ -224,7 +224,7 @@ mkdocstrings==0.28.1
 mkdocstrings-python==1.16.0
     # via mkdocstrings
 mock==5.1.0
-mypy==1.15.0
+mypy==1.16.1
 mypy-extensions==1.0.0
     # via mypy
 nodeenv==1.9.1
@@ -241,7 +241,9 @@ paginate==0.5.7
 pastel==0.2.1
     # via poethepoet
 pathspec==0.12.1
-    # via mkdocs
+    # via
+    #   mkdocs
+    #   mypy
 platformdirs==4.3.6
     # via
     #   mkdocs-get-deps
@@ -354,7 +356,7 @@ rtoml==0.12.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.11.11
+ruff==0.12.2
 shellingham==1.5.4
     # via typer
 simple-toml-settings==0.9.0
