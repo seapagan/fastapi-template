@@ -92,6 +92,7 @@ def create(
         show_default=False,
         hide_input=True,
     ),
+    *,
     admin: Optional[bool] = typer.Option(
         False,
         "--admin",
@@ -235,6 +236,7 @@ def ban(
         help="The user's id",
         show_default=False,
     ),
+    *,
     unban: Optional[bool] = typer.Option(
         False,
         "--unban",
@@ -245,7 +247,7 @@ def ban(
 ) -> None:
     """Ban or Unban a user by id."""
 
-    async def _ban_user(user_id: int, unban: Optional[bool]) -> User | None:
+    async def _ban_user(user_id: int, *, unban: Optional[bool]) -> User | None:
         """Async function to ban or unban a user."""
         try:
             async with async_session() as session:
@@ -259,7 +261,7 @@ def ban(
         else:
             return user
 
-    user = aiorun(_ban_user(user_id, unban))
+    user = aiorun(_ban_user(user_id, unban=unban))
     if user:
         rprint(
             f"\n[green]-> User [bold]{user_id}[/bold] "
@@ -280,6 +282,7 @@ def admin(
         help="The user's id",
         show_default=False,
     ),
+    *,
     remove: Optional[bool] = typer.Option(
         False,
         "--remove",
@@ -291,7 +294,7 @@ def admin(
     """Make a user an admin or remove admin status."""
 
     async def _toggle_admin(
-        user_id: int, remove: Optional[bool]
+        user_id: int, *, remove: Optional[bool]
     ) -> User | None:
         """Async function to toggle admin status for a user."""
         try:
@@ -306,7 +309,7 @@ def admin(
         else:
             return user
 
-    user = aiorun(_toggle_admin(user_id, remove))
+    user = aiorun(_toggle_admin(user_id, remove=remove))
     if user:
         status = "removed from" if remove else "granted to"
         rprint(

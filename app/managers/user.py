@@ -264,7 +264,10 @@ class UserManager:
 
     @staticmethod
     async def set_ban_status(
-        user_id: int, state: Optional[bool], my_id: int, session: AsyncSession
+        user_id: int,
+        state: Optional[bool],
+        my_id: int,
+        session: AsyncSession,
     ) -> None:
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:

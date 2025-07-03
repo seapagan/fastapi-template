@@ -31,6 +31,7 @@ DONE_MSG = "[green]Done!"
 
 @app.command()
 def init(
+    *,
     force: Optional[bool] = typer.Option(
         False,
         "--force",
@@ -58,6 +59,7 @@ def init(
 
 @app.command()
 def drop(
+    *,
     force: Optional[bool] = typer.Option(
         False,
         "--force",
@@ -307,6 +309,7 @@ def seed(
             help="Path to the CSV file containing user data",
         ),
     ] = Path("users.seed"),
+    *,
     force: Optional[bool] = typer.Option(
         False,
         "--force",

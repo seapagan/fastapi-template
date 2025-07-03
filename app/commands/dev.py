@@ -20,6 +20,7 @@ def serve(
         "-h",
         help="Define the interface to run the server on.",
     ),
+    *,
     reload: Optional[bool] = typer.Option(
         True,
         help="Enable auto-reload on code changes",

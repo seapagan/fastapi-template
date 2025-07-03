@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class EmailManager:
     """Class to manage all Email operations."""
 
-    def __init__(self, suppress_send: Optional[bool] = False) -> None:
+    def __init__(self, *, suppress_send: Optional[bool] = False) -> None:
         """Initialize the EmailManager.
 
         Define the configuration instance.
