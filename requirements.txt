@@ -96,8 +96,6 @@ markupsafe==3.0.2
     #   wtforms
 mdurl==0.1.2
     # via markdown-it-py
-psycopg2==2.9.10
-    # via api-template
 pydantic==2.10.6
     # via
     #   api-template

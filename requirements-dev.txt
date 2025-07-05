@@ -254,8 +254,6 @@ poethepoet==0.32.2
 pprintpp==0.4.0
     # via pytest-clarity
 pre-commit==4.1.0
-psycopg2==2.9.10
-    # via api-template
 pycparser==2.22
     # via cffi
 pydantic==2.10.6
