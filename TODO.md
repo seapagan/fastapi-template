@@ -64,6 +64,9 @@
 
 - Speed up tests generally
 - Allow choice of Postgresql or SQLite for testing (currently only Postgresql)
+- check 'test_admin_pages_disabled' test since there is potentally a bug in
+  the test using the `path` of a BaseRoute which does not exist, and the test
+  may be invalid.
 
 ## CLI
 
