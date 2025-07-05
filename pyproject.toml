@@ -14,7 +14,6 @@ dependencies = [
   "asyncpg>=0.30.0",
   "email-validator>=2.2.0",
   "fastapi[standard]>=0.115.4",
-  "psycopg2>=2.9.10",
   "pydantic>=2.9.2",
   "pydantic-settings>=2.6.1",
   "pyjwt>=2.9.0",
