@@ -13,8 +13,13 @@ release.
 
 Everything in this section will be included in the next official release.
 
+**Closed Issues**
+
+- Package psycopg2 is not needed ([#759](https://github.com/seapagan/fastapi-template/issues/759)) by [teschmitt](https://github.com/teschmitt)
+
 **Breaking Changes**
 
+- Breaking - Refactor `UserManager.set_ban_status` signature. ([#760](https://github.com/seapagan/fastapi-template/pull/760)) by [seapagan](https://github.com/seapagan)
 - Integrate 'sqladmin' as a backend admin panel ([#738](https://github.com/seapagan/fastapi-template/pull/738)) by [seapagan](https://github.com/seapagan)
 - Implement API Keys. ([#734](https://github.com/seapagan/fastapi-template/pull/734)) by [seapagan](https://github.com/seapagan)
 
@@ -28,12 +33,26 @@ Everything in this section will be included in the next official release.
 - Add a favicon for when the API is viewed through a web browser ([#736](https://github.com/seapagan/fastapi-template/pull/736)) by [seapagan](https://github.com/seapagan)
 - Allow Admin users to list/edit/delete other users API keys ([#735](https://github.com/seapagan/fastapi-template/pull/735)) by [seapagan](https://github.com/seapagan)
 
+**Security**
+
+- Update libraries as required to fix security alerts ([#762](https://github.com/seapagan/fastapi-template/pull/762)) by [seapagan](https://github.com/seapagan)
+
 **Bug Fixes**
 
 - Fix crash when running 'db init' from the CLI ([#737](https://github.com/seapagan/fastapi-template/pull/737)) by [seapagan](https://github.com/seapagan)
 
+**Documentation**
+
+- Replace the mkdocs swagger plugin with my own fork ([#747](https://github.com/seapagan/fastapi-template/pull/747)) by [seapagan](https://github.com/seapagan)
+
 **Dependency Updates**
 
+- Bump urllib3 from 2.3.0 to 2.5.0 ([#758](https://github.com/seapagan/fastapi-template/pull/758)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump requests from 2.32.3 to 2.32.4 ([#757](https://github.com/seapagan/fastapi-template/pull/757)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump h11 from 0.14.0 to 0.16.0 ([#754](https://github.com/seapagan/fastapi-template/pull/754)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Update astral-sh/setup-uv action to v6 ([#753](https://github.com/seapagan/fastapi-template/pull/753)) by [renovate[bot]](https://github.com/apps/renovate)
+- Bump h11 from 0.14.0 to 0.16.0 ([#752](https://github.com/seapagan/fastapi-template/pull/752)) by [dependabot[bot]](https://github.com/apps/dependabot)
+- Bump jinja2 from 3.1.5 to 3.1.6 ([#748](https://github.com/seapagan/fastapi-template/pull/748)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump jinja2 from 3.1.5 to 3.1.6 ([#745](https://github.com/seapagan/fastapi-template/pull/745)) by [dependabot[bot]](https://github.com/apps/dependabot)
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.patch)
