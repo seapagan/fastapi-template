@@ -378,11 +378,11 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
             the 'pytest.raises' context manager and upsetting 'ruff' linter.
             """
             if "app.commands.custom" in sys.modules:
-                import importlib
+                import importlib  # noqa: PLC0415
 
                 importlib.reload(sys.modules["app.commands.custom"])
             else:
-                import app.commands.custom  # noqa: F401
+                import app.commands.custom  # noqa: F401, PLC0415
 
         # Store and patch the import mechanism
         original_import = __import__

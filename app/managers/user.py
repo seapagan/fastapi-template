@@ -264,7 +264,11 @@ class UserManager:
 
     @staticmethod
     async def set_ban_status(
-        user_id: int, state: Optional[bool], my_id: int, session: AsyncSession
+        user_id: int,
+        my_id: int,
+        session: AsyncSession,
+        *,
+        banned: Optional[bool],
     ) -> None:
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:
@@ -276,13 +280,13 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
-        if bool(check_user.banned) == state:
+        if bool(check_user.banned) == banned:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.ALREADY_BANNED_OR_UNBANNED,
             )
         await session.execute(
-            update(User).where(User.id == user_id).values(banned=state)
+            update(User).where(User.id == user_id).values(banned=banned)
         )
 
     @staticmethod

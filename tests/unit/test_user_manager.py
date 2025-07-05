@@ -180,7 +180,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_login_user_banned(self, test_db) -> None:
         """Test logging in a user that is banned."""
         await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
         with pytest.raises(HTTPException, match=ErrorMessages.AUTH_INVALID):
             await UserManager.login(self.test_user, test_db)
 
@@ -292,7 +292,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_ban_user(self, test_db) -> None:
         """Test we can ban or unban a user."""
         await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
 
         banned_user = await test_db.get(User, 1)
         assert banned_user.banned is True
@@ -301,9 +301,9 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         """Test we can ban or unban a user."""
         await UserManager.register(self.test_user, test_db)
         # set this user as banned
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
 
-        await UserManager.set_ban_status(1, False, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=False)
 
         banned_user = await test_db.get(User, 1)
         assert banned_user.banned is False
@@ -311,25 +311,25 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_ban_user_not_found(self, test_db) -> None:
         """Test we can't ban a user that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.set_ban_status(1, True, 666, test_db)
+            await UserManager.set_ban_status(1, 666, test_db, banned=True)
 
     @pytest.mark.parametrize("state", [True, False])
     async def test_cant_ban_user_already_banned(self, test_db, state) -> None:
         """Test we can't ban a user that is already banned/unbanned."""
         await UserManager.register(self.test_user, test_db)
         if state:
-            await UserManager.set_ban_status(1, state, 666, test_db)
+            await UserManager.set_ban_status(1, 666, test_db, banned=state)
 
         with pytest.raises(
             HTTPException, match=ErrorMessages.ALREADY_BANNED_OR_UNBANNED
         ):
-            await UserManager.set_ban_status(1, state, 666, test_db)
+            await UserManager.set_ban_status(1, 666, test_db, banned=state)
 
     async def test_cant_ban_self(self, test_db) -> None:
         """Test we can't ban ourselves."""
         await UserManager.register(self.test_user, test_db)
         with pytest.raises(HTTPException, match=ErrorMessages.CANT_SELF_BAN):
-            await UserManager.set_ban_status(1, True, 1, test_db)
+            await UserManager.set_ban_status(1, 1, test_db, banned=True)
 
     # ------------------------- test change user role ------------------------ #
     async def test_change_user_role_to_admin(self, test_db) -> None:

@@ -195,7 +195,7 @@ class TestAuthManager:
     async def test_refresh_banned_user(self, test_db) -> None:
         """Test the refresh method with a banned user."""
         await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
         banned_user_refresh = AuthManager.encode_refresh_token(User(id=1))
         new_token = None
         with pytest.raises(HTTPException) as exc_info:
@@ -252,7 +252,7 @@ class TestAuthManager:
         """Test the verify method with a banned user."""
         background_tasks = BackgroundTasks()
         await UserManager.register(self.test_user, test_db, background_tasks)
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
         verify_token = get_token(
             sub=1,
             exp=datetime.now(tz=timezone.utc).timestamp() + 10000,

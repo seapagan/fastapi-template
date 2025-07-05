@@ -27,6 +27,7 @@ def cli_header() -> None:
 
 @app.callback(invoke_without_command=True)
 def main(
+    *,
     version: Optional[bool] = typer.Option(
         False,
         "--version",
