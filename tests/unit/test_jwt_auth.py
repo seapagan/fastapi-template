@@ -72,7 +72,7 @@ class TestJWTAuth:
     async def test_jwt_auth_banned_user(self, test_db, mocker) -> None:
         """Test with a banned user."""
         token, _ = await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
 
         mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
@@ -94,7 +94,7 @@ class TestJWTAuth:
         token, _ = await UserManager.register(
             self.test_user, test_db, background_tasks=background_tasks
         )
-        await UserManager.set_ban_status(1, True, 666, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
 
         mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
