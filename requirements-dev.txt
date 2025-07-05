@@ -121,13 +121,13 @@ greenlet==3.1.1
     # via sqlalchemy
 griffe==1.5.7
     # via mkdocstrings-python
-h11==0.14.0
+h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
 htmlmin2==0.1.13
     # via mkdocs-minify-plugin
-httpcore==1.0.7
+httpcore==1.0.9
     # via httpx
 httptools==0.6.4
     # via uvicorn
@@ -273,7 +273,7 @@ pydantic-settings==2.7.1
     #   api-template
     #   fastapi-mail
 pyfakefs==5.7.4
-pygithub==2.6.0
+pygithub==2.6.1
     # via github-changelog-md
 pygments==2.19.1
     # via
@@ -338,7 +338,7 @@ pyyaml-env-tag==0.1
     # via mkdocs
 regex==2024.11.6
     # via mkdocs-material
-requests==2.32.3
+requests==2.32.4
     # via
     #   mkdocs-material
     #   pygithub
@@ -431,11 +431,11 @@ typing-extensions==4.12.2
     #   uvicorn
 tzdata==2025.1
     # via faker
-urllib3==2.3.0
+urllib3==2.5.0
     # via
     #   pygithub
     #   requests
-uvicorn==0.34.2
+uvicorn==0.35.0
     # via
     #   api-template
     #   fastapi
