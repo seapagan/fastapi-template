@@ -18,7 +18,7 @@ access.
 !!! danger "Breaking Changes"
 
     If you are upgrading from a previous version of this template, please read
-    the [Breaking Changes](important.md){:target="\_blank"} page for details of
+    the [Breaking Changes](important.md) page for details of
     any breaking changes that may affect your project.
 
 !!! info "Version Refactor"
