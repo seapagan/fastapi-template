@@ -6,12 +6,7 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
-These are the changes that have been merged to the repository since the last
-release.
-
-Everything in this section will be included in the next official release.
+## [v0.7.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.7.0) (July 05, 2025)
 
 **Closed Issues**
 
@@ -41,6 +36,10 @@ Everything in this section will be included in the next official release.
 
 - Fix crash when running 'db init' from the CLI ([#737](https://github.com/seapagan/fastapi-template/pull/737)) by [seapagan](https://github.com/seapagan)
 
+**Refactoring**
+
+- Remove unused psycopg2 library ([#763](https://github.com/seapagan/fastapi-template/pull/763)) by [seapagan](https://github.com/seapagan)
+
 **Documentation**
 
 - Replace the mkdocs swagger plugin with my own fork ([#747](https://github.com/seapagan/fastapi-template/pull/747)) by [seapagan](https://github.com/seapagan)
@@ -55,7 +54,7 @@ Everything in this section will be included in the next official release.
 - Bump jinja2 from 3.1.5 to 3.1.6 ([#748](https://github.com/seapagan/fastapi-template/pull/748)) by [dependabot[bot]](https://github.com/apps/dependabot)
 - Bump jinja2 from 3.1.5 to 3.1.6 ([#745](https://github.com/seapagan/fastapi-template/pull/745)) by [dependabot[bot]](https://github.com/apps/dependabot)
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...v0.7.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...v0.7.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.6.0...v0.7.0.patch)
 
 ## [v0.6.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.6.0) (February 18, 2025)
 
