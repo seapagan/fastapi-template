@@ -15,6 +15,12 @@ access.
     is still under active development. The in-depth Reference and Tutorial
     sections are not yet written.
 
+!!! danger "Breaking Changes"
+
+    If you are upgrading from a previous version of this template, please read
+    the [Breaking Changes](important.md){:target="\_blank"} page for details of
+    any breaking changes that may affect your project.
+
 !!! info "Version Refactor"
 
     This template versioning has been refactored to start from **Verison 0.4.0**
@@ -22,14 +28,10 @@ access.
     V 1.0.0 before it should have been, and there have been many updates and
     fixes since then.
 
-    I will keep the old releases available for those who wish to use them (for
-    a short time). I think it's better to do this now before there are more
-    users who need to update their projects to future versions.
-
-    All releases from now on will also contain a Git patch to upgrade from the
-    previous version. This will be in the form of a `.patch` file which can be
-    applied to their project using the `git apply` command. This will be
-    documented in the release notes.
+    The old releases (up to v1.5.0) can still be found in the GitHub releases
+    section, but I suspect I will delete them and merge into a single release
+    at some point, especially if/when the template is promoted to a 1.0.0
+    release.
 
 ## Features
 
