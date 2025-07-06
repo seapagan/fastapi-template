@@ -177,7 +177,7 @@ dev = [
     { name = "mkdocs-latest-git-tag-plugin", specifier = ">=0.1.2" },
     { name = "mkdocs-material", specifier = ">=9.5.43" },
     { name = "mkdocs-minify-plugin", specifier = ">=0.8.0" },
-    { name = "mkdocs-swagger-ui-tag", git = "https://github.com/seapagan/mkdocs-swagger-ui-tag?rev=ade4e15cd6b9643df762823c9853b5b13df29578" },
+    { name = "mkdocs-swagger-ui-tag", git = "https://github.com/seapagan/mkdocs-swagger-ui-tag?rev=fad9a8940bb7544aec63c378319f57b9a443fbaa" },
     { name = "mkdocstrings", extras = ["python"], specifier = ">=0.26.2" },
     { name = "mock", specifier = ">=5.1.0" },
     { name = "mypy", specifier = ">=1.13.0" },
@@ -1488,8 +1488,8 @@ wheels = [
 
 [[package]]
 name = "mkdocs-swagger-ui-tag"
-version = "0.6.11"
-source = { git = "https://github.com/seapagan/mkdocs-swagger-ui-tag?rev=ade4e15cd6b9643df762823c9853b5b13df29578#ade4e15cd6b9643df762823c9853b5b13df29578" }
+version = "0.7.1"
+source = { git = "https://github.com/seapagan/mkdocs-swagger-ui-tag?rev=fad9a8940bb7544aec63c378319f57b9a443fbaa#fad9a8940bb7544aec63c378319f57b9a443fbaa" }
 dependencies = [
     { name = "beautifulsoup4" },
 ]

@@ -82,7 +82,7 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
-mkdocs-swagger-ui-tag = { git = "https://github.com/seapagan/mkdocs-swagger-ui-tag", rev = "ade4e15cd6b9643df762823c9853b5b13df29578" }
+mkdocs-swagger-ui-tag = { git = "https://github.com/seapagan/mkdocs-swagger-ui-tag", rev = "fad9a8940bb7544aec63c378319f57b9a443fbaa" }
 
 
 [tool.poe.tasks]
