@@ -6,6 +6,31 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+
+These are the changes that have been merged to the repository since the last
+release.
+
+Everything in this section will be included in the next official release.
+
+**Closed Issues**
+
+- Can commit only once with session per route (otherwise sqlalchemy.exc.InvalidRequestError) ([#768](https://github.com/seapagan/fastapi-template/issues/768)) by [seapagan](https://github.com/seapagan)
+
+**Breaking Changes**
+
+- Feat: implement HMAC-SHA256 for API key hashing ([#769](https://github.com/seapagan/fastapi-template/pull/769)) by [seapagan](https://github.com/seapagan)
+
+**New Features**
+
+- Feat: add manual database session handling with rollback on exception ([#770](https://github.com/seapagan/fastapi-template/pull/770)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Chore(deps): update mkdocs-swagger-ui-tag digest to fad9a89 ([#765](https://github.com/seapagan/fastapi-template/pull/765)) by [renovate[bot]](https://github.com/apps/renovate)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.patch)
+
 ## [v0.7.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.7.0) (July 05, 2025)
 
 **Closed Issues**
