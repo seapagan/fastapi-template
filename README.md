@@ -19,6 +19,7 @@ Documentation for this project is now availiable on it's own page at
 finished will include full usage information and how-to's.
 
 - [Important note on Versioning](#important-note-on-versioning)
+- [Breaking Changes](#breaking-changes)
 - [Changes from version 0.4.x](#changes-from-version-04x)
 - [Functionality](#functionality)
 - [Installation](#installation)
@@ -49,6 +50,13 @@ All releases from now on will also contain a Git patch to upgrade from the
 previous version. This will be in the form of a `.patch` file which can be
 applied to their project using the `git apply` command. This will be documented
 in the release notes.
+
+## Breaking Changes
+
+There will be breaking changes implemented from time to time, as the template is
+still evolving. These may be due to security issues or changes in philosophy.
+These can always be found [here](https://api-template.seapagan.net/important/)
+on the website.
 
 ## Changes from version 0.4.x
 
