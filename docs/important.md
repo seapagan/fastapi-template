@@ -6,10 +6,6 @@ API.
 
 ## Breaking Changes in `HEAD`
 
-None.
-
-## Breaking changes in 0.7.1
-
 ### Modified the API Key Hashing method
 
 The API key is **NEVER** stored in the database, however a **hashed** version of
