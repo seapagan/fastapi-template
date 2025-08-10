@@ -1,6 +1,5 @@
 """Unit tests for the admin interface."""
 
-# ruff: noqa: SLF001
 import json
 from datetime import datetime, timedelta, timezone
 

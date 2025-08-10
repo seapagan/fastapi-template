@@ -180,6 +180,7 @@ convention = "google"
   "TD003",
   "FIX002",
   "RUF012",
+  "SLF001", # sometimes tests need to access private members
 ]
 "app/managers/auth.py" = ["ERA001"]
 "app/resources/auth.py" = ["ERA001"]

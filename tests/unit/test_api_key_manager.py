@@ -1,5 +1,7 @@
 """Test the API Key Manager functionality."""
 
+import hashlib
+import hmac
 from uuid import uuid4
 
 import pytest
@@ -318,3 +320,47 @@ class TestApiKeyManager:
         auth = ApiKeyAuth(auto_error=False)
         result = await auth(request=mock_req, db=test_db)
         assert result is None
+
+    def test_hash_key_uses_hmac(self, mocker) -> None:
+        """Test that API key hashing uses HMAC-SHA256 with secret key."""
+        # Mock the settings
+        mock_settings = mocker.patch("app.managers.api_key.get_settings")
+        test_secret = "test_secret_key_12345"  # noqa: S105
+        mock_settings.return_value.secret_key = test_secret
+
+        test_key = "pk_test_key_123456789"
+        result = ApiKeyManager._hash_key(test_key)
+
+        # Calculate expected HMAC manually
+        expected = hmac.new(
+            test_secret.encode(), test_key.encode(), hashlib.sha256
+        ).hexdigest()
+
+        assert result == expected
+        assert len(result) == 64  # SHA256 hex digest length  # noqa: PLR2004
+
+    def test_hash_key_different_secrets_different_hashes(self, mocker) -> None:
+        """Test that different secret keys produce different hashes."""
+        test_key = "pk_same_key_123"
+
+        # First hash with secret 1
+        mock_settings = mocker.patch("app.managers.api_key.get_settings")
+        mock_settings.return_value.secret_key = "secret1"  # noqa: S105
+        hash1 = ApiKeyManager._hash_key(test_key)
+
+        # Second hash with secret 2
+        mock_settings.return_value.secret_key = "secret2"  # noqa: S105
+        hash2 = ApiKeyManager._hash_key(test_key)
+
+        assert hash1 != hash2
+
+    def test_hash_key_deterministic(self, mocker) -> None:
+        """Test that the same key produces the same hash consistently."""
+        mock_settings = mocker.patch("app.managers.api_key.get_settings")
+        mock_settings.return_value.secret_key = "consistent_secret"  # noqa: S105
+
+        test_key = "pk_deterministic_test"
+        hash1 = ApiKeyManager._hash_key(test_key)
+        hash2 = ApiKeyManager._hash_key(test_key)
+
+        assert hash1 == hash2
