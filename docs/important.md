@@ -6,7 +6,14 @@ API.
 
 ## Breaking Changes in `HEAD`
 
-None.
+### Modified the API Key Hashing method
+
+The API key is **NEVER** stored in the database, however a **hashed** version of
+this is so that we can authenticate. Previously it used a plain SHA256
+algorythm, and has now been switched to using `HMAC` in conjunction with SHA256
+instead. This allows using the `SECRET_KEY` already set to make the API keys
+more secure. As a result, **any existing API Keys are now invalid and will need to
+be deleted and regenerated**.
 
 ## Breaking Changes in 0.7.0
 
@@ -37,7 +44,7 @@ Several function signatures have changed, generally to fix boolean
 inconsistencies. Boolean parameters should be passed as named parameters
 instead of positional parameters. This is to make the code more readable and
 maintainable. The `UserManager.set_ban_status` function is one of these changes
-that causes a breaking change. However, this method is only called from and API
+that causes a breaking change. However, this method is only called from an API
 endpoint for the moment, so it should not affect any existing code that
 depends on it unless you are using it directly in your code.
 

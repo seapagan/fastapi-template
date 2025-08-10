@@ -1,6 +1,7 @@
 """Define the API Key Manager."""
 
 import hashlib
+import hmac
 import secrets
 from typing import Optional
 from uuid import UUID
@@ -8,6 +9,7 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config.settings import get_settings
 from app.database.db import get_database
 from app.database.helpers import (
     add_new_api_key_,
@@ -35,9 +37,19 @@ class ApiKeyManager:
     KEY_LENGTH = 32
 
     @staticmethod
+    # codeql[py/weak-sensitive-data-hashing] See comment below
     def _hash_key(key: str) -> str:
-        """Hash an API key."""
-        return hashlib.sha256(key.encode()).hexdigest()
+        """Hash an API key using HMAC-SHA256.
+
+        This intentionally uses HMAC-SHA256 rather than a slow, memory-hard
+        password hash (e.g., bcrypt or argon2) because our API keys are
+        generated with `secrets.token_urlsafe(32)`, giving ~192 bits of
+        entropy. They are not human-chosen or guessable, so brute-forcing
+        them is computationally infeasible. HMAC also prevents
+        length-extension attacks possible with raw SHA256 hashing.
+        """
+        secret_key = get_settings().secret_key.encode()
+        return hmac.new(secret_key, key.encode(), hashlib.sha256).hexdigest()
 
     @classmethod
     def generate_key(cls) -> str:
