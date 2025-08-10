@@ -37,6 +37,7 @@ class ApiKeyManager:
     KEY_LENGTH = 32
 
     @staticmethod
+    # codeql[py/weak-sensitive-data-hashing] See comment below
     def _hash_key(key: str) -> str:
         """Hash an API key using HMAC-SHA256.
 
