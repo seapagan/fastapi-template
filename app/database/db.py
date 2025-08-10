@@ -79,3 +79,17 @@ async def get_database() -> AsyncGenerator[AsyncSession, Any]:
     """Return the database connection as a Generator."""
     async with async_session() as session, session.begin():
         yield session
+
+
+async def get_database_manual() -> AsyncGenerator[AsyncSession, Any]:
+    """Return a MANUAL database session as a generator.
+
+    This will need an explicit `db.commit` call for any route using it, but
+    should allow multiple database calls in the same route.
+    """
+    async with async_session() as session:
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
