@@ -364,7 +364,7 @@ rtoml==0.12.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.12.8
+ruff==0.12.11
 sentry-sdk==2.34.1
     # via fastapi-cloud-cli
 shellingham==1.5.4
