@@ -108,6 +108,11 @@ test.cmd = "pytest"
 "test:skipped".cmd = "pytest --quiet --collect-only -m skip --no-cov"
 "test:skipped".help = "Show skipped tests without running all tests"
 
+# Add 'ty' type checker - this is still alpha software and has false positives
+# compared to 'mypy', but suspect it will exentually replace it.
+ty.help = "Run the 'ty' type-checker (Alpha pre-release version)"
+ty.cmd = "uvx ty check --output-format concise"
+
 # run all linting checks in sequence. we want to run them all, even if one fails
 lint.ignore_fail = "return_non_zero"
 lint.sequence = ["format", "ruff", "mypy", "markdown"]
