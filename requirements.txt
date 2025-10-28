@@ -157,7 +157,7 @@ sqlalchemy==2.0.38
     #   alembic
     #   api-template
     #   sqladmin
-starlette==0.47.2
+starlette==0.49.1
     # via
     #   fastapi
     #   fastapi-mail
