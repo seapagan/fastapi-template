@@ -442,7 +442,7 @@ typing-extensions==4.12.2
     #   uvicorn
 tzdata==2025.1
     # via faker
-urllib3==2.5.0
+urllib3==2.6.0
     # via
     #   pygithub
     #   requests

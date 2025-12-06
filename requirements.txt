@@ -182,7 +182,7 @@ typing-extensions==4.12.2
     #   starlette
     #   typer
     #   uvicorn
-urllib3==2.5.0
+urllib3==2.6.0
     # via sentry-sdk
 uvicorn==0.35.0
     # via
