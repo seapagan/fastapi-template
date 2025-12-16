@@ -288,7 +288,7 @@ pyjwt==2.10.1
     #   api-template
     #   pygithub
 pymarkdownlnt==0.9.28
-pymdown-extensions==10.14.3
+pymdown-extensions==10.16.1
     # via
     #   mkdocs-material
     #   mkdocstrings
