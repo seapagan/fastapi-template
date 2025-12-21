@@ -5,7 +5,7 @@ from typing import Annotated, Optional, Union, cast
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
@@ -185,4 +185,4 @@ async def search_users(
         exact_match=exact_match,
     )
     # Use cast to help mypy understand the return type
-    return cast("Page[UserResponse]", await paginate(db, query))
+    return cast("Page[UserResponse]", await apaginate(db, query))

@@ -413,7 +413,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
             await UserManager.register(test_data, test_db)
 
         assert (
-            exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+            exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         )
         assert exc_info.value.detail == ErrorMessages.PASSWORD_MISSING
 

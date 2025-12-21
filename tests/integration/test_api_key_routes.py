@@ -300,7 +300,7 @@ class TestApiKeyRoutes:
             json={"scopes": ["read:users"]},  # Missing 'name' field
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
         # Test with invalid scopes format
         response = await client.post(
@@ -311,7 +311,7 @@ class TestApiKeyRoutes:
             },  # scopes should be a list
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     @pytest.mark.asyncio
     async def test_update_api_key_invalid_request(
@@ -341,7 +341,7 @@ class TestApiKeyRoutes:
             },  # should be boolean
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
         # Test with invalid name length
         response = await client.patch(
@@ -349,7 +349,7 @@ class TestApiKeyRoutes:
             json={"name": ""},  # Empty name is not allowed
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
         # Test with empty update data
         response = await client.patch(
@@ -357,7 +357,7 @@ class TestApiKeyRoutes:
             json={},  # Empty update data
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         assert (
             "At least one field must be provided for update"
             in response.json()["detail"]
@@ -634,7 +634,7 @@ class TestApiKeyRoutes:
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         assert (
             response.json()["detail"]
             == "At least one field must be provided for update"

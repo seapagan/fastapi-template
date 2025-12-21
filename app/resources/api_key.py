@@ -108,7 +108,7 @@ async def _update_api_key_common(
     # Ensure at least one field is being updated
     if not update_data:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="At least one field must be provided for update",
         )
 
