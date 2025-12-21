@@ -1,7 +1,6 @@
 """Test the authentication routes of the application."""
 
 import logging
-from typing import Union
 
 import pytest
 from fastapi import status
@@ -32,7 +31,7 @@ class TestAuthRoutes:
     register_path = "/register/"
     login_path = "/login/"
 
-    test_user: dict[str, Union[str, bool]] = {
+    test_user: dict[str, str | bool] = {
         "email": "testuser@usertest.com",
         "first_name": "Test",
         "last_name": "User",

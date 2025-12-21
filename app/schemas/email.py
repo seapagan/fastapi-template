@@ -2,13 +2,13 @@
 
 from typing import Any
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, NameEmail
 
 
 class EmailSchema(BaseModel):
     """Define the Email Schema."""
 
-    recipients: list[EmailStr]
+    recipients: list[NameEmail]
     subject: str
     body: str
 
@@ -16,7 +16,7 @@ class EmailSchema(BaseModel):
 class EmailTemplateSchema(BaseModel):
     """Define the Email Schema."""
 
-    recipients: list[EmailStr]
+    recipients: list[NameEmail]
     subject: str
     body: dict[str, Any]
     template_name: str

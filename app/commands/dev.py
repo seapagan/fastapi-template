@@ -1,7 +1,6 @@
 """CLI command to run a dev server."""
 
 import subprocess
-from typing import Optional  # nosec
 
 import typer
 from rich import print as rprint
@@ -21,7 +20,7 @@ def serve(
         help="Define the interface to run the server on.",
     ),
     *,
-    reload: Optional[bool] = typer.Option(
+    reload: bool | None = typer.Option(
         True,
         help="Enable auto-reload on code changes",
     ),

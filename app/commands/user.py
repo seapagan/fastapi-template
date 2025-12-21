@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from asyncio import run as aiorun
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import typer
 from fastapi import HTTPException
@@ -93,7 +93,7 @@ def create(
         hide_input=True,
     ),
     *,
-    admin: Optional[bool] = typer.Option(
+    admin: bool | None = typer.Option(
         False,
         "--admin",
         "-a",
@@ -236,7 +236,7 @@ def ban(
         show_default=False,
     ),
     *,
-    unban: Optional[bool] = typer.Option(
+    unban: bool | None = typer.Option(
         False,
         "--unban",
         "-u",
@@ -245,7 +245,7 @@ def ban(
 ) -> None:
     """Ban or Unban a user by id."""
 
-    async def _ban_user(user_id: int, *, unban: Optional[bool]) -> User | None:
+    async def _ban_user(user_id: int, *, unban: bool | None) -> User | None:
         """Async function to ban or unban a user."""
         try:
             async with async_session() as session:
@@ -281,7 +281,7 @@ def admin(
         show_default=False,
     ),
     *,
-    remove: Optional[bool] = typer.Option(
+    remove: bool | None = typer.Option(
         False,
         "--remove",
         "-r",
@@ -291,7 +291,7 @@ def admin(
     """Make a user an admin or remove admin status."""
 
     async def _toggle_admin(
-        user_id: int, *, remove: Optional[bool]
+        user_id: int, *, remove: bool | None
     ) -> User | None:
         """Async function to toggle admin status for a user."""
         try:

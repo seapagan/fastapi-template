@@ -5,6 +5,7 @@ from typing import TypedDict
 
 import pytest
 from fastapi import status
+from pydantic import NameEmail
 
 from app.config.settings import get_settings
 from app.schemas.email import EmailSchema, EmailTemplateSchema
@@ -14,7 +15,7 @@ class EmailData(TypedDict):
     """Type definition for email data."""
 
     subject: str
-    recipients: list[str]
+    recipients: list[NameEmail]
 
 
 @pytest.mark.unit
@@ -23,7 +24,9 @@ class TestEmailManager:
 
     email_data: EmailData = {
         "subject": "Test Subject",
-        "recipients": ["test_recipient@testing.com"],
+        "recipients": [
+            NameEmail(name="Test Email", email="test_recipient@testing.com")
+        ],
     }
 
     email_schema = EmailSchema(body="Test Body", **email_data)

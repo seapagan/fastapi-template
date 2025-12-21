@@ -80,7 +80,7 @@ following advantages to starting your own from scratch :
   address - until this is done, the user cannot user the API.
 - Docker and Compose file set up to develop and test this API using Docker
 
-The template **Requires Python 3.9+**
+The template **Requires Python 3.10+**
 
 ## Versioning
 

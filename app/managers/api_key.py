@@ -3,7 +3,6 @@
 import hashlib
 import hmac
 import secrets
-from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
@@ -63,7 +62,7 @@ class ApiKeyManager:
         cls,
         user: User,
         name: str,
-        scopes: Optional[list[str]],
+        scopes: list[str] | None,
         session: AsyncSession,
     ) -> tuple[ApiKey, str]:
         """Create a new API key for a user."""
@@ -93,7 +92,7 @@ class ApiKeyManager:
     @classmethod
     async def get_key(
         cls, key_id: UUID, session: AsyncSession
-    ) -> Optional[ApiKey]:
+    ) -> ApiKey | None:
         """Get an API key by ID."""
         return await get_api_key_by_id_(key_id, session)
 
@@ -115,7 +114,7 @@ class ApiKeyManager:
     @classmethod
     async def validate_key(
         cls, raw_key: str, session: AsyncSession
-    ) -> Optional[ApiKey]:
+    ) -> ApiKey | None:
         """Validate an API key and return the associated API key object."""
         if not raw_key.startswith(cls.KEY_PREFIX):
             return None
@@ -138,7 +137,7 @@ class ApiKeyAuth:
 
     async def __call__(
         self, request: Request, db: AsyncSession = Depends(get_database)
-    ) -> Optional[User]:
+    ) -> User | None:
         """Validate API key and return the associated user."""
         api_key = request.headers.get("X-API-Key")
         if not api_key:
