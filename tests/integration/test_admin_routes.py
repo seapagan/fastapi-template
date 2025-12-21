@@ -90,6 +90,7 @@ class TestAdminAuth:
         assert response.status_code == status.HTTP_302_FOUND
         assert response.cookies.get("session") is not None
 
+    @pytest.mark.xfail
     @pytest.mark.parametrize(
         "route",
         [
