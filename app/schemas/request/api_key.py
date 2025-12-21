@@ -1,6 +1,5 @@
 """API Key request schemas."""
 
-
 from pydantic import BaseModel, Field
 
 

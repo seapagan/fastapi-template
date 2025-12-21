@@ -1,6 +1,5 @@
 """Run administrative tasks for the Template system."""
 
-
 import typer
 from rich import print as rprint
 from rich.panel import Panel

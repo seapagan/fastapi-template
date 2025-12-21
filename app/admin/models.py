@@ -26,9 +26,7 @@ class KeysAdmin(ModelView, model=ApiKey):
         ApiKey.user_id,
         ApiKey.scopes,
     ]
-    column_labels: ClassVar[
-        dict[str | InstrumentedAttribute[Any], str]
-    ] = {
+    column_labels: ClassVar[dict[str | InstrumentedAttribute[Any], str]] = {
         "user": "Owner",
         "id": "Key ID",
         "name": "Key Name",
@@ -65,9 +63,7 @@ class UserAdmin(ModelView, model=User):
         User.banned,
     ]
 
-    column_labels: ClassVar[
-        dict[str | InstrumentedAttribute[Any], str]
-    ] = {
+    column_labels: ClassVar[dict[str | InstrumentedAttribute[Any], str]] = {
         "id": "User ID",
         "email": "Email",
         "verified": "Verified",

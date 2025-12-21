@@ -58,16 +58,12 @@ def verify_password(password: str, hashed_password: str) -> bool:
         raise ValueError(error_invalid) from exc
 
 
-async def get_user_by_id_(
-    user_id: int, session: AsyncSession
-) -> User | None:
+async def get_user_by_id_(user_id: int, session: AsyncSession) -> User | None:
     """Return a user by ID."""
     return await session.get(User, user_id)
 
 
-async def get_user_by_email_(
-    email: str, session: AsyncSession
-) -> User | None:
+async def get_user_by_email_(email: str, session: AsyncSession) -> User | None:
     """Return a user by email."""
     result = await session.execute(select(User).where(User.email == email))
     return result.scalar_one_or_none()
