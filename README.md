@@ -135,10 +135,10 @@ involved in dev, I'd recommend checking out the latest actual
 However, the `main` branch should be pretty stable as all development is done on
 the `develop` branch and merged into `main` when ready.
 
-The template **Requires Python 3.9.0** or higher. I actually develop under
-Python 3.13.x where x is the latest patch version available at the time, and
+The template **Requires Python 3.10.0** or higher. I actually develop under
+Python 3.14.x where x is the latest patch version available at the time, and
 migrating to the next patch version as soon as it is released. CI tests are run
-automatically on the latest patch levels of Python 3.9 to 3.13.
+automatically on the latest patch levels of Python 3.10 to 3.14.
 
 This template is free to use but I would request some accreditation. If you do
 use it in one of your applications, or even some of the unique code from the
