@@ -6,14 +6,24 @@ API.
 
 ## Breaking Changes in `HEAD`
 
+### Drop support for Python 3.9
+
+While FastAPI does support 3.9, that version is past end-of-life. Pytest for
+example now only supports 3.10+. I decided for easier maintenance to drop 3.9.#
+
+### Supports Python 3.14
+
+This is now officially supported, with a good few changes made to dependencies
+and tests to make it work.
+
 ### Modified the API Key Hashing method
 
 The API key is **NEVER** stored in the database, however a **hashed** version of
 this is so that we can authenticate. Previously it used a plain SHA256
 algorythm, and has now been switched to using `HMAC` in conjunction with SHA256
 instead. This allows using the `SECRET_KEY` already set to make the API keys
-more secure. As a result, **any existing API Keys are now invalid and will need to
-be deleted and regenerated**.
+more secure. As a result, **any existing API Keys are now invalid and will need
+to be deleted and regenerated**.
 
 ## Breaking Changes in 0.7.0
 
