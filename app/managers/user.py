@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
+from pydantic import NameEmail
 from sqlalchemy import Select, delete, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
@@ -126,18 +127,17 @@ class UserManager:
 
         if background_tasks:
             email = EmailManager()
+            user_full_name = f"{new_user['first_name']} {new_user['last_name']}"
             email.template_send(
                 background_tasks,
                 EmailTemplateSchema(
-                    recipients=[new_user["email"]],
+                    recipients=[NameEmail(user_full_name, new_user["email"])],
                     subject=f"Welcome to {get_settings().api_title}!",
                     body={
                         "application": f"{get_settings().api_title}",
                         "user": new_user["email"],
                         "base_url": get_settings().base_url,
-                        "name": (
-                            f"{new_user['first_name']}{new_user['last_name']}"
-                        ),
+                        "name": user_full_name,
                         "verification": AuthManager.encode_verify_token(
                             user_do
                         ),

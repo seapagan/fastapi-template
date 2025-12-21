@@ -6,6 +6,7 @@ from typing import Optional
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import NameEmail
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -220,10 +221,11 @@ class AuthManager:
             )
 
         email = EmailManager()
+        user_full_name = f"{user_data.first_name} {user_data.last_name}"
         email.template_send(
             background_tasks,
             EmailTemplateSchema(
-                recipients=[user_data.email],
+                recipients=[NameEmail(user_full_name, user_data.email)],
                 subject=f"Welcome to {get_settings().api_title}!",
                 body={
                     "application": f"{get_settings().api_title}",
