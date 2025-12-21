@@ -212,7 +212,7 @@ class TestAuthRoutes:
 
         assert response.status_code in (
             status.HTTP_400_BAD_REQUEST,
-            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
         )
 
         user_from_db = await test_db.get(User, 1)
@@ -323,7 +323,7 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         assert "Field required" in response.json()["detail"][0]["msg"]
 
     @pytest.mark.asyncio

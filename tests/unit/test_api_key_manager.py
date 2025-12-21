@@ -321,6 +321,10 @@ class TestApiKeyManager:
         result = await auth(request=mock_req, db=test_db)
         assert result is None
 
+
+class TestHashingMechanism:
+    """This class contains tests to validate the hashing machanism."""
+
     def test_hash_key_uses_hmac(self, mocker) -> None:
         """Test that API key hashing uses HMAC-SHA256 with secret key."""
         # Mock the settings

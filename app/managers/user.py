@@ -66,7 +66,7 @@ class UserManager:
         # Check for missing password first
         if "password" not in user_data:
             raise HTTPException(
-                status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status.HTTP_422_UNPROCESSABLE_CONTENT,
                 ErrorMessages.PASSWORD_MISSING,
             )
 

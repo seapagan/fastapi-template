@@ -97,7 +97,6 @@ def create(
         False,
         "--admin",
         "-a",
-        flag_value=True,
         prompt="Should this user be an Admin?",
         help="Make this user an Admin",
     ),
@@ -241,7 +240,6 @@ def ban(
         False,
         "--unban",
         "-u",
-        flag_value=True,
         help="Unban this user instead of banning them",
     ),
 ) -> None:
@@ -287,7 +285,6 @@ def admin(
         False,
         "--remove",
         "-r",
-        flag_value=True,
         help="Remove admin status from this user",
     ),
 ) -> None:
@@ -377,7 +374,6 @@ def search(
         "--exact",
         "-e",
         help="Use exact matching instead of partial matching",
-        is_flag=True,
     ),
 ) -> None:
     """Search for users by email, first name, or last name."""
