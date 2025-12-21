@@ -1,7 +1,7 @@
 """Routes for User listing and control."""
 
 from collections.abc import Sequence
-from typing import Annotated, Optional, Union, cast
+from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Request, status
 from fastapi_pagination import Page
@@ -27,12 +27,12 @@ router = APIRouter(tags=["Users"], prefix="/users")
 @router.get(
     "/",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
-    response_model=Union[UserResponse, list[UserResponse]],
+    response_model=UserResponse | list[UserResponse],
 )
 async def get_users(
     db: Annotated[AsyncSession, Depends(get_database)],
-    user_id: Optional[int] = None,
-) -> Union[Sequence[User], User]:
+    user_id: int | None = None,
+) -> Sequence[User] | User:
     """Get all users or a specific user by their ID.
 
     user_id is optional, and if omitted then all Users are returned.
@@ -135,7 +135,7 @@ async def edit_user(
     user_id: int,
     user_data: UserEditRequest,
     db: Annotated[AsyncSession, Depends(get_database)],
-) -> Union[User, None]:
+) -> User | None:
     """Update the specified User's data.
 
     Available for the specific requesting User, or an Admin.

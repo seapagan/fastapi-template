@@ -1,6 +1,5 @@
 """Run administrative tasks for the Template system."""
 
-from typing import Optional
 
 import typer
 from rich import print as rprint
@@ -28,7 +27,7 @@ def cli_header() -> None:
 @app.callback(invoke_without_command=True)
 def main(
     *,
-    version: Optional[bool] = typer.Option(
+    version: bool | None = typer.Option(
         False,
         "--version",
         "-v",

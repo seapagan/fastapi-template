@@ -1,6 +1,6 @@
 """Integration tests for API key routes."""
 
-from typing import Any, Union
+from typing import Any
 from uuid import UUID
 
 import pytest
@@ -27,7 +27,7 @@ class TestApiKeyRoutes:
         *,
         hashed: bool = True,
         admin: bool = False,
-        email: Union[str, None] = None,
+        email: str | None = None,
     ) -> dict[str, Any]:
         """Return a test user dictionary."""
         return {

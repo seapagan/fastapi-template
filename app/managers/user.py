@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
@@ -61,7 +61,7 @@ class UserManager:
     async def register(
         user_data: dict[str, Any],
         session: AsyncSession,
-        background_tasks: Optional[BackgroundTasks] = None,
+        background_tasks: BackgroundTasks | None = None,
     ) -> tuple[str, str]:
         """Register a new user."""
         # Check for missing password first
@@ -200,7 +200,7 @@ class UserManager:
         user_id: int,
         user_data: UserEditRequest,
         session: AsyncSession,
-    ) -> Optional[User]:
+    ) -> User | None:
         """Update a user."""
         user = await UserManager.get_user_by_id(user_id, session)
 
@@ -268,7 +268,7 @@ class UserManager:
         my_id: int,
         session: AsyncSession,
         *,
-        banned: Optional[bool],
+        banned: bool | None,
     ) -> None:
         """Ban or un-ban the specified user based on supplied status."""
         if my_id == user_id:

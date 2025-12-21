@@ -1,7 +1,6 @@
 """Define the Autorization Manager."""
 
 import datetime
-from typing import Optional
 
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
@@ -255,8 +254,8 @@ bearer = HTTPBearer(auto_error=False)
 async def get_jwt_user(
     request: Request,
     db: AsyncSession = Depends(get_database),
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer),
-) -> Optional[User]:
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
+) -> User | None:
     """Get user from JWT token."""
     if not credentials:
         return None

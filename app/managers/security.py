@@ -1,6 +1,6 @@
 """Security dependencies for the API."""
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 from fastapi.requests import Request
@@ -12,8 +12,8 @@ from app.models.user import User
 
 async def get_current_user(
     _request: Request,
-    jwt_user: Optional[User] = Depends(oauth2_schema),
-    api_key_user: Optional[User] = Depends(api_key_scheme),
+    jwt_user: User | None = Depends(oauth2_schema),
+    api_key_user: User | None = Depends(api_key_scheme),
 ) -> User:
     """Get the current user from either JWT token or API key."""
     if jwt_user:
@@ -30,7 +30,7 @@ async def get_current_user(
 
 # Make the dependency optional for routes that allow unauthenticated access
 async def get_optional_user(
-    current_user: Annotated[Optional[User], Depends(get_current_user)],
-) -> Optional[User]:
+    current_user: Annotated[User | None, Depends(get_current_user)],
+) -> User | None:
     """Get the current user if authenticated, otherwise return None."""
     return current_user

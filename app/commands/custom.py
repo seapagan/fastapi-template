@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 import sys
-from typing import Any, Literal, Union
+from typing import Any, Literal
 
 import asyncclick as click
 import rtoml
@@ -20,7 +20,7 @@ from app.config.helpers import (
     get_toml_path,
 )
 
-LicenceType = Union[dict[str, str], Literal["Unknown"]]
+LicenceType = dict[str, str] | Literal["Unknown"]
 
 app = typer.Typer(no_args_is_help=True)
 

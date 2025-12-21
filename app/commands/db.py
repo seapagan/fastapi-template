@@ -6,7 +6,7 @@ import csv
 import random
 from asyncio import run as aiorun
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Optional
+from typing import TYPE_CHECKING, Annotated
 
 import typer
 from alembic import command
@@ -32,7 +32,7 @@ DONE_MSG = "[green]Done!"
 @app.command()
 def init(
     *,
-    force: Optional[bool] = typer.Option(
+    force: bool | None = typer.Option(
         False,
         "--force",
         "-f",
@@ -60,7 +60,7 @@ def init(
 @app.command()
 def drop(
     *,
-    force: Optional[bool] = typer.Option(
+    force: bool | None = typer.Option(
         False,
         "--force",
         "-f",
@@ -310,7 +310,7 @@ def seed(
         ),
     ] = Path("users.seed"),
     *,
-    force: Optional[bool] = typer.Option(
+    force: bool | None = typer.Option(
         False,
         "--force",
         "-f",

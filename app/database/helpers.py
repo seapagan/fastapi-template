@@ -1,7 +1,7 @@
 """Database helper functions."""
 
 from collections.abc import Sequence
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from passlib.context import CryptContext
@@ -60,14 +60,14 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 async def get_user_by_id_(
     user_id: int, session: AsyncSession
-) -> Optional[User]:
+) -> User | None:
     """Return a user by ID."""
     return await session.get(User, user_id)
 
 
 async def get_user_by_email_(
     email: str, session: AsyncSession
-) -> Optional[User]:
+) -> User | None:
     """Return a user by email."""
     result = await session.execute(select(User).where(User.email == email))
     return result.scalar_one_or_none()
@@ -81,7 +81,7 @@ async def get_all_users_(session: AsyncSession) -> Sequence[User]:
 
 async def add_new_user_(
     user_data: dict[str, Any], session: AsyncSession
-) -> Optional[User]:
+) -> User | None:
     """Add a new user to the database."""
     result = await session.execute(
         insert(User).values(user_data).returning(User)
@@ -91,7 +91,7 @@ async def add_new_user_(
 
 async def add_new_api_key_(
     api_key_data: dict[str, Any], session: AsyncSession
-) -> Optional[ApiKey]:
+) -> ApiKey | None:
     """Add a new API key to the database."""
     result = await session.execute(
         insert(ApiKey).values(api_key_data).returning(ApiKey)
@@ -105,7 +105,7 @@ async def update_api_key_(
     key_id: UUID,
     update_data: dict[str, Any],
     session: AsyncSession,
-) -> Optional[ApiKey]:
+) -> ApiKey | None:
     """Update an API key in the database."""
     result = await session.execute(
         update(ApiKey)
@@ -121,14 +121,14 @@ async def update_api_key_(
 
 async def get_api_key_by_id_(
     key_id: UUID, session: AsyncSession
-) -> Optional[ApiKey]:
+) -> ApiKey | None:
     """Return an API key by ID."""
     return await session.get(ApiKey, key_id)
 
 
 async def get_api_key_by_hash_(
     key_hash: str, session: AsyncSession
-) -> Optional[ApiKey]:
+) -> ApiKey | None:
     """Return an API key by its hash."""
     result = await session.execute(select(ApiKey).where(ApiKey.key == key_hash))
     return result.scalar_one_or_none()

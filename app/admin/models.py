@@ -1,6 +1,6 @@
 """Define the admin views for the models."""
 
-from typing import Any, ClassVar, Union
+from typing import Any, ClassVar
 
 from fastapi import Request
 from sqladmin import ModelView
@@ -27,7 +27,7 @@ class KeysAdmin(ModelView, model=ApiKey):
         ApiKey.scopes,
     ]
     column_labels: ClassVar[
-        dict[Union[str, InstrumentedAttribute[Any]], str]
+        dict[str | InstrumentedAttribute[Any], str]
     ] = {
         "user": "Owner",
         "id": "Key ID",
@@ -66,7 +66,7 @@ class UserAdmin(ModelView, model=User):
     ]
 
     column_labels: ClassVar[
-        dict[Union[str, InstrumentedAttribute[Any]], str]
+        dict[str | InstrumentedAttribute[Any], str]
     ] = {
         "id": "User ID",
         "email": "Email",

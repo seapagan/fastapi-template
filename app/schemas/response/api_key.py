@@ -1,7 +1,6 @@
 """API Key response schemas."""
 
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -16,7 +15,7 @@ class ApiKeyResponse(BaseModel):
     name: str
     created_at: datetime
     is_active: bool
-    scopes: Optional[list[str]] = None
+    scopes: list[str] | None = None
 
 
 class ApiKeyCreateResponse(ApiKeyResponse):
