@@ -45,8 +45,8 @@ packages = ["app"]
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
   "aiosmtpd>=1.4.6",
   "aiosqlite>=0.20.0",
   "faker>=30.8.2",
