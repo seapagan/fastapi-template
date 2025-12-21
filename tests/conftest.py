@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -17,7 +16,7 @@ from app.main import app
 from app.managers.email import EmailManager
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator, Generator
+    from collections.abc import AsyncGenerator
 
     from pyfakefs.fake_filesystem import FakeFilesystem
     from sqlalchemy.ext.asyncio import (
@@ -37,21 +36,14 @@ def pytest_configure(config) -> None:
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
 
 
-@pytest_asyncio.fixture(scope="session")
-def event_loop(request) -> Generator[asyncio.AbstractEventLoop, Any, Any]:
-    """Override the default event loop to use the async event loop.
-
-    This is required for pytest-asyncio to work with FastAPI.
-    """
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
 # reset the database before each test
-@pytest_asyncio.fixture(autouse=True)
+@pytest_asyncio.fixture(autouse=True, scope="function")
 async def reset_db() -> None:
     """Reset the database."""
+    # Close any existing connections
+    await async_engine.dispose()
+
+    # Recreate all tables
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

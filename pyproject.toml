@@ -57,7 +57,7 @@ dev = [
   "pyfakefs>=5.7.1",
   "pymarkdownlnt>=0.9.24",
   "pytest>=8.3.3",
-  "pytest-asyncio == 0.21.2",
+  "pytest-asyncio>=0.21.2",
   "pytest-clarity>=1.0.1",
   "pytest-cov>=6.0.0",
   "pytest-env>=1.1.5",
@@ -243,6 +243,9 @@ markers = [
 testpaths = ["tests"]
 mock_use_standalone_module = true
 env = ["I_READ_THE_DAMN_DOCS=true", "ADMIN_PAGES_ENABLED=true"]
+
+asyncio_default_fixture_loop_scope = "function"
+
 
 [tool.coverage.run]
 source = ["app"]
