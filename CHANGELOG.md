@@ -23,10 +23,15 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- December update and refresh ([#781](https://github.com/seapagan/fastapi-template/pull/781)) by [seapagan](https://github.com/seapagan)
 - Feat: add manual database session handling with rollback on exception ([#770](https://github.com/seapagan/fastapi-template/pull/770)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
+- Chore(deps): update actions/checkout action to v6 ([#778](https://github.com/seapagan/fastapi-template/pull/778)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update astral-sh/setup-uv action to v7 ([#776](https://github.com/seapagan/fastapi-template/pull/776)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update github/codeql-action action to v4 ([#775](https://github.com/seapagan/fastapi-template/pull/775)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update actions/checkout action to v5 ([#771](https://github.com/seapagan/fastapi-template/pull/771)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update mkdocs-swagger-ui-tag digest to fad9a89 ([#765](https://github.com/seapagan/fastapi-template/pull/765)) by [renovate[bot]](https://github.com/apps/renovate)
 
 [`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.patch)
