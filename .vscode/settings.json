@@ -41,7 +41,7 @@
     "jinja-html": "django"
   },
   "mypy-type-checker.args": ["--strict"],
-  "mypy-type-checker.importStrategy": "useBundled",
+  "mypy-type-checker.importStrategy": "fromEnvironment",
   "mypy-type-checker.reportingScope": "workspace",
   "python.analysis.autoImportCompletions": true,
   "python.analysis.autoImportUserSymbols": true,
