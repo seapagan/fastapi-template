@@ -4,6 +4,8 @@ aiosmtplib==3.0.2
     # via fastapi-mail
 alembic==1.14.1
     # via api-template
+annotated-doc==0.0.4
+    # via fastapi
 annotated-types==0.7.0
     # via pydantic
 anyio==4.8.0
@@ -50,15 +52,19 @@ email-validator==2.2.0
     #   pydantic
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
     # via anyio
-fastapi==0.116.1
-    # via api-template
+fastapi==0.126.0
+    # via
+    #   api-template
+    #   fastapi-pagination
 fastapi-cli==0.0.8
     # via fastapi
 fastapi-cloud-cli==0.1.5
     # via fastapi-cli
 fastapi-mail==1.4.2
     # via api-template
-fastapi-pagination==0.12.34
+fastapi-pagination==0.14.3 ; python_full_version < '3.10'
+    # via api-template
+fastapi-pagination==0.15.4 ; python_full_version >= '3.10'
     # via api-template
 greenlet==3.1.1
     # via sqlalchemy
@@ -108,12 +114,16 @@ pydantic==2.10.6
     #   fastapi-cloud-cli
     #   fastapi-mail
     #   fastapi-pagination
+    #   pydantic-extra-types
     #   pydantic-settings
 pydantic-core==2.27.2
     # via pydantic
+pydantic-extra-types==2.10.6
+    # via fastapi
 pydantic-settings==2.7.1
     # via
     #   api-template
+    #   fastapi
     #   fastapi-mail
 pygments==2.19.1
     # via rich
@@ -142,7 +152,9 @@ rich-toolkit==0.14.9
     #   fastapi-cloud-cli
 rignore==0.6.4
     # via fastapi-cloud-cli
-rtoml==0.12.0
+rtoml==0.12.0 ; python_full_version < '3.10'
+    # via api-template
+rtoml==0.13.0 ; python_full_version >= '3.10'
     # via api-template
 sentry-sdk==2.34.1
     # via fastapi-cloud-cli
@@ -157,7 +169,12 @@ sqlalchemy==2.0.38
     #   alembic
     #   api-template
     #   sqladmin
-starlette==0.47.2
+starlette==0.49.3 ; python_full_version < '3.10'
+    # via
+    #   fastapi
+    #   fastapi-mail
+    #   sqladmin
+starlette==0.50.0 ; python_full_version >= '3.10'
     # via
     #   fastapi
     #   fastapi-mail
@@ -176,13 +193,14 @@ typing-extensions==4.12.2
     #   libpass
     #   pydantic
     #   pydantic-core
+    #   pydantic-extra-types
     #   rich
     #   rich-toolkit
     #   sqlalchemy
     #   starlette
     #   typer
     #   uvicorn
-urllib3==2.5.0
+urllib3==2.6.2
     # via sentry-sdk
 uvicorn==0.35.0
     # via
