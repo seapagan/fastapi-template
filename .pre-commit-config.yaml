@@ -1,21 +1,14 @@
 ci:
   autofix_commit_msg: "[pre-commit.ci] auto fixes from pre-commit.com hooks"
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+  - repo: builtin
     hooks:
       - id: check-yaml
-        args: [--unsafe]
       - id: trailing-whitespace
       - id: check-toml
       - id: check-merge-conflict
       - id: end-of-file-fixer
-
-  # - repo: https://github.com/renovatebot/pre-commit-hooks
-  #   rev: 39.69.2
-  #   hooks:
-  #     - id: renovate-config-validator
-  #       files: ^renovate\.json$
+      - id: check-added-large-files
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.14.10
@@ -27,7 +20,7 @@ repos:
         name: "format with ruff"
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.19.1" # Use the sha / tag you want to point at
+    rev: v1.19.1 # Use the sha / tag you want to point at
     hooks:
       - id: mypy
         name: "run mypy"

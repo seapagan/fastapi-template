@@ -57,8 +57,6 @@ cffi==2.0.0
     # via
     #   cryptography
     #   pynacl
-cfgv==3.4.0
-    # via pre-commit
 charset-normalizer==3.4.1
     # via requests
 click==8.1.8
@@ -89,8 +87,6 @@ csscompressor==0.9.5
     # via mkdocs-minify-plugin
 deprecated==1.2.18
     # via pygithub
-distlib==0.3.9
-    # via virtualenv
 distro==1.9.0
     # via openai
 dnspython==2.7.0
@@ -118,8 +114,6 @@ fastapi-mail==1.6.1
     # via api-template
 fastapi-pagination==0.15.4
     # via api-template
-filelock==3.17.0
-    # via virtualenv
 ghp-import==2.1.0
     # via mkdocs
 gitdb==4.0.12
@@ -149,8 +143,6 @@ httpx==0.28.1
     #   fastapi
     #   fastapi-cloud-cli
     #   openai
-identify==2.6.7
-    # via pre-commit
 idna==3.10
     # via
     #   anyio
@@ -235,8 +227,6 @@ mock==5.2.0
 mypy==1.19.1
 mypy-extensions==1.0.0
     # via mypy
-nodeenv==1.9.1
-    # via pre-commit
 openai==2.14.0
     # via mkdoc
 packaging==24.2
@@ -253,15 +243,13 @@ pathspec==0.12.1
     #   mkdocs
     #   mypy
 platformdirs==4.3.6
-    # via
-    #   mkdocs-get-deps
-    #   virtualenv
+    # via mkdocs-get-deps
 pluggy==1.5.0
     # via pytest
 poethepoet==0.32.2
 pprintpp==0.4.0
     # via pytest-clarity
-pre-commit==4.1.0
+prek==0.2.24
 pycparser==2.22 ; implementation_name != 'PyPy'
     # via cffi
 pydantic==2.12.5
@@ -342,7 +330,6 @@ pyyaml==6.0.2
     #   mkdocs
     #   mkdocs-get-deps
     #   poethepoet
-    #   pre-commit
     #   pymdown-extensions
     #   pyyaml-env-tag
     #   uvicorn
@@ -472,8 +459,6 @@ uvicorn==0.40.0
     #   fastapi-cloud-cli
 uvloop==0.21.0 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'
     # via uvicorn
-virtualenv==20.29.2
-    # via pre-commit
 watchdog==6.0.0
     # via
     #   mkdocs
