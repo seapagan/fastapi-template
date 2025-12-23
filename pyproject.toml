@@ -53,7 +53,6 @@ dev = [
   "mock>=5.1.0",
   "mypy>=1.13.0",
   "poethepoet>=0.29.0",
-  "pre-commit>=4.0.1",
   "pyfakefs>=5.7.1",
   "pymarkdownlnt>=0.9.24",
   "pytest>=8.3.3",
@@ -80,6 +79,7 @@ dev = [
   "mkdocstrings[python]>=0.26.2",
   "mkdocs-swagger-ui-tag",
   "ty>=0.0.5",
+  "prek>=0.2.24",
 ]
 
 [tool.uv.sources]
@@ -88,8 +88,8 @@ mkdocs-swagger-ui-tag = { git = "https://github.com/seapagan/mkdocs-swagger-ui-t
 
 [tool.poe.tasks]
 # setup PoeThePoet tasks
-pre.cmd = "pre-commit run --all-files"
-pre.help = "Run pre-commit checks"
+pre.cmd = "prek run --all-files"
+pre.help = "Run pre commit checks using prek"
 mypy.cmd = "mypy . --strict"
 mypy.help = "Run mypy checks"
 format.help = "Format code with Ruff"
