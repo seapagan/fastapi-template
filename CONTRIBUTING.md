@@ -138,23 +138,52 @@ and is part of the pre-commit hooks.
 
 Please install this if you are intending to submit a PR. It will check commits
 locally before they are pushed up to the Repo. The GitHub CI runs the linting
-and mypy checks, and will fail if there are any errors.
+and mypy checks, and will fail if there are any errors. We use
+[prek](https://prek.j178.dev/) to control the git hooks:
 
 ```console
-$ pre-commit install
-pre-commit installed at .git/hooks/pre-commit
+$ prek install
+prek installed at .git/hooks/pre-commit
 ```
 
 This will ensure that all code meets the required linting standard before being
-committed.
+committed. It will also automatically generate updated `requirements.txt` and
+`requirements-dev.txt` files if required. Note that generating these files will
+cause the commit to fail, so you can add the new files to your git stage.
 
-### Run pre-commit manually
+!!! important
 
-You can run these checks manually on all staged files using the below command :
+    Previously we used `pre-commit` for this. However, `prek` is a more modern and
+    much faster drop-in equivalent written in Rust, If you have the `pre-commit`
+    hooks already set up, you must force `prek` to overwrite them:
+
+    ```console
+    $ prek install -f
+    ```
+
+#### Run prek manually
+
+You can run these checks manually on all files in the project using the
+below command :
 
 ```console
 poe pre
 ```
+
+As before, this will generate updated `requirements.txt` and
+`requirements-dev.txt` files if required.
+
+!!! tip
+
+    It's actually a good idea (and heavily recommended!) to run the above command
+    regularly to ensure the dependency files are updated and that the linters all
+    pass.
+
+#### GitHub CI Action
+
+The checks in this pre-commit hook are also automatically run for each commit
+pushed to GitHub and for Pull Requests. This is controlled by the
+`~/.github/workflows/prek.yml` configuration file.
 
 ## Testing
 
