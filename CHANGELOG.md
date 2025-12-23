@@ -23,6 +23,8 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Migrate to `prek` from `pre-commit` ([#783](https://github.com/seapagan/fastapi-template/pull/783)) by [seapagan](https://github.com/seapagan)
+- Update for Python 3.14 compatibility and drop support for Python 3.9 ([#782](https://github.com/seapagan/fastapi-template/pull/782)) by [seapagan](https://github.com/seapagan)
 - December update and refresh ([#781](https://github.com/seapagan/fastapi-template/pull/781)) by [seapagan](https://github.com/seapagan)
 - Feat: add manual database session handling with rollback on exception ([#770](https://github.com/seapagan/fastapi-template/pull/770)) by [seapagan](https://github.com/seapagan)
 
