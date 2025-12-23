@@ -4,7 +4,7 @@ aiosmtpd==1.4.6
 aiosmtplib==5.0.0
     # via fastapi-mail
 aiosqlite==0.21.0
-alembic==1.14.1
+alembic==1.17.2
     # via api-template
 annotated-doc==0.0.4
     # via fastapi
@@ -24,11 +24,11 @@ async-timeout==5.0.1 ; python_full_version < '3.11'
     # via asyncpg
 asyncclick==8.1.8
     # via api-template
-asyncpg==0.30.0
+asyncpg==0.31.0
     # via
     #   api-template
     #   asyncpg-stubs
-asyncpg-stubs==0.30.0
+asyncpg-stubs==0.31.1
 atpublic==5.1
     # via aiosmtpd
 attrs==25.1.0
@@ -394,6 +394,7 @@ termcolor==2.5.0
     # via pytest-sugar
 tomli==2.2.1
     # via
+    #   alembic
     #   application-properties
     #   coverage
     #   mypy

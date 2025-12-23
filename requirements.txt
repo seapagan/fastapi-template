@@ -2,7 +2,7 @@
 #    uv export --no-hashes --no-dev --no-emit-project --output-file=requirements.txt
 aiosmtplib==5.0.0
     # via fastapi-mail
-alembic==1.14.1
+alembic==1.17.2
     # via api-template
 annotated-doc==0.0.4
     # via fastapi
@@ -19,7 +19,7 @@ async-timeout==5.0.1 ; python_full_version < '3.11'
     # via asyncpg
 asyncclick==8.1.8
     # via api-template
-asyncpg==0.30.0
+asyncpg==0.31.0
     # via api-template
 bcrypt==4.2.1
     # via
@@ -178,6 +178,8 @@ starlette==0.50.0
     #   fastapi
     #   fastapi-mail
     #   sqladmin
+tomli==2.2.1 ; python_full_version < '3.11'
+    # via alembic
 typer==0.16.0
     # via
     #   api-template
