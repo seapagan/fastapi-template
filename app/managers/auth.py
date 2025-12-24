@@ -270,12 +270,14 @@ async def get_jwt_user(
         )
         user_data = await get_user_by_id_(payload["sub"], db)
 
-        # Check user validity
-        if (
-            not user_data
-            or bool(user_data.banned)
-            or not bool(user_data.verified)
-        ):
+        # Check user validity - user must exist, be verified, and not banned
+        if not user_data:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ResponseMessages.INVALID_TOKEN,
+            )
+
+        if bool(user_data.banned) or not bool(user_data.verified):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=ResponseMessages.INVALID_TOKEN,

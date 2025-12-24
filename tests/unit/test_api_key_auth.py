@@ -92,3 +92,30 @@ class TestApiKeyAuth:
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc.value.detail == ApiKeyErrorMessages.KEY_INACTIVE
+
+    async def test_api_key_auth_deleted_user(self, test_db, mocker) -> None:
+        """Test with a deleted user but valid API key."""
+        # Create a user and API key
+        _ = await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+        api_key, raw_key = await ApiKeyManager.create_key(
+            user, "Test Key", None, test_db
+        )
+
+        # Delete the API key first, then the user
+        await ApiKeyManager.delete_key(api_key.id, test_db)
+        await UserManager.delete_user(user.id, test_db)
+        await test_db.flush()
+
+        # Try to authenticate with the API key
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"X-API-Key": raw_key}
+
+        auth = ApiKeyAuth()
+        with pytest.raises(HTTPException) as exc:
+            await auth(request=mock_req, db=test_db)
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ApiKeyErrorMessages.INVALID_KEY

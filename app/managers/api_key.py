@@ -163,9 +163,19 @@ class ApiKeyAuth:
                 )
             return None
 
-        # Get the user data
+        # Get the user data - check if user still exists
         user = await get_user_by_id_(key.user_id, db)
         if not user:
+            # User has been deleted but API key still exists
+            if self.auto_error:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=ApiKeyErrorMessages.INVALID_KEY,
+                )
+            return None
+
+        # Check if user is banned or not verified
+        if bool(user.banned) or not bool(user.verified):
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,

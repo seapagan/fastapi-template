@@ -36,8 +36,6 @@
 
 ## Bugs/Annoyances
 
-- If a user is deleted while logged in, the API returns a 500 (Internal Server
-   Error).
 - Admin users CAN delete themselves, but this should not be allowed. They should
   be able to delete other users, but not themselves. Or should they?? Need to
   think about this.
@@ -71,8 +69,8 @@
 ## CLI
 
 - Option to remove the customization functionality from the CLI. Useful once you
-  have customized the template and don't want to give the end-user the ability to
-  change it easily.
+  have customized the template and don't want to give the end-user the ability
+  to change it easily.
 - Ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
 - Add commands to the CLI to serve, build, publish to gh-pages the API
