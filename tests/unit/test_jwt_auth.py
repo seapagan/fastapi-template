@@ -131,3 +131,27 @@ class TestJWTAuth:
 
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc.value.detail == ResponseMessages.EXPIRED_TOKEN
+
+    async def test_jwt_auth_deleted_user(self, test_db, mocker) -> None:
+        """Test with a deleted user but valid token."""
+        # Create user and get token
+        token, _ = await UserManager.register(self.test_user, test_db)
+
+        # Delete the user
+        await UserManager.delete_user(1, test_db)
+        await test_db.flush()
+
+        # Try to authenticate with the token
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {token}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
+
+        with pytest.raises(HTTPException) as exc:
+            await get_jwt_user(
+                request=mock_req, db=test_db, credentials=mock_credentials
+            )
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ResponseMessages.INVALID_TOKEN
