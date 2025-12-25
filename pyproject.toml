@@ -1,6 +1,6 @@
 [project]
 name = "api-template"
-version = "0.7.0"
+version = "0.8.0"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = [{ name = "Grant Ramsay", email = "seapagan@gmail.com" }]
 license = "MIT"

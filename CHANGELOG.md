@@ -6,12 +6,7 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
-These are the changes that have been merged to the repository since the last
-release.
-
-Everything in this section will be included in the next official release.
+## [v0.8.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.8.0) (December 25, 2025)
 
 **Closed Issues**
 
@@ -23,20 +18,26 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Update docker to use Python 3.14 and Postgres 18.1. fix resulting issues ([#786](https://github.com/seapagan/fastapi-template/pull/786)) by [seapagan](https://github.com/seapagan)
 - Migrate to `prek` from `pre-commit` ([#783](https://github.com/seapagan/fastapi-template/pull/783)) by [seapagan](https://github.com/seapagan)
 - Update for Python 3.14 compatibility and drop support for Python 3.9 ([#782](https://github.com/seapagan/fastapi-template/pull/782)) by [seapagan](https://github.com/seapagan)
 - December update and refresh ([#781](https://github.com/seapagan/fastapi-template/pull/781)) by [seapagan](https://github.com/seapagan)
 - Feat: add manual database session handling with rollback on exception ([#770](https://github.com/seapagan/fastapi-template/pull/770)) by [seapagan](https://github.com/seapagan)
 
+**Bug Fixes**
+
+- Fix/deleted user 500 error ([#785](https://github.com/seapagan/fastapi-template/pull/785)) by [seapagan](https://github.com/seapagan)
+
 **Dependency Updates**
 
+- Chore(deps): update actions/checkout action to v6 ([#784](https://github.com/seapagan/fastapi-template/pull/784)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update actions/checkout action to v6 ([#778](https://github.com/seapagan/fastapi-template/pull/778)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update astral-sh/setup-uv action to v7 ([#776](https://github.com/seapagan/fastapi-template/pull/776)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update github/codeql-action action to v4 ([#775](https://github.com/seapagan/fastapi-template/pull/775)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update actions/checkout action to v5 ([#771](https://github.com/seapagan/fastapi-template/pull/771)) by [renovate[bot]](https://github.com/apps/renovate)
 - Chore(deps): update mkdocs-swagger-ui-tag digest to fad9a89 ([#765](https://github.com/seapagan/fastapi-template/pull/765)) by [renovate[bot]](https://github.com/apps/renovate)
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...v0.8.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...v0.8.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.7.0...v0.8.0.patch)
 
 ## [v0.7.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.7.0) (July 05, 2025)
 
