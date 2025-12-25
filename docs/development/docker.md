@@ -1,9 +1,24 @@
 # Develop with Docker
 
+!!! warning "PostgreSQL 18 Upgrade (Release 0.8.0)"
+    As of release `0.8.0`, we have upgraded PostgreSQL from version 17 to 18.1.
+    This version is not compatible with existing PostgreSQL 17 databases.
+
+    You will need to either:
+
+    1. **Delete and recreate** the database volume:
+       ```console
+       docker compose down
+       docker volume rm api-db-data
+       docker compose up
+       ```
+    2. **Dump and reload** your existing data before upgrading (see PostgreSQL
+       documentation for migration guides)
+
 ## Python and PostgreSQL versions
 
-Currently, the Docker confguration uses Python version `3.13` and PostgreSQL
-version `17` (or the latest patch version of each).
+Currently, the Docker configuration uses Python version `3.14` and PostgreSQL
+version `18.1` (or the latest patch version of each).
 
 !!! warning "Database Version Changes"
     At times we will update the Docker configurations to use a newer version of
@@ -77,14 +92,27 @@ docker compose build
 
 ## Database Administration
 
-At this time, the CLI tool is not available in the Docker container, so you will
-need to use an external tool such as `pgAdmin4` to manage the database. Note
-that the database is exposed on port `5433` and the default username and
-password are those set in your `.env` file.
+The `api-admin` CLI tool is fully functional within the Docker container. You can
+run any `api-admin` commands using:
 
-In the future I will try to get the `api-admin` tool working inside the Docker
-container. The issue is getting this to work without destroying my local `.venv`
-folder.
+```console
+docker compose run --rm api api-admin <command>
+```
+
+Alternatively, you can use an external tool such as `pgAdmin4` to manage the
+database. Note that the database is exposed on port `5433` and the default
+username and password are those set in your `.env` file.
+
+## Local File Changes
+
+The Docker configuration uses volume mounting to ensure that any changes you make
+to your local files (including source code and tests) are immediately reflected
+in the running container. This means you don't need to rebuild the Docker image
+every time you make a code change.
+
+Your local `.venv` directory is protected and will not be affected by the
+container's virtual environment, so you can safely develop both locally and
+within Docker without conflicts.
 
 ## Run Tests
 
