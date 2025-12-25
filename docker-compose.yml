@@ -4,11 +4,11 @@ services:
     build:
       context: .
       target: dev
-    command:
-      bash -c "uv run alembic upgrade head && uvicorn app.main:app --host
+    command: bash -c "uv run alembic upgrade head && uvicorn app.main:app --host
       0.0.0.0 --port 8001 --reload"
     volumes:
-      - .:/app/src/
+      - .:/app/
+      - /app/.venv
     env_file:
       - .env
     environment:
@@ -22,22 +22,23 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:17.3-bullseye
+    image: postgres:18.1-bookworm
     hostname: postgres
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_TEST_DB: ${TEST_DB_NAME}
+      PGDATA: /var/lib/postgresql/18/docker
     volumes:
-      - api-db-data:/var/lib/postgresql/data
+      - api-db-data:/var/lib/postgresql/18/data
       - ./docker_support/create-test-db.sh:/docker-entrypoint-initdb.d/create-test-db.sh
     ports:
       - 5433:${DB_PORT}
     networks:
       - api-network
     healthcheck:
-      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 2s
       timeout: 3s
       retries: 40
