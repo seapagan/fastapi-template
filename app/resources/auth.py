@@ -6,11 +6,19 @@ from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.db import get_database
-from app.managers.auth import AuthManager
+from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.user import UserManager
-from app.schemas.request.auth import TokenRefreshRequest
+from app.schemas.request.auth import (
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    TokenRefreshRequest,
+)
 from app.schemas.request.user import UserLoginRequest, UserRegisterRequest
-from app.schemas.response.auth import TokenRefreshResponse, TokenResponse
+from app.schemas.response.auth import (
+    PasswordResetResponse,
+    TokenRefreshResponse,
+    TokenResponse,
+)
 
 router = APIRouter(tags=["Authentication"])
 
@@ -96,6 +104,54 @@ async def verify(
     by FastAPI exceptions.
     """
     await AuthManager.verify(code, session)
+
+
+@router.post(
+    "/forgot-password/",
+    name="request_password_reset",
+    response_model=PasswordResetResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def forgot_password(
+    background_tasks: BackgroundTasks,
+    request_data: ForgotPasswordRequest,
+    session: Annotated[AsyncSession, Depends(get_database)],
+) -> dict[str, str]:
+    """Request a password reset email.
+
+    Sends a password reset email to the user if the email exists in the system.
+    For security reasons, always returns success even if the email doesn't exist
+    to prevent email enumeration attacks.
+
+    The reset link will expire after 30 minutes.
+    """
+    await AuthManager.forgot_password(
+        request_data.email, background_tasks, session
+    )
+    return {"message": ResponseMessages.RESET_EMAIL_SENT}
+
+
+@router.post(
+    "/reset-password/",
+    name="reset_password",
+    response_model=PasswordResetResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def reset_password(
+    request_data: ResetPasswordRequest,
+    session: Annotated[AsyncSession, Depends(get_database)],
+) -> dict[str, str]:
+    """Reset a user's password using the reset token.
+
+    The reset token is sent to the user's email via the forgot-password endpoint.
+    The token expires after 30 minutes.
+
+    The new password must be at least 8 characters long.
+    """
+    await AuthManager.reset_password(
+        request_data.code, request_data.new_password, session
+    )
+    return {"message": ResponseMessages.PASSWORD_RESET_SUCCESS}
 
 
 # @router.get("/resend/", status_code=status.HTTP_200_OK)
