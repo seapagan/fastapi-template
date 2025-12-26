@@ -221,30 +221,67 @@ Returns the currently authenticated user's information.
 
 ```json
 {
-  "id": 1,
   "email": "user@example.com",
   "first_name": "John",
-  "last_name": "Doe",
-  "role": "user",
-  "banned": false,
-  "verified": true
+  "last_name": "Doe"
 }
 ```
 
+**Notes:**
+- Non-admin users only see their own basic information
+- Admin users can use `/users/` to see full details
+
 ---
 
-### List All Users
+### Get User(s)
 
 **Endpoint:** `GET /users/`
 
-**Authentication:** Required (Admin only)
+**Authentication:** Required ⚠️ **Admin Only**
 
-Returns a paginated list of all users.
+Get all users or a specific user by their ID.
 
 **Query Parameters:**
 
-- `page` (optional): Page number (default: 1)
-- `size` (optional): Items per page (default: 50)
+- `user_id` (optional): Specific user ID to retrieve
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": 1,
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "user",
+    "banned": false,
+    "verified": true
+  }
+]
+```
+
+**Notes:**
+- If `user_id` is omitted, returns all users
+- If `user_id` is provided, returns single user object (not array)
+
+---
+
+### Search Users
+
+**Endpoint:** `GET /users/search`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Search for users with various criteria.
+
+**Query Parameters:**
+
+- `search_term` (required): Search query string
+- `field` (optional): Field to search ("all", "email", "first_name", "last_name") - default: "all"
+- `exact_match` (optional): Use exact matching instead of partial - default: false
+- `page` (optional): Page number (min: 1, default: 1)
+- `size` (optional): Items per page (min: 1, max: 100, default: 50)
 
 **Response:** `200 OK`
 
@@ -261,20 +298,185 @@ Returns a paginated list of all users.
       "verified": true
     }
   ],
-  "total": 100,
+  "total": 25,
   "page": 1,
   "size": 50,
-  "pages": 2
+  "pages": 1
 }
 ```
 
 ---
 
+### Edit User
+
+**Endpoint:** `PUT /users/{user_id}`
+
+**Authentication:** Required (User or Admin)
+
+Update the specified user's data.
+
+**Path Parameters:**
+
+- `user_id`: ID of user to edit
+
+**Request Body:**
+
+```json
+{
+  "email": "newemail@example.com",
+  "password": "newpassword123",
+  "first_name": "Jane",
+  "last_name": "Smith"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "email": "newemail@example.com",
+  "first_name": "Jane",
+  "last_name": "Smith"
+}
+```
+
+**Notes:**
+- Users can edit their own profile
+- Admins can edit any user's profile
+
+---
+
+### Change User Password
+
+**Endpoint:** `POST /users/{user_id}/password`
+
+**Authentication:** Required (User or Admin)
+
+Change the password for the specified user.
+
+**Path Parameters:**
+
+- `user_id`: ID of user whose password to change
+
+**Request Body:**
+
+```json
+{
+  "password": "mynewpassword123"
+}
+```
+
+**Response:** `204 No Content`
+
+**Notes:**
+- Users can change their own password
+- Admins can change any user's password
+
+---
+
+### Make User Admin
+
+**Endpoint:** `POST /users/{user_id}/make-admin`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Grant admin role to the specified user.
+
+**Path Parameters:**
+
+- `user_id`: ID of user to make admin
+
+**Response:** `204 No Content`
+
+---
+
+### Ban User
+
+**Endpoint:** `POST /users/{user_id}/ban`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Ban the specified user. Banned users cannot login or access protected routes.
+
+**Path Parameters:**
+
+- `user_id`: ID of user to ban
+
+**Response:** `204 No Content`
+
+**Notes:**
+- Admins cannot ban themselves
+- Banned users cannot reset passwords or access any authenticated endpoints
+
+---
+
+### Unban User
+
+**Endpoint:** `POST /users/{user_id}/unban`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Remove ban from the specified user.
+
+**Path Parameters:**
+
+- `user_id`: ID of user to unban
+
+**Response:** `204 No Content`
+
+---
+
+### Delete User
+
+**Endpoint:** `DELETE /users/{user_id}`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Permanently delete the specified user.
+
+**Path Parameters:**
+
+- `user_id`: ID of user to delete
+
+**Response:** `204 No Content`
+
+**Notes:**
+- This action is permanent and cannot be undone
+- All associated API keys will also be deleted
+
+---
+
 ## API Key Endpoints
+
+### List API Keys (Own)
+
+**Endpoint:** `GET /users/keys`
+
+**Authentication:** Required (JWT or API Key)
+
+Returns all API keys for the authenticated user.
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "My API Key",
+    "created_at": "2024-01-01T12:00:00Z",
+    "is_active": true,
+    "scopes": ["read", "write"]
+  }
+]
+```
+
+**Note:** The actual key value is never returned after creation.
+
+---
 
 ### Create API Key
 
-**Endpoint:** `POST /api-keys/`
+**Endpoint:** `POST /users/keys`
 
 **Authentication:** Required (JWT or API Key)
 
@@ -289,7 +491,7 @@ Creates a new API key for the authenticated user.
 }
 ```
 
-**Response:** `201 Created`
+**Response:** `200 OK`
 
 ```json
 {
@@ -310,31 +512,165 @@ Creates a new API key for the authenticated user.
 
 ---
 
-### List API Keys
+### Get Specific API Key
 
-**Endpoint:** `GET /api-keys/`
+**Endpoint:** `GET /users/keys/{key_id}`
 
 **Authentication:** Required (JWT or API Key)
 
-Returns all API keys for the authenticated user.
+Get details of a specific API key by ID.
+
+**Path Parameters:**
+
+- `key_id`: UUID of the API key
 
 **Response:** `200 OK`
 
 ```json
 {
-  "keys": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "My API Key",
-      "created_at": "2024-01-01T12:00:00Z",
-      "is_active": true,
-      "scopes": ["read", "write"]
-    }
-  ]
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "My API Key",
+  "created_at": "2024-01-01T12:00:00Z",
+  "is_active": true,
+  "scopes": ["read", "write"]
 }
 ```
 
-**Note:** The actual key value is never returned after creation.
+---
+
+### Update API Key
+
+**Endpoint:** `PATCH /users/keys/{key_id}`
+
+**Authentication:** Required (JWT or API Key)
+
+Update an API key's name or active status.
+
+**Path Parameters:**
+
+- `key_id`: UUID of the API key
+
+**Request Body:**
+
+```json
+{
+  "name": "Updated Key Name",
+  "is_active": false
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Updated Key Name",
+  "created_at": "2024-01-01T12:00:00Z",
+  "is_active": false,
+  "scopes": ["read", "write"]
+}
+```
+
+**Notes:**
+- Both fields are optional in the request
+- Setting `is_active` to `false` disables the key without deleting it
+
+---
+
+### Delete API Key
+
+**Endpoint:** `DELETE /users/keys/{key_id}`
+
+**Authentication:** Required (JWT or API Key)
+
+Permanently delete an API key.
+
+**Path Parameters:**
+
+- `key_id`: UUID of the API key
+
+**Response:** `204 No Content`
+
+---
+
+### List User API Keys (Admin)
+
+**Endpoint:** `GET /users/keys/by-user/{user_id}`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+List all API keys for a specific user.
+
+**Path Parameters:**
+
+- `user_id`: ID of the user
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "User's API Key",
+    "created_at": "2024-01-01T12:00:00Z",
+    "is_active": true,
+    "scopes": ["read", "write"]
+  }
+]
+```
+
+---
+
+### Update User API Key (Admin)
+
+**Endpoint:** `PATCH /users/keys/by-user/{user_id}/{key_id}`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Update another user's API key.
+
+**Path Parameters:**
+
+- `user_id`: ID of the user
+- `key_id`: UUID of the API key
+
+**Request Body:**
+
+```json
+{
+  "name": "Admin Updated Name",
+  "is_active": false
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "Admin Updated Name",
+  "created_at": "2024-01-01T12:00:00Z",
+  "is_active": false,
+  "scopes": ["read", "write"]
+}
+```
+
+---
+
+### Delete User API Key (Admin)
+
+**Endpoint:** `DELETE /users/keys/by-user/{user_id}/{key_id}`
+
+**Authentication:** Required ⚠️ **Admin Only**
+
+Delete another user's API key.
+
+**Path Parameters:**
+
+- `user_id`: ID of the user
+- `key_id`: UUID of the API key
+
+**Response:** `204 No Content`
 
 ---
 
