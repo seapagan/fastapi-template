@@ -1,6 +1,7 @@
 """Define routes for Authentication."""
 
 from typing import Annotated
+from urllib.parse import quote
 
 import jwt
 from fastapi import (
@@ -174,7 +175,7 @@ async def reset_password_form(
     # If frontend URL is configured, redirect to frontend
     if get_settings().frontend_url:
         return RedirectResponse(
-            url=f"{get_settings().frontend_url}/reset-password?code={code}",
+            url=f"{get_settings().frontend_url}/reset-password?code={quote(code)}",
             status_code=302,
         )
 
