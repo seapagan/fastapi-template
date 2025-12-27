@@ -11,6 +11,7 @@ from fastapi import (
     Request,
     status,
 )
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -161,15 +162,22 @@ async def reset_password_form(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_database)],
     code: str = "",
-) -> _TemplateResponse:
-    """Display password reset form.
+) -> _TemplateResponse | RedirectResponse:
+    """Display password reset form or redirect to frontend.
 
-    This endpoint validates the reset token and displays an HTML form
-    for the user to enter their new password. The form submits to the
-    POST /reset-password/ endpoint.
+    If FRONTEND_URL is configured, redirects to the frontend's reset password
+    page with the token. Otherwise, displays the built-in HTML form for users
+    to enter their new password.
 
     If the token is invalid or expired, an error message is displayed.
     """
+    # If frontend URL is configured, redirect to frontend
+    if get_settings().frontend_url:
+        return RedirectResponse(
+            url=f"{get_settings().frontend_url}/reset-password?code={code}",
+            status_code=302,
+        )
+
     error = None
 
     # Validate the token

@@ -169,13 +169,18 @@ Initiates a password reset by sending a reset email to the user.
 
 **Endpoint:** `GET /reset-password/?code={token}`
 
-Displays an HTML form for resetting password. This is the endpoint linked in password reset emails.
+Displays an HTML form for resetting password OR redirects to a custom frontend. This is the endpoint linked in password reset emails.
 
 **Query Parameters:**
 
 - `code` (required): Password reset token from email
 
-**Response:** `200 OK` (HTML)
+**Response:**
+
+- `302 Redirect` (if `FRONTEND_URL` is configured) - Redirects to `{FRONTEND_URL}/reset-password?code={token}`
+- `200 OK` (HTML) (if `FRONTEND_URL` is not set) - Shows built-in password reset form
+
+**Built-in Form Behavior (no FRONTEND_URL):**
 
 Returns an HTML page with:
 - Password reset form (if token is valid)
@@ -189,10 +194,24 @@ Returns an HTML page with:
 
 **Notes:**
 
-- Validates token before displaying the form
+- **With custom frontend**: Set `FRONTEND_URL` in settings/env to redirect users to your app
+- **Without custom frontend**: Leave `FRONTEND_URL` unset to use built-in form
+- Validates token before displaying the form (when using built-in form)
 - Form submits to `POST /reset-password/`
-- Provides user-friendly error messages
-- Used for users without a separate frontend application
+- Provides seamless integration with custom frontends while maintaining standalone functionality
+
+**Configuration:**
+
+To use with a custom frontend, set in `.env`:
+```
+FRONTEND_URL=https://app.example.com
+```
+
+Your frontend should:
+1. Handle the route `/reset-password`
+2. Extract the `code` query parameter
+3. Display a custom password reset form
+4. POST to backend `/reset-password/` with JSON: `{"code": "...", "new_password": "..."}`
 
 ---
 
