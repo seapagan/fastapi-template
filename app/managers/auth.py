@@ -242,8 +242,8 @@ class AuthManager:
         reset_token = AuthManager.encode_reset_token(user)
 
         # Send password reset email
-        email = EmailManager()
-        email.template_send(
+        email_manager = EmailManager()
+        email_manager.template_send(
             background_tasks,
             EmailTemplateSchema(
                 recipients=[NameEmail(name=user.first_name, email=user.email)],
