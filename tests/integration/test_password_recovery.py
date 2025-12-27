@@ -1,12 +1,14 @@
 """Integration tests for password recovery endpoints."""
 
 import datetime
+from urllib.parse import quote
 
 import pytest
 from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config.settings import Settings
 from app.database.helpers import (
     hash_password,
 )
@@ -302,3 +304,254 @@ class TestPasswordRecovery:
         # Should fail (either 400 for invalid credentials or 401 for
         # unauthorized)
         assert response.status_code in (400, 401)
+
+    async def test_reset_password_form_get_valid_token(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test GET /reset-password/ displays form with valid token."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        # Access GET endpoint
+        response = await client.get(
+            f"/reset-password/?code={reset_token}",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        # Check that form is present in HTML
+        assert b"password" in response.content.lower()
+        assert b"form" in response.content.lower()
+
+    async def test_reset_password_form_get_invalid_token(
+        self, client: AsyncClient
+    ) -> None:
+        """Test GET /reset-password/ shows error with invalid token."""
+        response = await client.get(
+            "/reset-password/?code=invalid_token",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        # Check that error message is in HTML
+        assert ResponseMessages.INVALID_TOKEN.encode() in response.content
+
+    async def test_reset_password_form_get_expired_token(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Test GET /reset-password/ shows error with expired token."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Mock datetime to make token expired
+        past_time = datetime.datetime.now(
+            tz=datetime.timezone.utc
+        ) - datetime.timedelta(hours=1)
+        mocker.patch(
+            "app.managers.auth.datetime.datetime"
+        ).now.return_value = past_time
+
+        # Generate expired token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        response = await client.get(
+            f"/reset-password/?code={reset_token}",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert ResponseMessages.EXPIRED_TOKEN.encode() in response.content
+
+    async def test_reset_password_form_get_no_code(
+        self, client: AsyncClient
+    ) -> None:
+        """Test GET /reset-password/ shows error with no code."""
+        response = await client.get(
+            "/reset-password/",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert b"Reset code is required" in response.content
+
+    async def test_reset_password_form_get_wrong_token_type(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test GET /reset-password/ shows error with wrong token type."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate a verification token instead of reset token
+        verify_token = AuthManager.encode_verify_token(user)
+
+        response = await client.get(
+            f"/reset-password/?code={verify_token}",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert ResponseMessages.INVALID_TOKEN.encode() in response.content
+
+    async def test_reset_password_form_get_banned_user(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test GET /reset-password/ shows error for banned user."""
+        # Create a banned user
+        banned_user = User(**self.test_user)
+        banned_user.banned = True
+        test_db.add(banned_user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate reset token for banned user
+        reset_token = AuthManager.encode_reset_token(banned_user)
+
+        response = await client.get(
+            f"/reset-password/?code={reset_token}",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert ResponseMessages.INVALID_TOKEN.encode() in response.content
+
+    async def test_reset_password_form_get_with_frontend_url(
+        self, client: AsyncClient, test_db: AsyncSession, monkeypatch
+    ) -> None:
+        """Test GET /reset-password/ redirects when FRONTEND_URL is set."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        # Mock FRONTEND_URL setting
+        def mock_get_settings() -> Settings:
+            settings = Settings()
+            settings.frontend_url = "https://frontend.example.com"
+            return settings
+
+        monkeypatch.setattr(
+            "app.resources.auth.get_settings", mock_get_settings
+        )
+
+        # Access GET endpoint
+        response = await client.get(
+            f"/reset-password/?code={reset_token}",
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_302_FOUND
+        # Verify redirect URL includes encoded token
+        expected_url = f"https://frontend.example.com/reset-password?code={quote(reset_token)}"
+        assert response.headers["location"] == expected_url
+
+    async def test_reset_password_post_form_data_success(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test POST /reset-password/ with form data succeeds."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        # Submit form data
+        new_password = "NewFormPassword123!"  # noqa: S105
+        response = await client.post(
+            "/reset-password/",
+            data={"code": reset_token, "new_password": new_password},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        # Check success message in HTML
+        assert b"success" in response.content.lower()
+
+        # Verify can login with new password
+        response = await client.post(
+            "/login/",
+            json={"email": self.test_user["email"], "password": new_password},
+        )
+        assert response.status_code == status.HTTP_200_OK
+
+    async def test_reset_password_post_form_data_short_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test POST /reset-password/ with form data rejects short password."""
+        # Create a user
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        # Submit form with short password
+        response = await client.post(
+            "/reset-password/",
+            data={"code": reset_token, "new_password": "short"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "text/html" in response.headers["content-type"]
+        assert b"at least 8 characters" in response.content
+
+    async def test_reset_password_post_form_data_missing_fields(
+        self, client: AsyncClient
+    ) -> None:
+        """Test POST /reset-password/ with form data rejects missing fields."""
+        # Submit form with missing new_password
+        response = await client.post(
+            "/reset-password/",
+            data={"code": "sometoken"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "text/html" in response.headers["content-type"]
+        assert b"required" in response.content.lower()
+
+    async def test_reset_password_post_form_data_invalid_token(
+        self, client: AsyncClient
+    ) -> None:
+        """Test POST /reset-password/ with form data rejects invalid token."""
+        response = await client.post(
+            "/reset-password/",
+            data={"code": "invalid_token", "new_password": "NewPassword123!"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "text/html" in response.headers["content-type"]
+        assert ResponseMessages.INVALID_TOKEN.encode() in response.content
