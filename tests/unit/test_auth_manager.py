@@ -425,7 +425,7 @@ class TestAuthManager:
         reset_token = AuthManager.encode_reset_token(user_data)
 
         # Reset password
-        new_password = "NewPassword123!"
+        new_password = "NewPassword123!"  # noqa: S105
         await AuthManager.reset_password(reset_token, new_password, test_db)
 
         # Verify password was changed
@@ -514,7 +514,7 @@ class TestAuthManager:
 
         # Generate reset token and reset password
         reset_token = AuthManager.encode_reset_token(user_before)
-        new_password = "BrandNewPassword456!"
+        new_password = "BrandNewPassword456!"  # noqa: S105
         await AuthManager.reset_password(reset_token, new_password, test_db)
 
         # Verify password was actually changed in database

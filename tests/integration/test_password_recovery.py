@@ -1,13 +1,14 @@
 """Integration tests for password recovery endpoints."""
 
+import datetime
+
 import pytest
+from fastapi import status
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import (
-    get_user_by_email_,
     hash_password,
-    verify_password,
 )
 from app.managers.auth import AuthManager, ResponseMessages
 from app.models.user import User
@@ -44,7 +45,7 @@ class TestPasswordRecovery:
             json={"email": self.test_user["email"]},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"message": ResponseMessages.RESET_EMAIL_SENT}
 
     async def test_forgot_password_nonexistent_email(
@@ -59,7 +60,7 @@ class TestPasswordRecovery:
             json={"email": "nonexistent@example.com"},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"message": ResponseMessages.RESET_EMAIL_SENT}
 
     async def test_forgot_password_invalid_email(
@@ -71,7 +72,9 @@ class TestPasswordRecovery:
             json={"email": "not-an-email"},
         )
 
-        assert response.status_code == 422  # Validation error
+        assert (
+            response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        )  # Validation error
 
     async def test_reset_password_success(
         self, client: AsyncClient, test_db: AsyncSession
@@ -81,20 +84,19 @@ class TestPasswordRecovery:
         user = User(**self.test_user)
         test_db.add(user)
         await test_db.flush()  # Flush to assign ID
-        user_id = user.id
         await test_db.commit()
 
         # Create reset token using the user object
         reset_token = AuthManager.encode_reset_token(user)
 
         # Reset password
-        new_password = "NewPassword123!"
+        new_password = "NewPassword123!"  # noqa: S105
         response = await client.post(
             "/reset-password/",
             json={"code": reset_token, "new_password": new_password},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {
             "message": ResponseMessages.PASSWORD_RESET_SUCCESS
         }
@@ -107,7 +109,7 @@ class TestPasswordRecovery:
                 "password": new_password,
             },
         )
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
 
     async def test_reset_password_invalid_token(
         self, client: AsyncClient
@@ -118,7 +120,7 @@ class TestPasswordRecovery:
             json={"code": "invalid_token", "new_password": "NewPassword123!"},
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == ResponseMessages.INVALID_TOKEN
 
     async def test_reset_password_expired_token(
@@ -132,8 +134,6 @@ class TestPasswordRecovery:
         await test_db.commit()
 
         # Mock datetime to make token expired
-        import datetime
-
         past_time = datetime.datetime.now(
             tz=datetime.timezone.utc
         ) - datetime.timedelta(hours=1)
@@ -150,7 +150,7 @@ class TestPasswordRecovery:
             json={"code": reset_token, "new_password": "NewPassword123!"},
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == ResponseMessages.EXPIRED_TOKEN
 
     async def test_reset_password_banned_user(
@@ -175,13 +175,13 @@ class TestPasswordRecovery:
             json={"code": reset_token, "new_password": "NewPassword123!"},
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == ResponseMessages.INVALID_TOKEN
 
     async def test_reset_password_wrong_token_type(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
-        """Test reset password with verification token instead of reset token."""
+        """Test reset password with verification token instead of reset tkn."""
         # Create a user
         user = User(**self.test_user)
         test_db.add(user)
@@ -197,7 +197,7 @@ class TestPasswordRecovery:
             json={"code": verify_token, "new_password": "NewPassword123!"},
         )
 
-        assert response.status_code == 401
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == ResponseMessages.INVALID_TOKEN
 
     async def test_reset_password_short_password(
@@ -219,7 +219,9 @@ class TestPasswordRecovery:
             json={"code": reset_token, "new_password": "short"},
         )
 
-        assert response.status_code == 422  # Validation error
+        assert (
+            response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        )  # Validation error
 
     async def test_forgot_password_banned_user(
         self, client: AsyncClient, test_db: AsyncSession, mocker
@@ -243,7 +245,7 @@ class TestPasswordRecovery:
             json={"email": self.test_user["email"]},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert response.json() == {"message": ResponseMessages.RESET_EMAIL_SENT}
 
     async def test_full_password_recovery_flow(
@@ -264,18 +266,18 @@ class TestPasswordRecovery:
             "/forgot-password/",
             json={"email": self.test_user["email"]},
         )
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
 
         # 3. Generate reset token (simulating email link)
         reset_token = AuthManager.encode_reset_token(user)
 
         # 4. Reset password
-        new_password = "BrandNewPassword456!"
+        new_password = "BrandNewPassword456!"  # noqa: S105
         response = await client.post(
             "/reset-password/",
             json={"code": reset_token, "new_password": new_password},
         )
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
 
         # 5. Verify can login with new password
         response = await client.post(
@@ -285,7 +287,7 @@ class TestPasswordRecovery:
                 "password": new_password,
             },
         )
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
         assert "token" in response.json()
         assert "refresh" in response.json()
 
@@ -297,5 +299,6 @@ class TestPasswordRecovery:
                 "password": "OldPassword123!",
             },
         )
-        # Should fail (either 400 for invalid credentials or 401 for unauthorized)
+        # Should fail (either 400 for invalid credentials or 401 for
+        # unauthorized)
         assert response.status_code in (400, 401)

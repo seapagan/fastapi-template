@@ -37,7 +37,7 @@ class ResponseMessages:
     ALREADY_VALIDATED = "You are already validated"
     VALIDATION_RESENT = "Validation email re-sent"
     RESET_EMAIL_SENT = "Password reset email sent if user exists"
-    PASSWORD_RESET_SUCCESS = "Password successfully reset"
+    PASSWORD_RESET_SUCCESS = "Password successfully reset"  # noqa: S105
 
 
 class AuthManager:

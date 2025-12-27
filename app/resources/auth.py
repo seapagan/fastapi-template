@@ -143,8 +143,8 @@ async def reset_password(
 ) -> dict[str, str]:
     """Reset a user's password using the reset token.
 
-    The reset token is sent to the user's email via the forgot-password endpoint.
-    The token expires after 30 minutes.
+    The reset token is sent to the user's email via the forgot-password
+    endpoint. The token expires after 30 minutes.
 
     The new password must be at least 8 characters long.
     """
