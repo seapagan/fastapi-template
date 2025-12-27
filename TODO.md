@@ -45,7 +45,6 @@
 
 ## Auth
 
-- Add a password recovery endpoint
 - Add a `logout` route to immediately invalidate the users token and refresh
   token. This will need a database to be kept of invalidated tokens (which can
   periodically be auto-purged of tokens that would be time-expired anyway.)

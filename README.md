@@ -95,8 +95,11 @@ following advantages to starting your own from scratch :
 - JWT-based security as a Bearer Token to control access to all your routes.
 - **Password Recovery** system with secure token-based reset flow. Users can
   request a password reset via email, receiving a time-limited (30 minute)
-  token to securely reset their password. The system protects against email
-  enumeration attacks.
+  token to securely reset their password. Features built-in HTML forms for
+  standalone use, or optional `FRONTEND_URL` configuration to redirect to
+  custom frontends. Supports both JSON API and form-based submissions. The
+  system protects against email enumeration attacks and includes URL encoding
+  and token validation for security.
 - `API Keys` are fully implemented and can be used by registered users instead
   of the JTW. These will **not expire** at present though adding expiry is a
   future plan. API keys are passed using the `X-API-Key` header.

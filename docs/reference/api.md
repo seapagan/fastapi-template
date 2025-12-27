@@ -192,6 +192,21 @@ Returns an HTML page with:
 - "That token is Invalid" - Invalid token or banned user
 - "That token has Expired" - Token expired (30 minutes)
 
+**Token Validation:**
+
+- Maximum token length: 1024 characters
+- Tokens exceeding this limit will be rejected and show an error
+- Empty tokens are rejected
+- Invalid or malformed tokens show appropriate error messages
+
+**Security Features:**
+
+- **URL Encoding**: Reset tokens are URL-encoded before redirect to prevent injection attacks
+- **Length Validation**: Tokens are validated for reasonable size to prevent resource exhaustion
+- **Redirect Safety**: When `FRONTEND_URL` is set, redirects only go to the configured domain with validated tokens
+- **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
+- **Expiration**: Reset tokens expire after 30 minutes
+
 **Notes:**
 
 - **With custom frontend**: Set `FRONTEND_URL` in settings/env to redirect users to your app
