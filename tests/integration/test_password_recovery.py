@@ -466,6 +466,61 @@ class TestPasswordRecovery:
         expected_url = f"https://frontend.example.com/reset-password?code={quote(reset_token)}"
         assert response.headers["location"] == expected_url
 
+    async def test_reset_password_form_get_with_frontend_url_empty_token(
+        self, client: AsyncClient, monkeypatch
+    ) -> None:
+        """Test GET /reset-password/ shows form when token is empty."""
+
+        # Mock FRONTEND_URL setting
+        def mock_get_settings() -> Settings:
+            settings = Settings()
+            settings.frontend_url = "https://frontend.example.com"
+            return settings
+
+        monkeypatch.setattr(
+            "app.resources.auth.get_settings", mock_get_settings
+        )
+
+        # Access with empty token - should NOT redirect
+        response = await client.get(
+            "/reset-password/",
+            follow_redirects=False,
+        )
+
+        # Should show form with error, not redirect
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert b"Reset code is required" in response.content
+
+    async def test_reset_password_form_get_with_frontend_url_oversized_token(
+        self, client: AsyncClient, monkeypatch
+    ) -> None:
+        """Test GET /reset-password/ shows form when token is too long."""
+
+        # Mock FRONTEND_URL setting
+        def mock_get_settings() -> Settings:
+            settings = Settings()
+            settings.frontend_url = "https://frontend.example.com"
+            return settings
+
+        monkeypatch.setattr(
+            "app.resources.auth.get_settings", mock_get_settings
+        )
+
+        # Create an excessively long token (> 1024 chars)
+        oversized_token = "x" * 1025
+
+        # Access with oversized token - should NOT redirect
+        response = await client.get(
+            f"/reset-password/?code={oversized_token}",
+            follow_redirects=False,
+        )
+
+        # Should show form with error, not redirect
+        assert response.status_code == status.HTTP_200_OK
+        assert "text/html" in response.headers["content-type"]
+        assert ResponseMessages.INVALID_TOKEN.encode() in response.content
+
     async def test_reset_password_post_form_data_success(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:

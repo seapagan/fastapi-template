@@ -172,8 +172,12 @@ async def reset_password_form(
 
     If the token is invalid or expired, an error message is displayed.
     """
-    # If frontend URL is configured, redirect to frontend
-    if get_settings().frontend_url:
+    # Validate token format before redirect to prevent abuse
+    # JWT tokens are typically 100-500 chars, 1024 is a safe upper bound
+    max_token_length = 1024
+
+    # If frontend URL is configured and token is valid format, redirect
+    if get_settings().frontend_url and code and len(code) <= max_token_length:
         return RedirectResponse(
             url=f"{get_settings().frontend_url}/reset-password?code={quote(code)}",
             status_code=302,
