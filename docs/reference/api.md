@@ -165,13 +165,44 @@ Initiates a password reset by sending a reset email to the user.
 
 ---
 
-### Reset Password
+### Reset Password Form
+
+**Endpoint:** `GET /reset-password/?code={token}`
+
+Displays an HTML form for resetting password. This is the endpoint linked in password reset emails.
+
+**Query Parameters:**
+
+- `code` (required): Password reset token from email
+
+**Response:** `200 OK` (HTML)
+
+Returns an HTML page with:
+- Password reset form (if token is valid)
+- Error message (if token is invalid/expired)
+
+**Error Messages:**
+
+- "Reset code is required" - No token provided
+- "That token is Invalid" - Invalid token or banned user
+- "That token has Expired" - Token expired (30 minutes)
+
+**Notes:**
+
+- Validates token before displaying the form
+- Form submits to `POST /reset-password/`
+- Provides user-friendly error messages
+- Used for users without a separate frontend application
+
+---
+
+### Reset Password (API)
 
 **Endpoint:** `POST /reset-password/`
 
-Resets a user's password using the token received via email.
+Resets a user's password using the token received via email. Accepts both JSON (for API clients) and form data (from HTML form).
 
-**Request Body:**
+**Request Body (JSON):**
 
 ```json
 {
@@ -180,13 +211,24 @@ Resets a user's password using the token received via email.
 }
 ```
 
-**Response:** `200 OK`
+**Request Body (Form Data):**
+
+```
+code=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+new_password=mynewsecurepassword456
+```
+
+**Response (JSON):** `200 OK`
 
 ```json
 {
   "message": "Password successfully reset"
 }
 ```
+
+**Response (HTML):** `200 OK`
+
+Returns an HTML success page when using form data submission.
 
 **Validation:**
 
@@ -197,13 +239,15 @@ Resets a user's password using the token received via email.
 - `401 Unauthorized`: Invalid, expired, or wrong token type
 - `401 Unauthorized`: User is banned
 - `404 Not Found`: User not found
-- `422 Validation Error`: Password too short
+- `422 Validation Error`: Password too short or invalid request data
 
 **Notes:**
 
 - Token must be of type "reset" (verification tokens won't work)
 - Banned users cannot reset their password
 - After successful reset, users can login with the new password
+- JSON requests return JSON responses
+- Form data requests return HTML pages
 
 ---
 
