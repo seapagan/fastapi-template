@@ -7,6 +7,7 @@ import pytest
 from fastapi import BackgroundTasks, HTTPException, status
 
 from app.config.settings import get_settings
+from app.database.helpers import verify_password
 from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.user import UserManager
 from app.models.user import User
@@ -105,6 +106,33 @@ class TestAuthManager:
             HTTPException, match=ResponseMessages.CANT_GENERATE_VERIFY
         ):
             AuthManager.encode_verify_token("bad_data")  # type: ignore
+
+    def test_encode_reset_token(self) -> None:
+        """Ensure we can correctly encode a reset token."""
+        time_now = datetime.now(tz=timezone.utc)
+        reset_token = AuthManager.encode_reset_token(User(id=1))
+
+        payload = jwt.decode(
+            reset_token,
+            get_settings().secret_key,
+            algorithms=["HS256"],
+            options={"verify_sub": False},
+        )
+
+        assert payload["sub"] == 1
+        assert payload["typ"] == "reset"
+        assert isinstance(payload["exp"], int)
+        # TODO(seapagan): better comparison to ensure the exp is in the future
+        # but close to the expected expiry time taking into account the expiry
+        # for these is 30 minutes
+        assert payload["exp"] > time_now.timestamp()
+
+    def test_encode_reset_token_bad_data(self) -> None:
+        """Test the encode_reset_token method with bad data."""
+        with pytest.raises(
+            HTTPException, match=ResponseMessages.CANT_GENERATE_RESET
+        ):
+            AuthManager.encode_reset_token("bad_data")  # type: ignore
 
     # ------------------------------------------------------------------------ #
     #                            test refresh token                            #
@@ -322,3 +350,177 @@ class TestAuthManager:
         # Get updated user state and verify the field was updated
         user_after = await UserManager.get_user_by_id(1, test_db)
         assert user_after.verified is True
+
+    # ------------------------------------------------------------------------ #
+    #                        test password recovery                            #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.asyncio
+    async def test_forgot_password(self, test_db, mocker) -> None:
+        """Test the forgot_password method sends email for valid user."""
+        # Mock email sending
+        mock_email = mocker.patch(
+            "app.managers.auth.EmailManager.template_send"
+        )
+
+        # Create a user
+        await UserManager.register(self.test_user, test_db)
+
+        # Request password reset
+        background_tasks = BackgroundTasks()
+        await AuthManager.forgot_password(
+            self.test_user["email"], background_tasks, test_db
+        )
+
+        # Verify email was called
+        assert mock_email.called
+
+    @pytest.mark.asyncio
+    async def test_forgot_password_nonexistent_user(
+        self, test_db, mocker
+    ) -> None:
+        """Test forgot_password returns silently for non-existent user."""
+        # Mock email sending
+        mock_email = mocker.patch(
+            "app.managers.auth.EmailManager.template_send"
+        )
+
+        # Request password reset for non-existent user
+        background_tasks = BackgroundTasks()
+        await AuthManager.forgot_password(
+            "nonexistent@example.com", background_tasks, test_db
+        )
+
+        # Verify email was NOT called
+        assert not mock_email.called
+
+    @pytest.mark.asyncio
+    async def test_forgot_password_banned_user(self, test_db, mocker) -> None:
+        """Test forgot_password doesn't send email to banned users."""
+        # Mock email sending
+        mock_email = mocker.patch(
+            "app.managers.auth.EmailManager.template_send"
+        )
+
+        # Create and ban a user
+        await UserManager.register(self.test_user, test_db)
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+
+        # Request password reset
+        background_tasks = BackgroundTasks()
+        await AuthManager.forgot_password(
+            self.test_user["email"], background_tasks, test_db
+        )
+
+        # Verify email was NOT called
+        assert not mock_email.called
+
+    @pytest.mark.asyncio
+    async def test_reset_password(self, test_db) -> None:
+        """Test successful password reset."""
+        # Create a user
+        await UserManager.register(self.test_user, test_db)
+        user_data = await UserManager.get_user_by_id(1, test_db)
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user_data)
+
+        # Reset password
+        new_password = "NewPassword123!"
+        await AuthManager.reset_password(reset_token, new_password, test_db)
+
+        # Verify password was changed
+        updated_user = await UserManager.get_user_by_id(1, test_db)
+        assert verify_password(new_password, updated_user.password)
+
+    @pytest.mark.asyncio
+    async def test_reset_password_invalid_token(self, test_db) -> None:
+        """Test reset_password with invalid token."""
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                "invalid_token", "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_expired_token(self, test_db) -> None:
+        """Test reset_password with expired token."""
+        expired_reset = get_token(
+            sub=1,
+            exp=datetime.now(tz=timezone.utc).timestamp() - 1,
+            typ="reset",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                expired_reset, "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.EXPIRED_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_wrong_token_type(self, test_db) -> None:
+        """Test reset_password with verify token instead of reset."""
+        await UserManager.register(self.test_user, test_db)
+        wrong_token = get_token(
+            sub=1,
+            exp=datetime.now(tz=timezone.utc).timestamp() + 10000,
+            typ="verify",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                wrong_token, "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_missing_user(self, test_db) -> None:
+        """Test reset_password when user doesn't exist."""
+        no_user_reset = AuthManager.encode_reset_token(User(id=999))
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                no_user_reset, "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert exc_info.value.detail == ResponseMessages.USER_NOT_FOUND
+
+    @pytest.mark.asyncio
+    async def test_reset_password_banned_user(self, test_db) -> None:
+        """Test reset_password blocks banned users."""
+        await UserManager.register(self.test_user, test_db)
+        user_data = await UserManager.get_user_by_id(1, test_db)
+
+        # Generate reset token before banning
+        reset_token = AuthManager.encode_reset_token(user_data)
+
+        # Ban the user
+        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+
+        # Try to reset password
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                reset_token, "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_updates_database(self, test_db) -> None:
+        """Test that reset_password actually updates the password."""
+        # Create a user
+        await UserManager.register(self.test_user, test_db)
+        user_before = await UserManager.get_user_by_id(1, test_db)
+        old_password_hash = user_before.password
+
+        # Generate reset token and reset password
+        reset_token = AuthManager.encode_reset_token(user_before)
+        new_password = "BrandNewPassword456!"
+        await AuthManager.reset_password(reset_token, new_password, test_db)
+
+        # Verify password was actually changed in database
+        user_after = await UserManager.get_user_by_id(1, test_db)
+        assert user_after.password != old_password_hash
+        assert verify_password(new_password, user_after.password)
+        assert not verify_password(
+            self.test_user["password"], user_after.password
+        )
