@@ -5,7 +5,8 @@ from typing import Any
 from uuid import UUID
 
 from passlib.context import CryptContext
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, text, update
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.api_key import ApiKey
@@ -56,6 +57,28 @@ def verify_password(password: str, hashed_password: str) -> bool:
     except Exception as exc:
         # Handle malformed hash errors from passlib
         raise ValueError(error_invalid) from exc
+
+
+async def is_database_initialized(session: AsyncSession) -> bool:
+    """Check if the database has been initialized with Alembic migrations.
+
+    This checks for the existence of the alembic_version table, which is
+    created when Alembic runs migrations.
+
+    Args:
+        session: The database session
+
+    Returns:
+        bool: True if database is initialized, False otherwise
+    """
+    try:
+        # Try to query the alembic_version table
+        await session.execute(text("SELECT version_num FROM alembic_version"))
+    except SQLAlchemyError:
+        # Table doesn't exist or other database error
+        return False
+    else:
+        return True
 
 
 async def get_user_by_id_(user_id: int, session: AsyncSession) -> User | None:

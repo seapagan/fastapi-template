@@ -298,6 +298,24 @@ class TestCLI:
         # Verify _populate_db was called with correct arguments
         populate_mock.assert_called_once_with(7, 2)
 
+    def test_populate_database_not_initialized(self, mocker) -> None:
+        """Test populate command shows error when database not initialized."""
+        # Mock is_database_initialized to return False
+        mocker.patch(
+            "app.commands.db.is_database_initialized", return_value=False
+        )
+
+        # Mock the async_session
+        session_mock = mocker.AsyncMock()
+        session_mock.__aenter__.return_value = session_mock
+        mocker.patch("app.commands.db.async_session", return_value=session_mock)
+
+        result = CliRunner().invoke(app, ["db", "populate", "--count", "5"])
+
+        assert result.exit_code == 1
+        assert "Database has not been initialized" in result.output
+        assert "api-admin db init" in result.output
+
 
 @pytest.mark.asyncio
 class TestPopulateDB:

@@ -13,6 +13,7 @@ from rich.table import Table
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.db import async_session
+from app.database.helpers import is_database_initialized
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -21,8 +22,28 @@ from app.schemas.request.user import SearchField
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
 
+    from sqlalchemy.ext.asyncio import AsyncSession
+
 
 app = typer.Typer(no_args_is_help=True)
+
+
+async def check_db_initialized(session: AsyncSession) -> None:
+    """Check if database is initialized and exit if not.
+
+    Args:
+        session: The database session to check
+
+    Raises:
+        typer.Exit: If database is not initialized
+    """
+    if not await is_database_initialized(session):
+        rprint(
+            "\n[red]-> ERROR: Database has not been initialized.\n"
+            "[yellow]Please run [bold]'api-admin db init'[/bold] "
+            "to initialize the database first.\n"
+        )
+        raise typer.Exit(1)
 
 
 def show_table(title: str, user_list: Sequence[User]) -> None:
@@ -111,6 +132,7 @@ def create(
         """Async function to create a new user."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 await UserManager.register(user_data, session)
                 await session.commit()
 
@@ -151,6 +173,7 @@ def list_all_users() -> None:
         """Async function to list all users in the database."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user_list = await UserManager.get_all_users(session)
 
         except SQLAlchemyError as exc:
@@ -180,6 +203,7 @@ def show(
         """Async function to show details for a single user."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user = await UserManager.get_user_by_id(user_id, session)
         except HTTPException as exc:
             rprint(
@@ -208,6 +232,7 @@ def verify(
         """Async function to verify a user by id."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user = await session.get(User, user_id)
                 if user:
                     user.verified = True
@@ -249,6 +274,7 @@ def ban(
         """Async function to ban or unban a user."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user = await session.get(User, user_id)
                 if user:
                     user.banned = not unban
@@ -296,6 +322,7 @@ def admin(
         """Async function to toggle admin status for a user."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user = await session.get(User, user_id)
                 if user:
                     user.role = RoleType.user if remove else RoleType.admin
@@ -333,6 +360,7 @@ def delete(
         """Async function to delete a user."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 user = await session.get(User, user_id)
                 if user:
                     await session.delete(user)
@@ -389,6 +417,7 @@ def search(
         """Async function to search for users."""
         try:
             async with async_session() as session:
+                await check_db_initialized(session)
                 query = await UserManager.search_users(
                     search_term, field_enum, exact_match=exact
                 )

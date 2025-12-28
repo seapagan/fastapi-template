@@ -26,6 +26,12 @@ class TestCLI:
 
     patch_register_user = "app.commands.user.UserManager.register"
     patch_async_session = "app.commands.user.async_session"
+    patch_is_db_initialized = "app.commands.user.is_database_initialized"
+
+    @pytest.fixture(autouse=True)
+    def _mock_db_initialized(self, mocker) -> None:
+        """Mock is_database_initialized to return True for all tests."""
+        mocker.patch(self.patch_is_db_initialized, return_value=True)
 
     def test_create_user_success(
         self, runner: CliRunner, mocker, fake_user_data

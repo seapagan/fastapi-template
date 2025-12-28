@@ -82,6 +82,12 @@ class TestCLI:
     patch_get_all_users = "app.commands.user.UserManager.get_all_users"
     patch_get_user_by_id = "app.commands.user.UserManager.get_user_by_id"
     patch_async_session = "app.commands.user.async_session"
+    patch_is_db_initialized = "app.commands.user.is_database_initialized"
+
+    @pytest.fixture(autouse=True)
+    def _mock_db_initialized(self, mocker) -> None:
+        """Mock is_database_initialized to return True for all tests."""
+        mocker.patch(self.patch_is_db_initialized, return_value=True)
 
     def test_no_command_should_give_help(self, runner: CliRunner) -> None:
         """Test that running with no command should give help."""
@@ -812,3 +818,65 @@ class TestCLI:
         # Check error message
         assert "ERROR searching Users" in result.output
         assert "Database connection failed" in result.output
+
+    # ------------------------------------------------------------------------ #
+    #                  test database initialization check                      #
+    # ------------------------------------------------------------------------ #
+    @pytest.mark.parametrize(
+        "command_args",
+        [
+            ["list"],
+            ["show", "1"],
+            ["search", "test"],
+            ["verify", "1"],
+            ["ban", "1"],
+            ["admin", "1"],
+            ["delete", "1"],
+        ],
+        ids=[
+            "list",
+            "show",
+            "search",
+            "verify",
+            "ban",
+            "admin",
+            "delete",
+        ],
+    )
+    def test_user_commands_database_not_initialized(
+        self, runner: CliRunner, mocker, command_args
+    ) -> None:
+        """Test user commands show error when database not initialized."""
+        # Override the autouse fixture by patching with False
+        mocker.patch(self.patch_is_db_initialized, return_value=False)
+
+        result = runner.invoke(app, ["user", *command_args])
+        assert result.exit_code == 1
+        assert "Database has not been initialized" in result.output
+        assert "api-admin db init" in result.output
+
+    def test_create_user_database_not_initialized(
+        self, runner: CliRunner, mocker, faker
+    ) -> None:
+        """Test create command shows error when database not initialized."""
+        # Override the autouse fixture by patching with False
+        mocker.patch(self.patch_is_db_initialized, return_value=False)
+
+        result = runner.invoke(
+            app,
+            [
+                "user",
+                "create",
+                "--email",
+                faker.email(),
+                "--first_name",
+                faker.first_name(),
+                "--last_name",
+                faker.last_name(),
+                "--password",
+                faker.password(),
+            ],
+        )
+        assert result.exit_code == 1
+        assert "Database has not been initialized" in result.output
+        assert "api-admin db init" in result.output
