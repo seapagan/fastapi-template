@@ -33,10 +33,10 @@ development process and documentation.
 
 ## Prerequisites
 
-Since this is a [Python](https://www.python.org/) project, you will need to
-have Python installed on your machine. You can download the latest version of
-Python from the [official website](https://www.python.org/downloads/) or using
-your Operating system's package manager. This project requires **Python 10** or
+Since this is a [Python](https://www.python.org/) project, you will need to have
+Python installed on your machine. You can download the latest version of Python
+from the [official website](https://www.python.org/downloads/) or using your
+Operating system's package manager. This project requires **Python 3.10** or
 higher.
 
 I'd recommend using
@@ -45,7 +45,8 @@ I'd recommend using
 Mac OS X. For Windows, you can use the
 [pyenv-win](https://github.com/pyenv-win/pyenv-win) port. See
 [here](https://github.com/pyenv-win/pyenv-win#installation ) for installation
-instructions.
+instructions. Of course you can also (and probably the best way) use `uv` to
+install a python version much easier, though `pyenv` works with `uv` also.
 
 - We use [uv](https://docs.astral.sh/uv/) to manage our dependencies. You should
 have this installed as well. You can install `uv` by following the instructions

@@ -106,8 +106,10 @@ Generates a new JWT token using a valid refresh token.
 **Security Features:**
 
 - **Format Validation**: Fast syntactic check before expensive crypto operations
-- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent resource exhaustion
-- **Defense-in-depth**: Multiple validation layers (format, length, cryptographic signature, token type)
+- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent
+  resource exhaustion
+- **Defense-in-depth**: Multiple validation layers (format, length,
+  cryptographic signature, token type)
 - **Early Rejection**: Invalid formats fail fast with clear error messages
 - **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
 - **Type Checking**: Only tokens with `typ="refresh"` are accepted
@@ -147,8 +149,10 @@ Verifies a user's email address using the token sent via email.
 **Security Features:**
 
 - **Format Validation**: Fast syntactic check before expensive crypto operations
-- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent resource exhaustion
-- **Defense-in-depth**: Multiple validation layers (format, length, cryptographic signature, token type)
+- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent
+  resource exhaustion
+- **Defense-in-depth**: Multiple validation layers (format, length,
+  cryptographic signature, token type)
 - **Early Rejection**: Invalid formats fail fast with clear error messages
 - **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
 - **Type Checking**: Only tokens with `typ="verify"` are accepted
@@ -202,7 +206,8 @@ Initiates a password reset by sending a reset email to the user.
 
 **Endpoint:** `GET /reset-password/?code={token}`
 
-Displays an HTML form for resetting password OR redirects to a custom frontend. This is the endpoint linked in password reset emails.
+Displays an HTML form for resetting password OR redirects to a custom frontend.
+This is the endpoint linked in password reset emails.
 
 **Query Parameters:**
 
@@ -210,12 +215,15 @@ Displays an HTML form for resetting password OR redirects to a custom frontend. 
 
 **Response:**
 
-- `302 Redirect` (if `FRONTEND_URL` is configured) - Redirects to `{FRONTEND_URL}/reset-password?code={token}`
-- `200 OK` (HTML) (if `FRONTEND_URL` is not set) - Shows built-in password reset form
+- `302 Redirect` (if `FRONTEND_URL` is configured) - Redirects to
+  `{FRONTEND_URL}/reset-password?code={token}`
+- `200 OK` (HTML) (if `FRONTEND_URL` is not set) - Shows built-in password reset
+  form
 
 **Built-in Form Behavior (no FRONTEND_URL):**
 
 Returns an HTML page with:
+
 - Password reset form (if token is valid)
 - Error message (if token is invalid/expired)
 
@@ -234,32 +242,40 @@ Returns an HTML page with:
 
 **Security Features:**
 
-- **URL Encoding**: Reset tokens are URL-encoded before redirect to prevent injection attacks
-- **Length Validation**: Tokens are validated for reasonable size to prevent resource exhaustion
-- **Redirect Safety**: When `FRONTEND_URL` is set, redirects only go to the configured domain with validated tokens
+- **URL Encoding**: Reset tokens are URL-encoded before redirect to prevent
+  injection attacks
+- **Length Validation**: Tokens are validated for reasonable size to prevent
+  resource exhaustion
+- **Redirect Safety**: When `FRONTEND_URL` is set, redirects only go to the
+  configured domain with validated tokens
 - **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
 - **Expiration**: Reset tokens expire after 30 minutes
 
 **Notes:**
 
-- **With custom frontend**: Set `FRONTEND_URL` in settings/env to redirect users to your app
+- **With custom frontend**: Set `FRONTEND_URL` in settings/env to redirect users
+  to your app
 - **Without custom frontend**: Leave `FRONTEND_URL` unset to use built-in form
 - Validates token before displaying the form (when using built-in form)
 - Form submits to `POST /reset-password/`
-- Provides seamless integration with custom frontends while maintaining standalone functionality
+- Provides seamless integration with custom frontends while maintaining
+  standalone functionality
 
 **Configuration:**
 
 To use with a custom frontend, set in `.env`:
-```
+
+```ini
 FRONTEND_URL=https://app.example.com
 ```
 
 Your frontend should:
+
 1. Handle the route `/reset-password`
 2. Extract the `code` query parameter
 3. Display a custom password reset form
-4. POST to backend `/reset-password/` with JSON: `{"code": "...", "new_password": "..."}`
+4. POST to backend `/reset-password/` with JSON: `{"code": "...",
+   "new_password": "..."}`
 
 ---
 
@@ -267,7 +283,8 @@ Your frontend should:
 
 **Endpoint:** `POST /reset-password/`
 
-Resets a user's password using the token received via email. Accepts both JSON (for API clients) and form data (from HTML form).
+Resets a user's password using the token received via email. Accepts both JSON
+(for API clients) and form data (from HTML form).
 
 **Request Body (JSON):**
 
@@ -280,7 +297,7 @@ Resets a user's password using the token received via email. Accepts both JSON (
 
 **Request Body (Form Data):**
 
-```
+```ini
 code=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 new_password=mynewsecurepassword456
 ```
@@ -339,6 +356,7 @@ Returns the currently authenticated user's information.
 ```
 
 **Notes:**
+
 - Non-admin users only see their own basic information
 - Admin users can use `/users/` to see full details
 
@@ -373,6 +391,7 @@ Get all users or a specific user by their ID.
 ```
 
 **Notes:**
+
 - If `user_id` is omitted, returns all users
 - If `user_id` is provided, returns single user object (not array)
 
@@ -389,7 +408,8 @@ Search for users with various criteria.
 **Query Parameters:**
 
 - `search_term` (required): Search query string
-- `field` (optional): Field to search ("all", "email", "first_name", "last_name") - default: "all"
+- `field` (optional): Field to search ("all", "email", "first_name",
+  "last_name") - default: "all"
 - `exact_match` (optional): Use exact matching instead of partial - default: false
 - `page` (optional): Page number (min: 1, default: 1)
 - `size` (optional): Items per page (min: 1, max: 100, default: 50)
@@ -452,6 +472,7 @@ Update the specified user's data.
 ```
 
 **Notes:**
+
 - Users can edit their own profile
 - Admins can edit any user's profile
 
@@ -480,6 +501,7 @@ Change the password for the specified user.
 **Response:** `204 No Content`
 
 **Notes:**
+
 - Users can change their own password
 - Admins can change any user's password
 
@@ -516,6 +538,7 @@ Ban the specified user. Banned users cannot login or access protected routes.
 **Response:** `204 No Content`
 
 **Notes:**
+
 - Admins cannot ban themselves
 - Banned users cannot reset passwords or access any authenticated endpoints
 
@@ -552,6 +575,7 @@ Permanently delete the specified user.
 **Response:** `204 No Content`
 
 **Notes:**
+
 - This action is permanent and cannot be undone
 - All associated API keys will also be deleted
 
@@ -683,6 +707,7 @@ Update an API key's name or active status.
 ```
 
 **Notes:**
+
 - Both fields are optional in the request
 - Setting `is_active` to `false` disables the key without deleting it
 
