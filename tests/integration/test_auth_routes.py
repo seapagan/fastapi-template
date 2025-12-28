@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
 from app.managers.user import ErrorMessages as UserErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
@@ -460,7 +461,7 @@ class TestAuthRoutes:
             "only.two",  # Only 2 parts
             "four.dot.separated.parts",  # 4 parts
             "part1.part2&admin=true.part3",  # URL injection attempt
-            "a" * 1025 + ".b.c",  # Exceeds max length
+            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
             ".part2.part3",  # Empty first part
             "part1..part3",  # Empty middle part
             "part1.part2.",  # Empty last part
@@ -486,7 +487,7 @@ class TestAuthRoutes:
             "only.two",  # Only 2 parts
             "four.dot.separated.parts",  # 4 parts
             "part1.part2&admin=true.part3",  # URL injection attempt
-            "a" * 1025 + ".b.c",  # Exceeds max length
+            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
             ".part2.part3",  # Empty first part
             "part1..part3",  # Empty middle part
             "part1.part2.",  # Empty last part

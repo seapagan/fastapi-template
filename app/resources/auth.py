@@ -22,7 +22,7 @@ from app.config.helpers import get_project_root
 from app.config.settings import get_settings
 from app.database.db import get_database
 from app.managers.auth import AuthManager, ResponseMessages
-from app.managers.helpers import is_valid_jwt_format
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
 from app.managers.user import UserManager
 from app.models.user import User
 from app.schemas.request.auth import (
@@ -127,12 +127,9 @@ async def verify(
     by FastAPI exceptions.
     """
     # Validate token format before processing
-    # JWT tokens are typically 100-500 chars, 1024 is a safe upper bound
-    max_token_length = 1024
-
     if (
         not code
-        or len(code) > max_token_length
+        or len(code) > MAX_JWT_TOKEN_LENGTH
         or not is_valid_jwt_format(code)
     ):
         raise HTTPException(
@@ -188,14 +185,11 @@ async def reset_password_form(
     If the token is invalid or expired, an error message is displayed.
     """
     # Validate token format before redirect to prevent abuse
-    # JWT tokens are typically 100-500 chars, 1024 is a safe upper bound
-    max_token_length = 1024
-
     # If frontend URL is configured and token is valid format, redirect
     if (
         get_settings().frontend_url
         and code
-        and len(code) <= max_token_length
+        and len(code) <= MAX_JWT_TOKEN_LENGTH
         and is_valid_jwt_format(code)
     ):
         return RedirectResponse(

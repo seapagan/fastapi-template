@@ -9,6 +9,7 @@ from fastapi import BackgroundTasks, HTTPException, status
 from app.config.settings import get_settings
 from app.database.helpers import verify_password
 from app.managers.auth import AuthManager, ResponseMessages
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
 from app.managers.user import UserManager
 from app.models.user import User
 from app.schemas.request.auth import TokenRefreshRequest
@@ -577,8 +578,8 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_refresh_oversized_token(self, test_db) -> None:
         """Test refresh rejects tokens exceeding max length."""
-        # Create a token longer than 1024 characters
-        oversized_token = "a" * 1025 + ".b.c"
+        # Create a token longer than MAX_JWT_TOKEN_LENGTH
+        oversized_token = "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c"
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.refresh(
                 TokenRefreshRequest(refresh=oversized_token), test_db
