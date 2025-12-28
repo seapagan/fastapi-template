@@ -172,6 +172,30 @@ class TestSeedCommand:
             assert "Error: File" in result.output
             assert "does not exist" in result.output
 
+    def test_seed_database_not_initialized(self, mocker, tmp_path) -> None:
+        """Test seed command shows error when database not initialized."""
+        # Create a dummy CSV file
+        dummy_file = tmp_path / "users.seed"
+        dummy_file.touch()
+
+        # Mock is_database_initialized to return False
+        mocker.patch(
+            "app.commands.db.is_database_initialized", return_value=False
+        )
+
+        # Mock the async_session
+        session_mock = mocker.AsyncMock()
+        session_mock.__aenter__.return_value = session_mock
+        mocker.patch("app.commands.db.async_session", return_value=session_mock)
+
+        result = CliRunner().invoke(
+            app, ["db", "seed", str(dummy_file), "--force"]
+        )
+
+        assert result.exit_code == 1
+        assert "Database has not been initialized" in result.output
+        assert "api-admin db init" in result.output
+
 
 class TestValidateCsvFile:
     """Test the _validate_csv_file function."""

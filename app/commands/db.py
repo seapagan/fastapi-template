@@ -17,6 +17,7 @@ from rich import print as rprint
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.db import async_session
+from app.database.helpers import is_database_initialized
 from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
 
@@ -266,6 +267,14 @@ async def _populate_db(num_regular_users: int, num_admins: int) -> None:
 
     try:
         async with async_session() as session:
+            # Check if database is initialized
+            if not await is_database_initialized(session):
+                rprint(
+                    "\n[red]-> ERROR: Database has not been initialized.\n"
+                    "[yellow]Please run [bold]'api-admin db init'[/bold] "
+                    "to initialize the database first.\n"
+                )
+                raise typer.Exit(1)
             # Create admin users
             admin_count = 0
             for _ in range(num_admins):
@@ -385,6 +394,16 @@ def _validate_csv_file(csv_file: Path) -> list[dict[str, str]]:
 async def _seed_users_from_csv(csv_file: Path) -> None:
     """Import users from a CSV file into the database."""
     try:
+        # Check if database is initialized first
+        async with async_session() as check_session:
+            if not await is_database_initialized(check_session):
+                rprint(
+                    "\n[red]-> ERROR: Database has not been initialized.\n"
+                    "[yellow]Please run [bold]'api-admin db init'[/bold] "
+                    "to initialize the database first.\n"
+                )
+                raise typer.Exit(1)  # noqa: TRY301
+
         # Validate the CSV file and get rows
         rows = _validate_csv_file(csv_file)
 

@@ -39,9 +39,6 @@
 - Admin users CAN delete themselves, but this should not be allowed. They should
   be able to delete other users, but not themselves. Or should they?? Need to
   think about this.
-- the `api-admin user` 'list', 'search' and prob others crash if the database is
-  not initialized. This should be handled gracefully, and the CLI should
-  prompt the user to initialize the database if it is not already done.
 
 ## Auth
 
