@@ -6,6 +6,24 @@ project since the first release, with the latest changes at the top.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
+
+These are the changes that have been merged to the repository since the last
+release.
+
+Everything in this section will be included in the next official release.
+
+**New Features**
+
+- Extend JWT format validation to verify and refresh endpoints ([#790](https://github.com/seapagan/fastapi-template/pull/790)) by [seapagan](https://github.com/seapagan)
+- Add password recovery feature ([#788](https://github.com/seapagan/fastapi-template/pull/788)) by [seapagan](https://github.com/seapagan)
+
+**Dependency Updates**
+
+- Update postgres Docker tag to v18 ([#789](https://github.com/seapagan/fastapi-template/pull/789)) by [renovate[bot]](https://github.com/apps/renovate)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD.patch)
+
 ## [v0.8.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.8.0) (December 25, 2025)
 
 **Closed Issues**
