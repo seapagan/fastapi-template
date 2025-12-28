@@ -1,7 +1,13 @@
 """Helper functions for managers."""
 
+import string
+
 # JWT consists of exactly 3 dot-separated parts
 JWT_PARTS_COUNT = 3
+
+# Maximum allowed length for JWT tokens
+# JWT tokens are typically 100-500 chars, 1024 is a safe upper bound
+MAX_JWT_TOKEN_LENGTH = 1024
 
 
 def is_valid_jwt_format(token: str) -> bool:
@@ -41,8 +47,6 @@ def is_valid_jwt_format(token: str) -> bool:
         return False
 
     # JWT uses base64url encoding: A-Z a-z 0-9 - _
-    allowed_chars = (
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-    )
+    allowed_chars = string.ascii_letters + string.digits + "-_"
 
     return all(part and all(c in allowed_chars for c in part) for part in parts)

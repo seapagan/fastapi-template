@@ -96,6 +96,22 @@ Generates a new JWT token using a valid refresh token.
 }
 ```
 
+**Token Validation:**
+
+- Maximum token length: 1024 characters
+- Tokens must be valid JWT format (three dot-separated base64url parts)
+- Empty tokens are rejected
+- Malformed tokens are rejected before cryptographic verification
+
+**Security Features:**
+
+- **Format Validation**: Fast syntactic check before expensive crypto operations
+- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent resource exhaustion
+- **Defense-in-depth**: Multiple validation layers (format, length, cryptographic signature, token type)
+- **Early Rejection**: Invalid formats fail fast with clear error messages
+- **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
+- **Type Checking**: Only tokens with `typ="refresh"` are accepted
+
 **Notes:**
 
 - The refresh token itself is not updated
@@ -121,9 +137,26 @@ Verifies a user's email address using the token sent via email.
 }
 ```
 
+**Token Validation:**
+
+- Maximum token length: 1024 characters
+- Tokens must be valid JWT format (three dot-separated base64url parts)
+- Empty tokens are rejected
+- Malformed tokens are rejected before cryptographic verification
+
+**Security Features:**
+
+- **Format Validation**: Fast syntactic check before expensive crypto operations
+- **Length Validation**: Tokens exceeding 1024 chars are rejected to prevent resource exhaustion
+- **Defense-in-depth**: Multiple validation layers (format, length, cryptographic signature, token type)
+- **Early Rejection**: Invalid formats fail fast with clear error messages
+- **Token Verification**: Tokens are cryptographically verified (JWT with HS256)
+- **Type Checking**: Only tokens with `typ="verify"` are accepted
+- **URL Parameter Safety**: Validation occurs before processing URL parameters
+
 **Error Responses:**
 
-- `401 Unauthorized`: Invalid, expired, or already used token
+- `401 Unauthorized`: Invalid, expired, or already used token, or malformed JWT
 - `404 Not Found`: User not found
 
 ---

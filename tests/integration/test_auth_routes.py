@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
 from app.managers.user import ErrorMessages as UserErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
@@ -445,3 +446,55 @@ class TestAuthRoutes:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert response.json()["detail"] == "That token is Invalid"
+
+    @pytest.mark.asyncio
+    async def test_verify_malformed_jwt_tokens(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that malformed JWT tokens are rejected by verify endpoint."""
+        test_db.add(User(**self.test_unverified_user))
+        await test_db.commit()
+
+        # Test various malformed JWT formats
+        malformed_tokens = [
+            "not.valid!.jwt",  # Special character
+            "only.two",  # Only 2 parts
+            "four.dot.separated.parts",  # 4 parts
+            "part1.part2&admin=true.part3",  # URL injection attempt
+            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
+            ".part2.part3",  # Empty first part
+            "part1..part3",  # Empty middle part
+            "part1.part2.",  # Empty last part
+        ]
+
+        for token in malformed_tokens:
+            response = await client.get(f"/verify/?code={token}")
+            assert response.status_code == status.HTTP_401_UNAUTHORIZED
+            msg = f"Should reject malformed token: {token[:50]}"
+            assert response.json()["detail"] == "That token is Invalid", msg
+
+    @pytest.mark.asyncio
+    async def test_refresh_malformed_jwt_tokens(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that malformed JWT tokens are rejected by refresh endpoint."""
+        test_db.add(User(**self.test_user))
+        await test_db.commit()
+
+        # Test various malformed JWT formats
+        malformed_tokens = [
+            "not.valid!.jwt",  # Special character
+            "only.two",  # Only 2 parts
+            "four.dot.separated.parts",  # 4 parts
+            "part1.part2&admin=true.part3",  # URL injection attempt
+            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
+            ".part2.part3",  # Empty first part
+            "part1..part3",  # Empty middle part
+            "part1.part2.",  # Empty last part
+        ]
+
+        for token in malformed_tokens:
+            response = await client.post("/refresh/", json={"refresh": token})
+            assert response.status_code == status.HTTP_401_UNAUTHORIZED
+            msg = f"Should reject malformed token: {token[:50]}"
+            assert response.json()["detail"] == "That token is Invalid", msg

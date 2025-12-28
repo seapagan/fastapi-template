@@ -13,6 +13,7 @@ from app.database.helpers import (
     hash_password,
 )
 from app.managers.auth import AuthManager, ResponseMessages
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
 from app.models.user import User
 
 
@@ -507,8 +508,8 @@ class TestPasswordRecovery:
             "app.resources.auth.get_settings", mock_get_settings
         )
 
-        # Create an excessively long token (> 1024 chars)
-        oversized_token = "x" * 1025
+        # Create an excessively long token (> MAX_JWT_TOKEN_LENGTH)
+        oversized_token = "x" * (MAX_JWT_TOKEN_LENGTH + 1)
 
         # Access with oversized token - should NOT redirect
         response = await client.get(

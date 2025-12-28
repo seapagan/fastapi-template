@@ -17,6 +17,7 @@ from app.database.helpers import (
     hash_password,
 )
 from app.managers.email import EmailManager
+from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
@@ -128,6 +129,16 @@ class AuthManager:
         refresh_token: TokenRefreshRequest, session: AsyncSession
     ) -> str:
         """Refresh an expired JWT token, given a valid Refresh token."""
+        # Validate token format before processing
+        if (
+            not refresh_token.refresh
+            or len(refresh_token.refresh) > MAX_JWT_TOKEN_LENGTH
+            or not is_valid_jwt_format(refresh_token.refresh)
+        ):
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 refresh_token.refresh,
@@ -169,6 +180,16 @@ class AuthManager:
     @staticmethod
     async def verify(code: str, session: AsyncSession) -> None:
         """Verify a new User's Email using the token they were sent."""
+        # Validate token format before processing
+        if (
+            not code
+            or len(code) > MAX_JWT_TOKEN_LENGTH
+            or not is_valid_jwt_format(code)
+        ):
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 code,
