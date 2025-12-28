@@ -17,6 +17,7 @@ from app.database.helpers import (
     hash_password,
 )
 from app.managers.email import EmailManager
+from app.managers.helpers import is_valid_jwt_format
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
@@ -128,6 +129,19 @@ class AuthManager:
         refresh_token: TokenRefreshRequest, session: AsyncSession
     ) -> str:
         """Refresh an expired JWT token, given a valid Refresh token."""
+        # Validate token format before processing
+        # JWT tokens are typically 100-500 chars, 1024 is a safe upper bound
+        max_token_length = 1024
+
+        if (
+            not refresh_token.refresh
+            or len(refresh_token.refresh) > max_token_length
+            or not is_valid_jwt_format(refresh_token.refresh)
+        ):
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 refresh_token.refresh,
