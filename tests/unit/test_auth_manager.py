@@ -622,3 +622,18 @@ class TestAuthManager:
             )
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_verify_valid_format_invalid_signature(self, test_db) -> None:
+        """Test verify rejects JWT with valid format but invalid signature."""
+        # Create a JWT-like token with valid format but wrong signature
+        # This should pass format validation but fail cryptographic verification
+        fake_jwt = (
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+            "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0."
+            "invalidSignatureHere123456789012345678901234"
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(fake_jwt, test_db)
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
