@@ -6,6 +6,10 @@ API.
 
 ## Breaking Changes in `HEAD`
 
+None.
+
+## Breaking Changes in `0.8.0`
+
 ### Drop support for Python 3.9
 
 While FastAPI does support 3.9, that version is past end-of-life. Pytest for
