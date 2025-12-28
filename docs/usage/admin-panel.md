@@ -3,8 +3,9 @@
 ## Overview
 
 There is an (optional) administration site included in this template. This is
-built using the [sqladmin](https://aminalaee.dev/sqladmin/){:target="_blank"}
-package and gives you an easy way to manage your users and API keys.
+built using the
+[sqladmin](https://aminalaee.github.io/sqladmin/){:target="_blank"} package and
+gives you an easy way to manage your users and API keys.
 
 !!! warning
     Only **existing admin users** can access the site, so they need to already
@@ -15,8 +16,8 @@ package and gives you an easy way to manage your users and API keys.
 ## Enable the Admin Site
 
 This admin panel is **DISABLED BY DEFAULT** and needs to be enabled by setting
-the `ADMIN_PAGES_ENABLED` environment variable to `true` in your `.env` file or in
-your environment.
+the `ADMIN_PAGES_ENABLED` environment variable to `true` in your `.env` file or
+in your environment.
 
 ```ini
 ADMIN_PAGES_ENABLED=true
