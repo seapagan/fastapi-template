@@ -11,7 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config.settings import get_settings
 from app.database.db import get_database
-from app.database.helpers import get_user_by_id_
+from app.database.helpers import (
+    get_user_by_email_,
+    get_user_by_id_,
+    hash_password,
+)
 from app.managers.email import EmailManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -25,12 +29,15 @@ class ResponseMessages:
     CANT_GENERATE_JWT = "Unable to generate the JWT"
     CANT_GENERATE_REFRESH = "Unable to generate the Refresh Token"
     CANT_GENERATE_VERIFY = "Unable to generate the Verification Token"
+    CANT_GENERATE_RESET = "Unable to generate the Password Reset Token"
     INVALID_TOKEN = "That token is Invalid"  # noqa: S105
     EXPIRED_TOKEN = "That token has Expired"  # noqa: S105
     VERIFICATION_SUCCESS = "User succesfully Verified"
     USER_NOT_FOUND = "User not Found"
     ALREADY_VALIDATED = "You are already validated"
     VALIDATION_RESENT = "Validation email re-sent"
+    RESET_EMAIL_SENT = "Password reset email sent if user exists"
+    PASSWORD_RESET_SUCCESS = "Password successfully reset"  # noqa: S105
 
 
 class AuthManager:
@@ -94,6 +101,26 @@ class AuthManager:
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_VERIFY,
+            ) from exc
+
+    @staticmethod
+    def encode_reset_token(user: User) -> str:
+        """Create and return a password reset JWT token."""
+        try:
+            payload = {
+                "sub": user.id,
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=30),
+                "typ": "reset",
+            }
+            return jwt.encode(
+                payload, get_settings().secret_key, algorithm="HS256"
+            )
+        except (jwt.PyJWTError, AttributeError) as exc:
+            # log the exception
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED,
+                ResponseMessages.CANT_GENERATE_RESET,
             ) from exc
 
     @staticmethod
@@ -185,6 +212,93 @@ class AuthManager:
             raise HTTPException(
                 status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
             )
+
+        except jwt.ExpiredSignatureError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
+            ) from exc
+        except jwt.InvalidTokenError as exc:
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            ) from exc
+
+    @staticmethod
+    async def forgot_password(
+        email: str, background_tasks: BackgroundTasks, session: AsyncSession
+    ) -> None:
+        """Send a password reset email to the user if they exist."""
+        # Get user by email - but don't reveal if user exists for security
+        user = await get_user_by_email_(email, session)
+
+        # Always return success message to prevent email enumeration
+        if not user:
+            return
+
+        # Don't send reset email to banned users
+        if bool(user.banned):
+            return
+
+        # Generate reset token
+        reset_token = AuthManager.encode_reset_token(user)
+
+        # Send password reset email
+        email_manager = EmailManager()
+        email_manager.template_send(
+            background_tasks,
+            EmailTemplateSchema(
+                recipients=[NameEmail(name=user.first_name, email=user.email)],
+                subject=f"{get_settings().api_title} - Password Reset",
+                body={
+                    "name": user.first_name,
+                    "application": get_settings().api_title,
+                    "base_url": get_settings().base_url,
+                    "reset_token": reset_token,
+                },
+                template_name="password_reset.html",
+            ),
+        )
+
+    @staticmethod
+    async def reset_password(
+        code: str, new_password: str, session: AsyncSession
+    ) -> None:
+        """Reset a user's password using the reset token."""
+        try:
+            payload = jwt.decode(
+                code,
+                get_settings().secret_key,
+                algorithms=["HS256"],
+                options={"verify_sub": False},
+            )
+
+            user_data = await session.get(User, payload["sub"])
+
+            if not user_data:
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
+                )
+
+            if payload["typ"] != "reset":
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            # Block banned users from resetting password
+            if bool(user_data.banned):
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            # Hash the new password
+            hashed_password = hash_password(new_password)
+
+            # Update the user's password
+            await session.execute(
+                update(User)
+                .where(User.id == payload["sub"])
+                .values(password=hashed_password)
+            )
+            await session.commit()
 
         except jwt.ExpiredSignatureError as exc:
             raise HTTPException(

@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=env_file)
 
     base_url: str = "http://localhost:8000"
+    frontend_url: str | None = None
     api_root: str = ""
     no_root_route: bool = False
 

@@ -17,3 +17,9 @@ class TokenRefreshResponse(BaseModel):
     """Return a new JWT only, after a refresh request."""
 
     token: str
+
+
+class PasswordResetResponse(BaseModel):
+    """Response schema for password reset operations."""
+
+    message: str

@@ -22,6 +22,35 @@ system. Knowing this allows the API to build paths in responses and internally.
 BASE_URL=https://api.my-server.com
 ```
 
+## Set the Frontend URL (Optional)
+
+If you have a custom frontend application (React, Vue, Angular, etc.), you can
+configure the API to redirect password reset requests to your frontend instead
+of displaying the built-in HTML form.
+
+```ini
+FRONTEND_URL=https://app.my-server.com
+```
+
+When this is set:
+
+- Users clicking password reset links in emails will be redirected to your
+  frontend
+- The redirect URL will be: `{FRONTEND_URL}/reset-password?code={token}`
+- Your frontend should handle the `/reset-password` route, extract the `code`
+  query parameter, and display a custom password reset form
+- The form should POST to the backend API `/reset-password/` endpoint with JSON
+
+When not set:
+
+- Users will see the built-in password reset form
+- Works standalone without any frontend configuration
+- Useful for APIs without a custom frontend
+
+!!! tip "Flexible Integration"
+    This setting provides the best of both worlds: standalone functionality when
+    not configured, and seamless custom frontend integration when configured.
+
 ## Set the API Root Prefix (Optional)
 
 If you want to add a prefix to all the routes, you can set it here. This is

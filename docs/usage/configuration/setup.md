@@ -36,7 +36,7 @@ all that is needed.
 $ uv sync
 ```
 
-If you do not (or cannot) have `uv installed, I have provided an
+If you do not (or cannot) have `uv` installed, I have provided an
 auto-generated`requirements.txt` in the project root which you can use as
 normal:
 
@@ -80,20 +80,23 @@ $ .venv\Scripts\activate
 ## Install Git Pre-Commit hooks
 
 This stage is **optional but recommended** (however it is compulsory if you are
-submitting a **Pull Request**).
+submitting a **Pull Request**). It will install a git hook to run linting and
+sanity checks on each Git commit.
 
 ```console
-$ pre-commit install
-pre-commit installed at .git/hooks/pre-commit
+$ prek install
+prek installed at .git/hooks/pre-commit
 ```
 
 This will ensure that all code meets the required linting standard before being
 committed.
 
-## Run pre-commit manually
+## Run the pre-commit hooks manually
 
 You can run these checks manually on all files using the below command :
 
 ```console
 $ poe pre
 ```
+
+This is a good sanity check to run regularly while developing.
