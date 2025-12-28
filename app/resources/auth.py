@@ -22,6 +22,7 @@ from app.config.helpers import get_project_root
 from app.config.settings import get_settings
 from app.database.db import get_database
 from app.managers.auth import AuthManager, ResponseMessages
+from app.managers.helpers import is_valid_jwt_format
 from app.managers.user import UserManager
 from app.models.user import User
 from app.schemas.request.auth import (
@@ -177,7 +178,12 @@ async def reset_password_form(
     max_token_length = 1024
 
     # If frontend URL is configured and token is valid format, redirect
-    if get_settings().frontend_url and code and len(code) <= max_token_length:
+    if (
+        get_settings().frontend_url
+        and code
+        and len(code) <= max_token_length
+        and is_valid_jwt_format(code)
+    ):
         return RedirectResponse(
             url=f"{get_settings().frontend_url}/reset-password?code={quote(code)}",
             status_code=302,

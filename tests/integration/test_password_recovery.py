@@ -521,6 +521,40 @@ class TestPasswordRecovery:
         assert "text/html" in response.headers["content-type"]
         assert ResponseMessages.INVALID_TOKEN.encode() in response.content
 
+    async def test_reset_password_form_get_with_frontend_url_malformed_jwt(
+        self, client: AsyncClient, monkeypatch
+    ) -> None:
+        """Test GET /reset-password/ shows form when JWT format is invalid."""
+
+        # Mock FRONTEND_URL setting
+        def mock_get_settings() -> Settings:
+            settings = Settings()
+            settings.frontend_url = "https://frontend.example.com"
+            return settings
+
+        monkeypatch.setattr(
+            "app.resources.auth.get_settings", mock_get_settings
+        )
+
+        # Create tokens with invalid JWT format
+        invalid_tokens = [
+            "not.valid!.jwt",  # Special character
+            "only.two",  # Only 2 parts
+            "four.dot.separated.parts",  # 4 parts
+            "part1.part2&admin=true.part3",  # URL injection attempt
+        ]
+
+        for invalid_token in invalid_tokens:
+            response = await client.get(
+                f"/reset-password/?code={invalid_token}",
+                follow_redirects=False,
+            )
+
+            # Should show form with error, not redirect
+            assert response.status_code == status.HTTP_200_OK
+            assert "text/html" in response.headers["content-type"]
+            assert ResponseMessages.INVALID_TOKEN.encode() in response.content
+
     async def test_reset_password_post_form_data_success(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
