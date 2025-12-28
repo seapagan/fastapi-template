@@ -180,6 +180,16 @@ class AuthManager:
     @staticmethod
     async def verify(code: str, session: AsyncSession) -> None:
         """Verify a new User's Email using the token they were sent."""
+        # Validate token format before processing
+        if (
+            not code
+            or len(code) > MAX_JWT_TOKEN_LENGTH
+            or not is_valid_jwt_format(code)
+        ):
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 code,

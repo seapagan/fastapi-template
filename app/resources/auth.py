@@ -126,17 +126,6 @@ async def verify(
     We dont need to return anything here, as success or errors will be handled
     by FastAPI exceptions.
     """
-    # Validate token format before processing
-    if (
-        not code
-        or len(code) > MAX_JWT_TOKEN_LENGTH
-        or not is_valid_jwt_format(code)
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=ResponseMessages.INVALID_TOKEN,
-        )
-
     await AuthManager.verify(code, session)
 
 
