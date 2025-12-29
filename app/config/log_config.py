@@ -43,6 +43,7 @@ class LogConfig:
         self.log_retention = getattr(settings, "log_retention", "30 days")
         self.log_compression = getattr(settings, "log_compression", "zip")
         self.log_filename = getattr(settings, "log_filename", "api.log")
+        self.console_enabled = getattr(settings, "log_console_enabled", False)
 
         # Validate filename doesn't contain path separators
         if "/" in self.log_filename or "\\" in self.log_filename:
@@ -82,13 +83,14 @@ def setup_logging() -> LogConfig:
     # Remove default handler
     logger.remove()
 
-    # Add console handler - match uvicorn format: "LEVEL: message"
-    logger.add(
-        sys.stderr,
-        format="<level>{level: <8}</level> <level>{message}</level>",
-        level=config.log_level,
-        colorize=True,
-    )
+    # Add console handler only if enabled
+    if config.console_enabled:
+        logger.add(
+            sys.stderr,
+            format="<level>{level: <8}</level> <level>{message}</level>",
+            level=config.log_level,
+            colorize=True,
+        )
 
     # Add file handler with rotation - more detail for file logs
     log_file = config.log_path / config.log_filename

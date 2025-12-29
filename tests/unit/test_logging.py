@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock
 
@@ -9,7 +10,7 @@ import pytest
 from starlette.requests import Request
 from starlette.responses import Response
 
-from app.config.log_config import LogCategory, LogConfig
+from app.config.log_config import LogCategory, LogConfig, setup_logging
 from app.logs import CategoryLogger
 from app.middleware.logging_middleware import LoggingMiddleware
 
@@ -61,6 +62,7 @@ class TestLogConfig:
             log_compression="zip",
             log_categories="NONE",
             log_filename="api.log",
+            log_console_enabled=False,
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -81,6 +83,7 @@ class TestLogConfig:
             log_compression="zip",
             log_categories="AUTH,DATABASE,EMAIL",
             log_filename="api.log",
+            log_console_enabled=False,
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -102,6 +105,7 @@ class TestLogConfig:
             log_compression="zip",
             log_categories="AUTH,INVALID,DATABASE",
             log_filename="api.log",
+            log_console_enabled=False,
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -198,6 +202,116 @@ class TestLogConfig:
             match="log_filename cannot contain path separators",
         ):
             LogConfig()
+
+    def test_console_logging_disabled_by_default(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test console logging is disabled by default."""
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="api.log",
+            log_console_enabled=False,
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        config = LogConfig()
+        assert config.console_enabled is False
+
+    def test_console_logging_can_be_enabled(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test console logging can be enabled via setting."""
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="api.log",
+            log_console_enabled=True,
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        config = LogConfig()
+        assert config.console_enabled is True
+
+    def test_setup_logging_skips_console_when_disabled(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test setup_logging() doesn't add console handler when disabled."""
+        # COVERS: log_config.py line 87-93 (the if block)
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="api.log",
+            log_console_enabled=False,
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        # Mock logger methods
+        mock_logger_add = mocker.patch("app.config.log_config.logger.add")
+        mocker.patch("app.config.log_config.logger.remove")
+
+        setup_logging()
+
+        # Verify logger.add was called only once (for file handler, not console)
+        assert mock_logger_add.call_count == 1
+        # Verify it was called with a file path (str), not sys.stderr
+        call_args = mock_logger_add.call_args[0][0]
+        assert isinstance(call_args, str)
+
+    def test_setup_logging_adds_console_when_enabled(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test setup_logging() adds console handler when enabled."""
+        # COVERS: log_config.py line 88-93 (inside the if block)
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="api.log",
+            log_console_enabled=True,
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        # Mock logger methods
+        mock_logger_add = mocker.patch("app.config.log_config.logger.add")
+        mocker.patch("app.config.log_config.logger.remove")
+
+        setup_logging()
+
+        # Verify logger.add was called twice (console + file)
+        expected_handler_count = 2  # console + file
+        assert mock_logger_add.call_count == expected_handler_count
+        # First call should be for console (sys.stderr)
+        first_call_args = mock_logger_add.call_args_list[0][0][0]
+        # Second call should be for file (str path)
+        second_call_args = mock_logger_add.call_args_list[1][0][0]
+
+        # Verify first is sys.stderr and second is string path
+        assert first_call_args == sys.stderr
+        assert isinstance(second_call_args, str)
 
 
 @pytest.mark.unit
