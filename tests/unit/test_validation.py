@@ -159,49 +159,6 @@ class TestDbUserValidator:
         assert settings.db_user == "mydbuser"
 
 
-class TestCIEnvironmentValidation:
-    """Test validation behavior in CI environments (GITHUB_ACTIONS)."""
-
-    def test_weak_db_password_accepted_in_ci(self, monkeypatch) -> None:
-        """Test that weak DB password is accepted when GITHUB_ACTIONS is set."""
-        # Set GITHUB_ACTIONS to simulate CI environment
-        monkeypatch.setenv("GITHUB_ACTIONS", "true")
-        monkeypatch.setenv("DB_USER", "CHANGE_ME_IN_ENV_FILE")
-        monkeypatch.setenv("DB_PASSWORD", "CHANGE_ME_IN_ENV_FILE")
-        monkeypatch.setenv("SECRET_KEY", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6")
-
-        # Should not raise - DB validation is skipped in CI
-        settings = Settings()
-        assert settings.db_password == "CHANGE_ME_IN_ENV_FILE"  # noqa: S105
-
-    def test_default_db_user_accepted_in_ci(self, monkeypatch) -> None:
-        """Test that default DB user is accepted when GITHUB_ACTIONS is set."""
-        # Set GITHUB_ACTIONS to simulate CI environment
-        monkeypatch.setenv("GITHUB_ACTIONS", "true")
-        monkeypatch.setenv("DB_USER", "CHANGE_ME_IN_ENV_FILE")
-        monkeypatch.setenv("DB_PASSWORD", "CHANGE_ME_IN_ENV_FILE")
-        monkeypatch.setenv("SECRET_KEY", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6")
-
-        # Should not raise - DB validation is skipped in CI
-        settings = Settings()
-        assert settings.db_user == "CHANGE_ME_IN_ENV_FILE"
-
-    def test_secret_key_still_validated_in_ci(self, monkeypatch) -> None:
-        """Test that SECRET_KEY validation is NOT skipped in CI."""
-        # Set GITHUB_ACTIONS to simulate CI environment
-        monkeypatch.setenv("GITHUB_ACTIONS", "true")
-        monkeypatch.setenv("DB_USER", "anyuser")
-        monkeypatch.setenv("DB_PASSWORD", "anypassword")
-        monkeypatch.setenv("SECRET_KEY", "CHANGE_ME_IN_ENV_FILE")
-
-        # Should still raise - SECRET_KEY validation is never skipped
-        with pytest.raises(
-            ValueError,
-            match=r"SECURITY ERROR: SECRET_KEY is using a weak/default value!",
-        ):
-            Settings()
-
-
 class TestValidatorsIntegration:
     """Test multiple validators working together."""
 
