@@ -151,6 +151,54 @@ class TestLogConfig:
         assert config.is_enabled(LogCategory.DATABASE)
         assert not config.is_enabled(LogCategory.EMAIL)
 
+    def test_log_filename_with_forward_slash_raises_error(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test log_filename with forward slash raises ValueError."""
+        # COVERS: log_config.py lines 49-53
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="../malicious.log",
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="log_filename cannot contain path separators",
+        ):
+            LogConfig()
+
+    def test_log_filename_with_backslash_raises_error(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test log_filename with backslash raises ValueError."""
+        # COVERS: log_config.py lines 49-53
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="subfolder\\malicious.log",
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+
+        with pytest.raises(
+            ValueError,
+            match="log_filename cannot contain path separators",
+        ):
+            LogConfig()
+
 
 @pytest.mark.unit
 class TestCategoryLogger:
