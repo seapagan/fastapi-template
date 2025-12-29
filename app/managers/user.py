@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from email_validator import EmailNotValidError, validate_email
 from fastapi import BackgroundTasks, HTTPException, status
 from pydantic import NameEmail
-from sqlalchemy import Select, delete, or_, select, update
+from sqlalchemy import Select, delete, func, or_, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.config.settings import get_settings
@@ -21,6 +21,7 @@ from app.database.helpers import (
 )
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
+from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
 from app.schemas.request.user import SearchField
@@ -31,7 +32,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from app.models.enums import RoleType
     from app.schemas.request.user import (
         UserChangePasswordRequest,
         UserEditRequest,
@@ -46,6 +46,7 @@ class ErrorMessages:
     AUTH_INVALID = "Wrong email or password"
     USER_INVALID = "This User does not exist"
     CANT_SELF_BAN = "You cannot ban/unban yourself!"
+    CANT_DELETE_LAST_ADMIN = "Cannot delete the last admin user"
     NOT_VERIFIED = "You need to verify your Email before logging in"
     EMPTY_FIELDS = "You must supply all fields and they cannot be empty"
     ALREADY_BANNED_OR_UNBANNED = "This User is already banned/unbanned"
@@ -187,12 +188,32 @@ class UserManager:
 
     @staticmethod
     async def delete_user(user_id: int, session: AsyncSession) -> None:
-        """Delete the User with specified ID."""
+        """Delete the User with specified ID.
+
+        Prevents deletion of the last admin user to avoid system lockout.
+        """
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, ErrorMessages.USER_INVALID
             )
+
+        # Prevent deletion if user is the last admin
+        if check_user.role == RoleType.admin:
+            count_query = (
+                select(func.count())
+                .select_from(User)
+                .where(User.role == RoleType.admin)
+            )
+            result = await session.execute(count_query)
+            admin_count = result.scalar()
+
+            if admin_count is not None and admin_count <= 1:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    ErrorMessages.CANT_DELETE_LAST_ADMIN,
+                )
+
         await session.execute(delete(User).where(User.id == user_id))
 
     @staticmethod

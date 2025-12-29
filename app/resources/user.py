@@ -150,7 +150,8 @@ async def edit_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(
-    user_id: int, db: Annotated[AsyncSession, Depends(get_database)]
+    user_id: int,
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
     """Delete the specified User by user_id.
 
