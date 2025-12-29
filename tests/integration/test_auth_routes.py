@@ -428,7 +428,7 @@ class TestAuthRoutes:
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()["detail"] == "User succesfully Verified"
+        assert response.json()["detail"] == "User successfully Verified"
 
     @pytest.mark.parametrize(
         "verification_token",

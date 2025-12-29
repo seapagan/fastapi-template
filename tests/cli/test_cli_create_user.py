@@ -57,7 +57,7 @@ class TestCLI:
             ],
         )
         assert result.exit_code == 0
-        assert "added succesfully" in result.output
+        assert "added successfully" in result.output
         assert mock_register.called
 
     def test_create_admin_success(
@@ -85,7 +85,7 @@ class TestCLI:
             ],
         )
         assert result.exit_code == 0
-        assert "added succesfully" in result.output
+        assert "added successfully" in result.output
         assert "Admin" in result.output
         assert mock_register.called
 
@@ -159,7 +159,7 @@ class TestCLI:
 
         result = runner.invoke(app, ["user", "create"], input=user_input)
         assert result.exit_code == 0
-        assert "added succesfully" in result.output
+        assert "added successfully" in result.output
         assert mock_register.called
 
     def test_create_admin_interactive(
@@ -178,6 +178,6 @@ class TestCLI:
 
         result = runner.invoke(app, ["user", "create"], input=user_input)
         assert result.exit_code == 0
-        assert "added succesfully" in result.output
+        assert "added successfully" in result.output
         assert "Admin" in result.output
         assert mock_register.called

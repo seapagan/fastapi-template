@@ -135,7 +135,7 @@ Verifies a user's email address using the token sent via email.
 
 ```json
 {
-  "detail": "User succesfully Verified"
+  "detail": "User successfully Verified"
 }
 ```
 

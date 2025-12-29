@@ -139,7 +139,7 @@ def create(
                 user_level = "Admin" if admin else ""
                 rprint(
                     f"\n[green]-> {user_level} User [bold]{user_data['email']}"
-                    "[/bold] added succesfully.\n"
+                    "[/bold] added successfully.\n"
                 )
         except HTTPException as exc:
             rprint(f"\n[red]-> ERROR adding User : [bold]{exc.detail}\n")
@@ -246,7 +246,7 @@ def verify(
     user = aiorun(_verify_user(user_id))
     if user:
         rprint(
-            f"\n[green]-> User [bold]{user_id}[/bold] verified succesfully.\n"
+            f"\n[green]-> User [bold]{user_id}[/bold] verified successfully.\n"
         )
     else:
         rprint("\n[red]-> ERROR verifying User : [bold]User not found\n")
@@ -289,7 +289,7 @@ def ban(
     if user:
         rprint(
             f"\n[green]-> User [bold]{user_id}[/bold] "
-            f"[red]{'UN' if unban else ''}BANNED[/red] succesfully."
+            f"[red]{'UN' if unban else ''}BANNED[/red] successfully."
         )
         show_table("", [user])
     else:
@@ -338,7 +338,7 @@ def admin(
         status = "removed from" if remove else "granted to"
         rprint(
             f"\n[green]-> Admin status [bold]{status}[/bold] "
-            f"User [bold]{user_id}[/bold] succesfully."
+            f"User [bold]{user_id}[/bold] successfully."
         )
         show_table("", [user])
     else:
@@ -373,7 +373,7 @@ def delete(
     aiorun(_delete_user(user_id))
     rprint(
         f"\n[green]-> User [bold]{user_id}[/bold] "
-        f"[red]DELETED[/red] succesfully."
+        f"[red]DELETED[/red] successfully."
     )
 
 

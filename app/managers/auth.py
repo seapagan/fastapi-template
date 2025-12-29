@@ -33,7 +33,7 @@ class ResponseMessages:
     CANT_GENERATE_RESET = "Unable to generate the Password Reset Token"
     INVALID_TOKEN = "That token is Invalid"  # noqa: S105
     EXPIRED_TOKEN = "That token has Expired"  # noqa: S105
-    VERIFICATION_SUCCESS = "User succesfully Verified"
+    VERIFICATION_SUCCESS = "User successfully Verified"
     USER_NOT_FOUND = "User not Found"
     ALREADY_VALIDATED = "You are already validated"
     VALIDATION_RESENT = "Validation email re-sent"
