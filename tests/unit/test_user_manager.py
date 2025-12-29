@@ -188,8 +188,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_delete_user(self, test_db) -> None:
         """Test deleting a user."""
         await UserManager.register(self.test_user, test_db)
-        # Use different user ID (2) to avoid self-deletion logic
-        await UserManager.delete_user(1, 2, test_db)
+        await UserManager.delete_user(1, test_db)
 
         user = await test_db.get(User, 1)
         assert user is None
@@ -197,19 +196,19 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_delete_user_not_found(self, test_db) -> None:
         """Test deleting a user that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.delete_user(1, 2, test_db)
+            await UserManager.delete_user(1, test_db)
 
     async def test_cant_delete_last_admin_user(self, test_db) -> None:
-        """Test that the last admin cannot delete themselves."""
+        """Test that the last admin cannot be deleted."""
         # Register an admin user
         admin_user = self.test_user.copy()
         await UserManager.register(admin_user, test_db)
         # Make them an admin
         await UserManager.change_role(RoleType.admin, 1, test_db)
 
-        # Try to delete themselves as the only admin
+        # Try to delete the only admin
         with pytest.raises(HTTPException) as exc_info:
-            await UserManager.delete_user(1, 1, test_db)
+            await UserManager.delete_user(1, test_db)
 
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
         assert exc_info.value.detail == ErrorMessages.CANT_DELETE_LAST_ADMIN
@@ -233,8 +232,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.change_role(RoleType.admin, 1, test_db)
         await UserManager.change_role(RoleType.admin, 2, test_db)
 
-        # Delete first admin (self-deletion)
-        await UserManager.delete_user(1, 1, test_db)
+        # Delete first admin
+        await UserManager.delete_user(1, test_db)
 
         # Verify first admin deleted
         user1 = await test_db.get(User, 1)
@@ -259,7 +258,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.change_role(RoleType.admin, 1, test_db)
 
         # Admin deletes regular user (should succeed regardless of admin count)
-        await UserManager.delete_user(2, 1, test_db)
+        await UserManager.delete_user(2, test_db)
 
         # Verify regular user deleted
         user2 = await test_db.get(User, 2)
@@ -286,8 +285,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         await UserManager.change_role(RoleType.admin, 1, test_db)
         await UserManager.change_role(RoleType.admin, 2, test_db)
 
-        # Admin 1 deletes Admin 2 (cross-admin deletion)
-        await UserManager.delete_user(2, 1, test_db)
+        # Admin 1 deletes Admin 2
+        await UserManager.delete_user(2, test_db)
 
         # Verify admin 2 deleted
         user2 = await test_db.get(User, 2)

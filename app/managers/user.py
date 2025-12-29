@@ -187,10 +187,11 @@ class UserManager:
         return token, refresh
 
     @staticmethod
-    async def delete_user(
-        user_id: int, current_user_id: int, session: AsyncSession
-    ) -> None:
-        """Delete the User with specified ID."""
+    async def delete_user(user_id: int, session: AsyncSession) -> None:
+        """Delete the User with specified ID.
+
+        Prevents deletion of the last admin user to avoid system lockout.
+        """
         check_user = await get_user_by_id_(user_id, session)
         if not check_user:
             raise HTTPException(
@@ -207,11 +208,7 @@ class UserManager:
             result = await session.execute(count_query)
             admin_count = result.scalar()
 
-            if (
-                admin_count is not None
-                and admin_count <= 1
-                and current_user_id == user_id
-            ):
+            if admin_count is not None and admin_count <= 1:
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
                     ErrorMessages.CANT_DELETE_LAST_ADMIN,

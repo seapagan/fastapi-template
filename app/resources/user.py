@@ -150,7 +150,6 @@ async def edit_user(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_user(
-    request: Request,
     user_id: int,
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> None:
@@ -158,7 +157,7 @@ async def delete_user(
 
     Admin only.
     """
-    await UserManager.delete_user(user_id, request.state.user.id, db)
+    await UserManager.delete_user(user_id, db)
 
 
 @router.get(

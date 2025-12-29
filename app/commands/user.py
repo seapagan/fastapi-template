@@ -361,7 +361,7 @@ def delete(
         try:
             async with async_session() as session:
                 await check_db_initialized(session)
-                await UserManager.delete_user(user_id, user_id, session)
+                await UserManager.delete_user(user_id, session)
                 await session.commit()
         except HTTPException as exc:
             rprint(f"\n[RED]-> ERROR deleting that User : [bold]{exc.detail}\n")
