@@ -83,8 +83,11 @@ class TestUserRoutes:
         This test will create 3 users, then create an admin user and ensure
         it can get all users.
         """
-        for _ in range(3):
-            test_user = User(**self.get_test_user())
+        for i in range(3):
+            user_data = self.get_test_user()
+            if i > 0:
+                user_data["email"] = f"user{i}@test.com"
+            test_user = User(**user_data)
             test_db.add(test_user)
 
         admin_user = User(**self.get_test_user(admin=True))
@@ -103,8 +106,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin user can get one users."""
-        for _ in range(3):
-            test_user = User(**self.get_test_user())
+        for i in range(3):
+            user_data = self.get_test_user()
+            if i > 0:
+                user_data["email"] = f"user{i}@test.com"
+            test_user = User(**user_data)
             test_db.add(test_user)
 
         admin_user = User(**self.get_test_user(admin=True))
@@ -123,8 +129,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test we can't get all users if not admin."""
-        for _ in range(3):
-            test_user = User(**self.get_test_user())
+        for i in range(3):
+            user_data = self.get_test_user()
+            if i > 0:
+                user_data["email"] = f"user{i}@test.com"
+            test_user = User(**user_data)
             test_db.add(test_user)
         token = AuthManager.encode_token(User(id=1))
 
@@ -141,8 +150,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test we can't get all users if not admin."""
-        for _ in range(3):
-            test_user = User(**self.get_test_user())
+        for i in range(3):
+            user_data = self.get_test_user()
+            if i > 0:
+                user_data["email"] = f"user{i}@test.com"
+            test_user = User(**user_data)
             test_db.add(test_user)
         token = AuthManager.encode_token(User(id=1))
 
@@ -190,6 +202,7 @@ class TestUserRoutes:
         """Test we can upgrade an existing user to admin."""
         normal_user = self.get_test_user()
         normal_user_2 = self.get_test_user()
+        normal_user_2["email"] = "user2@test.com"
 
         test_db.add(User(**normal_user))
         test_db.add(User(**normal_user_2))
@@ -268,9 +281,14 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure a non-admin cant ban another user."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user(admin=True)))
+        user1 = self.get_test_user()
+        user2 = self.get_test_user()
+        user3 = self.get_test_user(admin=True)
+        user2["email"] = "user2@test.com"
+        user3["email"] = "admin@test.com"
+        test_db.add(User(**user1))
+        test_db.add(User(**user2))
+        test_db.add(User(**user3))
         token = AuthManager.encode_token(User(id=1))
         admin_token = AuthManager.encode_token(User(id=3))
 
@@ -416,9 +434,14 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test that an ordinary user cant delete another user."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user(admin=True)))
+        user1 = self.get_test_user()
+        user2 = self.get_test_user()
+        user3 = self.get_test_user(admin=True)
+        user2["email"] = "user2@test.com"
+        user3["email"] = "admin@test.com"
+        test_db.add(User(**user1))
+        test_db.add(User(**user2))
+        test_db.add(User(**user3))
         token = AuthManager.encode_token(User(id=1))
         admin_token = AuthManager.encode_token(User(id=3))
 
@@ -483,8 +506,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test admin can delete themselves when multiple admins exist."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        test_db.add(User(**self.get_test_user(admin=True)))
+        user1 = self.get_test_user(admin=True)
+        user2 = self.get_test_user(admin=True)
+        user2["email"] = "admin2@test.com"
+        test_db.add(User(**user1))
+        test_db.add(User(**user2))
         token1 = AuthManager.encode_token(User(id=1, role=RoleType.admin))
         token2 = AuthManager.encode_token(User(id=2, role=RoleType.admin))
 
@@ -543,8 +569,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test that one admin can delete another admin when multiple exist."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        test_db.add(User(**self.get_test_user(admin=True)))
+        user1 = self.get_test_user(admin=True)
+        user2 = self.get_test_user(admin=True)
+        user2["email"] = "admin2@test.com"
+        test_db.add(User(**user1))
+        test_db.add(User(**user2))
         admin1_token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
 
         await test_db.commit()
@@ -782,9 +811,11 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure a user cant change other user password."""
+        user1 = self.get_test_user()
         user2 = self.get_test_user()
+        user2["email"] = "user2@test.com"
 
-        test_db.add(User(**self.get_test_user()))
+        test_db.add(User(**user1))
         test_db.add(User(**user2))
         token = AuthManager.encode_token(User(id=1))
 
