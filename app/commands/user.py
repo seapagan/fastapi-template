@@ -356,31 +356,25 @@ def delete(
 ) -> None:
     """Delete the user with the given id."""
 
-    async def _delete_user(user_id: int) -> User | None:
+    async def _delete_user(user_id: int) -> None:
         """Async function to delete a user."""
         try:
             async with async_session() as session:
                 await check_db_initialized(session)
-                user = await session.get(User, user_id)
-                if user:
-                    await session.delete(user)
-                    await session.commit()
+                await UserManager.delete_user(user_id, user_id, session)
+                await session.commit()
+        except HTTPException as exc:
+            rprint(f"\n[RED]-> ERROR deleting that User : [bold]{exc.detail}\n")
+            raise typer.Exit(1) from exc
         except SQLAlchemyError as exc:
             rprint(f"\n[RED]-> ERROR deleting that User : [bold]{exc}\n")
             raise typer.Exit(1) from exc
-        else:
-            return user
 
-    user = aiorun(_delete_user(user_id))
-
-    if user:
-        rprint(
-            f"\n[green]-> User [bold]{user_id}[/bold] "
-            f"[red]DELETED[/red] succesfully."
-        )
-    else:
-        rprint("\n[red]-> ERROR deleting that User : [bold]User not found\n")
-        raise typer.Exit(1)
+    aiorun(_delete_user(user_id))
+    rprint(
+        f"\n[green]-> User [bold]{user_id}[/bold] "
+        f"[red]DELETED[/red] succesfully."
+    )
 
 
 @app.command()

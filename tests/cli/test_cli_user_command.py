@@ -561,40 +561,29 @@ class TestCLI:
     # ------------------------------------------------------------------------ #
     def test_delete_user(self, runner: CliRunner, mocker, test_user) -> None:
         """Test that the 'delete' command works."""
-        mock_session = mocker.patch(
-            self.patch_async_session,
+        mock_manager = mocker.patch(
+            "app.commands.user.UserManager.delete_user",
+            return_value=None,
         )
-
-        mock_session.return_value.__aenter__.return_value.get.return_value = (
-            test_user
-        )
+        mocker.patch(self.patch_async_session)
 
         result = runner.invoke(app, ["user", "delete", str(test_user.id)])
         assert result.exit_code == 0
 
-        assert mock_session.called
-        assert mock_session.return_value.__aenter__.return_value.commit.called
-
+        assert mock_manager.called
         assert f"User {test_user.id} DELETED" in result.output
 
     def test_delete_sqlalchemy_error(
         self, runner: CliRunner, mocker, test_user
     ) -> None:
         """Test that the 'delete' command exits when there is an error."""
-        mock_session = mocker.patch(
-            self.patch_async_session,
+        mocker.patch(
+            "app.commands.user.UserManager.delete_user",
+            side_effect=SQLAlchemyError("Ooooops!!"),
         )
-        mock_session.return_value.__aenter__.return_value.get.side_effect = (
-            SQLAlchemyError("Ooooops!!")
-        )
+        mocker.patch(self.patch_async_session)
+
         result = runner.invoke(app, ["user", "delete", str(test_user.id)])
-        assert result.exit_code == 1
-
-        assert mock_session.called
-        assert (
-            not mock_session.return_value.__aenter__.return_value.commit.called
-        )
-
         assert result.exit_code == 1
 
         assert "ERROR deleting that User" in result.output
@@ -604,23 +593,39 @@ class TestCLI:
         self, runner: CliRunner, mocker, test_user
     ) -> None:
         """Test that the 'delete' command exits when the user is missing."""
-        mock_session = mocker.patch(
-            self.patch_async_session,
+        mocker.patch(
+            "app.commands.user.UserManager.delete_user",
+            side_effect=HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=ErrorMessages.USER_INVALID,
+            ),
         )
-        mock_session.return_value.__aenter__.return_value.get.return_value = (
-            None
-        )
+        mocker.patch(self.patch_async_session)
 
         result = runner.invoke(app, ["user", "delete", str(test_user.id)])
         assert result.exit_code == 1
 
-        assert mock_session.called
-        assert (
-            not mock_session.return_value.__aenter__.return_value.commit.called
+        assert "ERROR deleting that User" in result.output
+        assert ErrorMessages.USER_INVALID in result.output
+
+    def test_delete_last_admin_blocked(
+        self, runner: CliRunner, mocker, test_admin
+    ) -> None:
+        """Test that deleting the last admin is blocked."""
+        mocker.patch(
+            "app.commands.user.UserManager.delete_user",
+            side_effect=HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=ErrorMessages.CANT_DELETE_LAST_ADMIN,
+            ),
         )
+        mocker.patch(self.patch_async_session)
+
+        result = runner.invoke(app, ["user", "delete", str(test_admin.id)])
+        assert result.exit_code == 1
 
         assert "ERROR deleting that User" in result.output
-        assert "User not found" in result.output
+        assert ErrorMessages.CANT_DELETE_LAST_ADMIN in result.output
 
     # ------------------------------------------------------------------------ #
     #                         test 'search' subcommand                         #
