@@ -242,7 +242,13 @@ markers = [
 ]
 testpaths = ["tests"]
 mock_use_standalone_module = true
-env = ["I_READ_THE_DAMN_DOCS=true", "ADMIN_PAGES_ENABLED=true"]
+env = [
+  "I_READ_THE_DAMN_DOCS=true",
+  "ADMIN_PAGES_ENABLED=true",
+  # Test-safe SECRET_KEY for pytest validation
+  "SECRET_KEY=test_jwt_secret_key_for_pytest_at_least_32_characters_long_abc123",
+  "MAIL_FROM=test@example.com",
+]
 
 asyncio_default_fixture_loop_scope = "function"
 
