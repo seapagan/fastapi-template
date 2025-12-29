@@ -217,6 +217,386 @@ MAIL_SERVER=smtp.mailserver.com
 MAIL_FROM_NAME="FastAPI Template"
 ```
 
+## Configure Admin Pages (Optional)
+
+The API includes an optional admin panel for managing users and API keys through a web interface. It's disabled by default and must be explicitly enabled.
+
+!!! info "Admin Panel Access"
+    Only existing admin users can access the admin panel. See the [Admin Panel Documentation](../admin-panel.md) for details on usage and features.
+
+### Enable Admin Pages
+
+Set this to `True` to enable the admin panel web interface:
+
+```ini
+ADMIN_PAGES_ENABLED=True
+```
+
+When enabled, the admin panel will be accessible at the route specified in `ADMIN_PAGES_ROUTE`. When disabled (default), the admin routes return a 404 error.
+
+### Customize Admin Pages Route
+
+The admin panel is accessible at `/admin` by default. You can customize this:
+
+```ini
+ADMIN_PAGES_ROUTE=/admin
+```
+
+You can change this to any route you prefer, for example `/management` or `/dashboard`. The route must start with a forward slash (`/`).
+
+### Customize Admin Panel Title
+
+The title shown in the browser tab and page header:
+
+```ini
+ADMIN_PAGES_TITLE="API Administration"
+```
+
+Customize this to match your application name or branding.
+
+### Session Encryption Key
+
+!!! danger "Critical Security Setting"
+    This key encrypts admin session tokens. Treat it like your SECRET_KEY - keep it secret, unique per environment, never commit to version control, and regenerate if compromised.
+
+The encryption key for admin session tokens:
+
+```ini
+ADMIN_PAGES_ENCRYPTION_KEY=
+```
+
+**Behavior:**
+
+- **Empty (default):** Auto-generates a new key on each server startup
+    - Sessions are invalidated when the server restarts
+    - Admins must re-login after each restart
+    - Fine for development
+- **Set with a key:** Persistent sessions across server restarts
+    - Admins stay logged in through restarts
+    - **Required for production**
+
+**Generate a persistent key:**
+
+Using the CLI (recommended):
+
+```console
+$ api-admin keys -a
+```
+
+Or manually with Python:
+
+```console
+$ python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())'
+bXlfc2VjcmV0X2VuY3J5cHRpb25fa2V5X2V4YW1wbGU=
+```
+
+Then add to your `.env`:
+
+```ini
+ADMIN_PAGES_ENCRYPTION_KEY=bXlfc2VjcmV0X2VuY3J5cHRpb25fa2V5X2V4YW1wbGU=
+```
+
+!!! tip "Production Recommendation"
+    Always set ADMIN_PAGES_ENCRYPTION_KEY in production to maintain persistent sessions. Use different keys for dev/staging/production environments.
+
+### Session Timeout
+
+How long (in seconds) before admin sessions expire:
+
+```ini
+ADMIN_PAGES_TIMEOUT=86400
+```
+
+Default is 86400 seconds (24 hours). Adjust based on your security requirements:
+
+- Higher values: Better user experience, less re-authentication
+- Lower values: Better security, more frequent re-authentication
+
+Common values:
+
+- `43200` - 12 hours
+- `86400` - 24 hours (default)
+- `604800` - 7 days
+
+### Complete Admin Pages Example
+
+```ini
+# Enable admin panel
+ADMIN_PAGES_ENABLED=True
+ADMIN_PAGES_ROUTE=/admin
+ADMIN_PAGES_TITLE="My API Administration"
+ADMIN_PAGES_ENCRYPTION_KEY=your_generated_encryption_key_here
+ADMIN_PAGES_TIMEOUT=86400
+```
+
+## Configure Logging (Optional)
+
+The API uses loguru for structured logging with rotation, retention, and category-based filtering. Logging provides debugging, monitoring, and compliance capabilities.
+
+!!! note "Console Logging"
+    FastAPI/Uvicorn already log to console. The file-based logging configured here is in addition to that and provides persistent, categorized logs.
+
+### Log Output Directory
+
+Directory where log files are written:
+
+```ini
+LOG_PATH=./logs
+```
+
+Default is `./logs` (relative to project root). The directory must be writable by the application process. You can use absolute paths for production:
+
+```ini
+LOG_PATH=/var/log/myapi
+```
+
+### Logging Level
+
+Controls which log messages are captured:
+
+```ini
+LOG_LEVEL=INFO
+```
+
+Available levels (from most to least verbose):
+
+| Level    | Description                          | Use Case                    |
+|----------|--------------------------------------|-----------------------------|
+| DEBUG    | All messages including debug output  | Development/troubleshooting |
+| INFO     | Normal operations and events         | Production (recommended)    |
+| WARNING  | Issues that may need attention       | Production monitoring       |
+| ERROR    | Error conditions                     | Production (minimal)        |
+| CRITICAL | Severe system failures               | Production (minimal)        |
+
+Higher levels include all messages from lower levels (ERROR includes CRITICAL, INFO includes WARNING/ERROR/CRITICAL, etc.).
+
+### Log File Rotation
+
+When to rotate (start a new) log file:
+
+```ini
+LOG_ROTATION=1 day
+```
+
+Prevents log files from growing unbounded. Supported formats:
+
+**Size-based rotation:**
+
+- `"100 MB"`, `"500 MB"`, `"1 GB"`
+
+**Time-based rotation:**
+
+- `"1 day"`, `"1 week"`, `"1 month"`, `"1 year"`
+
+Examples by scenario:
+
+- High-traffic API: `"100 MB"` or `"6 hours"`
+- Standard API: `"1 day"` (default)
+- Low-traffic API: `"1 week"`
+
+### Log File Retention
+
+How long to keep old rotated log files:
+
+```ini
+LOG_RETENTION=30 days
+```
+
+Old log files are automatically deleted after this period. Examples:
+
+- Development: `"7 days"`
+- Production: `"30 days"` or `"90 days"`
+- Compliance requirements: `"1 year"` or more
+
+Balance storage costs with compliance and debugging needs.
+
+### Log File Compression
+
+Compression format for rotated log files:
+
+```ini
+LOG_COMPRESSION=zip
+```
+
+Options:
+
+- `"zip"` - ZIP compression (recommended, widely compatible)
+- `"gz"` - gzip compression (smaller than zip)
+- `"bz2"` - bzip2 compression (smaller than gz, slower)
+- `""` or omit - No compression (not recommended)
+
+Compression saves significant disk space for archived logs, especially with high verbosity.
+
+### Logging Categories
+
+Fine-grained control over what gets logged:
+
+```ini
+LOG_CATEGORIES=ALL
+```
+
+**Special values:**
+
+- `ALL` - Log everything (development/debugging)
+- `NONE` - Disable all logging (except critical errors)
+
+**Individual categories (combine with commas):**
+
+| Category   | What It Logs                          | Recommended For        |
+|------------|---------------------------------------|------------------------|
+| REQUESTS   | HTTP request/response logging         | Debugging, monitoring  |
+| AUTH       | Authentication, login, token ops      | **Production (security)** |
+| DATABASE   | Database CRUD operations              | Debugging queries      |
+| EMAIL      | Email sending operations              | **Production (if using email)** |
+| ERRORS     | Error conditions and exceptions       | **Production (always)** |
+| ADMIN      | Admin panel operations                | **Production (audit)** |
+| API_KEYS   | API key operations                    | Production (security)  |
+
+**Configuration examples:**
+
+```ini
+# Development: log everything
+LOG_CATEGORIES=ALL
+
+# Production: security-focused
+LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL
+
+# Production: minimal logging
+LOG_CATEGORIES=ERRORS
+
+# Debugging database issues
+LOG_CATEGORIES=ERRORS,DATABASE,REQUESTS
+
+# Comprehensive monitoring
+LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL,DATABASE
+
+# Disable all logging
+LOG_CATEGORIES=NONE
+```
+
+!!! tip "Production Recommendation"
+    For production, use `LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL` with `LOG_LEVEL=INFO`. This provides security monitoring (AUTH/ADMIN), error tracking (ERRORS), and email operation logging (EMAIL) while keeping log files manageable.
+
+**How combinations work:**
+
+- Comma-separated values are combined (bitwise OR)
+- Order doesn't matter: `AUTH,ERRORS` = `ERRORS,AUTH`
+- Case-insensitive: `auth` = `AUTH`
+- Whitespace is trimmed: `AUTH, ERRORS` works fine
+
+### Log Filename
+
+Custom filename for the log file:
+
+```ini
+LOG_FILENAME=api.log
+```
+
+Default is `api.log`. The filename **cannot contain path separators** (`/` or `\`) - use `LOG_PATH` to set the directory.
+
+Useful for separating logs by environment:
+
+```ini
+# In .env for production
+LOG_FILENAME=api.log
+
+# In test config
+LOG_FILENAME=test_api.log
+```
+
+The full log path will be: `{LOG_PATH}/{LOG_FILENAME}`
+
+### Console Logging
+
+Enable console output in addition to file logging:
+
+```ini
+LOG_CONSOLE_ENABLED=false
+```
+
+!!! warning "Duplicate Console Output"
+    FastAPI/Uvicorn already log to console. Setting this to `true` causes **duplicate console output** - each log message appears twice in the console. Only enable if you have a specific reason (e.g., custom log formatting, Docker/Kubernetes setups).
+
+**When to use:**
+
+- ✅ Custom log formatting requirements
+- ✅ Centralized logging systems that only capture console
+- ✅ Docker/Kubernetes environments without file access
+
+**When NOT to use:**
+
+- ❌ Local development (already has console output)
+- ❌ High-traffic APIs (performance impact)
+- ❌ Default installations (causes confusion)
+
+### Complete Logging Configuration Examples
+
+**Development configuration:**
+
+```ini
+LOG_PATH=./logs
+LOG_LEVEL=DEBUG
+LOG_ROTATION=1 day
+LOG_RETENTION=7 days
+LOG_COMPRESSION=zip
+LOG_CATEGORIES=ALL
+LOG_FILENAME=api.log
+LOG_CONSOLE_ENABLED=false
+```
+
+**Production configuration (security-focused):**
+
+```ini
+LOG_PATH=/var/log/myapi
+LOG_LEVEL=INFO
+LOG_ROTATION=1 day
+LOG_RETENTION=90 days
+LOG_COMPRESSION=zip
+LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL
+LOG_FILENAME=api.log
+LOG_CONSOLE_ENABLED=false
+```
+
+**Production configuration (minimal):**
+
+```ini
+LOG_PATH=/var/log/myapi
+LOG_LEVEL=ERROR
+LOG_ROTATION=1 day
+LOG_RETENTION=30 days
+LOG_COMPRESSION=zip
+LOG_CATEGORIES=ERRORS
+LOG_FILENAME=api.log
+LOG_CONSOLE_ENABLED=false
+```
+
+### Troubleshooting Logging
+
+**Log files not created:**
+
+- Check `LOG_PATH` directory exists and is writable
+- Check file permissions on the directory
+- Verify the application process has write access
+
+**Log files filling disk:**
+
+- Adjust `LOG_ROTATION` to rotate more frequently
+- Reduce `LOG_RETENTION` to delete old logs sooner
+- Use `LOG_COMPRESSION` to save space
+- Reduce `LOG_LEVEL` to ERROR or WARNING
+- Limit `LOG_CATEGORIES` to only what you need
+
+**Missing expected logs:**
+
+- Check `LOG_CATEGORIES` includes the category you're looking for
+- Verify `LOG_LEVEL` isn't filtering out messages
+- Check logs are being written to the correct file path
+- Ensure the operation you're logging is actually executing
+
+**Duplicate console output:**
+
+- Set `LOG_CONSOLE_ENABLED=false` (this is the default)
+
 ## Example full `.env` file
 
 Below is a full .env file. This can also be found in the root of the API as
