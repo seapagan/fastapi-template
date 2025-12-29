@@ -132,6 +132,15 @@ $ api-admin user delete 23
 They will no longer be able to access the API, this CANNOT BE UNDONE. It's
 probably better to BAN a user unless you are very sure.
 
+!!! warning "Admin Protection"
+
+    The system prevents the last admin user from being deleted to avoid
+    locking yourself out of the system. If you try to delete the only
+    remaining admin (whether via CLI or API), the deletion will be blocked.
+
+    To delete an admin user, you must first ensure there is at least one
+    other admin user in the system.
+
 ## Seed Database with Users from a File
 
 You can import users from a CSV file using the `db seed` command:

@@ -574,10 +574,24 @@ Permanently delete the specified user.
 
 **Response:** `204 No Content`
 
+**Error Responses:**
+
+- `400 Bad Request`: Returned when attempting to delete the last admin user
+
+```json
+{
+  "detail": "Cannot delete the last admin user"
+}
+```
+
 **Notes:**
 
 - This action is permanent and cannot be undone
 - All associated API keys will also be deleted
+- **Admin Protection:** The system prevents the last admin from deleting
+  themselves to avoid system lockout. Admins can delete themselves only when
+  multiple admin users exist
+- Regular users can always be deleted by admins regardless of admin count
 
 ---
 
