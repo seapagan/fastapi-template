@@ -2,7 +2,7 @@
 
 [![Ruff](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml)&nbsp;
 [![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)&nbsp;
-[![codecov](https://codecov.io/gh/seapagan/fastapi-template/graph/badge.svg?token=27D8PGNX0E)](https://codecov.io/gh/seapagan/fastapi-template)&nbsp;
+[![Code Coverage](https://app.codacy.com/project/badge/Coverage/82085ec100b64e73bea63b5942371e94)](https://app.codacy.com/gh/seapagan/fastapi-template/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)&nbsp;
 [![Dependency Review](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml)&nbsp;
 [![CodeQL](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml)
 
