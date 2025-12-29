@@ -15,8 +15,18 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Feat(logging): implement comprehensive logging infrastructure with loguru ([#794](https://github.com/seapagan/fastapi-template/pull/794)) by [seapagan](https://github.com/seapagan)
+- Prevent last admin from deleting themselves ([#792](https://github.com/seapagan/fastapi-template/pull/792)) by [seapagan](https://github.com/seapagan)
 - Extend JWT format validation to verify and refresh endpoints ([#790](https://github.com/seapagan/fastapi-template/pull/790)) by [seapagan](https://github.com/seapagan)
 - Add password recovery feature ([#788](https://github.com/seapagan/fastapi-template/pull/788)) by [seapagan](https://github.com/seapagan)
+
+**Security**
+
+- Fix(security): validate credentials and prevent weak defaults ([#793](https://github.com/seapagan/fastapi-template/pull/793)) by [seapagan](https://github.com/seapagan)
+
+**Bug Fixes**
+
+- Fix CLI crash when database not initialized ([#791](https://github.com/seapagan/fastapi-template/pull/791)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
