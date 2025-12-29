@@ -19,7 +19,7 @@ from app.database.helpers import (
     hash_password,
     verify_password,
 )
-from app.logs import LogCategory, log_config, logger
+from app.logs import LogCategory, category_logger
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
 from app.models.enums import RoleType
@@ -111,15 +111,16 @@ class UserManager:
             _ = await add_new_user_(new_user, session)
             await session.flush()
 
-            if log_config.is_enabled(LogCategory.DATABASE):
-                logger.info(f"New user registered: {new_user['email']}")
+            category_logger.info(
+                f"New user registered: {new_user['email']}",
+                LogCategory.DATABASE,
+            )
 
         except IntegrityError as err:
-            if log_config.is_enabled(LogCategory.ERRORS):
-                logger.error(
-                    f"User registration failed - email exists: "
-                    f"{new_user['email']}"
-                )
+            category_logger.error(
+                f"User registration failed - email exists: {new_user['email']}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.EMAIL_EXISTS,
@@ -177,10 +178,10 @@ class UserManager:
                 )
                 or bool(user_do.banned)
             ):
-                if log_config.is_enabled(LogCategory.AUTH):
-                    logger.warning(
-                        f"Failed login attempt for email: {user_data['email']}"
-                    )
+                category_logger.warning(
+                    f"Failed login attempt for email: {user_data['email']}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
                 )
@@ -195,8 +196,10 @@ class UserManager:
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
 
-        if log_config.is_enabled(LogCategory.AUTH):
-            logger.info(f"User logged in: {user_do.email} (ID: {user_do.id})")
+        category_logger.info(
+            f"User logged in: {user_do.email} (ID: {user_do.id})",
+            LogCategory.AUTH,
+        )
 
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
@@ -233,8 +236,9 @@ class UserManager:
 
         await session.execute(delete(User).where(User.id == user_id))
 
-        if log_config.is_enabled(LogCategory.DATABASE):
-            logger.info(f"User deleted: ID {user_id}")
+        category_logger.info(
+            f"User deleted: ID {user_id}", LogCategory.DATABASE
+        )
 
     @staticmethod
     async def update_user(
@@ -274,8 +278,9 @@ class UserManager:
             )
         )
 
-        if log_config.is_enabled(LogCategory.DATABASE):
-            logger.info(f"User updated: ID {user_id}")
+        category_logger.info(
+            f"User updated: ID {user_id}", LogCategory.DATABASE
+        )
 
         # Return the updated user
         return await UserManager.get_user_by_id(user_id, session)
@@ -306,8 +311,9 @@ class UserManager:
             .values(password=hashed_password)
         )
 
-        if log_config.is_enabled(LogCategory.DATABASE):
-            logger.info(f"Password changed for user ID {user_id}")
+        category_logger.info(
+            f"Password changed for user ID {user_id}", LogCategory.DATABASE
+        )
 
     @staticmethod
     async def set_ban_status(
@@ -336,9 +342,10 @@ class UserManager:
             update(User).where(User.id == user_id).values(banned=banned)
         )
 
-        if log_config.is_enabled(LogCategory.DATABASE):
-            action = "banned" if banned else "unbanned"
-            logger.info(f"User {action}: ID {user_id}")
+        action = "banned" if banned else "unbanned"
+        category_logger.info(
+            f"User {action}: ID {user_id}", LogCategory.DATABASE
+        )
 
     @staticmethod
     async def change_role(
@@ -349,8 +356,10 @@ class UserManager:
             update(User).where(User.id == user_id).values(role=role)
         )
 
-        if log_config.is_enabled(LogCategory.DATABASE):
-            logger.info(f"User role changed to {role.value}: ID {user_id}")
+        category_logger.info(
+            f"User role changed to {role.value}: ID {user_id}",
+            LogCategory.DATABASE,
+        )
 
     @staticmethod
     async def get_all_users(session: AsyncSession) -> Sequence[User]:
