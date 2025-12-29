@@ -188,6 +188,7 @@ convention = "google"
   "FIX002",
   "RUF012",
   "SLF001", # sometimes tests need to access private members
+  "PLE1205", # false positive: CategoryLogger has different signature than logging.Logger
 ]
 "app/managers/auth.py" = ["ERA001"]
 "app/resources/auth.py" = ["ERA001"]

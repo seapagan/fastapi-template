@@ -75,3 +75,28 @@ class TestEmailManager:
         assert response is None
         mock_backgroundtasks.add_task.assert_called_once()
         # TODO(seapgan): again see if we can get more granular with the assert
+
+    @pytest.mark.asyncio
+    async def test_simple_send_exception_handling(
+        self, email_manager, mocker
+    ) -> None:
+        """Test simple_send logs and re-raises exceptions."""
+        # COVERS: email.py lines 65-69
+
+        # Mock FastMail to raise an exception
+        mock_fastmail_class = mocker.patch("app.managers.email.FastMail")
+        mock_fastmail_instance = mock_fastmail_class.return_value
+        mock_fastmail_instance.send_message = mocker.AsyncMock(
+            side_effect=Exception("SMTP connection failed")
+        )
+
+        # Mock category_logger to verify error logging
+        mock_logger = mocker.patch("app.managers.email.category_logger.error")
+
+        # Verify exception is raised and logged
+        with pytest.raises(Exception, match="SMTP connection failed"):
+            await email_manager.simple_send(email_data=self.email_schema)
+
+        # Verify error was logged
+        mock_logger.assert_called_once()
+        assert "Failed to send email" in mock_logger.call_args[0][0]
