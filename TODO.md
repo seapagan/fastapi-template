@@ -36,9 +36,7 @@
 
 ## Bugs/Annoyances
 
-- Admin users CAN delete themselves, but this should not be allowed. They should
-  be able to delete other users, but not themselves. Or should they?? Need to
-  think about this.
+- None known at this time.
 
 ## Auth
 
