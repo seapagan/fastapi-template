@@ -111,6 +111,18 @@ class Settings(BaseSettings):
     )
     admin_pages_timeout: int = 86400
 
+    # Logging settings
+    log_path: str = "./logs"
+    log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+    log_rotation: str = "1 day"  # "500 MB", "1 week", etc.
+    log_retention: str = "30 days"
+    log_compression: str = "zip"
+    log_categories: str = (
+        "ALL"  # ALL, NONE, or comma-separated: REQUESTS,AUTH,DATABASE
+    )
+    log_filename: str = "api.log"
+    log_console_enabled: bool = False
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False

@@ -43,6 +43,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   asyncclick
     #   click
+    #   loguru
     #   uvicorn
 cryptography==46.0.3
     # via fastapi-mail
@@ -97,6 +98,8 @@ jinja2==3.1.6
     #   fastapi-mail
     #   sqladmin
 libpass==1.9.0
+    # via api-template
+loguru==0.7.3
     # via api-template
 mako==1.3.9
     # via alembic
@@ -220,5 +223,7 @@ watchfiles==1.1.1
     # via uvicorn
 websockets==15.0
     # via uvicorn
+win32-setctime==1.2.0 ; sys_platform == 'win32'
+    # via loguru
 wtforms==3.1.2
     # via sqladmin

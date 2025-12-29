@@ -19,6 +19,7 @@ from app.database.helpers import (
     hash_password,
     verify_password,
 )
+from app.logs import LogCategory, category_logger
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
 from app.models.enums import RoleType
@@ -109,7 +110,17 @@ class UserManager:
             # actually add the new user to the database
             _ = await add_new_user_(new_user, session)
             await session.flush()
+
+            category_logger.info(
+                f"New user registered: {new_user['email']}",
+                LogCategory.DATABASE,
+            )
+
         except IntegrityError as err:
+            category_logger.error(
+                f"User registration failed - email exists: {new_user['email']}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST,
                 ErrorMessages.EMAIL_EXISTS,
@@ -167,6 +178,10 @@ class UserManager:
                 )
                 or bool(user_do.banned)
             ):
+                category_logger.warning(
+                    f"Failed login attempt for email: {user_data['email']}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
                 )
@@ -180,6 +195,11 @@ class UserManager:
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
+
+        category_logger.info(
+            f"User logged in: {user_do.email} (ID: {user_do.id})",
+            LogCategory.AUTH,
+        )
 
         token = AuthManager.encode_token(user_do)
         refresh = AuthManager.encode_refresh_token(user_do)
@@ -215,6 +235,10 @@ class UserManager:
                 )
 
         await session.execute(delete(User).where(User.id == user_id))
+
+        category_logger.info(
+            f"User deleted: ID {user_id}", LogCategory.DATABASE
+        )
 
     @staticmethod
     async def update_user(
@@ -254,6 +278,10 @@ class UserManager:
             )
         )
 
+        category_logger.info(
+            f"User updated: ID {user_id}", LogCategory.DATABASE
+        )
+
         # Return the updated user
         return await UserManager.get_user_by_id(user_id, session)
 
@@ -283,6 +311,10 @@ class UserManager:
             .values(password=hashed_password)
         )
 
+        category_logger.info(
+            f"Password changed for user ID {user_id}", LogCategory.DATABASE
+        )
+
     @staticmethod
     async def set_ban_status(
         user_id: int,
@@ -310,6 +342,11 @@ class UserManager:
             update(User).where(User.id == user_id).values(banned=banned)
         )
 
+        action = "banned" if banned else "unbanned"
+        category_logger.info(
+            f"User {action}: ID {user_id}", LogCategory.DATABASE
+        )
+
     @staticmethod
     async def change_role(
         role: RoleType, user_id: int, session: AsyncSession
@@ -317,6 +354,11 @@ class UserManager:
         """Change the specified user's Role."""
         await session.execute(
             update(User).where(User.id == user_id).values(role=role)
+        )
+
+        category_logger.info(
+            f"User role changed to {role.value}: ID {user_id}",
+            LogCategory.DATABASE,
         )
 
     @staticmethod

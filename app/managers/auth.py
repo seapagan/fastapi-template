@@ -16,6 +16,7 @@ from app.database.helpers import (
     get_user_by_id_,
     hash_password,
 )
+from app.logs import LogCategory, category_logger
 from app.managers.email import EmailManager
 from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
 from app.models.enums import RoleType
@@ -55,14 +56,23 @@ class AuthManager:
                     minutes=get_settings().access_token_expire_minutes
                 ),
             }
-            return jwt.encode(
+            token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
         except (jwt.PyJWTError, AttributeError) as exc:
-            # log the exception
+            user_id = getattr(user, "id", "unknown")
+            category_logger.error(
+                f"Failed to generate JWT for user {user_id}: {exc}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.CANT_GENERATE_JWT
             ) from exc
+        else:
+            category_logger.info(
+                f"Access token created for user {user.id}", LogCategory.AUTH
+            )
+            return token
 
     @staticmethod
     def encode_refresh_token(user: User) -> str:
@@ -74,15 +84,24 @@ class AuthManager:
                 + datetime.timedelta(minutes=60 * 24 * 30),
                 "typ": "refresh",
             }
-            return jwt.encode(
+            token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
         except (jwt.PyJWTError, AttributeError) as exc:
-            # log the exception
+            user_id = getattr(user, "id", "unknown")
+            category_logger.error(
+                f"Failed to generate refresh token for user {user_id}: {exc}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_REFRESH,
             ) from exc
+        else:
+            category_logger.info(
+                f"Refresh token created for user {user.id}", LogCategory.AUTH
+            )
+            return token
 
     @staticmethod
     def encode_verify_token(user: User) -> str:
@@ -94,15 +113,26 @@ class AuthManager:
                 + datetime.timedelta(minutes=10),
                 "typ": "verify",
             }
-            return jwt.encode(
+            token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
         except (jwt.PyJWTError, AttributeError) as exc:
-            # log the exception
+            user_id = getattr(user, "id", "unknown")
+            category_logger.error(
+                f"Failed to generate verification token for user "
+                f"{user_id}: {exc}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_VERIFY,
             ) from exc
+        else:
+            category_logger.info(
+                f"Verification token created for user {user.id}",
+                LogCategory.AUTH,
+            )
+            return token
 
     @staticmethod
     def encode_reset_token(user: User) -> str:
@@ -114,15 +144,25 @@ class AuthManager:
                 + datetime.timedelta(minutes=30),
                 "typ": "reset",
             }
-            return jwt.encode(
+            token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
         except (jwt.PyJWTError, AttributeError) as exc:
-            # log the exception
+            user_id = getattr(user, "id", "unknown")
+            category_logger.error(
+                f"Failed to generate reset token for user {user_id}: {exc}",
+                LogCategory.ERRORS,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_RESET,
             ) from exc
+        else:
+            category_logger.info(
+                f"Password reset token created for user {user.id}",
+                LogCategory.AUTH,
+            )
+            return token
 
     @staticmethod
     async def refresh(
@@ -161,16 +201,29 @@ class AuthManager:
 
             # block a banned user
             if bool(user_data.banned):
+                category_logger.warning(
+                    f"Banned user {user_data.id} attempted token refresh",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
             new_token = AuthManager.encode_token(user_data)
+            category_logger.info(
+                f"Token refreshed for user {user_data.id}", LogCategory.AUTH
+            )
 
         except jwt.ExpiredSignatureError as exc:
+            category_logger.warning(
+                "Expired refresh token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            category_logger.warning(
+                "Invalid refresh token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
@@ -230,15 +283,25 @@ class AuthManager:
             )
             await session.commit()
 
+            category_logger.info(
+                f"User {user_data.id} successfully verified", LogCategory.AUTH
+            )
+
             raise HTTPException(
                 status.HTTP_200_OK, ResponseMessages.VERIFICATION_SUCCESS
             )
 
         except jwt.ExpiredSignatureError as exc:
+            category_logger.warning(
+                "Expired verification token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            category_logger.warning(
+                "Invalid verification token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
@@ -253,14 +316,25 @@ class AuthManager:
 
         # Always return success message to prevent email enumeration
         if not user:
+            category_logger.info(
+                f"Password reset requested for non-existent email: {email}",
+                LogCategory.AUTH,
+            )
             return
 
         # Don't send reset email to banned users
         if bool(user.banned):
+            category_logger.warning(
+                f"Banned user {user.id} attempted password reset",
+                LogCategory.AUTH,
+            )
             return
 
         # Generate reset token
         reset_token = AuthManager.encode_reset_token(user)
+        category_logger.info(
+            f"Password reset requested for user {user.id}", LogCategory.AUTH
+        )
 
         # Send password reset email
         email_manager = EmailManager()
@@ -321,11 +395,22 @@ class AuthManager:
             )
             await session.commit()
 
+            category_logger.info(
+                f"Password successfully reset for user {user_data.id}",
+                LogCategory.AUTH,
+            )
+
         except jwt.ExpiredSignatureError as exc:
+            category_logger.warning(
+                "Expired password reset token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            category_logger.warning(
+                "Invalid password reset token used", LogCategory.AUTH
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             ) from exc
@@ -407,12 +492,22 @@ async def get_jwt_user(
 
         # Check user validity - user must exist, be verified, and not banned
         if not user_data:
+            category_logger.warning(
+                "Authentication attempted with invalid user token",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=ResponseMessages.INVALID_TOKEN,
             )
 
         if bool(user_data.banned) or not bool(user_data.verified):
+            user_status = "banned" if user_data.banned else "unverified"
+            category_logger.warning(
+                f"Authentication attempted by {user_status} user "
+                f"{user_data.id}",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=ResponseMessages.INVALID_TOKEN,
@@ -422,11 +517,17 @@ async def get_jwt_user(
         request.state.user = user_data
 
     except jwt.ExpiredSignatureError as exc:
+        category_logger.warning(
+            "Authentication attempted with expired token", LogCategory.AUTH
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ResponseMessages.EXPIRED_TOKEN,
         ) from exc
     except jwt.InvalidTokenError as exc:
+        category_logger.warning(
+            "Authentication attempted with invalid token", LogCategory.AUTH
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=ResponseMessages.INVALID_TOKEN,

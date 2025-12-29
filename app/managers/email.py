@@ -11,6 +11,7 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import SecretStr
 
 from app.config.settings import get_settings
+from app.logs import LogCategory, category_logger
 
 if TYPE_CHECKING:  # pragma: no cover
     from app.schemas.email import EmailSchema, EmailTemplateSchema
@@ -48,11 +49,24 @@ class EmailManager:
             subtype=MessageType.html,
         )
 
-        fm = FastMail(self.conf)
-        await fm.send_message(message)
-        return JSONResponse(
-            status_code=200, content={"message": "email has been sent"}
-        )
+        try:
+            fm = FastMail(self.conf)
+            await fm.send_message(message)
+
+            recipients_list = email_data.recipients
+            category_logger.info(
+                f"Email sent: '{email_data.subject}' to {recipients_list}",
+                LogCategory.EMAIL,
+            )
+
+            return JSONResponse(
+                status_code=200, content={"message": "email has been sent"}
+            )
+        except Exception as exc:
+            category_logger.error(
+                f"Failed to send email: {exc}", LogCategory.ERRORS
+            )
+            raise
 
     def background_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailSchema
@@ -68,6 +82,13 @@ class EmailManager:
         fm = FastMail(self.conf)
         backgroundtasks.add_task(fm.send_message, message)
 
+        recipients_list = email_data.recipients
+        category_logger.info(
+            f"Email queued for background send: '{email_data.subject}' "
+            f"to {recipients_list}",
+            LogCategory.EMAIL,
+        )
+
     def template_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailTemplateSchema
     ) -> None:
@@ -81,4 +102,11 @@ class EmailManager:
         fm = FastMail(self.conf)
         backgroundtasks.add_task(
             fm.send_message, message, template_name=email_data.template_name
+        )
+
+        recipients = ", ".join(r.email for r in email_data.recipients)
+        category_logger.info(
+            f"Template email queued: '{email_data.subject}' "
+            f"({email_data.template_name}) to {recipients}",
+            LogCategory.EMAIL,
         )

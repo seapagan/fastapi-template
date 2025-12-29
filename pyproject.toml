@@ -30,6 +30,7 @@ dependencies = [
   "bcrypt>=4.0.1",
   "sqladmin[full]>=0.20.1",
   "fastapi-pagination>=0.12.34",
+  "loguru>=0.7.2",
 ]
 
 [project.scripts]
@@ -187,6 +188,7 @@ convention = "google"
   "FIX002",
   "RUF012",
   "SLF001", # sometimes tests need to access private members
+  "PLE1205", # false positive: CategoryLogger has different signature than logging.Logger
 ]
 "app/managers/auth.py" = ["ERA001"]
 "app/resources/auth.py" = ["ERA001"]
@@ -245,6 +247,7 @@ mock_use_standalone_module = true
 env = [
   "I_READ_THE_DAMN_DOCS=true",
   "ADMIN_PAGES_ENABLED=true",
+  "LOG_FILENAME=test_api.log",
 ]
 
 asyncio_default_fixture_loop_scope = "function"
