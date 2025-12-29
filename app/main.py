@@ -1,5 +1,6 @@
 """Main file for the FastAPI Template."""
 
+import logging
 import sys
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -15,10 +16,12 @@ from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
-from app.logs import logger
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
+
+# Use standard logging for startup messages (before loguru is initialized)
+logger = logging.getLogger("uvicorn")
 
 BLIND_USER_ERROR = 66
 
@@ -50,8 +53,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
             await session.connection()
 
         logger.info("Database configuration Tested.")
-    except SQLAlchemyError as exc:
-        logger.error(f"Have you set up your .env file?? ({exc})")
+    except SQLAlchemyError:
+        logger.exception("Have you set up your .env file??")
         logger.warning("Clearing routes and enabling error message.")
         app.routes.clear()
         app.include_router(config_error.router)

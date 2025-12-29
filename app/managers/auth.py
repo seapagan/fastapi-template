@@ -59,17 +59,19 @@ class AuthManager:
             token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-            if log_config.is_enabled(LogCategory.AUTH):
-                logger.info(f"Access token created for user {user.id}")
-            return token
         except (jwt.PyJWTError, AttributeError) as exc:
             if log_config.is_enabled(LogCategory.ERRORS):
+                user_id = getattr(user, "id", "unknown")
                 logger.error(
-                    f"Failed to generate JWT for user {user.id}: {exc}"
+                    f"Failed to generate JWT for user {user_id}: {exc}"
                 )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.CANT_GENERATE_JWT
             ) from exc
+        else:
+            if log_config.is_enabled(LogCategory.AUTH):
+                logger.info(f"Access token created for user {user.id}")
+            return token
 
     @staticmethod
     def encode_refresh_token(user: User) -> str:
@@ -84,19 +86,21 @@ class AuthManager:
             token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-            if log_config.is_enabled(LogCategory.AUTH):
-                logger.info(f"Refresh token created for user {user.id}")
-            return token
         except (jwt.PyJWTError, AttributeError) as exc:
             if log_config.is_enabled(LogCategory.ERRORS):
+                user_id = getattr(user, "id", "unknown")
                 logger.error(
                     f"Failed to generate refresh token for user "
-                    f"{user.id}: {exc}"
+                    f"{user_id}: {exc}"
                 )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_REFRESH,
             ) from exc
+        else:
+            if log_config.is_enabled(LogCategory.AUTH):
+                logger.info(f"Refresh token created for user {user.id}")
+            return token
 
     @staticmethod
     def encode_verify_token(user: User) -> str:
@@ -111,19 +115,21 @@ class AuthManager:
             token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-            if log_config.is_enabled(LogCategory.AUTH):
-                logger.info(f"Verification token created for user {user.id}")
-            return token
         except (jwt.PyJWTError, AttributeError) as exc:
             if log_config.is_enabled(LogCategory.ERRORS):
+                user_id = getattr(user, "id", "unknown")
                 logger.error(
                     f"Failed to generate verification token for user "
-                    f"{user.id}: {exc}"
+                    f"{user_id}: {exc}"
                 )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_VERIFY,
             ) from exc
+        else:
+            if log_config.is_enabled(LogCategory.AUTH):
+                logger.info(f"Verification token created for user {user.id}")
+            return token
 
     @staticmethod
     def encode_reset_token(user: User) -> str:
@@ -138,18 +144,20 @@ class AuthManager:
             token = jwt.encode(
                 payload, get_settings().secret_key, algorithm="HS256"
             )
-            if log_config.is_enabled(LogCategory.AUTH):
-                logger.info(f"Password reset token created for user {user.id}")
-            return token
         except (jwt.PyJWTError, AttributeError) as exc:
             if log_config.is_enabled(LogCategory.ERRORS):
+                user_id = getattr(user, "id", "unknown")
                 logger.error(
-                    f"Failed to generate reset token for user {user.id}: {exc}"
+                    f"Failed to generate reset token for user {user_id}: {exc}"
                 )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED,
                 ResponseMessages.CANT_GENERATE_RESET,
             ) from exc
+        else:
+            if log_config.is_enabled(LogCategory.AUTH):
+                logger.info(f"Password reset token created for user {user.id}")
+            return token
 
     @staticmethod
     async def refresh(

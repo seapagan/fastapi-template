@@ -1,5 +1,6 @@
 """Helper classes and functions for config use."""
 
+import logging
 import sys
 from dataclasses import dataclass
 from importlib import resources
@@ -7,7 +8,7 @@ from pathlib import Path
 
 import rtoml
 
-from app.logs import logger
+logger = logging.getLogger("uvicorn")
 
 
 def get_project_root() -> Path:
@@ -32,11 +33,13 @@ def get_api_version() -> str:
         version: str = config["project"]["version"]
 
     except KeyError:
-        logger.error("Cannot find the API version in the pyproject.toml file")
+        logger.error(  # noqa: TRY400
+            "Cannot find the API version in the pyproject.toml file"
+        )
         sys.exit(2)
 
-    except OSError as exc:
-        logger.error(f"Cannot read the pyproject.toml file : {exc}")
+    except OSError:
+        logger.exception("Cannot read the pyproject.toml file")
         sys.exit(2)
 
     else:
@@ -55,13 +58,13 @@ def get_api_details() -> tuple[str, str, list[dict[str, str]]]:
             authors = [authors]
 
     except KeyError:
-        logger.error(
+        logger.error(  # noqa: TRY400
             "Missing name/description or authors in the pyproject.toml file"
         )
         sys.exit(2)
 
-    except OSError as exc:
-        logger.error(f"Cannot read the pyproject.toml file : {exc}")
+    except OSError:
+        logger.exception("Cannot read the pyproject.toml file")
         sys.exit(2)
     else:
         return (name, desc, authors)

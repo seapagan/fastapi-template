@@ -31,7 +31,8 @@ class LogConfig:
 
     def __init__(self) -> None:
         """Initialize logging configuration from settings."""
-        from app.config.settings import get_settings
+        # Import here to avoid circular dependency
+        from app.config.settings import get_settings  # noqa: PLC0415
 
         settings = get_settings()
 
