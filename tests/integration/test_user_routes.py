@@ -539,6 +539,39 @@ class TestUserRoutes:
         )
         assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
 
+    async def test_admin_can_delete_another_admin_with_multiple_admins(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that one admin can delete another admin when multiple exist."""
+        test_db.add(User(**self.get_test_user(admin=True)))
+        test_db.add(User(**self.get_test_user(admin=True)))
+        admin1_token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+
+        await test_db.commit()
+
+        # Admin 1 deletes Admin 2 (cross-admin deletion)
+        response = await client.delete(
+            "/users/2",
+            headers={"Authorization": f"Bearer {admin1_token}"},
+        )
+
+        # Verify deletion succeeded
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        # Verify admin 2 no longer exists
+        check_deleted = await client.get(
+            "/users/?user_id=2",
+            headers={"Authorization": f"Bearer {admin1_token}"},
+        )
+        assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
+
+        # Verify admin 1 still exists (use own token since admin2 is gone)
+        check_remaining = await client.get(
+            "/users/?user_id=1",
+            headers={"Authorization": f"Bearer {admin1_token}"},
+        )
+        assert check_remaining.status_code == status.HTTP_200_OK
+
     # ------------------------------------------------------------------------ #
     #                           test search route                              #
     # ------------------------------------------------------------------------ #

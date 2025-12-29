@@ -270,6 +270,34 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         assert admin is not None
         assert admin.role == RoleType.admin
 
+    async def test_admin_can_delete_another_admin_with_multiple_admins(
+        self, test_db
+    ) -> None:
+        """Test that one admin can delete another admin when multiple exist."""
+        # Register two admin users
+        admin_user1 = self.test_user.copy()
+        admin_user2 = self.test_user.copy()
+        admin_user2["email"] = "admin2@test.com"
+
+        await UserManager.register(admin_user1, test_db)
+        await UserManager.register(admin_user2, test_db)
+
+        # Make both admins
+        await UserManager.change_role(RoleType.admin, 1, test_db)
+        await UserManager.change_role(RoleType.admin, 2, test_db)
+
+        # Admin 1 deletes Admin 2 (cross-admin deletion)
+        await UserManager.delete_user(2, 1, test_db)
+
+        # Verify admin 2 deleted
+        user2 = await test_db.get(User, 2)
+        assert user2 is None
+
+        # Verify admin 1 still exists
+        admin1 = await test_db.get(User, 1)
+        assert admin1 is not None
+        assert admin1.role == RoleType.admin
+
     # -------------------------- test update method -------------------------- #
     async def test_update_user(self, test_db) -> None:
         """Test updating a user."""
