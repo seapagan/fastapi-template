@@ -43,10 +43,11 @@
 <span class=c1># not set, defaults to False.</span>
 <span class=na>NO_ROOT_ROUTE</span><span class=o>=</span><span class=s>False</span>
 
-<span class=c1># Database Settings These must be changed to match your setup, and the database</span>
-<span class=c1># must already exist.</span>
-<span class=na>DB_USER</span><span class=o>=</span><span class=s>dbuser</span>
-<span class=na>DB_PASSWORD</span><span class=o>=</span><span class=s>my_secret_passw0rd</span>
+<span class=c1># Database Settings - REQUIRED</span>
+<span class=c1># These must be changed to match your PostgreSQL setup.</span>
+<span class=c1># The database must already exist before running the application.</span>
+<span class=na>DB_USER</span><span class=o>=</span><span class=s>your_database_username</span>
+<span class=na>DB_PASSWORD</span><span class=o>=</span><span class=s>your_secure_database_password</span>
 <span class=na>DB_ADDRESS</span><span class=o>=</span><span class=s>localhost</span>
 <span class=na>DB_PORT</span><span class=o>=</span><span class=s>5432</span>
 <span class=na>DB_NAME</span><span class=o>=</span><span class=s>my_database_name</span>
@@ -57,9 +58,12 @@
 <span class=c1># already exist.</span>
 <span class=na>TEST_DB_NAME</span><span class=o>=</span><span class=s>my_database_name_tests</span>
 
-<span class=c1># generate your own super secret key here, used by the JWT functions.</span>
-<span class=c1># 32 characters or longer, definately change the below!!</span>
-<span class=na>SECRET_KEY</span><span class=o>=</span><span class=s>change_me_to_something_secret</span>
+<span class=c1># JWT Secret Key - CRITICAL SECURITY SETTING</span>
+<span class=c1># Generate with one of these commands:</span>
+<span class=c1>#   openssl rand -hex 32</span>
+<span class=c1>#   python -c &#39;import secrets; print(secrets.token_hex(32))&#39;</span>
+<span class=c1># Must be 32+ characters. DO NOT use the example below!</span>
+<span class=na>SECRET_KEY</span><span class=o>=</span><span class=s>CHANGE_ME_generate_with_command_above</span>
 
 <span class=c1># How long the access token is valid for, in minutes. Defaults to 120 (2 hours)</span>
 <span class=na>ACCESS_TOKEN_EXPIRE_MINUTES</span><span class=o>=</span><span class=s>120</span>
@@ -69,19 +73,23 @@
 <span class=c1># If you want all origins to access (the default), use * or comment out:</span>
 <span class=na>CORS_ORIGINS</span><span class=o>=</span><span class=s>*</span>
 
-<span class=c1># Email Settings specific to your email provider</span>
-<span class=na>MAIL_USERNAME</span><span class=o>=</span><span class=s>test_username</span>
-<span class=na>MAIL_PASSWORD</span><span class=o>=</span><span class=s>s3cr3tma1lp@ssw0rd</span>
-<span class=na>MAIL_FROM</span><span class=o>=</span><span class=s>test@email.com</span>
+<span class=c1># Email Settings - OPTIONAL for development, REQUIRED for production</span>
+<span class=c1># Set these for password reset and notification emails to work</span>
+<span class=c1># Leave empty for local development (email features will be disabled)</span>
+<span class=na>MAIL_USERNAME</span><span class=o>=</span><span class=s>your_smtp_username</span>
+<span class=na>MAIL_PASSWORD</span><span class=o>=</span><span class=s>your_smtp_password</span>
+<span class=na>MAIL_FROM</span><span class=o>=</span><span class=s>noreply@yourdomain.com</span>
 <span class=na>MAIL_PORT</span><span class=o>=</span><span class=s>587</span>
-<span class=na>MAIL_SERVER</span><span class=o>=</span><span class=s>mail.server.com</span>
+<span class=na>MAIL_SERVER</span><span class=o>=</span><span class=s>smtp.yourmailprovider.com</span>
 <span class=na>MAIL_FROM_NAME</span><span class=o>=</span><span class=s>&quot;FastAPI Template&quot;</span>
 
 <span class=c1># Admin Pages Settings</span>
 <span class=na>ADMIN_PAGES_ENABLED</span><span class=o>=</span><span class=s>True</span>
 <span class=na>ADMIN_PAGES_ROUTE</span><span class=o>=</span><span class=s>/admin</span>
 <span class=na>ADMIN_PAGES_TITLE</span><span class=o>=</span><span class=s>&quot;API Administration&quot;</span>
-<span class=na>ADMIN_PAGES_ENCRYPTION_KEY</span><span class=o>=</span><span class=s>change_me_to_a_secret_fernet_key (optional)</span>
+<span class=c1># Optional: Generate with: python -c &#39;from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())&#39;</span>
+<span class=c1># Leave empty to auto-generate on startup (regenerates each restart)</span>
+<span class=na>ADMIN_PAGES_ENCRYPTION_KEY</span><span class=o>=</span>
 <span class=na>ADMIN_PAGES_TIMEOUT</span><span class=o>=</span><span class=s>86400</span>
 
 <span class=c1># Common Email Settings</span>
