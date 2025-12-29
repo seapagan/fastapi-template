@@ -218,3 +218,7 @@ docs/CNAME
 .cursorrules
 .windsurfrules
 users.seed
+
+# Application logs
+logs/
+*.log.*

@@ -11,6 +11,7 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import SecretStr
 
 from app.config.settings import get_settings
+from app.logs import LogCategory, log_config, logger
 
 if TYPE_CHECKING:  # pragma: no cover
     from app.schemas.email import EmailSchema, EmailTemplateSchema
@@ -48,11 +49,23 @@ class EmailManager:
             subtype=MessageType.html,
         )
 
-        fm = FastMail(self.conf)
-        await fm.send_message(message)
-        return JSONResponse(
-            status_code=200, content={"message": "email has been sent"}
-        )
+        try:
+            fm = FastMail(self.conf)
+            await fm.send_message(message)
+
+            if log_config.is_enabled(LogCategory.EMAIL):
+                recipients_list = email_data.recipients
+                logger.info(
+                    f"Email sent: '{email_data.subject}' to {recipients_list}"
+                )
+
+            return JSONResponse(
+                status_code=200, content={"message": "email has been sent"}
+            )
+        except Exception as exc:
+            if log_config.is_enabled(LogCategory.ERRORS):
+                logger.error(f"Failed to send email: {exc}")
+            raise
 
     def background_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailSchema
@@ -68,6 +81,13 @@ class EmailManager:
         fm = FastMail(self.conf)
         backgroundtasks.add_task(fm.send_message, message)
 
+        if log_config.is_enabled(LogCategory.EMAIL):
+            recipients_list = email_data.recipients
+            logger.info(
+                f"Email queued for background send: '{email_data.subject}' "
+                f"to {recipients_list}"
+            )
+
     def template_send(
         self, backgroundtasks: BackgroundTasks, email_data: EmailTemplateSchema
     ) -> None:
@@ -82,3 +102,10 @@ class EmailManager:
         backgroundtasks.add_task(
             fm.send_message, message, template_name=email_data.template_name
         )
+
+        if log_config.is_enabled(LogCategory.EMAIL):
+            recipients = ", ".join(r.email for r in email_data.recipients)
+            logger.info(
+                f"Template email queued: '{email_data.subject}' "
+                f"({email_data.template_name}) to {recipients}"
+            )

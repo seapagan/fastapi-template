@@ -1,5 +1,7 @@
-"""Get the 'uvicorn' logger so we can use it in our own logger."""
+"""Application logging using loguru with category-based control."""
 
-import logging
+from loguru import logger
 
-logger = logging.getLogger("uvicorn")
+from app.config.log_config import LogCategory, log_config
+
+__all__ = ["LogCategory", "log_config", "logger"]

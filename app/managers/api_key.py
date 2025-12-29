@@ -17,6 +17,7 @@ from app.database.helpers import (
     get_user_api_keys_,
     get_user_by_id_,
 )
+from app.logs import LogCategory, log_config, logger
 from app.models.api_key import ApiKey
 from app.models.user import User
 
@@ -81,9 +82,17 @@ class ApiKeyManager:
         # Add the new API key
         api_key = await add_new_api_key_(api_key_data, session)
         if not api_key:
+            if log_config.is_enabled(LogCategory.ERRORS):
+                logger.error(f"Failed to create API key for user {user.id}")
             raise HTTPException(
                 status.HTTP_500_INTERNAL_SERVER_ERROR,
                 "Failed to create API key",
+            )
+
+        if log_config.is_enabled(LogCategory.API_KEYS):
+            logger.info(
+                f"API key created: '{name}' for user {user.id} "
+                f"(key ID: {api_key.id})"
             )
 
         # Return both the API key and raw key
@@ -108,6 +117,11 @@ class ApiKeyManager:
         """Delete an API key."""
         key = await get_api_key_by_id_(key_id, session)
         if key:
+            if log_config.is_enabled(LogCategory.API_KEYS):
+                logger.info(
+                    f"API key deleted: '{key.name}' (ID: {key.id}) for user "
+                    f"{key.user_id}"
+                )
             await session.delete(key)
             await session.flush()
 
@@ -147,6 +161,8 @@ class ApiKeyAuth:
         key = await ApiKeyManager.validate_key(api_key, db)
         if not key:
             # Invalid key format or not found
+            if log_config.is_enabled(LogCategory.API_KEYS):
+                logger.warning("Invalid API key used")
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -156,6 +172,10 @@ class ApiKeyAuth:
 
         if not key.is_active:
             # Key exists but is inactive
+            if log_config.is_enabled(LogCategory.API_KEYS):
+                logger.warning(
+                    f"Inactive API key used: '{key.name}' (ID: {key.id})"
+                )
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -186,6 +206,12 @@ class ApiKeyAuth:
         # Store both user and API key in request state
         request.state.user = user
         request.state.api_key = key
+
+        if log_config.is_enabled(LogCategory.API_KEYS):
+            logger.info(
+                f"API key authenticated: '{key.name}' (ID: {key.id}) for "
+                f"user {user.id}"
+            )
 
         return user
 

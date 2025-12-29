@@ -30,6 +30,7 @@ dependencies = [
   "bcrypt>=4.0.1",
   "sqladmin[full]>=0.20.1",
   "fastapi-pagination>=0.12.34",
+  "loguru>=0.7.2",
 ]
 
 [project.scripts]
