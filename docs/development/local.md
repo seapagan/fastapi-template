@@ -48,18 +48,23 @@ will automatically reload when it detects any changes as you develop.
 This API has **Unit** and **Integration** tests using
 '[Pytest](https://docs.pytest.org){:target="_blank"}'
 
-!!! danger "Database Setup"
+!!! danger "Database and Environment Setup"
 
-    The tests will run using Posgresql against the database specified in the
-    `TEST_DATABASE_URL` environment variable. This should be a test database,
-    and will be cleared before each test run. **Do not use a production database
-    for testing.**
+    **Before running tests, you MUST have a valid `.env` file** with the following required settings:
 
-    You will also need to set up your environment file with the correct
-    `DB_USER`, `DB_PASSWORD`, `DB_ADDRESS`, `DB_PORT` and `DB_NAME` values.
+    - `SECRET_KEY` - Must be at least 32 characters long
+    - `DB_USER` - Your PostgreSQL database username
+    - `DB_PASSWORD` - Your PostgreSQL database password
+    - `DB_ADDRESS` - Database host (usually `localhost`)
+    - `DB_PORT` - Database port (usually `5432`)
+    - `DB_NAME` - Your production database name
+    - `TEST_DB_NAME` - Your test database name (defaults to `api-template-test`, **recommended to set explicitly**)
 
-    Tests run on GitHub Actions will ignore these settings and use their own
-    hosted Postregsql test database.
+    Tests will use the same database credentials (DB_USER/DB_PASSWORD) but connect to the TEST_DB_NAME database instead. **Do not use a production database for testing** as the test database will be cleared before each test run.
+
+    Copy `.env.example` to `.env` and update with your local values. See the [Configuration](/usage/configuration/setup/) section for full setup instructions.
+
+    Tests run on GitHub Actions use environment variables set in the CI workflow and a hosted PostgreSQL test database.
 
 To run these from within the virtual environment use the `pytest` command:
 
