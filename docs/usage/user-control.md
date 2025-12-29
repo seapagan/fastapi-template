@@ -134,10 +134,14 @@ probably better to BAN a user unless you are very sure.
 
 !!! warning "Admin Protection"
 
-    The system prevents the last admin user from being deleted to avoid
-    locking yourself out of the system. If you try to delete the only
-    remaining admin (whether via CLI or API), the deletion will be blocked.
+    The system includes safeguards to prevent you from locking yourself out
+    of the API by removing all admin users.
 
+    When using the API directly, the system prevents the last remaining admin
+    user from deleting **themselves**.
+
+    When using the CLI (`api-admin user delete`), the CLI prevents deletion
+    of the last remaining admin user altogether to avoid system lockout.
     To delete an admin user, you must first ensure there is at least one
     other admin user in the system.
 
