@@ -454,6 +454,91 @@ class TestUserRoutes:
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json()["detail"] == ErrorMessages.USER_INVALID
 
+    async def test_admin_cant_delete_themselves_if_only_admin(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that the only admin cannot delete themselves."""
+        test_db.add(User(**self.get_test_user(admin=True)))
+        token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+
+        await test_db.commit()
+
+        response = await client.delete(
+            "/users/1",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        # Verify deletion was blocked
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.json()["detail"] == ErrorMessages.CANT_DELETE_LAST_ADMIN
+
+        # Verify user still exists
+        check_user = await client.get(
+            "/users/?user_id=1",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert check_user.status_code == status.HTTP_200_OK
+
+    async def test_admin_can_delete_themselves_if_multiple_admins(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test admin can delete themselves when multiple admins exist."""
+        test_db.add(User(**self.get_test_user(admin=True)))
+        test_db.add(User(**self.get_test_user(admin=True)))
+        token1 = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+        token2 = AuthManager.encode_token(User(id=2, role=RoleType.admin))
+
+        await test_db.commit()
+
+        # Admin 1 deletes themselves
+        response = await client.delete(
+            "/users/1",
+            headers={"Authorization": f"Bearer {token1}"},
+        )
+
+        # Verify deletion succeeded
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        # Verify admin 1 no longer exists
+        check_deleted = await client.get(
+            "/users/?user_id=1",
+            headers={"Authorization": f"Bearer {token2}"},
+        )
+        assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
+
+        # Verify admin 2 still exists
+        check_remaining = await client.get(
+            "/users/?user_id=2",
+            headers={"Authorization": f"Bearer {token2}"},
+        )
+        assert check_remaining.status_code == status.HTTP_200_OK
+
+    async def test_admin_can_delete_other_user_as_only_admin(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test that the only admin can delete regular users."""
+        test_db.add(User(**self.get_test_user(admin=True)))
+        test_db.add(User(**self.get_test_user(admin=False)))
+        admin_token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+
+        await test_db.commit()
+
+        # Admin deletes regular user
+        response = await client.delete(
+            "/users/2",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+
+        # Verify deletion succeeded (not restricted by admin count)
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+
+        # Verify user no longer exists
+        check_deleted = await client.get(
+            "/users/?user_id=2",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
+
     # ------------------------------------------------------------------------ #
     #                           test search route                              #
     # ------------------------------------------------------------------------ #

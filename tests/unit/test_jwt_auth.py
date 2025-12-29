@@ -138,7 +138,7 @@ class TestJWTAuth:
         token, _ = await UserManager.register(self.test_user, test_db)
 
         # Delete the user
-        await UserManager.delete_user(1, test_db)
+        await UserManager.delete_user(1, 1, test_db)
         await test_db.flush()
 
         # Try to authenticate with the token

@@ -106,7 +106,7 @@ class TestApiKeyAuth:
 
         # Delete the API key first, then the user
         await ApiKeyManager.delete_key(api_key.id, test_db)
-        await UserManager.delete_user(user.id, test_db)
+        await UserManager.delete_user(user.id, user.id, test_db)
         await test_db.flush()
 
         # Try to authenticate with the API key

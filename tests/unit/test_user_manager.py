@@ -188,7 +188,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_delete_user(self, test_db) -> None:
         """Test deleting a user."""
         await UserManager.register(self.test_user, test_db)
-        await UserManager.delete_user(1, test_db)
+        # Use different user ID (2) to avoid self-deletion logic
+        await UserManager.delete_user(1, 2, test_db)
 
         user = await test_db.get(User, 1)
         assert user is None
@@ -196,7 +197,78 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     async def test_delete_user_not_found(self, test_db) -> None:
         """Test deleting a user that doesn't exist."""
         with pytest.raises(HTTPException, match=ErrorMessages.USER_INVALID):
-            await UserManager.delete_user(1, test_db)
+            await UserManager.delete_user(1, 2, test_db)
+
+    async def test_cant_delete_last_admin_user(self, test_db) -> None:
+        """Test that the last admin cannot delete themselves."""
+        # Register an admin user
+        admin_user = self.test_user.copy()
+        await UserManager.register(admin_user, test_db)
+        # Make them an admin
+        await UserManager.change_role(RoleType.admin, 1, test_db)
+
+        # Try to delete themselves as the only admin
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.delete_user(1, 1, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.CANT_DELETE_LAST_ADMIN
+
+        # Verify user still exists
+        user = await test_db.get(User, 1)
+        assert user is not None
+        assert user.role == RoleType.admin
+
+    async def test_can_delete_admin_with_multiple_admins(self, test_db) -> None:
+        """Test that an admin can be deleted when multiple admins exist."""
+        # Register two admin users
+        admin_user1 = self.test_user.copy()
+        admin_user2 = self.test_user.copy()
+        admin_user2["email"] = "admin2@test.com"
+
+        await UserManager.register(admin_user1, test_db)
+        await UserManager.register(admin_user2, test_db)
+
+        # Make both admins
+        await UserManager.change_role(RoleType.admin, 1, test_db)
+        await UserManager.change_role(RoleType.admin, 2, test_db)
+
+        # Delete first admin (self-deletion)
+        await UserManager.delete_user(1, 1, test_db)
+
+        # Verify first admin deleted
+        user1 = await test_db.get(User, 1)
+        assert user1 is None
+
+        # Verify second admin still exists
+        user2 = await test_db.get(User, 2)
+        assert user2 is not None
+        assert user2.role == RoleType.admin
+
+    async def test_can_delete_regular_user_as_only_admin(self, test_db) -> None:
+        """Test that the only admin can delete regular users."""
+        # Register an admin and a regular user
+        admin_user = self.test_user.copy()
+        regular_user = self.test_user.copy()
+        regular_user["email"] = "regular@test.com"
+
+        await UserManager.register(admin_user, test_db)
+        await UserManager.register(regular_user, test_db)
+
+        # Make first user admin
+        await UserManager.change_role(RoleType.admin, 1, test_db)
+
+        # Admin deletes regular user (should succeed regardless of admin count)
+        await UserManager.delete_user(2, 1, test_db)
+
+        # Verify regular user deleted
+        user2 = await test_db.get(User, 2)
+        assert user2 is None
+
+        # Verify admin still exists
+        admin = await test_db.get(User, 1)
+        assert admin is not None
+        assert admin.role == RoleType.admin
 
     # -------------------------- test update method -------------------------- #
     async def test_update_user(self, test_db) -> None:
