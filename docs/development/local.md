@@ -62,7 +62,7 @@ This API has **Unit** and **Integration** tests using
 
     Tests will use the same database credentials (DB_USER/DB_PASSWORD) but connect to the TEST_DB_NAME database instead. **Do not use a production database for testing** as the test database will be cleared before each test run.
 
-    Copy `.env.example` to `.env` and update with your local values. See the [Configuration](/usage/configuration/setup/) section for full setup instructions.
+    Copy `.env.example` to `.env` and update with your local values. See the [Configuration](../usage/configuration/setup.md) section for full setup instructions.
 
     Tests run on GitHub Actions use environment variables set in the CI workflow and a hosted PostgreSQL test database.
 
