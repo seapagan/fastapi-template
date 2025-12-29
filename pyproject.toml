@@ -242,7 +242,10 @@ markers = [
 ]
 testpaths = ["tests"]
 mock_use_standalone_module = true
-env = ["I_READ_THE_DAMN_DOCS=true", "ADMIN_PAGES_ENABLED=true"]
+env = [
+  "I_READ_THE_DAMN_DOCS=true",
+  "ADMIN_PAGES_ENABLED=true",
+]
 
 asyncio_default_fixture_loop_scope = "function"
 

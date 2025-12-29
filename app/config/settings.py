@@ -22,14 +22,24 @@ except ModuleNotFoundError:  # pragma: no cover
     logger.error("Please run 'api-admin custom init' to regenerate defaults.")
     sys.exit(1)
 
+# Security validation constants
+MIN_SECRET_KEY_LENGTH = 32
+
 
 class Settings(BaseSettings):
     """Main Settings class.
 
     This allows to set some defaults, that can be overwritten from the .env
     file if it exists.
-    Do NOT put passwords and similar in here, use the .env file instead, it will
-    not be stored in the Git repository.
+
+    SECURITY WARNING: Critical settings (SECRET_KEY, DB_PASSWORD, DB_USER)
+    MUST be set in your .env file. The application will fail to start if
+    these are not properly configured with secure values.
+
+    Do NOT put real passwords in this file - use the .env file instead
+    (it's in .gitignore and won't be stored in Git).
+
+    To get started, copy .env.example to .env and update the values.
     """
 
     project_root: Path = get_project_root()
@@ -45,8 +55,9 @@ class Settings(BaseSettings):
     cors_origins: str = "*"
 
     # Setup the Postgresql database.
-    db_user: str = "my_db_username"
-    db_password: str = "Sup3rS3cr3tP455w0rd"  # noqa: S105
+    # IMPORTANT: Set DB_USER and DB_PASSWORD in your .env file!
+    db_user: str = "CHANGE_ME_IN_ENV_FILE"
+    db_password: str = "CHANGE_ME_IN_ENV_FILE"  # noqa: S105
     db_address: str = "localhost"
     db_port: str = "5432"
     db_name: str = "api-template"
@@ -54,14 +65,18 @@ class Settings(BaseSettings):
     test_with_postgres: bool = False
 
     # Setup the TEST Postgresql database.
-    test_db_user: str = "my_db_username"
-    test_db_password: str = "Sup3rS3cr3tP455w0rd"  # noqa: S105
+    # Note: Safe defaults for local/CI testing only
+    test_db_user: str = "test_user"
+    test_db_password: str = "test_password_local_only"  # noqa: S105
     test_db_address: str = "localhost"
     test_db_port: str = "5432"
     test_db_name: str = "api-template-test"
 
-    # JTW secret Key
-    secret_key: str = "32DigitsofSecretNumbers"  # noqa: S105
+    # JWT secret Key - CRITICAL SECURITY SETTING
+    # Generate with: openssl rand -hex 32
+    # Or Python: import secrets; secrets.token_hex(32)
+    # Set SECRET_KEY in your .env file!
+    secret_key: str = "CHANGE_ME_IN_ENV_FILE"  # noqa: S105
     access_token_expire_minutes: int = 120
 
     # Custom Metadata
@@ -73,9 +88,11 @@ class Settings(BaseSettings):
     year: str = custom_metadata.year
 
     # email settings
-    mail_username: str = "test_username"
-    mail_password: str = "s3cr3tma1lp@ssw0rd"  # noqa: S105
-    mail_from: str = "test@email.com"
+    # Note: Set these in .env for production email functionality
+    # Email features will fail gracefully if not configured
+    mail_username: str = ""
+    mail_password: str = ""
+    mail_from: str = ""
     mail_port: int = 587
     mail_server: str = "mail.server.com"
     mail_from_name: str = "FASTAPI Template"
@@ -104,6 +121,80 @@ class Settings(BaseSettings):
         """Ensure the api_root does not end with a slash."""
         if value and value.endswith("/"):
             return value[:-1]
+        return value
+
+    @field_validator("secret_key")
+    @classmethod
+    def validate_secret_key(cls: type[Settings], value: str) -> str:
+        """Ensure secret key is not a weak or default value."""
+        weak_keys = [
+            "CHANGE_ME_IN_ENV_FILE",
+            "32DigitsofSecretNumbers",
+            "CHANGE_ME",
+            "secret",
+            "secretkey",
+        ]
+        if value.lower() in [k.lower() for k in weak_keys]:
+            msg = (
+                "\n"
+                "=" * 70 + "\n"
+                "SECURITY ERROR: SECRET_KEY is using a weak/default value!\n"
+                "=" * 70 + "\n"
+                "Generate a strong key with one of these commands:\n"
+                "  openssl rand -hex 32\n"
+                "  python -c 'import secrets; print(secrets.token_hex(32))'\n\n"
+                "Then add it to your .env file:\n"
+                "  SECRET_KEY=your_generated_key_here\n"
+                "=" * 70
+            )
+            raise ValueError(msg)
+        if len(value) < MIN_SECRET_KEY_LENGTH:
+            msg = (
+                f"SECRET_KEY must be at least {MIN_SECRET_KEY_LENGTH} "
+                f"characters for security. Current length: {len(value)}"
+            )
+            raise ValueError(msg)
+        return value
+
+    @field_validator("db_password")
+    @classmethod
+    def validate_db_password(cls: type[Settings], value: str) -> str:
+        """Ensure database password is not a weak or default value."""
+        weak_passwords = [
+            "CHANGE_ME_IN_ENV_FILE",
+            "Sup3rS3cr3tP455w0rd",
+            "CHANGE_ME",
+            "password",
+            "admin",
+        ]
+        if value in weak_passwords:
+            msg = (
+                "\n"
+                "=" * 70 + "\n"
+                "SECURITY ERROR: DB_PASSWORD is using a weak/default value!\n"
+                "=" * 70 + "\n"
+                "Set a strong database password in your .env file:\n"
+                "  DB_PASSWORD=your_secure_password_here\n"
+                "=" * 70
+            )
+            raise ValueError(msg)
+        return value
+
+    @field_validator("db_user")
+    @classmethod
+    def validate_db_user(cls: type[Settings], value: str) -> str:
+        """Ensure database user is not a default value."""
+        if value == "CHANGE_ME_IN_ENV_FILE":
+            msg = (
+                "\n"
+                "=" * 70 + "\n"
+                "CONFIGURATION ERROR: DB_USER is not set!\n"
+                "=" * 70 + "\n"
+                "Set your database username in your .env file:\n"
+                "  DB_USER=your_database_username\n"
+                "=" * 70
+            )
+            raise ValueError(msg)
         return value
 
 

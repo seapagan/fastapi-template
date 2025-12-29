@@ -2,7 +2,7 @@
 
 [![Ruff](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/ruff.yml)&nbsp;
 [![Tests](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/tests.yml)&nbsp;
-[![codecov](https://codecov.io/gh/seapagan/fastapi-template/graph/badge.svg?token=27D8PGNX0E)](https://codecov.io/gh/seapagan/fastapi-template)&nbsp;
+[![Code Coverage](https://app.codacy.com/project/badge/Coverage/82085ec100b64e73bea63b5942371e94)](https://app.codacy.com/gh/seapagan/fastapi-template/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)&nbsp;
 [![Dependency Review](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/dependency-review.yml)&nbsp;
 [![CodeQL](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/seapagan/fastapi-template/actions/workflows/codeql.yml)
 
@@ -195,6 +195,34 @@ ensure that the code is working as expected and will prevent any regressions.
 
 GitHub Actions will run the tests on every commit and PR, **failing tests will
 block the PR from being merged**, as will any major drop in test coverage.
+
+### Prerequisites for Running Tests Locally
+
+**IMPORTANT:** Before running tests locally, you **must** have a valid `.env`
+file configured with the following required settings:
+
+- `SECRET_KEY` - Must be at least 32 characters long
+- `DB_USER` - Your PostgreSQL database username
+- `DB_PASSWORD` - Your PostgreSQL database password
+- `DB_ADDRESS` - Database host (usually `localhost`)
+- `DB_PORT` - Database port (usually `5432`)
+- `DB_NAME` - Your production database name
+- `TEST_DB_NAME` - Your test database name (defaults to `api-template-test`,
+  **recommended to set explicitly**)
+
+Tests will use the same database credentials (DB_USER/DB_PASSWORD) but connect
+to the TEST_DB_NAME database instead.
+
+See the
+[Configuration](https://fastapi-template.seapagan.net/usage/configuration/setup/)
+section in the documentation for full setup instructions, or copy `.env.example`
+to `.env` and update the values.
+
+Tests require these credentials to pass validation checks and connect to your
+local PostgreSQL database. **Tests will fail without a properly configured
+`.env` file.**
+
+### Running Tests
 
 There is a task set up to run tests:
 

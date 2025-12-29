@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SKIP_COVERAGE_UPLOAD: false
+      SECRET_KEY: test_jwt_secret_key_for_pytest_at_least_32_characters_long_abc123
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      MAIL_FROM: test@example.com
     strategy:
       fail-fast: false
       matrix:
