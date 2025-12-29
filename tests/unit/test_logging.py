@@ -60,6 +60,7 @@ class TestLogConfig:
             log_retention="30 days",
             log_compression="zip",
             log_categories="NONE",
+            log_filename="api.log",
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -79,6 +80,7 @@ class TestLogConfig:
             log_retention="30 days",
             log_compression="zip",
             log_categories="AUTH,DATABASE,EMAIL",
+            log_filename="api.log",
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -99,6 +101,7 @@ class TestLogConfig:
             log_retention="30 days",
             log_compression="zip",
             log_categories="AUTH,INVALID,DATABASE",
+            log_filename="api.log",
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -118,6 +121,7 @@ class TestLogConfig:
             log_retention="30 days",
             log_compression="zip",
             log_categories="auth,Database,EMAIL",
+            log_filename="api.log",
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings
@@ -137,6 +141,7 @@ class TestLogConfig:
             log_retention="30 days",
             log_compression="zip",
             log_categories="AUTH,DATABASE",
+            log_filename="api.log",
         )
         mocker.patch(
             "app.config.settings.get_settings", return_value=mock_settings

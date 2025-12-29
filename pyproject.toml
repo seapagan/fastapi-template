@@ -247,6 +247,7 @@ mock_use_standalone_module = true
 env = [
   "I_READ_THE_DAMN_DOCS=true",
   "ADMIN_PAGES_ENABLED=true",
+  "LOG_FILENAME=test_api.log",
 ]
 
 asyncio_default_fixture_loop_scope = "function"

@@ -42,6 +42,15 @@ class LogConfig:
         self.log_rotation = getattr(settings, "log_rotation", "1 day")
         self.log_retention = getattr(settings, "log_retention", "30 days")
         self.log_compression = getattr(settings, "log_compression", "zip")
+        self.log_filename = getattr(settings, "log_filename", "api.log")
+
+        # Validate filename doesn't contain path separators
+        if "/" in self.log_filename or "\\" in self.log_filename:
+            msg = (
+                "log_filename cannot contain path separators. "
+                "Use log_path to set the directory."
+            )
+            raise ValueError(msg)
 
         # Parse enabled categories (comma-separated string or ALL)
         categories_str = getattr(settings, "log_categories", "ALL")
@@ -82,7 +91,7 @@ def setup_logging() -> LogConfig:
     )
 
     # Add file handler with rotation - more detail for file logs
-    log_file = config.log_path / "api.log"
+    log_file = config.log_path / config.log_filename
     config.log_path.mkdir(parents=True, exist_ok=True)
 
     logger.add(

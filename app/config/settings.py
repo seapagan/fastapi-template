@@ -120,6 +120,7 @@ class Settings(BaseSettings):
     log_categories: str = (
         "ALL"  # ALL, NONE, or comma-separated: REQUESTS,AUTH,DATABASE
     )
+    log_filename: str = "api.log"
 
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
