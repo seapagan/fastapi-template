@@ -38,8 +38,14 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         # Log response (uvicorn style: client - "METHOD /path" status_code)
         duration = time.time() - start_time
+
+        # Build full path including query string if present
+        path = str(request.url.path)
+        if request.url.query:
+            path = f"{path}?{request.url.query}"
+
         logger.info(
-            f'{client_addr} - "{request.method} {request.url.path}" '
+            f'{client_addr} - "{request.method} {path}" '
             f"{response.status_code} ({duration:.3f}s)"
         )
 
