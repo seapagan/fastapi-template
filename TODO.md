@@ -25,9 +25,6 @@
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
 - Add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
-- Add pagination to the user list endpoint. Implement this in a way that is
-  generic and can be used for other custom endpoints too. The library
-  'fastapi-pagination' is really good and performant.
 - Use an alternative logger if uvicorn is not being used for some reason.
 - Allow the option of using auto-incerement integers for the User ID (as it is
   now) or UUID's which is more secure and common these days. This should be

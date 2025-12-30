@@ -367,6 +367,11 @@ class UserManager:
         return await get_all_users_(session)
 
     @staticmethod
+    def list_users_query() -> Select[tuple[User]]:
+        """Return the base users query for pagination."""
+        return select(User).order_by(User.id)
+
+    @staticmethod
     async def get_user_by_id(user_id: int, session: AsyncSession) -> User:
         """Return one user by ID."""
         user = await session.get(User, user_id)
