@@ -13,6 +13,7 @@ from app.managers.security import get_current_user
 from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
+from app.schemas.examples import ExampleUser
 from app.schemas.request.user import (
     SearchField,
     UserChangePasswordRequest,
@@ -22,11 +23,47 @@ from app.schemas.response.user import MyUserResponse, UserResponse
 
 router = APIRouter(tags=["Users"], prefix="/users")
 
+USER_EXAMPLE = {
+    "id": ExampleUser.id,
+    "first_name": ExampleUser.first_name,
+    "last_name": ExampleUser.last_name,
+    "email": ExampleUser.email,
+    "role": ExampleUser.role,
+    "banned": ExampleUser.banned,
+    "verified": ExampleUser.verified,
+}
+
+PAGINATED_USERS_EXAMPLE = {
+    "items": [USER_EXAMPLE],
+    "total": 1,
+    "page": 1,
+    "size": 50,
+    "pages": 1,
+}
+
 
 @router.get(
     "/",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
     response_model=UserResponse | Page[UserResponse],
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "examples": {
+                        "single_user": {
+                            "summary": "Single user",
+                            "value": USER_EXAMPLE,
+                        },
+                        "paginated_users": {
+                            "summary": "Paginated users",
+                            "value": PAGINATED_USERS_EXAMPLE,
+                        },
+                    }
+                }
+            }
+        }
+    },
 )
 async def get_users(
     db: Annotated[AsyncSession, Depends(get_database)],
