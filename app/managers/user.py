@@ -22,6 +22,7 @@ from app.database.helpers import (
 from app.logs import LogCategory, category_logger
 from app.managers.auth import AuthManager
 from app.managers.email import EmailManager
+from app.metrics import increment_login_attempt
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
@@ -170,16 +171,27 @@ class UserManager:
         """Log in an existing User."""
         user_do = await get_user_by_email_(user_data["email"], session)
 
+        # Check if user exists
+        if not user_do:
+            increment_login_attempt("not_found")
+            category_logger.warning(
+                f"Failed login attempt for email: {user_data['email']} "
+                "(user not found)",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+            )
+
+        # Check if password is valid
         try:
-            if (
-                not user_do
-                or not verify_password(
-                    user_data["password"], str(user_do.password)
-                )
-                or bool(user_do.banned)
+            if not verify_password(
+                user_data["password"], str(user_do.password)
             ):
+                increment_login_attempt("invalid_password")
                 category_logger.warning(
-                    f"Failed login attempt for email: {user_data['email']}",
+                    f"Failed login attempt for email: {user_data['email']} "
+                    "(invalid password)",
                     LogCategory.AUTH,
                 )
                 raise HTTPException(
@@ -191,11 +203,26 @@ class UserManager:
                 ErrorMessages.PASSWORD_INVALID,
             ) from err
 
+        # Check if user is banned
+        if bool(user_do.banned):
+            increment_login_attempt("banned")
+            category_logger.warning(
+                f"Failed login attempt for email: {user_data['email']} "
+                "(user banned)",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+            )
+
+        # Check if user is verified
         if not bool(user_do.verified):
+            increment_login_attempt("not_verified")
             raise HTTPException(
                 status.HTTP_400_BAD_REQUEST, ErrorMessages.NOT_VERIFIED
             )
 
+        increment_login_attempt("success")
         category_logger.info(
             f"User logged in: {user_do.email} (ID: {user_do.id})",
             LogCategory.AUTH,

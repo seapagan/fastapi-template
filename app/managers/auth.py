@@ -19,6 +19,7 @@ from app.database.helpers import (
 from app.logs import LogCategory, category_logger
 from app.managers.email import EmailManager
 from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
+from app.metrics import increment_auth_failure
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
@@ -201,6 +202,7 @@ class AuthManager:
 
             # block a banned user
             if bool(user_data.banned):
+                increment_auth_failure("banned_user", "refresh_token")
                 category_logger.warning(
                     f"Banned user {user_data.id} attempted token refresh",
                     LogCategory.AUTH,
@@ -214,6 +216,7 @@ class AuthManager:
             )
 
         except jwt.ExpiredSignatureError as exc:
+            increment_auth_failure("expired_token", "refresh_token")
             category_logger.warning(
                 "Expired refresh token used", LogCategory.AUTH
             )
@@ -221,6 +224,7 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            increment_auth_failure("invalid_token", "refresh_token")
             category_logger.warning(
                 "Invalid refresh token used", LogCategory.AUTH
             )
@@ -503,6 +507,8 @@ async def get_jwt_user(
 
         if bool(user_data.banned) or not bool(user_data.verified):
             user_status = "banned" if user_data.banned else "unverified"
+            reason = "banned_user" if user_data.banned else "unverified_user"
+            increment_auth_failure(reason, "jwt")
             category_logger.warning(
                 f"Authentication attempted by {user_status} user "
                 f"{user_data.id}",
@@ -517,6 +523,7 @@ async def get_jwt_user(
         request.state.user = user_data
 
     except jwt.ExpiredSignatureError as exc:
+        increment_auth_failure("expired_token", "jwt")
         category_logger.warning(
             "Authentication attempted with expired token", LogCategory.AUTH
         )
@@ -525,6 +532,7 @@ async def get_jwt_user(
             detail=ResponseMessages.EXPIRED_TOKEN,
         ) from exc
     except jwt.InvalidTokenError as exc:
+        increment_auth_failure("invalid_token", "jwt")
         category_logger.warning(
             "Authentication attempted with invalid token", LogCategory.AUTH
         )

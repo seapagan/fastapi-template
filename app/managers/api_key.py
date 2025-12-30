@@ -18,6 +18,7 @@ from app.database.helpers import (
     get_user_by_id_,
 )
 from app.logs import LogCategory, category_logger
+from app.metrics import increment_api_key_validation
 from app.models.api_key import ApiKey
 from app.models.user import User
 
@@ -151,21 +152,37 @@ class ApiKeyAuth:
         """Initialize the auth handler."""
         self.auto_error = auto_error
 
-    async def __call__(
+    async def __call__(  # noqa: C901, PLR0911, PLR0912
         self, request: Request, db: AsyncSession = Depends(get_database)
     ) -> User | None:
-        """Validate API key and return the associated user."""
+        """Validate API key and return the associated user.
+
+        Note: Complexity increased to track business metrics for each
+        failure case. Each check is explicit for clarity and metrics tracking.
+        """
         api_key = request.headers.get("X-API-Key")
         if not api_key:
             # No API key in header, return None to allow other auth methods
             return None
 
+        # Check format to distinguish invalid format from not found
+        if not api_key.startswith(ApiKeyManager.KEY_PREFIX):
+            increment_api_key_validation("invalid_format")
+            category_logger.warning(
+                "Invalid API key format used", LogCategory.API_KEYS
+            )
+            if self.auto_error:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=ApiKeyErrorMessages.INVALID_KEY,
+                )
+            return None
+
         key = await ApiKeyManager.validate_key(api_key, db)
         if not key:
-            # Invalid key format or not found
-            category_logger.warning(
-                "Invalid API key used", LogCategory.API_KEYS
-            )
+            # Key not found in database
+            increment_api_key_validation("not_found")
+            category_logger.warning("API key not found", LogCategory.API_KEYS)
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -175,6 +192,7 @@ class ApiKeyAuth:
 
         if not key.is_active:
             # Key exists but is inactive
+            increment_api_key_validation("inactive")
             category_logger.warning(
                 f"Inactive API key used: '{key.name}' (ID: {key.id})",
                 LogCategory.API_KEYS,
@@ -198,7 +216,17 @@ class ApiKeyAuth:
             return None
 
         # Check if user is banned or not verified
-        if bool(user.banned) or not bool(user.verified):
+        if bool(user.banned):
+            increment_api_key_validation("user_banned")
+            if self.auto_error:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=ApiKeyErrorMessages.INVALID_KEY,
+                )
+            return None
+
+        if not bool(user.verified):
+            increment_api_key_validation("user_unverified")
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -210,6 +238,7 @@ class ApiKeyAuth:
         request.state.user = user
         request.state.api_key = key
 
+        increment_api_key_validation("valid")
         category_logger.info(
             f"API key authenticated: '{key.name}' (ID: {key.id}) for user "
             f"{user.id}",
