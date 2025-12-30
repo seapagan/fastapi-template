@@ -116,6 +116,8 @@ following advantages to starting your own from scratch :
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
   data) since it is based on the excellent [Typer][typer] library.
+- Built-in pagination support for user listing and search endpoints, using
+  `fastapi-pagination`.
 - Easily batch-add random test users to the database for testing/development
   purposes using the CLI or seed the database with pre-set users from a CSV
   file.
