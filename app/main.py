@@ -88,7 +88,6 @@ if get_settings().metrics_enabled:
     get_instrumentator().instrument(
         app,
         metric_namespace=get_settings().api_title.lower().replace(" ", "_"),
-        metric_subsystem="http",
         latency_highr_buckets=(
             0.01,
             0.025,
