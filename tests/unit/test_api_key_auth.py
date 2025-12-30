@@ -203,3 +203,48 @@ class TestApiKeyAuth:
         result = await auth(request=mock_req, db=test_db)
 
         assert result is None
+
+    async def test_api_key_auth_invalid_format_no_auto_error(
+        self, test_db, mocker
+    ) -> None:
+        """Test invalid key format with auto_error=False returns None."""
+        # Try to authenticate with invalid format key
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"X-API-Key": "invalid_no_prefix"}
+
+        auth = ApiKeyAuth(auto_error=False)
+        result = await auth(request=mock_req, db=test_db)
+
+        assert result is None
+
+    async def test_api_key_auth_unverified_user_no_auto_error(
+        self, test_db, mocker
+    ) -> None:
+        """Test unverified user with auto_error=False returns None."""
+        # Create a user without verifying
+        user_data = {
+            "email": "unverified2@usertest.com",
+            "password": "test12345!",
+            "first_name": "Unverified",
+            "last_name": "User",
+        }
+        _ = await UserManager.register(user_data, test_db)
+        user = await UserManager.get_user_by_email(user_data["email"], test_db)
+
+        # Manually set user as unverified
+        user.verified = False
+        await test_db.flush()
+
+        # Create API key
+        _, raw_key = await ApiKeyManager.create_key(
+            user, "Test Key", None, test_db
+        )
+
+        # Try to authenticate with auto_error=False
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"X-API-Key": raw_key}
+
+        auth = ApiKeyAuth(auto_error=False)
+        result = await auth(request=mock_req, db=test_db)
+
+        assert result is None

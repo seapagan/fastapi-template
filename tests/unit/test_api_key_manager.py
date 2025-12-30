@@ -92,6 +92,12 @@ class TestApiKeyManager:
         await ApiKeyManager.delete_key(non_existent_id, test_db)
         # Should not raise any exception
 
+    async def test_validate_key_invalid_prefix(self, test_db) -> None:
+        """Test validate_key with invalid prefix returns None."""
+        invalid_key = "invalid_prefix_key_123"
+        result = await ApiKeyManager.validate_key(invalid_key, test_db)
+        assert result is None
+
     async def test_api_key_auth_no_auto_error(self, test_db, mocker) -> None:
         """Test API key auth with auto_error disabled."""
         mock_req = mocker.patch("app.managers.auth.Request")
