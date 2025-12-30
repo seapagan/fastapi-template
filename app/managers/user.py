@@ -369,7 +369,7 @@ class UserManager:
     @staticmethod
     def list_users_query() -> Select[tuple[User]]:
         """Return the base users query for pagination."""
-        return select(User)
+        return select(User).order_by(User.id)
 
     @staticmethod
     async def get_user_by_id(user_id: int, session: AsyncSession) -> User:
