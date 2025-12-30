@@ -85,7 +85,23 @@ register_admin(app)
 
 # Register Prometheus metrics (if enabled)
 if get_settings().metrics_enabled:
-    get_instrumentator().instrument(app).expose(app)
+    get_instrumentator().instrument(
+        app,
+        metric_namespace=get_settings().api_title.lower().replace(" ", "_"),
+        metric_subsystem="http",
+        latency_highr_buckets=(
+            0.01,
+            0.025,
+            0.05,
+            0.1,
+            0.25,
+            0.5,
+            1.0,
+            2.5,
+            5.0,
+            10.0,
+        ),
+    ).expose(app)
 
 static_dir = get_project_root() / "static"
 app.mount(
