@@ -31,3 +31,10 @@ class TestHomeRoutes:
         assert response.headers["content-type"] == "image/vnd.microsoft.icon"
         # Ensure we actually got some content
         assert len(response.content) > 0
+
+    @pytest.mark.asyncio
+    async def test_heartbeat(self, client) -> None:
+        """Test the heartbeat route returns a simple OK payload."""
+        response = await client.get("/heartbeat")
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == {"status": "ok"}
