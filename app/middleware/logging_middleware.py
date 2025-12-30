@@ -40,7 +40,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         duration = time.time() - start_time
 
         # Build full path including query string if present
-        path = str(request.url.path)
+        path = request.url.path
         if request.url.query:
             path = f"{path}?{request.url.query}"
 
