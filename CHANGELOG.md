@@ -14,6 +14,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Paginate users list endpoint ([#796](https://github.com/seapagan/fastapi-template/pull/796)) by [seapagan](https://github.com/seapagan)
 - Add heartbeat endpoint and tests ([#795](https://github.com/seapagan/fastapi-template/pull/795)) by [seapagan](https://github.com/seapagan)
 - Feat(logging): implement comprehensive logging infrastructure with loguru ([#794](https://github.com/seapagan/fastapi-template/pull/794)) by [seapagan](https://github.com/seapagan)
 - Prevent last admin from deleting themselves ([#792](https://github.com/seapagan/fastapi-template/pull/792)) by [seapagan](https://github.com/seapagan)

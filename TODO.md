@@ -2,9 +2,6 @@
 
 ## General
 
-- Convert to an installable package that just works(tm), with all the existing
-  functionality. This will make it much easier to use and maintain. Obviously
-  everything should be able to be subclassed as required.
 - allow to tag endpoints as belonging to a group so can then have similar auth
   etc.
 - add time-limited bans (configurable)
@@ -25,7 +22,6 @@
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
 - Add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
-- Use an alternative logger if uvicorn is not being used for some reason.
 - Allow the option of using auto-incerement integers for the User ID (as it is
   now) or UUID's which is more secure and common these days. This should be
   configurable in the settings, and (for now) the default should be the current
@@ -42,8 +38,7 @@
   periodically be auto-purged of tokens that would be time-expired anyway.)
   Redis would be a good choice for this.
 - Once the above is done, if a user deletes themselves (or is deleted), their
-  tokens should be invalidated immediately, this wil fix the Internal Server
-  Error if they try to keep connecting with their old tokens.
+  tokens should be invalidated immediately.
 - Implement user groups and permissions, make it configurable.
 - Allow social login (eg Google, Facebook, Twitter, etc), check out
   [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
@@ -64,8 +59,6 @@
   to change it easily.
 - Ctrl-c on the `custom metadata` command should not bring up a Rich
   stack-trace, but exit cleanly.
-- Add commands to the CLI to serve, build, publish to gh-pages the API
-  documentation site.
 
 ## Documentation
 
