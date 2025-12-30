@@ -437,3 +437,72 @@ class TestLoggingMiddleware:
         assert "GET /api/users" in log_message
         assert "200" in log_message
         assert result == mock_response
+
+    async def test_middleware_logs_query_parameters(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test middleware includes query parameters in logs."""
+        mock_log_config = mocker.patch(
+            "app.middleware.logging_middleware.log_config"
+        )
+        mock_log_config.is_enabled.return_value = True
+
+        mock_logger = mocker.patch("app.middleware.logging_middleware.logger")
+
+        middleware = LoggingMiddleware(app=Mock())
+
+        # Create mock request with query parameters
+        mock_request = Mock(spec=Request)
+        mock_request.client = Mock(host="127.0.0.1")
+        mock_request.method = "GET"
+        mock_request.url.path = "/api/users"
+        mock_request.url.query = "page=2&limit=10"
+
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 200
+        mock_call_next = AsyncMock(return_value=mock_response)
+
+        result = await middleware.dispatch(mock_request, mock_call_next)
+
+        # Verify logging occurred with query parameters
+        mock_logger.info.assert_called_once()
+        log_message = mock_logger.info.call_args[0][0]
+        assert "127.0.0.1" in log_message
+        assert "GET /api/users?page=2&limit=10" in log_message
+        assert "200" in log_message
+        assert result == mock_response
+
+    async def test_middleware_logs_without_query_parameters(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test middleware logs cleanly when no query parameters present."""
+        mock_log_config = mocker.patch(
+            "app.middleware.logging_middleware.log_config"
+        )
+        mock_log_config.is_enabled.return_value = True
+
+        mock_logger = mocker.patch("app.middleware.logging_middleware.logger")
+
+        middleware = LoggingMiddleware(app=Mock())
+
+        # Create mock request without query parameters
+        mock_request = Mock(spec=Request)
+        mock_request.client = Mock(host="127.0.0.1")
+        mock_request.method = "POST"
+        mock_request.url.path = "/api/users"
+        mock_request.url.query = ""  # Empty query string
+
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 201
+        mock_call_next = AsyncMock(return_value=mock_response)
+
+        result = await middleware.dispatch(mock_request, mock_call_next)
+
+        # Verify logging occurred without trailing ?
+        mock_logger.info.assert_called_once()
+        log_message = mock_logger.info.call_args[0][0]
+        assert "127.0.0.1" in log_message
+        assert "POST /api/users" in log_message
+        assert "POST /api/users?" not in log_message  # No trailing ?
+        assert "201" in log_message
+        assert result == mock_response
