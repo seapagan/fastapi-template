@@ -129,6 +129,7 @@ following advantages to starting your own from scratch :
   when new users register. The content is set by a template (currently a basic
   placeholder). This email has a link for the user to confirm their email
   address - until this is done, the user cannot user the API.
+- A lightweight `/heartbeat` endpoint for uptime/health checks.
 - Docker and Compose file set up to develop and test this API using Docker
 
 **This template is still in very active development and probably not yet ready

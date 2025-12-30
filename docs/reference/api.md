@@ -824,6 +824,24 @@ Delete another user's API key.
 
 ---
 
+## Health Endpoints
+
+### Heartbeat
+
+**Endpoint:** `GET /heartbeat`
+
+Returns a minimal response to confirm the service is up.
+
+**Response:** `200 OK`
+
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
 ## Authentication Methods
 
 The API supports two authentication methods:
