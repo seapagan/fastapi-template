@@ -5,7 +5,6 @@ project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
 
 These are the changes that have been merged to the repository since the last
@@ -15,6 +14,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Add heartbeat endpoint and tests ([#795](https://github.com/seapagan/fastapi-template/pull/795)) by [seapagan](https://github.com/seapagan)
 - Feat(logging): implement comprehensive logging infrastructure with loguru ([#794](https://github.com/seapagan/fastapi-template/pull/794)) by [seapagan](https://github.com/seapagan)
 - Prevent last admin from deleting themselves ([#792](https://github.com/seapagan/fastapi-template/pull/792)) by [seapagan](https://github.com/seapagan)
 - Extend JWT format validation to verify and refresh endpoints ([#790](https://github.com/seapagan/fastapi-template/pull/790)) by [seapagan](https://github.com/seapagan)
@@ -161,7 +161,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.4](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.4) (June 18, 2024)
 
-**_V0.5.4_**
+***V0.5.4***
 
 **Security Update**
 
@@ -299,7 +299,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
-**_A New Hope_**
+***A New Hope***
 
 This is the long-delayed release of `0.5.0` :partying_face:
 
@@ -307,11 +307,12 @@ There are many breaking changes; check the documentation, discussions and all th
 
 - Make the API an installable package and CLI command ([#276](https://github.com/seapagan/fastapi-template/pull/276)) by [seapagan](https://github.com/seapagan)
 - Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
 
 ## [v0.4.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.2) (February 07, 2024)
 
-**_The Old Guard_**
+***The Old Guard***
 
 **Breaking Changes**
 
@@ -515,7 +516,7 @@ tool. See the documentation for more information.
 
 ## [v0.4.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.0) (June 19, 2023)
 
-**_Version refactor_**
+***Version refactor***
 
 **Closed Issues**
 
