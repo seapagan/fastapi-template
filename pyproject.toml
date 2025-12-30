@@ -181,14 +181,14 @@ convention = "google"
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/**/*.py" = [
-  "S101",   # we can (and MUST!) use 'assert' in test files.
-  "ANN001", # annotations for fixtures are sometimes a pain for test files.
-  "ARG001", # sometimes fixtures are not physically used but have side-effects
-  "ARG002", # as above
+  "S101",    # we can (and MUST!) use 'assert' in test files.
+  "ANN001",  # annotations for fixtures are sometimes a pain for test files.
+  "ARG001",  # sometimes fixtures are not physically used but have side-effects
+  "ARG002",  # as above
   "TD003",
   "FIX002",
   "RUF012",
-  "SLF001", # sometimes tests need to access private members
+  "SLF001",  # sometimes tests need to access private members
   "PLE1205", # false positive: CategoryLogger has different signature than logging.Logger
 ]
 "app/managers/auth.py" = ["ERA001"]
@@ -249,6 +249,7 @@ env = [
   "I_READ_THE_DAMN_DOCS=true",
   "ADMIN_PAGES_ENABLED=true",
   "LOG_FILENAME=test_api.log",
+  "METRICS_ENABLED=True",
 ]
 
 asyncio_default_fixture_loop_scope = "function"
