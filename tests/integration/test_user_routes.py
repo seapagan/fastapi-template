@@ -100,7 +100,9 @@ class TestUserRoutes:
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert len(response.json()) == 4  # noqa: PLR2004
+        payload = response.json()
+        assert payload["total"] == 4  # noqa: PLR2004
+        assert len(payload["items"]) == 4  # noqa: PLR2004
 
     async def test_admin_can_get_one_user(
         self, client: AsyncClient, test_db: AsyncSession

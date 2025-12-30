@@ -1,10 +1,9 @@
 """Routes for User listing and control."""
 
-from collections.abc import Sequence
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Request, status
-from fastapi_pagination import Page
+from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,13 +26,14 @@ router = APIRouter(tags=["Users"], prefix="/users")
 @router.get(
     "/",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
-    response_model=UserResponse | list[UserResponse],
+    response_model=UserResponse | Page[UserResponse],
 )
 async def get_users(
     db: Annotated[AsyncSession, Depends(get_database)],
+    params: Annotated[Params, Depends()],
     user_id: int | None = None,
-) -> Sequence[User] | User:
-    """Get all users or a specific user by their ID.
+) -> Page[UserResponse] | User:
+    """Get all users (paginated) or a specific user by their ID.
 
     user_id is optional, and if omitted then all Users are returned.
 
@@ -41,7 +41,8 @@ async def get_users(
     """
     if user_id:
         return await UserManager.get_user_by_id(user_id, db)
-    return await UserManager.get_all_users(db)
+    query = UserManager.list_users_query()
+    return cast("Page[UserResponse]", await apaginate(db, query, params))
 
 
 @router.get(
