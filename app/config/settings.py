@@ -123,6 +123,9 @@ class Settings(BaseSettings):
     log_filename: str = "api.log"
     log_console_enabled: bool = False
 
+    # Prometheus metrics settings (opt-in, disabled by default)
+    metrics_enabled: bool = False
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False

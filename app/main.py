@@ -16,6 +16,7 @@ from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.settings import get_settings
 from app.database.db import async_session
+from app.metrics.instrumentator import get_instrumentator
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
@@ -81,6 +82,10 @@ app.include_router(api_router)
 
 # register the admin views (if enabled)
 register_admin(app)
+
+# Register Prometheus metrics (if enabled)
+if get_settings().metrics_enabled:
+    get_instrumentator().instrument(app).expose(app)
 
 static_dir = get_project_root() / "static"
 app.mount(

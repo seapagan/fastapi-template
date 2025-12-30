@@ -112,6 +112,10 @@ markupsafe==3.0.2
     #   wtforms
 mdurl==0.1.2
     # via markdown-it-py
+prometheus-client==0.23.1
+    # via prometheus-fastapi-instrumentator
+prometheus-fastapi-instrumentator==7.1.0
+    # via api-template
 pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
     # via cffi
 pydantic==2.12.5
@@ -180,6 +184,7 @@ starlette==0.50.0
     # via
     #   fastapi
     #   fastapi-mail
+    #   prometheus-fastapi-instrumentator
     #   sqladmin
 tomli==2.2.1 ; python_full_version < '3.11'
     # via alembic

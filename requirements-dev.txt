@@ -253,6 +253,10 @@ poethepoet==0.32.2
 pprintpp==0.4.0
     # via pytest-clarity
 prek==0.2.24
+prometheus-client==0.23.1
+    # via prometheus-fastapi-instrumentator
+prometheus-fastapi-instrumentator==7.1.0
+    # via api-template
 pycparser==2.22 ; implementation_name != 'PyPy'
     # via cffi
 pydantic==2.12.5
@@ -392,6 +396,7 @@ starlette==0.50.0
     # via
     #   fastapi
     #   fastapi-mail
+    #   prometheus-fastapi-instrumentator
     #   sqladmin
 termcolor==2.5.0
     # via pytest-sugar
