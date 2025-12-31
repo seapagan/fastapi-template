@@ -72,8 +72,10 @@ nav:
           - Environment File: usage/configuration/environment.md
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
-      - Add a User: usage/add-user.md
-      - User Control via the CLI: usage/user-control.md
+      - User Management:
+          - Overview: usage/user-management.md
+          - Add a User: usage/add-user.md
+          - User Control via CLI: usage/user-control.md
       - API Keys: usage/api-keys.md
       - Admin Panel: usage/admin-panel.md
       - Metrics and Observability: usage/metrics.md
