@@ -91,6 +91,7 @@ nav:
   - Deployment: deployment/deployment.md
   - API Reference: reference/api.md
   - Swagger API Docs: reference/swagger.md
+  - Troubleshooting: troubleshooting.md
   - Future Plans and Bugs: future.md
   - Contributing: contributing.md
   - Changelog: changelog.md
