@@ -262,7 +262,7 @@ Restart the application.
 
 2. **Update hooks:**
    ```bash
-   prek update
+   prek autoupdate
    ```
 
 3. **Skip hooks temporarily** (not recommended):
