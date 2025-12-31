@@ -63,8 +63,12 @@ when enabled.
 
 **app/middleware/** - Contains custom middleware components that process
 requests/responses. Currently includes `LoggingMiddleware` which logs HTTP
-requests in uvicorn format when the `REQUESTS` log category is enabled.
-Middleware components are automatically registered in `main.py`.
+requests in uvicorn format when the `REQUESTS` log category is enabled
+(controlled via `LOG_CATEGORIES` in settings). To add custom middleware, create
+a new file in this directory and register it in `main.py` using
+`app.add_middleware()`. See the [FastAPI middleware
+docs](https://fastapi.tiangolo.com/tutorial/middleware/){:target="_blank"} for
+details.
 
 **app/migrations/** - We use
 [Alembic](https://github.com/sqlalchemy/alembic){:target="_blank"} to handle the
