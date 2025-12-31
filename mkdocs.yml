@@ -86,7 +86,6 @@ nav:
       - With a Local Server: development/local.md
       - With Docker: development/docker.md
       - Documentation: development/documentation.md
-  - Guides and How-to's: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md
