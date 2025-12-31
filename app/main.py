@@ -91,9 +91,59 @@ def custom_openapi() -> dict[str, Any]:
         routes=app.routes,
     )
 
-    # Set proper tag for /metrics endpoint
+    # Set proper tag and example for /metrics endpoint
     if "/metrics" in openapi_schema["paths"]:
         openapi_schema["paths"]["/metrics"]["get"]["tags"] = ["Monitoring"]
+        # fmt: off
+        metrics_example = (
+            "# HELP fastapi_template_http_requests_total "
+            "Total HTTP requests\n"
+            "# TYPE fastapi_template_http_requests_total counter\n"
+            'fastapi_template_http_requests_total{method="GET",'
+            'path="/heartbeat",status="200"} 42.0\n'
+            'fastapi_template_http_requests_total{method="POST",'
+            'path="/login/",status="200"} 15.0\n'
+            "# HELP fastapi_template_http_request_duration_seconds "
+            "HTTP request latency\n"
+            "# TYPE fastapi_template_http_request_duration_seconds "
+            "histogram\n"
+            'fastapi_template_http_request_duration_seconds_bucket{'
+            'le="0.01",method="GET",path="/heartbeat"} 40.0\n'
+            'fastapi_template_http_request_duration_seconds_bucket{'
+            'le="0.05",method="GET",path="/heartbeat"} 42.0\n'
+            'fastapi_template_http_request_duration_seconds_bucket{'
+            'le="+Inf",method="GET",path="/heartbeat"} 42.0\n'
+            'fastapi_template_http_request_duration_seconds_sum{'
+            'method="GET",path="/heartbeat"} 0.328\n'
+            'fastapi_template_http_request_duration_seconds_count{'
+            'method="GET",path="/heartbeat"} 42.0\n'
+            "# HELP fastapi_template_http_requests_in_progress "
+            "HTTP requests currently being processed\n"
+            "# TYPE fastapi_template_http_requests_in_progress gauge\n"
+            "fastapi_template_http_requests_in_progress 2.0\n"
+            "# HELP fastapi_template_auth_failures_total "
+            "Failed authentication attempts\n"
+            "# TYPE fastapi_template_auth_failures_total counter\n"
+            'fastapi_template_auth_failures_total{method="invalid_token"}'
+            " 3.0\n"
+            "# HELP fastapi_template_login_attempts_total "
+            "Login attempts\n"
+            "# TYPE fastapi_template_login_attempts_total counter\n"
+            'fastapi_template_login_attempts_total{status="success"} 15.0\n'
+            'fastapi_template_login_attempts_total{status="failure"} 2.0'
+        )
+        # fmt: on
+        openapi_schema["paths"]["/metrics"]["get"]["responses"]["200"] = {
+            "description": "Prometheus metrics in text format",
+            "content": {"text/plain": {"example": metrics_example}},
+        }
+
+    # Add example for /heartbeat endpoint
+    if "/heartbeat" in openapi_schema["paths"]:
+        openapi_schema["paths"]["/heartbeat"]["get"]["responses"]["200"] = {
+            "description": "Service is healthy",
+            "content": {"application/json": {"example": {"status": "ok"}}},
+        }
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
