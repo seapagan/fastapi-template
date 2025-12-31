@@ -12,14 +12,24 @@ release.
 
 Everything in this section will be included in the next official release.
 
+**Closed Issues**
+
+- Metrics and Observability endpoints ([#114](https://github.com/seapagan/fastapi-template/issues/114)) by [seapagan](https://github.com/seapagan)
+
 **New Features**
 
+- Feat: add optional Prometheus metrics endpoint ([#799](https://github.com/seapagan/fastapi-template/pull/799)) by [seapagan](https://github.com/seapagan)
+- Feat: include query parameters in request logs ([#797](https://github.com/seapagan/fastapi-template/pull/797)) by [seapagan](https://github.com/seapagan)
 - Paginate users list endpoint ([#796](https://github.com/seapagan/fastapi-template/pull/796)) by [seapagan](https://github.com/seapagan)
 - Add heartbeat endpoint and tests ([#795](https://github.com/seapagan/fastapi-template/pull/795)) by [seapagan](https://github.com/seapagan)
 - Feat(logging): implement comprehensive logging infrastructure with loguru ([#794](https://github.com/seapagan/fastapi-template/pull/794)) by [seapagan](https://github.com/seapagan)
 - Prevent last admin from deleting themselves ([#792](https://github.com/seapagan/fastapi-template/pull/792)) by [seapagan](https://github.com/seapagan)
 - Extend JWT format validation to verify and refresh endpoints ([#790](https://github.com/seapagan/fastapi-template/pull/790)) by [seapagan](https://github.com/seapagan)
 - Add password recovery feature ([#788](https://github.com/seapagan/fastapi-template/pull/788)) by [seapagan](https://github.com/seapagan)
+
+**Testing**
+
+- Test: add unit tests for metrics and OpenAPI modules ([#801](https://github.com/seapagan/fastapi-template/pull/801)) by [seapagan](https://github.com/seapagan)
 
 **Security**
 
@@ -28,6 +38,14 @@ Everything in this section will be included in the next official release.
 **Bug Fixes**
 
 - Fix CLI crash when database not initialized ([#791](https://github.com/seapagan/fastapi-template/pull/791)) by [seapagan](https://github.com/seapagan)
+
+**Refactoring**
+
+- Fix deprecated HTTP_422_UNPROCESSABLE_ENTITY status code ([#798](https://github.com/seapagan/fastapi-template/pull/798)) by [seapagan](https://github.com/seapagan)
+
+**Documentation**
+
+- Docs: comprehensive documentation improvements ([#800](https://github.com/seapagan/fastapi-template/pull/800)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
 
