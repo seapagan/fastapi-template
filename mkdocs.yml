@@ -64,6 +64,7 @@ markdown_extensions:
 
 nav:
   - Introduction: index.md
+  - Quick Start: quick-start.md
   - Breaking Changes: important.md
   - Usage:
       - Installation: usage/installation.md
@@ -75,6 +76,7 @@ nav:
       - User Control via the CLI: usage/user-control.md
       - API Keys: usage/api-keys.md
       - Admin Panel: usage/admin-panel.md
+      - Metrics and Observability: usage/metrics.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
