@@ -235,6 +235,6 @@ groups:
 
 ## See Also
 
-- [Project Organization](../project-organization.md#appmetrics) - Metrics module structure
+- [Project Organization](../project-organization.md#application-structure-app) - Metrics module structure
 - [Configuration Guide](configuration/environment.md) - All environment variables
 - [Prometheus Documentation](https://prometheus.io/docs/introduction/overview/)

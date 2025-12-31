@@ -149,7 +149,7 @@ ModuleNotFoundError: No module named 'app'
 
 3. **Token expired** - Default 2 hours
    - Use refresh token to get new access token
-   - See [Authentication Flow](quick-start.md#authenticate-to-access-protected-endpoints)
+   - See [Authentication Flow](quick-start.md#6-authenticate-to-access-protected-endpoints)
 
 ### Cannot Access Admin Panel
 

@@ -64,7 +64,7 @@ API endpoints require authentication via:
 - **JWT Bearer Token** - Obtained from `/login/` endpoint
 - **API Key** - Created via `/users/keys` endpoint
 
-See the [Quick Start Guide](../quick-start.md#authenticate-to-access-protected-endpoints) for authentication setup.
+See the [Quick Start Guide](../quick-start.md#6-authenticate-to-access-protected-endpoints) for authentication setup.
 
 ## CLI vs API Comparison
 
