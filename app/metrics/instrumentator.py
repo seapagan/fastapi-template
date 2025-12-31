@@ -2,6 +2,8 @@
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from app.metrics.namespace import METRIC_NAMESPACE
+
 
 def get_instrumentator() -> Instrumentator:
     """Create and return a configured Prometheus instrumentator.
@@ -20,5 +22,6 @@ def get_instrumentator() -> Instrumentator:
     return Instrumentator(
         should_instrument_requests_inprogress=True,
         inprogress_labels=True,
+        inprogress_name=f"{METRIC_NAMESPACE}_http_requests_inprogress",
         excluded_handlers=[r"/metrics", r".*heartbeat.*"],
     )

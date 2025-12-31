@@ -3,8 +3,8 @@
 import pytest
 from fastapi import status
 
-from app.config.settings import get_settings
 from app.database.helpers import hash_password
+from app.metrics import METRIC_NAMESPACE
 from app.models.user import User
 
 
@@ -58,10 +58,8 @@ class TestMetricsEndpoint:
         response = await client.get("/metrics")
         content = response.text
 
-        # Get expected prefix from settings
-        expected_prefix = (
-            get_settings().api_title.lower().replace(" ", "_") + "_http_"
-        )
+        # Get expected prefix from metrics namespace
+        expected_prefix = f"{METRIC_NAMESPACE}_http_"
 
         # Verify metrics with correct prefix exist
         assert f"{expected_prefix}requests_total" in content
@@ -116,8 +114,7 @@ class TestMetricsEndpoint:
         response = await client.get("/metrics")
         content = response.text
 
-        # Note: in-progress metric doesn't use the namespace prefix
-        inprogress_metric = "http_requests_inprogress"
+        inprogress_metric = f"{METRIC_NAMESPACE}_http_requests_inprogress"
 
         # Check for TYPE declaration
         assert f"# TYPE {inprogress_metric} gauge" in content
@@ -133,9 +130,7 @@ class TestMetricsEndpoint:
         response = await client.get("/metrics")
         content = response.text
 
-        expected_prefix = (
-            get_settings().api_title.lower().replace(" ", "_") + "_http_"
-        )
+        expected_prefix = f"{METRIC_NAMESPACE}_http_"
         latency_metric = f"{expected_prefix}request_duration_highr_seconds"
 
         # Custom buckets: 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0
@@ -170,19 +165,16 @@ class TestMetricsEndpoint:
         response = await client.get("/metrics")
         content = response.text
 
-        expected_prefix = (
-            get_settings().api_title.lower().replace(" ", "_") + "_http_"
-        )
+        expected_prefix = f"{METRIC_NAMESPACE}_http_"
 
         # Check for all expected metric types
-        # Note: in-progress metric doesn't use namespace prefix
         expected_metrics = [
             f"{expected_prefix}requests_total",
             f"{expected_prefix}request_duration_highr_seconds",
             f"{expected_prefix}request_duration_seconds",
             f"{expected_prefix}request_size_bytes",
             f"{expected_prefix}response_size_bytes",
-            "http_requests_inprogress",  # This one doesn't use namespace
+            f"{expected_prefix}requests_inprogress",
         ]
 
         for metric in expected_metrics:
@@ -239,14 +231,21 @@ class TestMetricsEndpoint:
         content = response.text
 
         # Check that all business metric types are defined
-        assert "# TYPE auth_failures_total counter" in content
-        assert "# TYPE api_key_validations_total counter" in content
-        assert "# TYPE login_attempts_total counter" in content
+        assert (
+            f"# TYPE {METRIC_NAMESPACE}_auth_failures_total counter" in content
+        )
+        assert (
+            f"# TYPE {METRIC_NAMESPACE}_api_key_validations_total counter"
+            in content
+        )
+        assert (
+            f"# TYPE {METRIC_NAMESPACE}_login_attempts_total counter" in content
+        )
 
         # Check for HELP text
-        assert "# HELP auth_failures_total" in content
-        assert "# HELP api_key_validations_total" in content
-        assert "# HELP login_attempts_total" in content
+        assert f"# HELP {METRIC_NAMESPACE}_auth_failures_total" in content
+        assert f"# HELP {METRIC_NAMESPACE}_api_key_validations_total" in content
+        assert f"# HELP {METRIC_NAMESPACE}_login_attempts_total" in content
 
     @pytest.mark.asyncio
     async def test_login_attempt_metrics(self, client, test_db) -> None:
@@ -261,7 +260,8 @@ class TestMetricsEndpoint:
 
         # Extract initial success count
         initial_success = self._extract_metric_value(
-            initial_content, 'login_attempts_total{status="success"}'
+            initial_content,
+            f'{METRIC_NAMESPACE}_login_attempts_total{{status="success"}}',
         )
 
         # Successful login
@@ -280,7 +280,8 @@ class TestMetricsEndpoint:
 
         # Should have incremented by 1
         new_success = self._extract_metric_value(
-            content, 'login_attempts_total{status="success"}'
+            content,
+            f'{METRIC_NAMESPACE}_login_attempts_total{{status="success"}}',
         )
         assert new_success == initial_success + 1
 
@@ -296,7 +297,8 @@ class TestMetricsEndpoint:
         initial_content = response.text
 
         initial_invalid = self._extract_metric_value(
-            initial_content, 'login_attempts_total{status="invalid_password"}'
+            initial_content,
+            f'{METRIC_NAMESPACE}_login_attempts_total{{status="invalid_password"}}',
         )
 
         # Failed login with wrong password
@@ -315,7 +317,8 @@ class TestMetricsEndpoint:
 
         # Should have incremented by 1
         new_invalid = self._extract_metric_value(
-            content, 'login_attempts_total{status="invalid_password"}'
+            content,
+            f'{METRIC_NAMESPACE}_login_attempts_total{{status="invalid_password"}}',
         )
         assert new_invalid == initial_invalid + 1
 
@@ -328,7 +331,7 @@ class TestMetricsEndpoint:
 
         initial_invalid_format = self._extract_metric_value(
             initial_content,
-            'api_key_validations_total{status="invalid_format"}',
+            f'{METRIC_NAMESPACE}_api_key_validations_total{{status="invalid_format"}}',
         )
 
         # Try request with invalid API key format (no prefix)
@@ -342,7 +345,8 @@ class TestMetricsEndpoint:
 
         # Should have incremented by 1
         new_invalid_format = self._extract_metric_value(
-            content, 'api_key_validations_total{status="invalid_format"}'
+            content,
+            f'{METRIC_NAMESPACE}_api_key_validations_total{{status="invalid_format"}}',
         )
         assert new_invalid_format == initial_invalid_format + 1
 
@@ -355,7 +359,7 @@ class TestMetricsEndpoint:
 
         initial_invalid = self._extract_metric_value(
             initial_content,
-            'auth_failures_total{method="jwt",reason="invalid_token"}',
+            f'{METRIC_NAMESPACE}_auth_failures_total{{method="jwt",reason="invalid_token"}}',
         )
 
         # Try request with invalid token
@@ -370,6 +374,7 @@ class TestMetricsEndpoint:
 
         # Should have incremented by 1
         new_invalid = self._extract_metric_value(
-            content, 'auth_failures_total{method="jwt",reason="invalid_token"}'
+            content,
+            f'{METRIC_NAMESPACE}_auth_failures_total{{method="jwt",reason="invalid_token"}}',
         )
         assert new_invalid == initial_invalid + 1
