@@ -8,6 +8,7 @@ from typing import Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 from sqlalchemy.exc import SQLAlchemyError
@@ -76,6 +77,29 @@ app = FastAPI(
     lifespan=lifespan,
     swagger_ui_parameters={"defaultModelsExpandDepth": 0},
 )
+
+
+def custom_openapi() -> dict[str, Any]:
+    """Customize OpenAPI schema to set proper tag for /metrics endpoint."""
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+
+    # Set proper tag for /metrics endpoint
+    if "/metrics" in openapi_schema["paths"]:
+        openapi_schema["paths"]["/metrics"]["get"]["tags"] = ["Monitoring"]
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi  # type: ignore[method-assign]
 
 # register the API routes
 app.include_router(api_router)
