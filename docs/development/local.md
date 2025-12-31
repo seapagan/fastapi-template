@@ -50,7 +50,8 @@ This API has **Unit** and **Integration** tests using
 
 !!! danger "Database and Environment Setup"
 
-    **Before running tests, you MUST have a valid `.env` file** with the following required settings:
+    **Before running tests, you MUST have a valid `.env` file** with the
+    following required settings:
 
     - `SECRET_KEY` - Must be at least 32 characters long
     - `DB_USER` - Your PostgreSQL database username
@@ -58,13 +59,20 @@ This API has **Unit** and **Integration** tests using
     - `DB_ADDRESS` - Database host (usually `localhost`)
     - `DB_PORT` - Database port (usually `5432`)
     - `DB_NAME` - Your production database name
-    - `TEST_DB_NAME` - Your test database name (defaults to `api-template-test`, **recommended to set explicitly**)
+    - `TEST_DB_NAME` - Your test database name (defaults to `api-template-test`,
+      **recommended to set explicitly**)
 
-    Tests will use the same database credentials (DB_USER/DB_PASSWORD) but connect to the TEST_DB_NAME database instead. **Do not use a production database for testing** as the test database will be cleared before each test run.
+    Tests will use the same database credentials (DB_USER/DB_PASSWORD) but
+    connect to the TEST_DB_NAME database instead. **Do not use a production
+    database for testing** as the test database will be cleared before each test
+    run.
 
-    Copy `.env.example` to `.env` and update with your local values. See the [Configuration](../usage/configuration/setup.md) section for full setup instructions.
+    Copy `.env.example` to `.env` and update with your local values. See the
+    [Configuration](../usage/configuration/setup.md) section for full setup
+    instructions.
 
-    Tests run on GitHub Actions use environment variables set in the CI workflow and a hosted PostgreSQL test database.
+    Tests run on GitHub Actions use environment variables set in the CI workflow
+    and a hosted PostgreSQL test database.
 
 To run these from within the virtual environment use the `pytest` command:
 

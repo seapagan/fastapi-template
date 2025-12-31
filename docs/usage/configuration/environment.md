@@ -219,10 +219,13 @@ MAIL_FROM_NAME="FastAPI Template"
 
 ## Configure Admin Pages (Optional)
 
-The API includes an optional admin panel for managing users and API keys through a web interface. It's disabled by default and must be explicitly enabled.
+The API includes an optional admin panel for managing users and API keys through
+a web interface. It's disabled by default and must be explicitly enabled.
 
 !!! info "Admin Panel Access"
-    Only existing admin users can access the admin panel. See the [Admin Panel Documentation](../admin-panel.md) for details on usage and features.
+    Only existing admin users can access the admin panel. See the
+    [Admin Panel Documentation](../admin-panel.md) for details on usage and
+    features.
 
 ### Enable Admin Pages
 
@@ -232,7 +235,9 @@ Set this to `True` to enable the admin panel web interface:
 ADMIN_PAGES_ENABLED=True
 ```
 
-When enabled, the admin panel will be accessible at the route specified in `ADMIN_PAGES_ROUTE`. When disabled (default), the admin routes return a 404 error.
+When enabled, the admin panel will be accessible at the route specified in
+`ADMIN_PAGES_ROUTE`. When disabled (default), the admin routes return a 404
+error.
 
 ### Customize Admin Pages Route
 
@@ -242,7 +247,8 @@ The admin panel is accessible at `/admin` by default. You can customize this:
 ADMIN_PAGES_ROUTE=/admin
 ```
 
-You can change this to any route you prefer, for example `/management` or `/dashboard`. The route must start with a forward slash (`/`).
+You can change this to any route you prefer, for example `/management` or
+`/dashboard`. The route must start with a forward slash (`/`).
 
 ### Customize Admin Panel Title
 
@@ -257,7 +263,9 @@ Customize this to match your application name or branding.
 ### Session Encryption Key
 
 !!! danger "Critical Security Setting"
-    This key encrypts admin session tokens. Treat it like your SECRET_KEY - keep it secret, unique per environment, never commit to version control, and regenerate if compromised.
+    This key encrypts admin session tokens. Treat it like your SECRET_KEY - keep
+    it secret, unique per environment, never commit to version control, and
+    regenerate if compromised.
 
 The encryption key for admin session tokens:
 
@@ -268,12 +276,12 @@ ADMIN_PAGES_ENCRYPTION_KEY=
 **Behavior:**
 
 - **Empty (default):** Auto-generates a new key on each server startup
-    - Sessions are invalidated when the server restarts
-    - Admins must re-login after each restart
-    - Fine for development
+  - Sessions are invalidated when the server restarts
+  - Admins must re-login after each restart
+  - Fine for development
 - **Set with a key:** Persistent sessions across server restarts
-    - Admins stay logged in through restarts
-    - **Required for production**
+  - Admins stay logged in through restarts
+  - **Required for production**
 
 **Generate a persistent key:**
 
@@ -297,7 +305,8 @@ ADMIN_PAGES_ENCRYPTION_KEY=bXlfc2VjcmV0X2VuY3J5cHRpb25fa2V5X2V4YW1wbGU=
 ```
 
 !!! tip "Production Recommendation"
-    Always set ADMIN_PAGES_ENCRYPTION_KEY in production to maintain persistent sessions. Use different keys for dev/staging/production environments.
+    Always set ADMIN_PAGES_ENCRYPTION_KEY in production to maintain persistent
+    sessions. Use different keys for dev/staging/production environments.
 
 ### Session Timeout
 
@@ -331,10 +340,14 @@ ADMIN_PAGES_TIMEOUT=86400
 
 ## Configure Logging (Optional)
 
-The API uses loguru for structured logging with rotation, retention, and category-based filtering. Logging provides debugging, monitoring, and compliance capabilities.
+The API uses loguru for structured logging with rotation, retention, and
+category-based filtering. Logging provides debugging, monitoring, and compliance
+capabilities.
 
-!!! note "Console Logging"
-    FastAPI/Uvicorn already log to console. The file-based logging configured here is in addition to that and provides persistent, categorized logs.
+!!! note
+    "Console Logging" FastAPI/Uvicorn already log to console. The
+    file-based logging configured here is in addition to that and provides
+    persistent, categorized logs.
 
 ### Log Output Directory
 
@@ -344,7 +357,8 @@ Directory where log files are written:
 LOG_PATH=./logs
 ```
 
-Default is `./logs` (relative to project root). The directory must be writable by the application process. You can use absolute paths for production:
+Default is `./logs` (relative to project root). The directory must be writable
+by the application process. You can use absolute paths for production:
 
 ```ini
 LOG_PATH=/var/log/myapi
@@ -360,15 +374,16 @@ LOG_LEVEL=INFO
 
 Available levels (from most to least verbose):
 
-| Level    | Description                          | Use Case                    |
-|----------|--------------------------------------|-----------------------------|
-| DEBUG    | All messages including debug output  | Development/troubleshooting |
-| INFO     | Normal operations and events         | Production (recommended)    |
-| WARNING  | Issues that may need attention       | Production monitoring       |
-| ERROR    | Error conditions                     | Production (minimal)        |
-| CRITICAL | Severe system failures               | Production (minimal)        |
+| Level    | Description                         | Use Case                    |
+|----------|-------------------------------------|-----------------------------|
+| DEBUG    | All messages including debug output | Development/troubleshooting |
+| INFO     | Normal operations and events        | Production (recommended)    |
+| WARNING  | Issues that may need attention      | Production monitoring       |
+| ERROR    | Error conditions                    | Production (minimal)        |
+| CRITICAL | Severe system failures              | Production (minimal)        |
 
-Higher levels include all messages from lower levels (ERROR includes CRITICAL, INFO includes WARNING/ERROR/CRITICAL, etc.).
+Higher levels include all messages from lower levels (ERROR includes CRITICAL,
+INFO includes WARNING/ERROR/CRITICAL, etc.).
 
 ### Log File Rotation
 
@@ -425,7 +440,8 @@ Options:
 - `"bz2"` - bzip2 compression (smaller than gz, slower)
 - `""` or omit - No compression (not recommended)
 
-Compression saves significant disk space for archived logs, especially with high verbosity.
+Compression saves significant disk space for archived logs, especially with high
+verbosity.
 
 ### Logging Categories
 
@@ -442,15 +458,15 @@ LOG_CATEGORIES=ALL
 
 **Individual categories (combine with commas):**
 
-| Category   | What It Logs                          | Recommended For        |
-|------------|---------------------------------------|------------------------|
-| REQUESTS   | HTTP request/response logging         | Debugging, monitoring  |
-| AUTH       | Authentication, login, token ops      | **Production (security)** |
-| DATABASE   | Database CRUD operations              | Debugging queries      |
-| EMAIL      | Email sending operations              | **Production (if using email)** |
-| ERRORS     | Error conditions and exceptions       | **Production (always)** |
-| ADMIN      | Admin panel operations                | **Production (audit)** |
-| API_KEYS   | API key operations                    | Production (security)  |
+| Category  | What It Logs                      | Recommended For             |
+|-----------|-----------------------------------|-----------------------------|
+| REQUESTS  | HTTP request/response logging     | Debugging, monitoring       |
+| AUTH      | Authentication, login, token ops  | Production (security)       |
+| DATABASE  | Database CRUD operations          | Debugging queries           |
+| EMAIL     | Email sending operations          | Production (if using email) |
+| ERRORS    | Error conditions and exceptions   | Production (always)         |
+| ADMIN     | Admin panel operations            | Production (audit)          |
+| API_KEYS  | API key operations                | Production (security)       |
 
 **Configuration examples:**
 
@@ -475,7 +491,10 @@ LOG_CATEGORIES=NONE
 ```
 
 !!! tip "Production Recommendation"
-    For production, use `LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL` with `LOG_LEVEL=INFO`. This provides security monitoring (AUTH/ADMIN), error tracking (ERRORS), and email operation logging (EMAIL) while keeping log files manageable.
+    For production, use `LOG_CATEGORIES=ERRORS,AUTH,ADMIN,EMAIL` with
+    `LOG_LEVEL=INFO`. This provides security monitoring (AUTH/ADMIN), error
+    tracking (ERRORS), and email operation logging (EMAIL) while keeping log
+    files manageable.
 
 **How combinations work:**
 
@@ -492,7 +511,8 @@ Custom filename for the log file:
 LOG_FILENAME=api.log
 ```
 
-Default is `api.log`. The filename **cannot contain path separators** (`/` or `\`) - use `LOG_PATH` to set the directory.
+Default is `api.log`. The filename **cannot contain path separators** (`/` or
+`\`) - use `LOG_PATH` to set the directory.
 
 Useful for separating logs by environment:
 
@@ -515,7 +535,10 @@ LOG_CONSOLE_ENABLED=false
 ```
 
 !!! warning "Duplicate Console Output"
-    FastAPI/Uvicorn already log to console. Setting this to `true` causes **duplicate console output** - each log message appears twice in the console. Only enable if you have a specific reason (e.g., custom log formatting, Docker/Kubernetes setups).
+    FastAPI/Uvicorn already log to console. Setting this to `true` causes
+    **duplicate console output** - each log message appears twice in the
+    console. Only enable if you have a specific reason (e.g., custom log
+    formatting, Docker/Kubernetes setups).
 
 **When to use:**
 
