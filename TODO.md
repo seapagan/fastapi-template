@@ -21,11 +21,15 @@
   public data should be ok (eg in a front-end profile page). Think about how
   this should be implemented. *This may just need to be in derived projects
   though, not this template*.
-- Add Metrics and Observability (eg Prometheus, Grafana, Sentry, etc)
 - Allow the option of using auto-incerement integers for the User ID (as it is
   now) or UUID's which is more secure and common these days. This should be
   configurable in the settings, and (for now) the default should be the current
   auto-incrementing integer.
+- **Refactor code with suppressed complexity warnings**: The following files
+  have complexity warnings (C901, PLR0911, PLR0912) suppressed to enable
+  granular business metrics tracking. Consider refactoring to reduce complexity
+  while maintaining metric granularity:
+  - `app/managers/api_key.py` - `ApiKeyAuth.__call__()` method (line 155)
 
 ## Bugs/Annoyances
 
