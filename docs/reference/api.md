@@ -842,6 +842,71 @@ Returns a minimal response to confirm the service is up.
 
 ---
 
+### Metrics
+
+**Endpoint:** `GET /metrics`
+
+**Authentication:** None required
+
+Exposes Prometheus-compatible metrics for application observability. This endpoint
+is only available when metrics collection is enabled via the `METRICS_ENABLED`
+environment variable.
+
+**Response:** `200 OK` (text/plain; Prometheus format)
+
+```prometheus
+# HELP api_template_http_requests_total Total number of HTTP requests
+# TYPE api_template_http_requests_total counter
+api_template_http_requests_total{handler="/users/",method="GET",status="2xx"} 1542.0
+
+# HELP api_template_http_request_duration_highr_seconds HTTP request latency
+# TYPE api_template_http_request_duration_highr_seconds histogram
+api_template_http_request_duration_highr_seconds_bucket{handler="/users/",method="GET",le="0.01"} 892.0
+api_template_http_request_duration_highr_seconds_bucket{handler="/users/",method="GET",le="0.025"} 1420.0
+api_template_http_request_duration_highr_seconds_sum{handler="/users/",method="GET"} 18.234
+api_template_http_request_duration_highr_seconds_count{handler="/users/",method="GET"} 1542.0
+
+# HELP api_template_auth_failures_total Total authentication failures
+# TYPE api_template_auth_failures_total counter
+api_template_auth_failures_total{method="jwt",reason="expired_token"} 15.0
+api_template_auth_failures_total{method="jwt",reason="invalid_token"} 8.0
+
+# HELP api_template_login_attempts_total Total login attempts by status
+# TYPE api_template_login_attempts_total counter
+api_template_login_attempts_total{status="success"} 892.0
+api_template_login_attempts_total{status="invalid_password"} 24.0
+```
+
+**Configuration:**
+
+To enable metrics, set in your `.env` file:
+```bash
+METRICS_ENABLED=true
+```
+
+**Available Metrics:**
+
+- **HTTP Performance Metrics:**
+  - `{api_title}_http_requests_total` - Total HTTP requests (counter)
+  - `{api_title}_http_request_duration_highr_seconds` - Request latency (histogram)
+  - `{api_title}_http_requests_inprogress` - In-flight requests (gauge)
+  - `{api_title}_http_request_size_bytes` - Request body sizes (summary)
+  - `{api_title}_http_response_size_bytes` - Response body sizes (summary)
+
+- **Business Metrics:**
+  - `{api_title}_auth_failures_total` - Authentication failures by reason and method
+  - `{api_title}_api_key_validations_total` - API key validation attempts by status
+  - `{api_title}_login_attempts_total` - Login attempts by status
+
+**Notes:**
+
+- Metric namespace is derived from your `API_TITLE` setting (e.g., `api_template_`)
+- The `/metrics` and `/heartbeat` endpoints are excluded from HTTP metrics tracking
+- When disabled (`METRICS_ENABLED=false`), this endpoint returns 404 Not Found
+- See [Metrics and Observability](../usage/metrics.md) for complete documentation
+
+---
+
 ## Authentication Methods
 
 The API supports two authentication methods:

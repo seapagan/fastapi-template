@@ -64,6 +64,7 @@ markdown_extensions:
 
 nav:
   - Introduction: index.md
+  - Quick Start: quick-start.md
   - Breaking Changes: important.md
   - Usage:
       - Installation: usage/installation.md
@@ -71,10 +72,13 @@ nav:
           - Environment File: usage/configuration/environment.md
           - Install Dependencies: usage/configuration/setup.md
           - Setup Database: usage/configuration/database.md
-      - Add a User: usage/add-user.md
-      - User Control via the CLI: usage/user-control.md
+      - User Management:
+          - Overview: usage/user-management.md
+          - Add a User: usage/add-user.md
+          - User Control via CLI: usage/user-control.md
       - API Keys: usage/api-keys.md
       - Admin Panel: usage/admin-panel.md
+      - Metrics and Observability: usage/metrics.md
   - Customization:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
@@ -82,12 +86,12 @@ nav:
       - With a Local Server: development/local.md
       - With Docker: development/docker.md
       - Documentation: development/documentation.md
-  - Guides and How-to's: how-to-guides.md
   - Project Organization: project-organization.md
   - Tutorials: tutorials.md
   - Deployment: deployment/deployment.md
   - API Reference: reference/api.md
   - Swagger API Docs: reference/swagger.md
+  - Troubleshooting: troubleshooting.md
   - Future Plans and Bugs: future.md
   - Contributing: contributing.md
   - Changelog: changelog.md
