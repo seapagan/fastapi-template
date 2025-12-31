@@ -17,7 +17,7 @@ from app.config.helpers import get_api_version, get_project_root
 from app.config.openapi import custom_openapi
 from app.config.settings import get_settings
 from app.database.db import async_session
-from app.metrics.instrumentator import get_instrumentator
+from app.metrics.instrumentator import register_metrics
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
@@ -88,23 +88,7 @@ app.include_router(api_router)
 register_admin(app)
 
 # Register Prometheus metrics (if enabled)
-if get_settings().metrics_enabled:
-    get_instrumentator().instrument(
-        app,
-        metric_namespace=get_settings().api_title.lower().replace(" ", "_"),
-        latency_highr_buckets=(
-            0.01,
-            0.025,
-            0.05,
-            0.1,
-            0.25,
-            0.5,
-            1.0,
-            2.5,
-            5.0,
-            10.0,
-        ),
-    ).expose(app)
+register_metrics(app)
 
 static_dir = get_project_root() / "static"
 app.mount(
