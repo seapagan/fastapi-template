@@ -186,7 +186,20 @@ If a migration fails or causes issues:
 - **Monitor logs** during and after migration
 - Consider **scheduled maintenance windows** for complex migrations
 
-## Deployment Methods
+## Managed Platform Options
+
+These platforms offer straightforward FastAPI deployment with managed infrastructure:
+
+- **[Railway](https://railway.app/)** - Simple deploys from GitHub, generous free tier, automatic HTTPS
+- **[Fly.io](https://fly.io/)** - Edge deployment, global distribution, Dockerfile-based
+- **[Render](https://render.com/)** - Auto-deploy from Git, managed PostgreSQL, free tier available
+- **[DigitalOcean App Platform](https://www.digitalocean.com/products/app-platform)** - Managed platform with databases and scaling
+- **[Heroku](https://www.heroku.com/)** - Classic PaaS, easy deployment, many add-ons available
+- **[Vercel](https://vercel.com/)** - Serverless deployment, edge functions (requires ASGI adapter)
+
+All support PostgreSQL databases and environment variables. Refer to their documentation for FastAPI-specific deployment instructions.
+
+## Self-Hosted Deployment
 
 ### Nginx
 
