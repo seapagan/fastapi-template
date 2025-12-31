@@ -11,12 +11,17 @@ This is a template Repository for starting a new
 [FastAPI](https://fastapi.tiangolo.com/) project with Authentication and Users,
 with Authorization already baked-in.
 
-<!-- Full documentation is now availiable on it's own page [here][doc]. Please visit
-this for full usage information, how-to's and more. -->
+---
 
-Documentation for this project is now availiable on it's own page at
-[https://api-template.seapagan.net][doc]. This is a work in progress, and when
-finished will include full usage information and how-to's.
+**📚 [Full Documentation](https://api-template.seapagan.net) | 🚀 [Quick Start Guide](https://api-template.seapagan.net/quick-start/)**
+
+Complete documentation is available at **[api-template.seapagan.net][doc]**,
+including setup instructions, API reference, deployment guides, and
+troubleshooting. New users should start with the **[Quick Start
+Guide](https://api-template.seapagan.net/quick-start/)** to get up and running
+in under 5 minutes.
+
+---
 
 - [Important note on Versioning](#important-note-on-versioning)
 - [Breaking Changes](#breaking-changes)
@@ -101,7 +106,7 @@ following advantages to starting your own from scratch :
   system protects against email enumeration attacks and includes URL encoding
   and token validation for security.
 - `API Keys` are fully implemented and can be used by registered users instead
-  of the JTW. These will **not expire** at present though adding expiry is a
+  of the JWT. These will **not expire** at present though adding expiry is a
   future plan. API keys are passed using the `X-API-Key` header.
 - A `Refresh Token` with 30 day expiry is sent at time of register or login
   (never again). This will enable easy re-authentication when the JWT expires
@@ -110,8 +115,14 @@ following advantages to starting your own from scratch :
 - A clean layout to help structure your project.
 - An optional **Admin site** to manage users and API keys. This uses the
   `sqladmin` package to give you an easy way to manage your database.
-- Uses the python logger for info/warning/error logging - tying transparently in
-  to the `uvicorn` logger.
+- **Category-based logging** using [loguru](https://github.com/Delgan/loguru)
+  with configurable log levels, rotation, retention, and compression. Control
+  what gets logged via `LOG_CATEGORIES` (requests, auth, database, errors,
+  etc.).
+- **Prometheus metrics** for production observability. Optional metrics
+  collection tracks HTTP performance (requests, latency, in-flight), business
+  metrics (auth failures, API key usage, login attempts), and custom
+  application metrics. Exposed via `/metrics` endpoint when enabled.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
@@ -122,7 +133,7 @@ following advantages to starting your own from scratch :
   purposes using the CLI or seed the database with pre-set users from a CSV
   file.
 - Database and Secrets are automatically read from Environment variables or a
-  `.env` file if that is provided. The CLI can generate and set the JTW Secret
+  `.env` file if that is provided. The CLI can generate and set the JWT Secret
   and Admin pages encryption keys.
 - User email is validated for correct format on creation (however no checks are
   performed to ensure the email or domain actually exists).
