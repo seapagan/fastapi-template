@@ -24,13 +24,21 @@ cd fastapi-template
 
 # Install dependencies using uv (recommended)
 uv sync
+
+# Activate the virtual environment
+source .venv/bin/activate  # Linux/Mac
+# or
+.venv\Scripts\activate  # Windows
 ```
 
 !!! note "Alternative: Using pip"
     If you prefer pip and requirements.txt:
     ```bash
     python -m venv venv
-    source venv/bin/activate  # or venv\Scripts\activate on Windows
+    source venv/bin/activate  # Linux/Mac
+    # or
+    venv\Scripts\activate  # Windows
+
     pip install -r requirements.txt
     ```
 
@@ -111,27 +119,103 @@ The server is now running at:
 - **Interactive Docs (Swagger):** http://localhost:8000/docs
 - **Alternative Docs (ReDoc):** http://localhost:8000/redoc
 
-## 6. Test It (30 seconds)
+## 6. Authenticate to Access Protected Endpoints
+
+Most endpoints require authentication. Here's how to login and use your JWT token:
+
+### Login via Console (curl)
+
+```bash
+# Login with your admin credentials from step 4
+curl -X POST http://localhost:8000/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your-email@example.com",
+    "password": "your-password"
+  }'
+```
+
+This returns a JSON response with your tokens:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Using the JWT token:**
+
+```bash
+# Save your token to a variable
+TOKEN="your-token-here"
+
+# Access protected endpoints with the Authorization header
+curl http://localhost:8000/users/me \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+!!! tip "Token Expiry"
+    Tokens expire after 2 hours (configurable via `ACCESS_TOKEN_EXPIRE_MINUTES`).
+    Use the refresh token to get a new token without re-entering credentials.
+
+### Login via Swagger UI
+
+1. Open http://localhost:8000/docs
+2. Find the **`POST /login/`** endpoint and expand it
+3. Click **"Try it out"**
+4. Enter your credentials in the request body:
+   ```json
+   {
+     "email": "your-email@example.com",
+     "password": "your-password"
+   }
+   ```
+5. Click **"Execute"**
+6. Copy the `token` from the response (the long string starting with `eyJ...`)
+7. Click the **"Authorize"** button at the top right of the page
+8. In the "HTTPBearer" field, paste your token
+9. Click **"Authorize"**, then **"Close"**
+
+Now you can test any protected endpoint directly from the Swagger UI! The authentication
+token will be automatically included in all requests.
+
+!!! success "You're Authenticated!"
+    The lock icons next to endpoints will now show as locked/closed, indicating
+    you're authenticated. You can now test protected endpoints like:
+
+    - `GET /users/me` - Get your user profile
+    - `GET /users/` - List all users (admin only)
+    - `POST /api-keys/` - Create API keys
+    - And more!
+
+## 7. Test It (30 seconds)
+
+Now that you're authenticated, you can test the protected endpoints:
 
 ### Test via curl
 
 ```bash
-# Get all users
-curl http://localhost:8000/users/
-
-# Get the root endpoint (returns welcome message)
+# Get the root endpoint (returns welcome message - no auth required)
 curl http://localhost:8000/
+
+# Get all users (requires authentication)
+curl http://localhost:8000/users/ \
+  -H "Authorization: Bearer $TOKEN"
+
+# Get your own profile (requires authentication)
+curl http://localhost:8000/users/me \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ### Test via Browser
 
 Open http://localhost:8000/docs in your browser to explore the interactive API
-documentation. You can:
+documentation. Since you've already authenticated in Section 6, you can now:
 
 - View all available endpoints
-- Test API calls directly from the browser
+- Test protected API calls directly from the browser
 - See request/response schemas
-- Try authentication flows using your admin credentials from step 4
+- Try different endpoints with your authenticated session
 
 ## Optional: Populate with Sample Data
 
@@ -166,7 +250,7 @@ This is useful for:
 
 - **[Project Organization](project-organization.md)** - Understand the codebase structure
 - **[Adding Custom Endpoints](tutorials.md)** - Build your first custom endpoint
-- **[Customization](customization/metadata.md)** - Customize API metadata and templates
+- **[Customization](customization/meta.md)** - Customize API metadata and templates
 
 ### Deploy to Production
 
@@ -211,7 +295,8 @@ If you see import errors, ensure you've activated your virtual environment:
 
 ```bash
 # Using uv
-# (uv automatically manages the environment)
+source .venv/bin/activate  # Linux/Mac
+.venv\Scripts\activate     # Windows
 
 # Using pip/venv
 source venv/bin/activate  # Linux/Mac
