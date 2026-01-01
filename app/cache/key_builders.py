@@ -5,14 +5,16 @@ from typing import Any
 
 from fastapi import Request, Response
 
+# ruff: noqa: PLR0913, ARG001
+
 
 def user_scoped_key_builder(
     func: Callable[..., Any],
     namespace: str,
     request: Request,
-    _response: Response,
-    _args: tuple[Any, ...],
-    _kwargs: dict[str, Any],
+    response: Response,
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
 ) -> str:
     """Build cache key that includes user ID.
 
@@ -23,9 +25,9 @@ def user_scoped_key_builder(
         func: The cached function.
         namespace: Cache namespace.
         request: FastAPI Request object.
-        _response: FastAPI Response object (unused).
-        _args: Positional arguments to the function (unused).
-        _kwargs: Keyword arguments to the function (unused).
+        response: FastAPI Response object (unused).
+        args: Positional arguments to the function (unused).
+        kwargs: Keyword arguments to the function (unused).
 
     Returns:
         Cache key in format: "namespace:func_name:user_id"
@@ -43,9 +45,9 @@ def paginated_key_builder(
     func: Callable[..., Any],
     namespace: str,
     request: Request,
-    _response: Response,
-    _args: tuple[Any, ...],
-    _kwargs: dict[str, Any],
+    response: Response,
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
 ) -> str:
     """Build cache key that includes pagination params.
 
@@ -55,9 +57,9 @@ def paginated_key_builder(
         func: The cached function.
         namespace: Cache namespace.
         request: FastAPI Request object.
-        _response: FastAPI Response object (unused).
-        _args: Positional arguments to the function (unused).
-        _kwargs: Keyword arguments to the function (unused).
+        response: FastAPI Response object (unused).
+        args: Positional arguments to the function (unused).
+        kwargs: Keyword arguments to the function (unused).
 
     Returns:
         Cache key in format: "namespace:func_name:page:N:size:M"
@@ -74,9 +76,9 @@ def user_paginated_key_builder(
     func: Callable[..., Any],
     namespace: str,
     request: Request,
-    _response: Response,
-    _args: tuple[Any, ...],
-    _kwargs: dict[str, Any],
+    response: Response,
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
 ) -> str:
     """Build cache key combining user ID and pagination params.
 
@@ -86,9 +88,9 @@ def user_paginated_key_builder(
         func: The cached function.
         namespace: Cache namespace.
         request: FastAPI Request object.
-        _response: FastAPI Response object (unused).
-        _args: Positional arguments to the function (unused).
-        _kwargs: Keyword arguments to the function (unused).
+        response: FastAPI Response object (unused).
+        args: Positional arguments to the function (unused).
+        kwargs: Keyword arguments to the function (unused).
 
     Returns:
         Cache key in format:

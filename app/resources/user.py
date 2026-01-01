@@ -2,11 +2,13 @@
 
 from typing import Annotated, cast
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi_cache.coder import PickleCoder
 from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.cache import cached, invalidate_user_cache, user_scoped_key_builder
 from app.database.db import get_database
 from app.managers.auth import can_edit_user, is_admin
 from app.managers.security import get_current_user
@@ -88,8 +90,16 @@ async def get_users(
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
+@cached(
+    expire=300,
+    namespace="user",
+    key_builder=user_scoped_key_builder,
+    coder=PickleCoder,
+)
 async def get_my_user(
-    request: Request, db: Annotated[AsyncSession, Depends(get_database)]
+    request: Request,
+    response: Response,  # noqa: ARG001
+    db: Annotated[AsyncSession, Depends(get_database)],
 ) -> User:
     """Get the current user's data only."""
     my_user: int = request.state.user.id
@@ -179,6 +189,8 @@ async def edit_user(
     Available for the specific requesting User, or an Admin.
     """
     await UserManager.update_user(user_id, user_data, db)
+    # Invalidate user cache after editing
+    await invalidate_user_cache(user_id)
     return await db.get(User, user_id)
 
 

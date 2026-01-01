@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 import pytest_asyncio
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 from typer.testing import CliRunner
 
@@ -34,6 +36,14 @@ async_engine = async_test_session.kw["bind"]
 def pytest_configure(config) -> None:
     """Clear the screen before running tests."""
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
+
+
+# Initialize and clear cache before each test
+@pytest_asyncio.fixture(autouse=True, scope="function")
+async def init_cache() -> None:
+    """Initialize and clear FastAPICache for each test."""
+    FastAPICache.init(InMemoryBackend())
+    await FastAPICache.clear()
 
 
 # reset the database before each test
