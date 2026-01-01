@@ -38,11 +38,22 @@ def pytest_configure(config) -> None:
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
 
 
-# Initialize and clear cache before each test
+# Initialize cache backend if needed and clear before each test
 @pytest_asyncio.fixture(autouse=True, scope="function")
-async def init_cache() -> None:
-    """Initialize and clear FastAPICache for each test."""
-    FastAPICache.init(InMemoryBackend())
+async def init_and_clear_cache() -> None:
+    """Initialize FastAPICache if needed, then clear before each test.
+
+    Only calls FastAPICache.init() if the backend is not already an
+    InMemoryBackend, avoiding repeated initialization that can cause
+    race conditions.
+    """
+    # Only initialize if backend is not already InMemoryBackend
+    # Use getattr to safely check _backend without triggering assertion
+    backend = getattr(FastAPICache, "_backend", None)
+    if not isinstance(backend, InMemoryBackend):
+        FastAPICache.init(InMemoryBackend())
+
+    # Always clear cache to ensure test isolation
     await FastAPICache.clear()
 
 
