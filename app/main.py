@@ -22,6 +22,7 @@ from app.config.openapi import custom_openapi
 from app.config.settings import get_settings
 from app.database.db import async_session
 from app.metrics.instrumentator import register_metrics
+from app.middleware.cache_logging import CacheLoggingMiddleware
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
@@ -147,6 +148,9 @@ app.add_middleware(
 
 # Add logging middleware
 app.add_middleware(LoggingMiddleware)
+
+# Add cache logging middleware
+app.add_middleware(CacheLoggingMiddleware)
 
 # Add pagination support
 add_pagination(app)

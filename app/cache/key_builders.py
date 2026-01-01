@@ -5,6 +5,8 @@ from typing import Any
 
 from fastapi import Request, Response
 
+from app.logs import LogCategory, category_logger
+
 # ruff: noqa: PLR0913, ARG001
 
 
@@ -39,7 +41,13 @@ def user_scoped_key_builder(
     user_id = (
         request.state.user.id if hasattr(request.state, "user") else "anonymous"
     )
-    return f"{namespace}:{user_id}:{func.__name__}"
+    cache_key = f"{namespace}:{user_id}:{func.__name__}"
+    category_logger.debug(
+        f"Key builder received namespace='{namespace}', "
+        f"returning='{cache_key}'",
+        LogCategory.CACHE,
+    )
+    return cache_key
 
 
 def paginated_key_builder(
