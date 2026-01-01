@@ -3,7 +3,6 @@
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, Request, Response, status
-from fastapi_cache.coder import PickleCoder
 from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -90,12 +89,7 @@ async def get_users(
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-@cached(
-    expire=300,
-    namespace="user",
-    key_builder=user_scoped_key_builder,
-    coder=PickleCoder,
-)
+@cached(expire=300, namespace="user", key_builder=user_scoped_key_builder)
 async def get_my_user(
     request: Request,
     response: Response,  # noqa: ARG001
