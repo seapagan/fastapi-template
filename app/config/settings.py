@@ -126,9 +126,32 @@ class Settings(BaseSettings):
     # Prometheus metrics settings (opt-in, disabled by default)
     metrics_enabled: bool = False
 
+    # Redis cache settings (opt-in, disabled by default)
+    # Falls back to in-memory cache when disabled
+    redis_enabled: bool = False
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_password: str = ""
+    redis_db: int = 0
+    cache_default_ttl: int = 300  # 5 minutes
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
+
+    @property
+    def redis_url(self) -> str:
+        """Generate Redis connection URL from settings.
+
+        Returns:
+            Redis URL in format: redis://[password@]host:port/db
+        """
+        if self.redis_password:
+            return (
+                f"redis://:{self.redis_password}@"
+                f"{self.redis_host}:{self.redis_port}/{self.redis_db}"
+            )
+        return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
 
     @field_validator("api_root")
     @classmethod
