@@ -60,7 +60,7 @@ async def invalidate_api_keys_cache(user_id: int) -> None:
         await invalidate_api_keys_cache(user.id)
         ```
     """
-    namespace = f"apikeys:list:{user_id}"
+    namespace = f"apikeys:{user_id}"
     await FastAPICache.clear(namespace=namespace)
     category_logger.info(
         f"Cleared API keys cache for user {user_id}",

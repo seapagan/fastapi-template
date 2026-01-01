@@ -16,29 +16,30 @@ def user_scoped_key_builder(
     args: tuple[Any, ...],
     kwargs: dict[str, Any],
 ) -> str:
-    """Build cache key that includes user ID.
+    """Build cache key that includes user ID in namespace.
 
     Used for user-specific cached endpoints like /users/me or
-    /users/keys.
+    /users/keys. Places user_id in the namespace for easier
+    invalidation.
 
     Args:
         func: The cached function.
-        namespace: Cache namespace.
+        namespace: Cache namespace base.
         request: FastAPI Request object.
         response: FastAPI Response object (unused).
         args: Positional arguments to the function (unused).
         kwargs: Keyword arguments to the function (unused).
 
     Returns:
-        Cache key in format: "namespace:func_name:user_id"
+        Cache key in format: "namespace:user_id:func_name"
 
     Example:
-        Cache key: "user:get_my_user:123"
+        Cache key: "user:123:get_my_user"
     """
     user_id = (
         request.state.user.id if hasattr(request.state, "user") else "anonymous"
     )
-    return f"{namespace}:{func.__name__}:{user_id}"
+    return f"{namespace}:{user_id}:{func.__name__}"
 
 
 def paginated_key_builder(
@@ -82,11 +83,12 @@ def user_paginated_key_builder(
 ) -> str:
     """Build cache key combining user ID and pagination params.
 
-    Used for user-specific paginated endpoints.
+    Used for user-specific paginated endpoints. Places user_id in
+    the namespace for easier invalidation.
 
     Args:
         func: The cached function.
-        namespace: Cache namespace.
+        namespace: Cache namespace base.
         request: FastAPI Request object.
         response: FastAPI Response object (unused).
         args: Positional arguments to the function (unused).
@@ -94,14 +96,14 @@ def user_paginated_key_builder(
 
     Returns:
         Cache key in format:
-        "namespace:func_name:user_id:page:N:size:M"
+        "namespace:user_id:func_name:page:N:size:M"
 
     Example:
-        Cache key: "apikeys:get_user_keys:123:page:1:size:50"
+        Cache key: "apikeys:123:get_user_keys:page:1:size:50"
     """
     user_id = (
         request.state.user.id if hasattr(request.state, "user") else "anonymous"
     )
     page = request.query_params.get("page", "1")
     size = request.query_params.get("size", "50")
-    return f"{namespace}:{func.__name__}:{user_id}:page:{page}:size:{size}"
+    return f"{namespace}:{user_id}:{func.__name__}:page:{page}:size:{size}"
