@@ -612,7 +612,7 @@ Returns all API keys for the authenticated user.
   {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "My API Key",
-    "created_at": "2024-01-01T12:00:00Z",
+    "created_at": "2026-01-01T12:00:00Z",
     "is_active": true,
     "scopes": ["read", "write"]
   }
@@ -647,7 +647,7 @@ Creates a new API key for the authenticated user.
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "My API Key",
   "key": "pk_abcdef123456...",
-  "created_at": "2024-01-01T12:00:00Z",
+  "created_at": "2026-01-01T12:00:00Z",
   "is_active": true,
   "scopes": ["read", "write"]
 }
@@ -679,7 +679,7 @@ Get details of a specific API key by ID.
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "My API Key",
-  "created_at": "2024-01-01T12:00:00Z",
+  "created_at": "2026-01-01T12:00:00Z",
   "is_active": true,
   "scopes": ["read", "write"]
 }
@@ -714,7 +714,7 @@ Update an API key's name or active status.
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Updated Key Name",
-  "created_at": "2024-01-01T12:00:00Z",
+  "created_at": "2026-01-01T12:00:00Z",
   "is_active": false,
   "scopes": ["read", "write"]
 }
@@ -762,7 +762,7 @@ List all API keys for a specific user.
   {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "User's API Key",
-    "created_at": "2024-01-01T12:00:00Z",
+    "created_at": "2026-01-01T12:00:00Z",
     "is_active": true,
     "scopes": ["read", "write"]
   }
@@ -799,7 +799,7 @@ Update another user's API key.
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Admin Updated Name",
-  "created_at": "2024-01-01T12:00:00Z",
+  "created_at": "2026-01-01T12:00:00Z",
   "is_active": false,
   "scopes": ["read", "write"]
 }
@@ -880,6 +880,7 @@ api_template_login_attempts_total{status="invalid_password"} 24.0
 **Configuration:**
 
 To enable metrics, set in your `.env` file:
+
 ```bash
 METRICS_ENABLED=true
 ```
