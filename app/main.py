@@ -99,7 +99,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
 
     # Cleanup: Close Redis connection if it was opened
     if redis_client:
-        await redis_client.aclose()
+        await redis_client.close()
         logger.info("Redis connection closed.")
 
 
