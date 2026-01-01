@@ -8,7 +8,7 @@ from pathlib import Path  # noqa: TC003
 from urllib.parse import quote
 
 from cryptography.fernet import Fernet
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config.helpers import get_project_root
@@ -239,27 +239,6 @@ class Settings(BaseSettings):
             )
             raise ValueError(msg)
         return value
-
-    @model_validator(mode="after")
-    def validate_redis_security(self) -> Settings:
-        """Warn if Redis is enabled without authentication.
-
-        Redis without a password can be a security risk in production
-        environments. This validator warns when Redis is enabled but
-        no password is configured.
-
-        Valid scenarios without a password:
-        - Development environments (localhost)
-        - Redis in private networks/containers
-        - Redis using ACL or TLS authentication
-        """
-        if self.redis_enabled and not self.redis_password:
-            logger.warning(
-                "Redis is enabled without authentication (REDIS_PASSWORD "
-                "is empty). Ensure Redis is secured via network isolation, "
-                "ACLs, or set REDIS_PASSWORD in production environments."
-            )
-        return self
 
 
 @lru_cache

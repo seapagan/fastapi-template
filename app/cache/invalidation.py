@@ -2,9 +2,15 @@
 
 Provides helper functions to clear cached data when underlying data
 changes.
+
+All invalidation functions handle errors gracefully - cache failures
+are logged but don't prevent the operation from succeeding. This ensures
+the app continues functioning (with stale cache) if the cache backend
+fails.
 """
 
 from fastapi_cache import FastAPICache
+from redis.exceptions import RedisError  # type: ignore[import-untyped]
 
 from app.logs import LogCategory, category_logger
 
@@ -23,17 +29,29 @@ async def invalidate_user_cache(user_id: int) -> None:
         # After user edit
         await invalidate_user_cache(user.id)
         ```
+
+    Note:
+        Cache failures are logged but don't raise exceptions. The app
+        continues with stale cache until TTL expires.
     """
-    # Clear /users/me style cache (namespace: "user:{user_id}")
-    namespace = f"user:{user_id}"
-    await FastAPICache.clear(namespace=namespace)
+    try:
+        # Clear /users/me style cache (namespace: "user:{user_id}")
+        namespace = f"user:{user_id}"
+        await FastAPICache.clear(namespace=namespace)
 
-    # Clear single user lookup from /users/?user_id=X
-    # (namespace: "users:{user_id}")
-    users_namespace = f"users:{user_id}"
-    await FastAPICache.clear(namespace=users_namespace)
+        # Clear single user lookup from /users/?user_id=X
+        # (namespace: "users:{user_id}")
+        users_namespace = f"users:{user_id}"
+        await FastAPICache.clear(namespace=users_namespace)
 
-    category_logger.info(f"Cleared cache for user {user_id}", LogCategory.CACHE)
+        category_logger.info(
+            f"Cleared cache for user {user_id}", LogCategory.CACHE
+        )
+    except (RedisError, OSError, RuntimeError) as e:
+        category_logger.error(
+            f"Failed to invalidate cache for user {user_id}: {e}",
+            LogCategory.CACHE,
+        )
 
 
 async def invalidate_users_list_cache() -> None:
@@ -47,9 +65,18 @@ async def invalidate_users_list_cache() -> None:
         # After user creation or deletion
         await invalidate_users_list_cache()
         ```
+
+    Note:
+        Cache failures are logged but don't raise exceptions.
     """
-    await FastAPICache.clear(namespace="users:list")
-    category_logger.info("Cleared users list cache", LogCategory.CACHE)
+    try:
+        await FastAPICache.clear(namespace="users:list")
+        category_logger.info("Cleared users list cache", LogCategory.CACHE)
+    except (RedisError, OSError, RuntimeError) as e:
+        category_logger.error(
+            f"Failed to invalidate users list cache: {e}",
+            LogCategory.CACHE,
+        )
 
 
 async def invalidate_api_keys_cache(user_id: int) -> None:
@@ -67,13 +94,22 @@ async def invalidate_api_keys_cache(user_id: int) -> None:
         # After API key creation/deletion
         await invalidate_api_keys_cache(user.id)
         ```
+
+    Note:
+        Cache failures are logged but don't raise exceptions.
     """
-    namespace = f"apikeys:{user_id}"
-    await FastAPICache.clear(namespace=namespace)
-    category_logger.info(
-        f"Cleared API keys cache for user {user_id}",
-        LogCategory.CACHE,
-    )
+    try:
+        namespace = f"apikeys:{user_id}"
+        await FastAPICache.clear(namespace=namespace)
+        category_logger.info(
+            f"Cleared API keys cache for user {user_id}",
+            LogCategory.CACHE,
+        )
+    except (RedisError, OSError, RuntimeError) as e:
+        category_logger.error(
+            f"Failed to invalidate API keys cache for user {user_id}: {e}",
+            LogCategory.CACHE,
+        )
 
 
 async def invalidate_pattern(pattern: str) -> None:
@@ -93,10 +129,17 @@ async def invalidate_pattern(pattern: str) -> None:
 
     Note:
         Pattern matching depends on the cache backend. Redis supports
-        wildcards, but InMemoryBackend may not.
+        wildcards, but InMemoryBackend may not. Cache failures are
+        logged but don't raise exceptions.
     """
-    await FastAPICache.clear(namespace=pattern)
-    category_logger.info(
-        f"Cleared cache matching pattern: {pattern}",
-        LogCategory.CACHE,
-    )
+    try:
+        await FastAPICache.clear(namespace=pattern)
+        category_logger.info(
+            f"Cleared cache matching pattern: {pattern}",
+            LogCategory.CACHE,
+        )
+    except (RedisError, OSError, RuntimeError) as e:
+        category_logger.error(
+            f"Failed to invalidate cache pattern {pattern}: {e}",
+            LogCategory.CACHE,
+        )

@@ -13,11 +13,13 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_pagination import add_pagination
+from loguru import logger as loguru_logger
 from redis.asyncio import Redis  # type: ignore[import-untyped]
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
+from app.config.log_config import get_log_config
 from app.config.openapi import custom_openapi
 from app.config.settings import get_settings
 from app.database.db import async_session
@@ -27,7 +29,10 @@ from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
 
-# Use standard logging for startup messages (before loguru is initialized)
+# Initialize logguru logging
+get_log_config()
+
+# Use standard logging for startup messages and console
 logger = logging.getLogger("uvicorn")
 
 BLIND_USER_ERROR = 66
@@ -72,6 +77,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
 
     # Initialize cache backend
     if get_settings().redis_enabled:
+        # Warn about missing authentication
+        if not get_settings().redis_password:
+            warning_msg = (
+                "Redis is enabled without authentication "
+                "(REDIS_PASSWORD is empty). Ensure Redis is secured "
+                "via network isolation, ACLs, or set REDIS_PASSWORD "
+                "in production environments."
+            )
+            logger.warning(warning_msg)  # Console via uvicorn
+            loguru_logger.warning(warning_msg)  # File via loguru
+
         try:
             redis_client = Redis.from_url(
                 get_settings().redis_url,
