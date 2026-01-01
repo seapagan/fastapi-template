@@ -36,6 +36,7 @@ class TestLogCategory:
             | LogCategory.ERRORS
             | LogCategory.ADMIN
             | LogCategory.API_KEYS
+            | LogCategory.CACHE
         )
         assert expected == LogCategory.ALL
 

@@ -9,7 +9,11 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from fastapi_cache.backends.redis import RedisBackend
 from fastapi_pagination import add_pagination
+from redis.asyncio import Redis  # type: ignore[import-untyped]
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.admin import register_admin
@@ -47,9 +51,13 @@ if not get_settings().i_read_the_damn_docs:
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     """Lifespan function Replaces the previous startup/shutdown functions.
 
-    Currently we only ensure that the database is available and configured
-    properly. We disconnect from the database immediately after.
+    Currently we:
+    - Ensure the database is available and configured properly
+    - Initialize the cache backend (Redis or in-memory)
     """
+    redis_client = None
+
+    # Test database connection
     try:
         async with async_session() as session:
             await session.connection()
@@ -61,9 +69,38 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         app.routes.clear()
         app.include_router(config_error.router)
 
+    # Initialize cache backend
+    if get_settings().redis_enabled:
+        try:
+            redis_client = Redis.from_url(
+                get_settings().redis_url,
+                encoding="utf8",
+                decode_responses=False,
+            )
+            await redis_client.ping()
+            FastAPICache.init(
+                RedisBackend(redis_client),
+                prefix="fastapi-cache",
+            )
+            logger.info("Redis cache backend initialized successfully.")
+        except (ConnectionError, TimeoutError) as e:
+            logger.warning(
+                "Failed to connect to Redis: %s. "
+                "Falling back to in-memory cache.",
+                e,
+            )
+            FastAPICache.init(InMemoryBackend())
+            redis_client = None
+    else:
+        FastAPICache.init(InMemoryBackend())
+        logger.info("In-memory cache backend initialized.")
+
     yield
-    # we would normally put any cleanup code here, but we don't have any at the
-    # moment so we just yield.
+
+    # Cleanup: Close Redis connection if it was opened
+    if redis_client:
+        await redis_client.aclose()
+        logger.info("Redis connection closed.")
 
 
 app = FastAPI(

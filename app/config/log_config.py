@@ -23,7 +23,8 @@ class LogCategory(Flag):
     ERRORS = auto()  # Error conditions (always recommended)
     ADMIN = auto()  # Admin panel operations
     API_KEYS = auto()  # API key operations
-    ALL = REQUESTS | AUTH | DATABASE | EMAIL | ERRORS | ADMIN | API_KEYS
+    CACHE = auto()  # Cache operations (Redis, invalidation)
+    ALL = REQUESTS | AUTH | DATABASE | EMAIL | ERRORS | ADMIN | API_KEYS | CACHE
 
 
 class LogConfig:
