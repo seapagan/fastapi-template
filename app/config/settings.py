@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from functools import lru_cache
 from pathlib import Path  # noqa: TC003
+from urllib.parse import quote
 
 from cryptography.fernet import Fernet
 from pydantic import Field, field_validator
@@ -145,10 +146,14 @@ class Settings(BaseSettings):
 
         Returns:
             Redis URL in format: redis://[password@]host:port/db
+
+        Note:
+            Password is URL-encoded to handle special characters safely.
         """
         if self.redis_password:
+            encoded_password = quote(self.redis_password, safe="")
             return (
-                f"redis://:{self.redis_password}@"
+                f"redis://:{encoded_password}@"
                 f"{self.redis_host}:{self.redis_port}/{self.redis_db}"
             )
         return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
