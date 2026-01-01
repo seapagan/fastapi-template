@@ -27,7 +27,7 @@ custom_metadata = MetadataBase(
         "url": "https://www.gnramsay.com",
     },
     email="seapagan@gmail.com",
-    year="2024",
+    year="2026",
 )
 ```
 
@@ -71,7 +71,7 @@ License     : MIT
 Author      : Grant Ramsay (seapagan)
 Email       : seapagan@gmail.com
 Website     : https://www.gnramsay.com
-(C) Year    : 2024
+(C) Year    : 2026
 
 Is this Correct? [Y/n]:
 
