@@ -13,6 +13,7 @@ async def invalidate_user_cache(user_id: int) -> None:
     """Invalidate all cached data for a specific user.
 
     Clears user-scoped cache entries (e.g., /users/me, /users/keys).
+    Also clears the single-user lookup in /users/ endpoint.
 
     Args:
         user_id: The ID of the user whose cache should be cleared.
@@ -23,8 +24,15 @@ async def invalidate_user_cache(user_id: int) -> None:
         await invalidate_user_cache(user.id)
         ```
     """
+    # Clear /users/me style cache (namespace: "user:{user_id}")
     namespace = f"user:{user_id}"
     await FastAPICache.clear(namespace=namespace)
+
+    # Clear single user lookup from /users/?user_id=X
+    # (namespace: "users:{user_id}")
+    users_namespace = f"users:{user_id}"
+    await FastAPICache.clear(namespace=users_namespace)
+
     category_logger.info(f"Cleared cache for user {user_id}", LogCategory.CACHE)
 
 

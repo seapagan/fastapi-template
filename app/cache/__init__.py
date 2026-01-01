@@ -13,6 +13,7 @@ from app.cache.invalidation import (
 from app.cache.key_builders import (
     paginated_key_builder,
     user_scoped_key_builder,
+    users_list_key_builder,
 )
 
 __all__ = [
@@ -23,4 +24,5 @@ __all__ = [
     "invalidate_users_list_cache",
     "paginated_key_builder",
     "user_scoped_key_builder",
+    "users_list_key_builder",
 ]

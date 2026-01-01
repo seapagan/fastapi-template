@@ -73,6 +73,44 @@ def paginated_key_builder(
     return f"{namespace}:{func.__name__}:page:{page}:size:{size}"
 
 
+def users_list_key_builder(
+    func: Callable[..., Any],
+    namespace: str,
+    request: Request,
+    response: Response,
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
+) -> str:
+    """Build cache key for /users/ endpoint (paginated or single).
+
+    Handles both modes:
+    - Single user lookup: "users:{user_id}:single"
+    - Paginated list: "users:list:page:N:size:M"
+
+    Args:
+        func: The cached function.
+        namespace: Cache namespace.
+        request: FastAPI Request object.
+        response: FastAPI Response object (unused).
+        args: Positional arguments to the function (unused).
+        kwargs: Keyword arguments to the function.
+
+    Returns:
+        Cache key appropriate for the request mode.
+
+    Example:
+        Single: "users:123:single"
+        Paginated: "users:list:page:1:size:50"
+    """
+    # Check query params first (for GET requests), then kwargs
+    user_id = request.query_params.get("user_id") or kwargs.get("user_id")
+    if user_id:
+        return f"{namespace}:{user_id}:single"
+    page = request.query_params.get("page", "1")
+    size = request.query_params.get("size", "50")
+    return f"{namespace}:list:page:{page}:size:{size}"
+
+
 def user_paginated_key_builder(
     func: Callable[..., Any],
     namespace: str,

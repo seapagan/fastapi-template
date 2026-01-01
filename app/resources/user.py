@@ -7,7 +7,13 @@ from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.cache import cached, invalidate_user_cache, user_scoped_key_builder
+from app.cache import (
+    cached,
+    invalidate_user_cache,
+    invalidate_users_list_cache,
+    user_scoped_key_builder,
+    users_list_key_builder,
+)
 from app.database.db import get_database
 from app.managers.auth import can_edit_user, is_admin
 from app.managers.security import get_current_user
@@ -66,7 +72,10 @@ PAGINATED_USERS_EXAMPLE = {
         }
     },
 )
+@cached(expire=300, namespace="users", key_builder=users_list_key_builder)
 async def get_users(
+    request: Request,  # noqa: ARG001
+    response: Response,  # noqa: ARG001
     db: Annotated[AsyncSession, Depends(get_database)],
     params: Annotated[Params, Depends()],
     user_id: int | None = None,
@@ -110,6 +119,9 @@ async def make_admin(
 ) -> None:
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id, db)
+    # Invalidate user cache and users list cache after role change
+    await invalidate_user_cache(user_id)
+    await invalidate_users_list_cache()
 
 
 @router.post(
@@ -146,6 +158,9 @@ async def ban_user(
     await UserManager.set_ban_status(
         user_id, request.state.user.id, db, banned=True
     )
+    # Invalidate user cache and users list cache after ban
+    await invalidate_user_cache(user_id)
+    await invalidate_users_list_cache()
 
 
 @router.post(
@@ -165,6 +180,9 @@ async def unban_user(
     await UserManager.set_ban_status(
         user_id, request.state.user.id, db, banned=False
     )
+    # Invalidate user cache and users list cache after unban
+    await invalidate_user_cache(user_id)
+    await invalidate_users_list_cache()
 
 
 @router.put(
@@ -183,8 +201,9 @@ async def edit_user(
     Available for the specific requesting User, or an Admin.
     """
     await UserManager.update_user(user_id, user_data, db)
-    # Invalidate user cache after editing
+    # Invalidate user cache and users list cache after editing
     await invalidate_user_cache(user_id)
+    await invalidate_users_list_cache()
     return await db.get(User, user_id)
 
 
@@ -202,6 +221,9 @@ async def delete_user(
     Admin only.
     """
     await UserManager.delete_user(user_id, db)
+    # Invalidate user cache and users list cache after deletion
+    await invalidate_user_cache(user_id)
+    await invalidate_users_list_cache()
 
 
 @router.get(
