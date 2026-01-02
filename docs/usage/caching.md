@@ -38,6 +38,7 @@ scale across multiple instances.
 ### Option 2: Redis Caching (Production/Multi-Instance)
 
 1. Ensure Redis is running and accessible:
+
    ```bash
    # Install Redis (Linux)
    sudo apt install redis-server
@@ -47,6 +48,7 @@ scale across multiple instances.
    ```
 
 2. Add to your `.env` file:
+
    ```bash
    CACHE_ENABLED=true
    REDIS_ENABLED=true
@@ -57,11 +59,13 @@ scale across multiple instances.
    ```
 
 3. Optionally configure cache TTL (default 300 seconds):
+
    ```bash
    CACHE_DEFAULT_TTL=600
    ```
 
 4. Restart your application:
+
    ```bash
    api-admin serve
    ```
@@ -378,7 +382,7 @@ LOG_CATEGORIES=CACHE,REQUESTS
 
 Example log output:
 
-```
+```code
 2026-01-02 14:23:45 | CACHE | CACHE MISS: GET /users/ (52.34ms)
 2026-01-02 14:23:50 | CACHE | CACHE HIT: GET /users/ (1.89ms)
 ```

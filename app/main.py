@@ -102,7 +102,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
                     prefix="fastapi-cache",
                 )
                 logger.info("Redis cache backend initialized successfully.")
-            except (ConnectionError, TimeoutError, RedisError) as e:
+            except (ConnectionError, TimeoutError, RedisError, OSError) as e:
                 logger.warning(
                     "Failed to connect to Redis: %s. "
                     "Falling back to in-memory cache.",
