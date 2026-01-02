@@ -51,7 +51,7 @@ async def init_and_clear_cache() -> None:
     # Use getattr to safely check _backend without triggering assertion
     backend = getattr(FastAPICache, "_backend", None)
     if not isinstance(backend, InMemoryBackend):
-        FastAPICache.init(InMemoryBackend())
+        FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
 
     # Always clear cache to ensure test isolation
     await FastAPICache.clear()
