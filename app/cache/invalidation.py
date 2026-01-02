@@ -112,34 +112,34 @@ async def invalidate_api_keys_cache(user_id: int) -> None:
         )
 
 
-async def invalidate_pattern(pattern: str) -> None:
-    """Invalidate cache keys matching a pattern.
+async def invalidate_namespace(namespace: str) -> None:
+    """Invalidate all cache keys under a namespace.
 
-    WARNING: This clears the entire namespace matching the pattern.
-    Use with caution.
+    Clears all cache entries stored under the given namespace prefix.
+    Useful for custom endpoint groups without dedicated invalidation
+    helpers.
 
     Args:
-        pattern: Cache key pattern to match (e.g., "user:*").
+        namespace: Cache namespace prefix to clear (e.g., "products:123").
 
     Example:
         ```python
-        # Clear all user-related caches
-        await invalidate_pattern("user:*")
+        # Clear all caches under "products:123" namespace
+        await invalidate_namespace("products:123")
         ```
 
     Note:
-        Pattern matching depends on the cache backend. Redis supports
-        wildcards, but InMemoryBackend may not. Cache failures are
-        logged but don't raise exceptions.
+        Cache failures are logged but don't raise exceptions. The app
+        continues with stale cache until TTL expires.
     """
     try:
-        await FastAPICache.clear(namespace=pattern)
+        await FastAPICache.clear(namespace=namespace)
         category_logger.info(
-            f"Cleared cache matching pattern: {pattern}",
+            f"Cleared cache namespace: {namespace}",
             LogCategory.CACHE,
         )
     except (RedisError, OSError, RuntimeError) as e:
         category_logger.error(
-            f"Failed to invalidate cache pattern {pattern}: {e}",
+            f"Failed to invalidate cache namespace {namespace}: {e}",
             LogCategory.CACHE,
         )
