@@ -71,8 +71,8 @@ following advantages to starting your own from scratch :
 - **Optional response caching** for improved performance and reduced database
   load. Disabled by default, can be enabled with in-memory or Redis backend.
   Includes cache invalidation utilities, monitoring, and configurable TTL.
-  Cache hits typically 50-100x faster than database queries. Tests run with
-  in-memory caching enabled.
+  Cache hits typically 5-30x faster than database queries (depending on query
+  complexity). Tests run with in-memory caching enabled.
 - **Prometheus metrics** for production observability. Optional metrics
   collection tracks HTTP performance (requests, latency, in-flight), business
   metrics (auth failures, API key usage, login attempts), and custom

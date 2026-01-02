@@ -464,9 +464,9 @@ CACHE_DEFAULT_TTL=300
 ```
 
 !!! tip "Performance Benefits"
-    Enabling Redis caching can reduce database query response times by
-    50-100x for repeated requests. Cache hits typically respond in
-    <5ms vs 100-500ms for database queries.
+    Enabling caching can reduce database query response times by 5-30x
+    for repeated requests (depending on query complexity). Cache hits
+    typically respond in 1-2ms vs 5-60ms for database queries.
 
 !!! note "Testing Configuration"
     Tests are automatically run with in-memory caching enabled via

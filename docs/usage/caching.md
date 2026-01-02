@@ -379,11 +379,12 @@ LOG_CATEGORIES=CACHE,REQUESTS
 Example log output:
 
 ```
-2026-01-02 14:23:45 | CACHE | CACHE MISS: GET /users/ (145.32ms)
-2026-01-02 14:23:50 | CACHE | CACHE HIT: GET /users/ (2.18ms)
+2026-01-02 14:23:45 | CACHE | CACHE MISS: GET /users/ (52.34ms)
+2026-01-02 14:23:50 | CACHE | CACHE HIT: GET /users/ (1.89ms)
 ```
 
-Cache hits are typically 50-100x faster than database queries.
+Cache hits are typically 5-30x faster than database queries, depending
+on query complexity and dataset size.
 
 ### Force Cache Bypass
 
@@ -400,8 +401,8 @@ This forces a fresh response while still updating the cache.
 ### Cache Benefits
 
 - **Database Load Reduction**: Repeated queries served from cache
-- **Response Time**: Cache hits typically <5ms vs 100-500ms for
-  database queries
+- **Response Time**: Cache hits typically 1-2ms vs 5-60ms for database
+  queries (depending on query complexity)
 - **Scalability**: Reduces database connections in high-traffic
   scenarios
 - **Cost Savings**: Lower database CPU and I/O usage
@@ -415,11 +416,13 @@ This forces a fresh response while still updating the cache.
 
 ### Typical Performance
 
+*Approximate benchmarks with moderate dataset (50 users, 10 API keys):*
+
 | Operation          | Without Cache | With Cache (Hit) | Improvement |
 | ------------------ | ------------- | ---------------- | ----------- |
-| User List (50)     | 150ms         | 2ms              | 75x faster  |
-| Single User        | 45ms          | 1ms              | 45x faster  |
-| API Keys List (10) | 80ms          | 1.5ms            | 53x faster  |
+| User List (50)     | ~60ms         | ~2ms             | ~30x faster |
+| Single User        | ~5ms          | ~1ms             | ~5x faster  |
+| API Keys List (10) | ~50ms         | ~1.5ms           | ~33x faster |
 
 ## Troubleshooting
 
