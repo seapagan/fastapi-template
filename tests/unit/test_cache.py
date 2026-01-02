@@ -35,6 +35,7 @@ class TestCachedDecorator:
         """Test that default TTL is used when expire=None."""
         # Mock get_settings to return a specific default TTL
         mock_settings = MagicMock()
+        mock_settings.cache_enabled = True
         mock_settings.cache_default_ttl = 600
         monkeypatch.setattr(
             "app.cache.decorators.get_settings", lambda: mock_settings
@@ -46,6 +47,28 @@ class TestCachedDecorator:
         # The decorator should have pulled the default TTL
         # We can't easily inspect the wrapper, but we've covered line 51
         assert decorator is not None
+
+    def test_cached_returns_noop_when_disabled(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Test that decorator is a no-op when cache_enabled=False."""
+        # Mock get_settings to return cache_enabled=False
+        mock_settings = MagicMock()
+        mock_settings.cache_enabled = False
+        monkeypatch.setattr(
+            "app.cache.decorators.get_settings", lambda: mock_settings
+        )
+
+        # Create a test function
+        async def test_func() -> str:
+            return "test_result"
+
+        # Apply cached decorator
+        decorator = cached(expire=300, namespace="test")
+        decorated_func = decorator(test_func)
+
+        # Function should be unchanged (no-op decorator)
+        assert decorated_func is test_func
 
 
 @pytest.mark.unit

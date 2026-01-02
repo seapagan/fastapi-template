@@ -76,42 +76,45 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         app.routes.clear()
         app.include_router(config_error.router)
 
-    # Initialize cache backend
-    if get_settings().redis_enabled:
-        # Warn about missing authentication
-        if not get_settings().redis_password:
-            warning_msg = (
-                "Redis is enabled without authentication "
-                "(REDIS_PASSWORD is empty). Ensure Redis is secured "
-                "via network isolation, ACLs, or set REDIS_PASSWORD "
-                "in production environments."
-            )
-            logger.warning(warning_msg)  # Console via uvicorn
-            loguru_logger.warning(warning_msg)  # File via loguru
+    # Initialize cache backend (if enabled)
+    if get_settings().cache_enabled:
+        if get_settings().redis_enabled:
+            # Warn about missing authentication
+            if not get_settings().redis_password:
+                warning_msg = (
+                    "Redis is enabled without authentication "
+                    "(REDIS_PASSWORD is empty). Ensure Redis is secured "
+                    "via network isolation, ACLs, or set REDIS_PASSWORD "
+                    "in production environments."
+                )
+                logger.warning(warning_msg)  # Console via uvicorn
+                loguru_logger.warning(warning_msg)  # File via loguru
 
-        try:
-            redis_client = Redis.from_url(
-                get_settings().redis_url,
-                encoding="utf8",
-                decode_responses=False,
-            )
-            await redis_client.ping()
-            FastAPICache.init(
-                RedisBackend(redis_client),
-                prefix="fastapi-cache",
-            )
-            logger.info("Redis cache backend initialized successfully.")
-        except (ConnectionError, TimeoutError, RedisError) as e:
-            logger.warning(
-                "Failed to connect to Redis: %s. "
-                "Falling back to in-memory cache.",
-                e,
-            )
+            try:
+                redis_client = Redis.from_url(
+                    get_settings().redis_url,
+                    encoding="utf8",
+                    decode_responses=False,
+                )
+                await redis_client.ping()
+                FastAPICache.init(
+                    RedisBackend(redis_client),
+                    prefix="fastapi-cache",
+                )
+                logger.info("Redis cache backend initialized successfully.")
+            except (ConnectionError, TimeoutError, RedisError) as e:
+                logger.warning(
+                    "Failed to connect to Redis: %s. "
+                    "Falling back to in-memory cache.",
+                    e,
+                )
+                FastAPICache.init(InMemoryBackend())
+                redis_client = None
+        else:
             FastAPICache.init(InMemoryBackend())
-            redis_client = None
+            logger.info("In-memory cache backend initialized.")
     else:
-        FastAPICache.init(InMemoryBackend())
-        logger.info("In-memory cache backend initialized.")
+        logger.info("Caching is disabled (CACHE_ENABLED=false).")
 
     yield
 

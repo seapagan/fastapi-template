@@ -121,6 +121,7 @@ class TestLifespan:
         mock_connection.return_value = None
 
         mock_settings = mocker.patch("app.main.get_settings")
+        mock_settings.return_value.cache_enabled = True
         mock_settings.return_value.redis_enabled = True
         mock_settings.return_value.redis_password = "secret"  # noqa: S105
         mock_settings.return_value.redis_url = "redis://localhost:6379/0"
@@ -156,6 +157,7 @@ class TestLifespan:
         mock_connection.return_value = None
 
         mock_settings = mocker.patch("app.main.get_settings")
+        mock_settings.return_value.cache_enabled = True
         mock_settings.return_value.redis_enabled = False
 
         mock_cache_init = mocker.patch("app.main.FastAPICache.init")
@@ -188,6 +190,7 @@ class TestLifespan:
         mock_connection.return_value = None
 
         mock_settings = mocker.patch("app.main.get_settings")
+        mock_settings.return_value.cache_enabled = True
         mock_settings.return_value.redis_enabled = True
         mock_settings.return_value.redis_password = ""
         mock_settings.return_value.redis_url = "redis://localhost:6379/0"
@@ -219,6 +222,7 @@ class TestLifespan:
         mock_connection.return_value = None
 
         mock_settings = mocker.patch("app.main.get_settings")
+        mock_settings.return_value.cache_enabled = True
         mock_settings.return_value.redis_enabled = True
         mock_settings.return_value.redis_password = "secret"  # noqa: S105
         mock_settings.return_value.redis_url = "redis://localhost:6379/0"
@@ -242,3 +246,36 @@ class TestLifespan:
         cache_backend = mock_cache_init.call_args.args[0]
         assert isinstance(cache_backend, RedisBackend)
         mock_redis.close.assert_awaited_once()
+
+    async def test_lifespan_logs_when_caching_disabled(
+        self, caplog, mocker
+    ) -> None:
+        """Ensure caching disabled message is logged."""
+        app = FastAPI()
+        mock_session = mocker.patch(self.mock_session)
+        mock_connection = (
+            mock_session.return_value.__aenter__.return_value.connection
+        )
+        mock_connection.return_value = None
+
+        mock_settings = mocker.patch("app.main.get_settings")
+        mock_settings.return_value.cache_enabled = False
+
+        mock_cache_init = mocker.patch("app.main.FastAPICache.init")
+        mock_redis_from_url = mocker.patch("app.main.Redis.from_url")
+
+        caplog.set_level(logging.INFO)
+
+        async with lifespan(app):
+            pass  # NOSONAR
+
+        log_messages = [
+            (record.levelname, record.message) for record in caplog.records
+        ]
+
+        assert (
+            "INFO",
+            "Caching is disabled (CACHE_ENABLED=false).",
+        ) in log_messages
+        mock_cache_init.assert_not_called()
+        mock_redis_from_url.assert_not_called()

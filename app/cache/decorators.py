@@ -18,7 +18,8 @@ def cached(
     """Project-specific cache decorator with defaults.
 
     Wraps fastapi-cache's cache decorator with sensible defaults from
-    settings.
+    settings. When caching is disabled (CACHE_ENABLED=false), acts as
+    a no-op decorator that returns the function unchanged.
 
     Args:
         expire: Cache TTL in seconds. Uses CACHE_DEFAULT_TTL if None.
@@ -30,7 +31,8 @@ def cached(
             caching Pydantic models.
 
     Returns:
-        Decorated function with caching enabled.
+        Decorated function with caching enabled, or the original
+        function if caching is disabled.
 
     Example:
         ```python
@@ -47,6 +49,15 @@ def cached(
             return user
         ```
     """
+    # If caching is disabled, return a no-op decorator
+    if not get_settings().cache_enabled:
+
+        def noop_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            return func
+
+        return noop_decorator
+
+    # Caching is enabled - proceed with normal caching logic
     if expire is None:
         expire = get_settings().cache_default_ttl
 

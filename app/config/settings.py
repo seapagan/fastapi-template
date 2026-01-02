@@ -127,8 +127,10 @@ class Settings(BaseSettings):
     # Prometheus metrics settings (opt-in, disabled by default)
     metrics_enabled: bool = False
 
-    # Redis cache settings (opt-in, disabled by default)
-    # Falls back to in-memory cache when disabled
+    # Cache settings (opt-in, disabled by default)
+    cache_enabled: bool = False
+    # Redis backend settings (when cache_enabled=True)
+    # Falls back to in-memory cache if redis_enabled=False
     redis_enabled: bool = False
     redis_host: str = "localhost"
     redis_port: int = 6379
