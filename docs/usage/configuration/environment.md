@@ -338,6 +338,146 @@ ADMIN_PAGES_ENCRYPTION_KEY=your_generated_encryption_key_here
 ADMIN_PAGES_TIMEOUT=86400
 ```
 
+## Configure Redis and Caching (Optional)
+
+The API includes optional response caching to improve performance and
+reduce database load. Caching is disabled by default and must be
+explicitly enabled.
+
+!!! info "Seamless Fallback"
+    If Redis connection fails, the application automatically falls back
+    to in-memory caching with a warning logged. Your API continues to
+    function normally.
+
+### Enable Caching
+
+Master switch to enable/disable caching entirely:
+
+```ini
+CACHE_ENABLED=false
+```
+
+When `false` (default), no caching occurs and the `@cached()` decorator
+is a no-op with zero overhead.
+
+### Choose Cache Backend
+
+When `CACHE_ENABLED=true`, select the backend:
+
+```ini
+REDIS_ENABLED=false
+```
+
+- When `false`: Uses in-memory caching (perfect for development or
+  single-instance deployments)
+- When `true`: Uses Redis for distributed caching (recommended for
+  production with multiple instances)
+
+### Redis Connection Settings
+
+Configure your Redis server connection:
+
+```ini
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+```
+
+**`REDIS_HOST`** - Redis server hostname or IP address
+
+**`REDIS_PORT`** - Redis server port (default: 6379)
+
+**`REDIS_PASSWORD`** - Redis password if authentication is enabled.
+Special characters (e.g., `@`, `:`, `!`) are automatically URL-encoded.
+
+**`REDIS_DB`** - Redis database number (0-15, default: 0)
+
+### Cache Time-To-Live (TTL)
+
+How long (in seconds) to cache responses by default:
+
+```ini
+CACHE_DEFAULT_TTL=300
+```
+
+Default is 300 seconds (5 minutes). This is used when the `@cached()`
+decorator doesn't specify an `expire` parameter. Adjust based on your
+data update frequency:
+
+- **Fast-changing data**: `60` (1 minute) or less
+- **Standard data**: `300` (5 minutes) - default
+- **Slow-changing data**: `600` (10 minutes) or more
+
+Individual endpoints can override this with custom TTL values.
+
+### Cache Logging
+
+To monitor cache hits and misses, add `CACHE` to your `LOG_CATEGORIES`:
+
+```ini
+LOG_CATEGORIES=ERRORS,AUTH,CACHE
+```
+
+This logs cache operations including hits, misses, and invalidations.
+See the [Caching and Performance](../caching.md) documentation for
+details.
+
+### Complete Caching Configuration Examples
+
+**Caching disabled (default):**
+
+```ini
+CACHE_ENABLED=false
+```
+
+**Development (in-memory caching):**
+
+```ini
+CACHE_ENABLED=true
+REDIS_ENABLED=false
+CACHE_DEFAULT_TTL=300
+```
+
+**Production (Redis caching):**
+
+```ini
+CACHE_ENABLED=true
+REDIS_ENABLED=true
+REDIS_HOST=redis.example.com
+REDIS_PORT=6379
+REDIS_PASSWORD=my_secure_password
+REDIS_DB=0
+CACHE_DEFAULT_TTL=600
+```
+
+**Docker Compose setup:**
+
+```ini
+CACHE_ENABLED=true
+REDIS_ENABLED=true
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+CACHE_DEFAULT_TTL=300
+```
+
+!!! tip "Performance Benefits"
+    Enabling caching can reduce database query response times by 5-30x
+    for repeated requests (depending on query complexity). Cache hits
+    typically respond in 1-2ms vs 5-60ms for database queries.
+
+!!! note "Testing Configuration"
+    Tests are automatically run with in-memory caching enabled via
+    `CACHE_ENABLED=true` in `pyproject.toml`. This ensures cache-related
+    code paths are tested without requiring Redis.
+
+!!! note "Further Reading"
+    See [Caching and Performance](../caching.md) for comprehensive
+    documentation on using the caching system, cache invalidation, and
+    monitoring.
+
 ## Configure Logging (Optional)
 
 The API uses loguru for structured logging with rotation, retention, and
@@ -348,6 +488,13 @@ capabilities.
     "Console Logging" FastAPI/Uvicorn already log to console. The
     file-based logging configured here is in addition to that and provides
     persistent, categorized logs.
+
+!!! note "Async queue in production"
+    Loguru's file logging normally uses an internal queue (`enqueue=True`)
+    for async, multiprocess-safe writes. When running with `uvicorn --reload`,
+    the reloader process can trigger semaphore warnings, so enqueue is
+    automatically disabled in reload mode (synchronous writes). In production
+    (no reload), enqueue remains enabled for better throughput.
 
 ### Log Output Directory
 
@@ -467,6 +614,7 @@ LOG_CATEGORIES=ALL
 | ERRORS    | Error conditions and exceptions   | Production (always)         |
 | ADMIN     | Admin panel operations            | Production (audit)          |
 | API_KEYS  | API key operations                | Production (security)       |
+| CACHE     | Cache operations, hits, misses    | Performance tuning          |
 
 **Configuration examples:**
 

@@ -9,20 +9,28 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from fastapi_cache.backends.redis import RedisBackend
 from fastapi_pagination import add_pagination
+from loguru import logger as loguru_logger
+from redis import RedisError
+from redis.asyncio import Redis
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
+from app.config.log_config import get_log_config
 from app.config.openapi import custom_openapi
 from app.config.settings import get_settings
 from app.database.db import async_session
 from app.metrics.instrumentator import register_metrics
+from app.middleware.cache_logging import CacheLoggingMiddleware
 from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
 
-# Use standard logging for startup messages (before loguru is initialized)
+# Use standard logging for startup messages and console
 logger = logging.getLogger("uvicorn")
 
 BLIND_USER_ERROR = 66
@@ -47,9 +55,16 @@ if not get_settings().i_read_the_damn_docs:
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     """Lifespan function Replaces the previous startup/shutdown functions.
 
-    Currently we only ensure that the database is available and configured
-    properly. We disconnect from the database immediately after.
+    Currently we:
+    - Ensure the database is available and configured properly
+    - Initialize the cache backend (Redis or in-memory)
     """
+    # Initialize loguru logging within the server process.
+    get_log_config()
+
+    redis_client = None
+
+    # Test database connection
     try:
         async with async_session() as session:
             await session.connection()
@@ -61,9 +76,57 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         app.routes.clear()
         app.include_router(config_error.router)
 
+    # Initialize cache backend (if enabled)
+    if get_settings().cache_enabled:
+        if get_settings().redis_enabled:
+            # Warn about missing authentication
+            if not get_settings().redis_password:
+                warning_msg = (
+                    "Redis is enabled without authentication "
+                    "(REDIS_PASSWORD is empty). Ensure Redis is secured "
+                    "via network isolation, ACLs, or set REDIS_PASSWORD "
+                    "in production environments."
+                )
+                logger.warning(warning_msg)  # Console via uvicorn
+                loguru_logger.warning(warning_msg)  # File via loguru
+
+            try:
+                redis_client = Redis.from_url(
+                    get_settings().redis_url,
+                    encoding="utf8",
+                    decode_responses=False,
+                )
+                await redis_client.ping()
+                FastAPICache.init(
+                    RedisBackend(redis_client),
+                    prefix="fastapi-cache",
+                )
+                logger.info("Redis cache backend initialized successfully.")
+            except (ConnectionError, TimeoutError, RedisError, OSError) as e:
+                logger.warning(
+                    "Failed to connect to Redis: %s. "
+                    "Falling back to in-memory cache.",
+                    e,
+                )
+                if redis_client:
+                    await redis_client.close()
+                FastAPICache.init(InMemoryBackend())
+                redis_client = None
+        else:
+            FastAPICache.init(InMemoryBackend())
+            logger.info("In-memory cache backend initialized.")
+    else:
+        logger.info("Caching is disabled (CACHE_ENABLED=false).")
+
     yield
-    # we would normally put any cleanup code here, but we don't have any at the
-    # moment so we just yield.
+
+    # Ensure loguru queue is drained before shutdown to avoid warnings.
+    loguru_logger.complete()
+
+    # Cleanup: Close Redis connection if it was opened
+    if redis_client:
+        await redis_client.close()
+        logger.info("Redis connection closed.")
 
 
 app = FastAPI(
@@ -110,6 +173,9 @@ app.add_middleware(
 
 # Add logging middleware
 app.add_middleware(LoggingMiddleware)
+
+# Add cache logging middleware
+app.add_middleware(CacheLoggingMiddleware)
 
 # Add pagination support
 add_pagination(app)

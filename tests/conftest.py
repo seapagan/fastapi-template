@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 import pytest_asyncio
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 from typer.testing import CliRunner
 
@@ -34,6 +36,25 @@ async_engine = async_test_session.kw["bind"]
 def pytest_configure(config) -> None:
     """Clear the screen before running tests."""
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
+
+
+# Initialize cache backend if needed and clear before each test
+@pytest_asyncio.fixture(autouse=True, scope="function")
+async def init_and_clear_cache() -> None:
+    """Initialize FastAPICache if needed, then clear before each test.
+
+    Only calls FastAPICache.init() if the backend is not already an
+    InMemoryBackend, avoiding repeated initialization that can cause
+    race conditions.
+    """
+    # Only initialize if backend is not already InMemoryBackend
+    # Use getattr to safely check _backend without triggering assertion
+    backend = getattr(FastAPICache, "_backend", None)
+    if not isinstance(backend, InMemoryBackend):
+        FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
+
+    # Always clear cache to ensure test isolation
+    await FastAPICache.clear()
 
 
 # reset the database before each test

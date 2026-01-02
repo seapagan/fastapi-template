@@ -36,6 +36,7 @@ class TestLogCategory:
             | LogCategory.ERRORS
             | LogCategory.ADMIN
             | LogCategory.API_KEYS
+            | LogCategory.CACHE
         )
         assert expected == LogCategory.ALL
 
@@ -312,6 +313,46 @@ class TestLogConfig:
         # Verify first is sys.stderr and second is string path
         assert first_call_args == sys.stderr
         assert isinstance(second_call_args, str)
+
+    def test_setup_logging_logs_when_reload_enabled(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test setup_logging() logs when uvicorn reload is enabled."""
+        # COVERS: log_config.py lines 105-108 (reload log)
+        mock_settings = Mock(
+            log_path="./logs",
+            log_level="INFO",
+            log_rotation="1 day",
+            log_retention="30 days",
+            log_compression="zip",
+            log_categories="ALL",
+            log_filename="api.log",
+            log_console_enabled=False,
+        )
+        mocker.patch(
+            "app.config.settings.get_settings", return_value=mock_settings
+        )
+        mocker.patch(
+            "app.config.log_config.sys.argv",
+            ["uvicorn", "app.main:app", "--reload"],
+        )
+
+        mock_logger_add = mocker.patch("app.config.log_config.logger.add")
+        mocker.patch("app.config.log_config.logger.remove")
+        mock_uvicorn_logger = mocker.Mock()
+        mock_get_logger = mocker.patch(
+            "app.config.log_config.logging.getLogger",
+            return_value=mock_uvicorn_logger,
+        )
+
+        setup_logging()
+
+        mock_get_logger.assert_called_once_with("uvicorn")
+        mock_uvicorn_logger.info.assert_called_once_with(
+            "Loguru enqueue disabled because uvicorn reload is enabled."
+        )
+        assert mock_logger_add.call_count == 1
+        assert mock_logger_add.call_args.kwargs["enqueue"] is False
 
 
 @pytest.mark.unit

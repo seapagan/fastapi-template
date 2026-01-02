@@ -38,6 +38,18 @@ suitable defaults. Non-secret (or depoloyment independent) settings should go
 in the `metadata` file, while secrets (or deployment specific) should go in the
 `settings` and `.env` files
 
+**app/cache/** - Contains response caching infrastructure for improved API
+performance (opt-in, disabled by default). This module provides:
+
+- `decorators.py` - `@cached()` decorator wrapper with project defaults
+- `key_builders.py` - Functions to generate cache keys (user-scoped,
+  paginated, etc.)
+- `invalidation.py` - Helpers to clear cache when data changes
+
+Caching is enabled via `CACHE_ENABLED=true` and supports both in-memory
+(development) and Redis (production) backends. See the [Caching and
+Performance](usage/caching.md) documentation for usage details.
+
 **app/database/** - This module controls database setup and configuration, and
 should generally not need to be touched.
 
@@ -62,11 +74,16 @@ deployments. The `/metrics` endpoint exposes these metrics in Prometheus format
 when enabled.
 
 **app/middleware/** - Contains custom middleware components that process
-requests/responses. Currently includes `LoggingMiddleware` which logs HTTP
-requests in uvicorn format when the `REQUESTS` log category is enabled
-(controlled via `LOG_CATEGORIES` in settings). To add custom middleware, create
-a new file in this directory and register it in `main.py` using
-`app.add_middleware()`. See the [FastAPI middleware
+requests/responses. Currently includes:
+
+- `logging.py` - `LoggingMiddleware` which logs HTTP requests in uvicorn
+  format when the `REQUESTS` log category is enabled
+- `cache_logging.py` - `CacheLoggingMiddleware` which logs cache hits/misses
+  with timing when the `CACHE` log category is enabled
+
+All middleware is controlled via `LOG_CATEGORIES` in settings. To add custom
+middleware, create a new file in this directory and register it in `main.py`
+using `app.add_middleware()`. See the [FastAPI middleware
 docs](https://fastapi.tiangolo.com/tutorial/middleware/){:target="_blank"} for
 details.
 

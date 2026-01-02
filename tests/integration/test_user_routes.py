@@ -259,19 +259,23 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin can ban a user."""
-        admin_user = self.get_test_user(admin=True)
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=1))
+        admin_user_data = self.get_test_user(admin=True)
+        admin_user = User(**admin_user_data)
+        test_db.add(admin_user)
 
+        await test_db.flush()
+        admin_user_id = admin_user.id
         await test_db.commit()
 
+        token = AuthManager.encode_token(User(id=admin_user_id))
+
         response = await client.post(
-            "/users/1/ban",
+            f"/users/{admin_user_id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         check_not_banned = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={admin_user_id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 

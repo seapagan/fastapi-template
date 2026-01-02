@@ -194,3 +194,76 @@ class TestValidatorsIntegration:
         # Should raise ValueError (one of the validators will catch it)
         with pytest.raises(ValueError, match=r"ERROR"):
             Settings()
+
+
+class TestRedisUrlProperty:
+    """Test the Redis URL generation with password encoding."""
+
+    def test_redis_url_without_password(self, monkeypatch) -> None:
+        """Test Redis URL generation when password is empty."""
+        monkeypatch.setenv("REDIS_ENABLED", "true")
+        monkeypatch.setenv("REDIS_HOST", "localhost")
+        monkeypatch.setenv("REDIS_PORT", "6379")
+        monkeypatch.setenv("REDIS_DB", "0")
+        monkeypatch.setenv("REDIS_PASSWORD", "")
+
+        settings = Settings()
+        expected_url = "redis://localhost:6379/0"
+
+        assert settings.redis_url == expected_url, (
+            "Redis URL should not include password when empty"
+        )
+
+    def test_redis_url_with_simple_password(self, monkeypatch) -> None:
+        """Test Redis URL generation with simple password."""
+        monkeypatch.setenv("REDIS_ENABLED", "true")
+        monkeypatch.setenv("REDIS_HOST", "localhost")
+        monkeypatch.setenv("REDIS_PORT", "6379")
+        monkeypatch.setenv("REDIS_DB", "0")
+        monkeypatch.setenv("REDIS_PASSWORD", "simplepass")
+
+        settings = Settings()
+        expected_url = "redis://:simplepass@localhost:6379/0"
+
+        assert settings.redis_url == expected_url, (
+            "Redis URL should include simple password correctly"
+        )
+
+    def test_redis_url_with_special_characters(self, monkeypatch) -> None:
+        """Test Redis URL generation with password containing special chars."""
+        monkeypatch.setenv("REDIS_ENABLED", "true")
+        monkeypatch.setenv("REDIS_HOST", "redis.example.com")
+        monkeypatch.setenv("REDIS_PORT", "6380")
+        monkeypatch.setenv("REDIS_DB", "1")
+        # Password with special characters that need URL encoding
+        monkeypatch.setenv("REDIS_PASSWORD", "p@ss:w0rd!#$")
+
+        settings = Settings()
+        # URL-encoded: @ -> %40, : -> %3A, ! -> %21, # -> %23, $ -> %24
+        expected_url = (
+            "redis://:p%40ss%3Aw0rd%21%23%24@redis.example.com:6380/1"
+        )
+
+        assert settings.redis_url == expected_url, (
+            "Redis URL should encode special characters in password"
+        )
+
+    def test_redis_url_with_unicode_password(self, monkeypatch) -> None:
+        """Test Redis URL generation with unicode in password."""
+        monkeypatch.setenv("REDIS_ENABLED", "true")
+        monkeypatch.setenv("REDIS_HOST", "localhost")
+        monkeypatch.setenv("REDIS_PORT", "6379")
+        monkeypatch.setenv("REDIS_DB", "0")
+        # Password with unicode characters
+        monkeypatch.setenv("REDIS_PASSWORD", "pass密码")
+
+        settings = Settings()
+
+        # Should not raise an exception
+        redis_url = settings.redis_url
+        assert redis_url.startswith("redis://:"), (
+            "Redis URL should start with redis://:"
+        )
+        assert "@localhost:6379/0" in redis_url, (
+            "Redis URL should contain host and port"
+        )

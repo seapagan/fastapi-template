@@ -11,6 +11,7 @@ dependencies = [
   "alembic>=1.14.0",
   "anyio>=4.6.2.post1",
   "asyncclick>=8.1.7.2",
+  "async-timeout==5.0.1 ; python_version < '3.12'",
   "asyncpg>=0.30.0",
   "email-validator>=2.2.0",
   "fastapi[standard]>=0.115.4",
@@ -32,6 +33,7 @@ dependencies = [
   "sqladmin[full]>=0.20.1",
   "fastapi-pagination>=0.12.34",
   "loguru>=0.7.2",
+  "fastapi-cache2[redis]>=0.2.2",
 ]
 
 [project.scripts]
@@ -82,6 +84,7 @@ dev = [
   "mkdocs-swagger-ui-tag",
   "ty>=0.0.5",
   "prek>=0.2.24",
+  "types-redis>=4.6.0.20241004",
 ]
 
 [tool.uv.sources]
@@ -248,6 +251,7 @@ mock_use_standalone_module = true
 env = [
   "I_READ_THE_DAMN_DOCS=true",
   "ADMIN_PAGES_ENABLED=true",
+  "CACHE_ENABLED=true",
   "LOG_FILENAME=test_api.log",
   "METRICS_ENABLED=True",
 ]

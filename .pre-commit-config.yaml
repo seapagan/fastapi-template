@@ -27,6 +27,7 @@ repos:
         additional_dependencies:
           - pydantic
           - sqladmin
+          - types-redis
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.

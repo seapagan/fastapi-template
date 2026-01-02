@@ -1,11 +1,20 @@
 """API Key routes."""
 
+from contextlib import suppress
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi_cache import FastAPICache
+from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.cache import (
+    api_key_single_key_builder,
+    api_keys_list_key_builder,
+    cached,
+    invalidate_api_keys_cache,
+)
 from app.database.db import get_database
 from app.database.helpers import update_api_key_
 from app.managers.api_key import ApiKeyErrorMessages, ApiKeyManager
@@ -29,6 +38,10 @@ async def create_api_key(
     api_key, raw_key = await ApiKeyManager.create_key(
         user, request.name, request.scopes, db
     )
+
+    # Invalidate API keys list cache for this user
+    await invalidate_api_keys_cache(user.id)
+
     # Create response with all fields including the raw key
     response_data = {
         "id": api_key.id,
@@ -42,7 +55,10 @@ async def create_api_key(
 
 
 @router.get("", summary="List API keys for the authenticated user")
+@cached(expire=300, namespace="apikeys", key_builder=api_keys_list_key_builder)
 async def list_api_keys(
+    request: Request,  # noqa: ARG001
+    response: Response,  # noqa: ARG001
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> list[ApiKeyResponse]:
@@ -56,7 +72,10 @@ async def list_api_keys(
     summary="List API keys for a specific user (admin only)",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
 )
+@cached(expire=300, namespace="apikeys", key_builder=api_keys_list_key_builder)
 async def list_user_api_keys(
+    request: Request,  # noqa: ARG001
+    response: Response,  # noqa: ARG001
     user_id: int,
     db: Annotated[AsyncSession, Depends(get_database)],
 ) -> list[ApiKeyResponse]:
@@ -69,7 +88,10 @@ async def list_user_api_keys(
     "/{key_id}",
     summary="Get a specific API key by ID for the authenticated user",
 )
+@cached(expire=300, namespace="apikey", key_builder=api_key_single_key_builder)
 async def get_api_key(
+    request: Request,  # noqa: ARG001
+    response: Response,  # noqa: ARG001
     key_id: UUID,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_database)],
@@ -119,6 +141,14 @@ async def _update_api_key_common(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
+
+    # Invalidate caches: list cache and the specific key cache
+    await invalidate_api_keys_cache(user_id)
+    # Also invalidate the single key cache (uses singular "apikey" namespace)
+    # Graceful degradation - cache will expire via TTL if clear fails
+    with suppress(RedisError, OSError, RuntimeError):
+        await FastAPICache.clear(namespace=f"apikey:{user_id}:{key_id}")
+
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
 
@@ -164,6 +194,13 @@ async def _delete_api_key_common(
             detail=ApiKeyErrorMessages.KEY_NOT_FOUND,
         )
     await ApiKeyManager.delete_key(key_id, db)
+
+    # Invalidate caches: list cache and the specific key cache
+    await invalidate_api_keys_cache(user_id)
+    # Also invalidate the single key cache (uses singular "apikey" namespace)
+    # Graceful degradation - cache will expire via TTL if clear fails
+    with suppress(RedisError, OSError, RuntimeError):
+        await FastAPICache.clear(namespace=f"apikey:{user_id}:{key_id}")
 
 
 @router.delete(

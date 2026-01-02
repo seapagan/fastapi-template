@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from functools import lru_cache
 from pathlib import Path  # noqa: TC003
+from urllib.parse import quote
 
 from cryptography.fernet import Fernet
 from pydantic import Field, field_validator
@@ -126,9 +127,38 @@ class Settings(BaseSettings):
     # Prometheus metrics settings (opt-in, disabled by default)
     metrics_enabled: bool = False
 
+    # Cache settings (opt-in, disabled by default)
+    cache_enabled: bool = False
+    # Redis backend settings (when cache_enabled=True)
+    # Falls back to in-memory cache if redis_enabled=False
+    redis_enabled: bool = False
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_password: str = ""
+    redis_db: int = 0
+    cache_default_ttl: int = 300  # 5 minutes
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
+
+    @property
+    def redis_url(self) -> str:
+        """Generate Redis connection URL from settings.
+
+        Returns:
+            Redis URL in format: redis://[password@]host:port/db
+
+        Note:
+            Password is URL-encoded to handle special characters safely.
+        """
+        if self.redis_password:
+            encoded_password = quote(self.redis_password, safe="")
+            return (
+                f"redis://:{encoded_password}@"
+                f"{self.redis_host}:{self.redis_port}/{self.redis_db}"
+            )
+        return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
 
     @field_validator("api_root")
     @classmethod

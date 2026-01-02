@@ -73,6 +73,7 @@
 - Update return status codes and examples in the API documentation to be more
   accurate and useful, some of them have wrong status codes and/or examples. For
   example, the `GET /verify/` endpoint should return a 204 status code, not 200.
+- Consider evaluating `structlog` as an alternative to `loguru` for logging.
 
 ## Quotas
 
@@ -86,12 +87,20 @@ Add Quota functionality.
 
 ## Caching
 
-- Add a Redis cache to the endpoints.
-  [fastapi-redis-cache](https://pypi.org/project/fastapi-redis-cache/) should
-  make this reasonably painless. Note that project seems to be abandoned with a
-  lot of un-merged PRs so I have forked and updated the project to fix a few
-  existing bugs, merge some PRs and add some new features. I'm still putting the
-  finishing touches on it but it should be ready soon.
+- ✅ **DONE**: Basic Redis caching implemented using `fastapi-cache2==0.2.2`
+- **Upgrade redis-py client**: Current `fastapi-cache2==0.2.2` (PyPI) requires
+  redis-py 4.6.0. The GitHub repo has been updated to support redis-py 5.x+,
+  but no new release published. Options to investigate:
+  - Wait for new PyPI release of fastapi-cache2
+  - Fork fastapi-cache2 and publish our own updated version
+  - Use git HEAD version instead of PyPI package
+  - Switch to alternative caching library (fastapi-cache, fastapi-redis-cache-reborn)
+- **Cache TTL per-endpoint**: Allow configuring different TTL values per
+  endpoint instead of global default
+- **Cache warming strategies**: Preload frequently accessed data on startup
+- **Cache statistics/metrics**: Integration with Prometheus metrics for cache
+  hit/miss rates, memory usage, etc.
+- **Cache size limits**: Implement eviction policies and memory limits
 
 ## Frontend
 
