@@ -482,5 +482,6 @@ connection string format in logs (sensitive values are masked).
   with Prometheus
 - [Project Organization](../project-organization.md) - Cache module
   structure
-- [Logging Configuration](configuration/environment.md#logging) -
-  Enable cache logging
+- [Logging Configuration](
+  configuration/environment.md#configure-logging-optional) - Enable
+  cache logging
