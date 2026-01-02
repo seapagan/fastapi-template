@@ -86,6 +86,8 @@ cryptography==46.0.3
     # via
     #   fastapi-mail
     #   pyjwt
+    #   types-pyopenssl
+    #   types-redis
 csscompressor==0.9.5
     # via mkdocs-minify-plugin
 deprecated==1.2.18
@@ -432,7 +434,14 @@ typer==0.16.0
     #   fastapi-cli
     #   fastapi-cloud-cli
     #   github-changelog-md
+types-cffi==1.17.0.20250915
+    # via types-pyopenssl
 types-passlib==1.7.7.20241221
+types-pyopenssl==24.1.0.20240722
+    # via types-redis
+types-redis==4.6.0.20241004
+types-setuptools==80.9.0.20251223
+    # via types-cffi
 typing-extensions==4.15.0
     # via
     #   aiosqlite

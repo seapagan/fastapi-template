@@ -10,7 +10,7 @@ fails.
 """
 
 from fastapi_cache import FastAPICache
-from redis.exceptions import RedisError  # type: ignore[import-untyped]
+from redis.exceptions import RedisError
 
 from app.logs import LogCategory, category_logger
 

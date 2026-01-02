@@ -14,7 +14,8 @@ from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_pagination import add_pagination
 from loguru import logger as loguru_logger
-from redis.asyncio import Redis  # type: ignore[import-untyped]
+from redis import RedisError
+from redis.asyncio import Redis
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.admin import register_admin
@@ -100,7 +101,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
                 prefix="fastapi-cache",
             )
             logger.info("Redis cache backend initialized successfully.")
-        except (ConnectionError, TimeoutError) as e:
+        except (ConnectionError, TimeoutError, RedisError) as e:
             logger.warning(
                 "Failed to connect to Redis: %s. "
                 "Falling back to in-memory cache.",

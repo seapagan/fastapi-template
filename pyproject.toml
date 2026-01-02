@@ -83,6 +83,7 @@ dev = [
   "mkdocs-swagger-ui-tag",
   "ty>=0.0.5",
   "prek>=0.2.24",
+  "types-redis>=4.6.0.20241004",
 ]
 
 [tool.uv.sources]
