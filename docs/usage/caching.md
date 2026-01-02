@@ -458,8 +458,10 @@ This forces a fresh response while still updating the cache.
 
 **Checklist**:
 
-- Is `REDIS_ENABLED=true` in `.env`?
-- Is Redis running and accessible?
+- Is `CACHE_ENABLED=true` in `.env`? (Master switch - required for
+  any caching)
+- If using Redis: Is `REDIS_ENABLED=true` in `.env`?
+- If using Redis: Is Redis running and accessible?
 - Is the `@cached()` decorator AFTER the route decorator?
 - Are you passing `Request` and `Response` parameters?
 - Check logs for cache errors

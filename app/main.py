@@ -108,6 +108,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
                     "Falling back to in-memory cache.",
                     e,
                 )
+                if redis_client:
+                    await redis_client.close()
                 FastAPICache.init(InMemoryBackend())
                 redis_client = None
         else:

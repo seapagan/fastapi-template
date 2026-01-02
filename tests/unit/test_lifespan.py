@@ -128,6 +128,7 @@ class TestLifespan:
 
         mock_redis = mocker.MagicMock()
         mock_redis.ping = mocker.AsyncMock(side_effect=ConnectionError("boom"))
+        mock_redis.close = mocker.AsyncMock()
         mocker.patch("app.main.Redis.from_url", return_value=mock_redis)
 
         mock_cache_init = mocker.patch("app.main.FastAPICache.init")
@@ -197,6 +198,7 @@ class TestLifespan:
 
         mock_redis = mocker.MagicMock()
         mock_redis.ping = mocker.AsyncMock(side_effect=ConnectionError("boom"))
+        mock_redis.close = mocker.AsyncMock()
         mocker.patch("app.main.Redis.from_url", return_value=mock_redis)
         mocker.patch("app.main.FastAPICache.init")
 
