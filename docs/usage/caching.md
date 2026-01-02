@@ -37,13 +37,20 @@ scale across multiple instances.
 
 ### Option 2: Redis Caching (Production/Multi-Instance)
 
+!!! warning "Redis Python Client Version"
+    The current `fastapi-cache2==0.2.2` package requires the `redis`
+    Python client version 4.6.0 (not 5.x). This is automatically
+    installed via `uv sync` from the lock file. If you use Redis for
+    other purposes in your project, ensure you don't upgrade redis-py
+    to 5.x as it will break caching compatibility.
+
 1. Ensure Redis is running and accessible:
 
    ```bash
-   # Install Redis (Linux)
+   # Install Redis Server (Linux)
    sudo apt install redis-server
 
-   # Or via Docker
+   # Or via Docker (any recent version works)
    docker run -d -p 6379:6379 redis:alpine
    ```
 
@@ -482,6 +489,5 @@ connection string format in logs (sensitive values are masked).
   with Prometheus
 - [Project Organization](../project-organization.md) - Cache module
   structure
-- [Logging Configuration](
-  configuration/environment.md#configure-logging-optional) - Enable
-  cache logging
+- [Logging Configuration](configuration/environment.md#configure-logging-optional)
+  Enable cache logging
