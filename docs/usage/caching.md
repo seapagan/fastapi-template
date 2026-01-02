@@ -317,7 +317,7 @@ Generates keys with page/size parameters:
 `{namespace}:{func_name}:page:{page}:size:{size}`
 
 **`users_list_key_builder`**
-Specialized builder for user list endpoints. Handles both single user
+Specialized builder for user list endpoints. Handles both single-user
 lookups and paginated lists.
 
 **`api_keys_list_key_builder`**

@@ -30,7 +30,7 @@ from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
 
-# Initialize logguru logging
+# Initialize loguru logging
 get_log_config()
 
 # Use standard logging for startup messages and console
