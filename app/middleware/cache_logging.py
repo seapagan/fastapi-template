@@ -8,7 +8,6 @@ from starlette.middleware.base import (
     RequestResponseEndpoint,
 )
 
-from app.config.settings import get_settings
 from app.logs import LogCategory, category_logger
 
 
@@ -37,10 +36,9 @@ class CacheLoggingMiddleware(BaseHTTPMiddleware):
         # Check for cache header
         cache_status = response.headers.get("X-FastAPI-Cache")
 
-        # Debug: Log all cache-related activity
-        path = request.url.path
+        # Log cache activity
         if cache_status:
-            # Log cache activity with actual header value
+            path = request.url.path
             if cache_status.upper() == "HIT":
                 category_logger.debug(
                     f"CACHE HIT: {request.method} {path} ({duration_ms:.2f}ms)",
@@ -52,13 +50,5 @@ class CacheLoggingMiddleware(BaseHTTPMiddleware):
                     f"({duration_ms:.2f}ms) [header={cache_status}]",
                     LogCategory.CACHE,
                 )
-        # Log if no cache header at all (non-cached endpoints or cache
-        # disabled)
-        elif path.startswith(f"{get_settings().api_root}/users"):
-            category_logger.debug(
-                f"NO CACHE HEADER: {request.method} {path} "
-                f"({duration_ms:.2f}ms)",
-                LogCategory.CACHE,
-            )
 
         return response
