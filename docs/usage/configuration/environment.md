@@ -489,6 +489,13 @@ capabilities.
     file-based logging configured here is in addition to that and provides
     persistent, categorized logs.
 
+!!! note "Async queue in production"
+    Loguru's file logging normally uses an internal queue (`enqueue=True`)
+    for async, multiprocess-safe writes. When running with `uvicorn --reload`,
+    the reloader process can trigger semaphore warnings, so enqueue is
+    automatically disabled in reload mode (synchronous writes). In production
+    (no reload), enqueue remains enabled for better throughput.
+
 ### Log Output Directory
 
 Directory where log files are written:

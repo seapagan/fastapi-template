@@ -73,6 +73,7 @@
 - Update return status codes and examples in the API documentation to be more
   accurate and useful, some of them have wrong status codes and/or examples. For
   example, the `GET /verify/` endpoint should return a 204 status code, not 200.
+- Consider evaluating `structlog` as an alternative to `loguru` for logging.
 
 ## Quotas
 

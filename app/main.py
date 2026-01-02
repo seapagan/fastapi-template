@@ -30,9 +30,6 @@ from app.middleware.logging_middleware import LoggingMiddleware
 from app.resources import config_error
 from app.resources.routes import api_router
 
-# Initialize loguru logging
-get_log_config()
-
 # Use standard logging for startup messages and console
 logger = logging.getLogger("uvicorn")
 
@@ -62,6 +59,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     - Ensure the database is available and configured properly
     - Initialize the cache backend (Redis or in-memory)
     """
+    # Initialize loguru logging within the server process.
+    get_log_config()
+
     redis_client = None
 
     # Test database connection
@@ -119,6 +119,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         logger.info("Caching is disabled (CACHE_ENABLED=false).")
 
     yield
+
+    # Ensure loguru queue is drained before shutdown to avoid warnings.
+    loguru_logger.complete()
 
     # Cleanup: Close Redis connection if it was opened
     if redis_client:

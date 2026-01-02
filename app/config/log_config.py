@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 from enum import Flag, auto
 from pathlib import Path
@@ -97,6 +98,15 @@ def setup_logging() -> LogConfig:
     log_file = config.log_path / config.log_filename
     config.log_path.mkdir(parents=True, exist_ok=True)
 
+    # Uvicorn reload uses a separate process; disable enqueue to avoid
+    # multiprocessing resource tracker warnings during development.
+    reload_enabled = any(arg.startswith("--reload") for arg in sys.argv)
+    if reload_enabled:
+        logging.getLogger("uvicorn").info(
+            "Loguru enqueue disabled because uvicorn reload is enabled."
+        )
+    enqueue_logs = not reload_enabled
+
     logger.add(
         str(log_file),
         format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {message}",
@@ -104,7 +114,7 @@ def setup_logging() -> LogConfig:
         rotation=config.log_rotation,
         retention=config.log_retention,
         compression=config.log_compression,
-        enqueue=True,  # Async logging
+        enqueue=enqueue_logs,
     )
 
     return config
