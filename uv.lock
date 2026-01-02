@@ -91,6 +91,7 @@ source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "anyio" },
+    { name = "async-timeout", marker = "python_full_version < '3.12'" },
     { name = "asyncclick" },
     { name = "asyncpg" },
     { name = "bcrypt" },
@@ -158,6 +159,7 @@ dev = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.14.0" },
     { name = "anyio", specifier = ">=4.6.2.post1" },
+    { name = "async-timeout", marker = "python_full_version < '3.12'", specifier = "==5.0.1" },
     { name = "asyncclick", specifier = ">=8.1.7.2" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "bcrypt", specifier = ">=4.0.1" },

@@ -11,6 +11,7 @@ dependencies = [
   "alembic>=1.14.0",
   "anyio>=4.6.2.post1",
   "asyncclick>=8.1.7.2",
+  "async-timeout==5.0.1 ; python_version < '3.12'",
   "asyncpg>=0.30.0",
   "email-validator>=2.2.0",
   "fastapi[standard]>=0.115.4",

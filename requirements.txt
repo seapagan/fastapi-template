@@ -15,8 +15,9 @@ anyio==4.8.0
     #   httpx
     #   starlette
     #   watchfiles
-async-timeout==5.0.1 ; python_full_version <= '3.11.2'
+async-timeout==5.0.1 ; python_full_version < '3.12'
     # via
+    #   api-template
     #   asyncpg
     #   redis
 asyncclick==8.1.8
