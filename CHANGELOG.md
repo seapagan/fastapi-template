@@ -14,10 +14,12 @@ Everything in this section will be included in the next official release.
 
 **Closed Issues**
 
+- Cache Integration ([#116](https://github.com/seapagan/fastapi-template/issues/116)) by [seapagan](https://github.com/seapagan)
 - Metrics and Observability endpoints ([#114](https://github.com/seapagan/fastapi-template/issues/114)) by [seapagan](https://github.com/seapagan)
 
 **New Features**
 
+- Feat: Add optional Redis caching infrastructure ([#803](https://github.com/seapagan/fastapi-template/pull/803)) by [seapagan](https://github.com/seapagan)
 - Feat: add optional Prometheus metrics endpoint ([#799](https://github.com/seapagan/fastapi-template/pull/799)) by [seapagan](https://github.com/seapagan)
 - Feat: include query parameters in request logs ([#797](https://github.com/seapagan/fastapi-template/pull/797)) by [seapagan](https://github.com/seapagan)
 - Paginate users list endpoint ([#796](https://github.com/seapagan/fastapi-template/pull/796)) by [seapagan](https://github.com/seapagan)
@@ -45,6 +47,7 @@ Everything in this section will be included in the next official release.
 
 **Documentation**
 
+- Chore: update copyright year to 2026 ([#802](https://github.com/seapagan/fastapi-template/pull/802)) by [seapagan](https://github.com/seapagan)
 - Docs: comprehensive documentation improvements ([#800](https://github.com/seapagan/fastapi-template/pull/800)) by [seapagan](https://github.com/seapagan)
 
 **Dependency Updates**
