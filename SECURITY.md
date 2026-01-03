@@ -26,10 +26,10 @@ known vulnerability in the
 [Discussions](https://github.com/seapagan/fastapi-template/discussions)
 forum.
 
-We use **Dependabot** for security updates and dependency management. If a
-security vulnerability is found in a dependency, Dependabot will issue a PR to
-fix this as soon as an updated version of the dependency is available. We will
-merge these PRs as soon as they are available.
+We use **Renovate** for dependency management and **Dependabot** for automatic
+security updates. If a security vulnerability is found in a dependency,
+Dependabot will issue a PR to fix this as soon as an updated version of the
+dependency is available. We will merge these PRs as soon as they are available.
 
 Note that this code is provided as-is, and is not guaranteed to be
 suitable for any purpose.  Use at your own risk.
