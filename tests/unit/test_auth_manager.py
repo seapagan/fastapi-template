@@ -42,6 +42,7 @@ class TestAuthManager:
             options={"verify_sub": False},
         )
         assert payload["sub"] == 1
+        assert payload["typ"] == "access"
         assert isinstance(payload["exp"], int)
         # TODO(seapagan): better comparison to ensure the exp is in the future
         # but close to the expected expiry time taking into account the setting
@@ -68,6 +69,7 @@ class TestAuthManager:
         )
 
         assert payload["sub"] == 1
+        assert payload["typ"] == "refresh"
         assert isinstance(payload["exp"], int)
         # TODO(seapagan): better comparison to ensure the exp is in the future
         # but close to the expected expiry time taking into account the expiry
