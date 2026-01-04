@@ -2,10 +2,12 @@
 
 import datetime
 
+import jwt
 import pytest
 from fastapi import BackgroundTasks, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
+from app.config.settings import get_settings
 from app.managers.auth import ResponseMessages, get_jwt_user
 from app.managers.user import UserManager
 from app.models.user import User
@@ -49,6 +51,51 @@ class TestJWTAuth:
         mock_req.headers = {"Authorization": "Bearer badtoken"}
         mock_credentials = HTTPAuthorizationCredentials(
             scheme="Bearer", credentials="badtoken"
+        )
+
+        with pytest.raises(HTTPException) as exc:
+            await get_jwt_user(
+                request=mock_req, db=test_db, credentials=mock_credentials
+            )
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ResponseMessages.INVALID_TOKEN
+
+    async def test_jwt_auth_refresh_token_rejected(
+        self, test_db, mocker
+    ) -> None:
+        """Test with a refresh token used as access token."""
+        _, refresh = await UserManager.register(self.test_user, test_db)
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {refresh}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=refresh
+        )
+
+        with pytest.raises(HTTPException) as exc:
+            await get_jwt_user(
+                request=mock_req, db=test_db, credentials=mock_credentials
+            )
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ResponseMessages.INVALID_TOKEN
+
+    async def test_jwt_auth_missing_typ_rejected(self, test_db, mocker) -> None:
+        """Test with a token missing typ claim."""
+        await UserManager.register(self.test_user, test_db)
+        token = jwt.encode(
+            {
+                "sub": 1,
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=10),
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {token}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
         )
 
         with pytest.raises(HTTPException) as exc:

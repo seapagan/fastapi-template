@@ -6,7 +6,12 @@ API.
 
 ## Breaking Changes in `HEAD`
 
-None.
+### CORS credentials disabled by default
+
+Credentialed CORS requests are now disabled for the API. If you relied on
+cookie-based auth from browser clients, you must switch to Bearer tokens or
+explicitly re-enable credentials and restrict `CORS_ORIGINS` to your frontend
+domains.
 
 ## Breaking Changes in `0.8.0`
 

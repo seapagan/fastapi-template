@@ -178,9 +178,11 @@ is an HTTP-header based mechanism that allows a server to indicate any origins
 (domain, scheme, or port) other than its own from which a browser should permit
 loading resources.
 
-For a **PUBLIC API** (unless its going through an API gateway!), set
-`CORS_ORIGINS=*`, otherwise list the domains (**and ports**) required. If you
-use an API gateway of some nature, that will probably need to be listed.
+For a **PUBLIC API** using Bearer tokens, `CORS_ORIGINS=*` is acceptable.
+If you serve browser clients, list the required domains (**and ports**) instead
+to restrict access. The app will log a warning when `CORS_ORIGINS=*` is set so
+you can confirm the intent. If you use an API gateway, that will probably need
+to be listed.
 
 ```ini
 CORS_ORIGINS=*

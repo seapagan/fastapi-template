@@ -35,6 +35,13 @@ logger = logging.getLogger("uvicorn")
 
 BLIND_USER_ERROR = 66
 
+# set up CORS
+cors_list = [
+    origin.strip()
+    for origin in get_settings().cors_origins.split(",")
+    if origin.strip()
+]
+
 # gatekeeper to ensure the user has read the docs and noted the major changes
 # since the last version.
 if not get_settings().i_read_the_damn_docs:
@@ -61,6 +68,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     """
     # Initialize loguru logging within the server process.
     get_log_config()
+
+    if "*" in cors_list:
+        warning_msg = (
+            "CORS_ORIGINS is set to '*', allowing any origin to access the "
+            "API. This is fine for public APIs with bearer tokens, but you "
+            "should set explicit origins if serving browser clients."
+        )
+        logger.warning(warning_msg)  # Console via uvicorn
+        loguru_logger.warning(warning_msg)  # File via loguru
 
     redis_client = None
 
@@ -160,13 +176,10 @@ app.mount(
     name="static",
 )
 
-# set up CORS
-cors_list = (get_settings().cors_origins).split(",")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_list,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

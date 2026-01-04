@@ -4,6 +4,10 @@
 
 ### 1. Refresh Token Authentication Bypass
 
+> [!NOTE]
+> ✅ **Done**: Access tokens now include `typ="access"` and `get_jwt_user`
+> enforces it; refresh or typ-less tokens are rejected.
+
 **Location**: `app/managers/auth.py:478-544` (`get_jwt_user`)
 
 - **Issue**: Refresh tokens can be used as access tokens because access tokens
@@ -18,6 +22,10 @@
 - **Priority**: Fix immediately before addressing other issues.
 
 ### 2. CORS Wildcard with Credentials - SEVERE
+
+> [!NOTE]
+> ✅ **Done**: CORS credentials are disabled for the API and startup now warns
+> when `CORS_ORIGINS=*` is used.
 
 **Location**: `app/main.py:169`, `app/config/settings.py:56`
 

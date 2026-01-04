@@ -52,6 +52,7 @@ class AuthManager:
         try:
             payload = {
                 "sub": user.id,
+                "typ": "access",
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(
                     minutes=get_settings().access_token_expire_minutes
@@ -492,6 +493,16 @@ async def get_jwt_user(
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
+        if payload.get("typ") != "access":
+            increment_auth_failure("invalid_token", "jwt")
+            category_logger.warning(
+                "Authentication attempted with non-access token",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ResponseMessages.INVALID_TOKEN,
+            )
         user_data = await get_user_by_id_(payload["sub"], db)
 
         # Check user validity - user must exist, be verified, and not banned
