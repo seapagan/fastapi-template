@@ -64,7 +64,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         if not redacted:
             return query
 
-        return urlencode(redacted_params, doseq=True)
+        return urlencode(redacted_params)
 
     async def dispatch(
         self,
