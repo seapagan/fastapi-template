@@ -35,6 +35,13 @@ logger = logging.getLogger("uvicorn")
 
 BLIND_USER_ERROR = 66
 
+# set up CORS
+cors_list = [
+    origin.strip()
+    for origin in get_settings().cors_origins.split(",")
+    if origin.strip()
+]
+
 # gatekeeper to ensure the user has read the docs and noted the major changes
 # since the last version.
 if not get_settings().i_read_the_damn_docs:
@@ -168,13 +175,6 @@ app.mount(
     StaticFiles(directory=static_dir),
     name="static",
 )
-
-# set up CORS
-cors_list = [
-    origin.strip()
-    for origin in get_settings().cors_origins.split(",")
-    if origin.strip()
-]
 
 app.add_middleware(
     CORSMiddleware,
