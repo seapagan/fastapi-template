@@ -37,6 +37,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
     @classmethod
     def _should_redact(cls, key: str) -> bool:
+        """Check if a query parameter name should be redacted."""
         key_lower = key.lower()
         for sensitive_key in cls.SENSITIVE_QUERY_KEYS:
             if key_lower == sensitive_key:
@@ -45,6 +46,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
     @classmethod
     def _redact_query(cls, query: str) -> str:
+        """Redact sensitive query parameters from a raw query string."""
         if not query:
             return ""
 
