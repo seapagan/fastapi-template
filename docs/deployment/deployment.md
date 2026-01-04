@@ -16,8 +16,8 @@ Before deploying to production, ensure you've configured all critical settings p
   - Used for JWT token signing and session security
 
 - **CORS_ORIGINS**
-  - **Don't** leave as `*` in production
-  - Set to your actual frontend domain(s)
+  - For browser clients, set to your actual frontend domain(s)
+  - For public APIs using Bearer tokens, `*` is acceptable but will log a warning
   - Example: `CORS_ORIGINS=https://app.example.com,https://www.example.com`
   - Multiple origins separated by commas
 

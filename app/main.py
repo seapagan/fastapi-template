@@ -62,6 +62,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     # Initialize loguru logging within the server process.
     get_log_config()
 
+    if "*" in cors_list:
+        warning_msg = (
+            "CORS_ORIGINS is set to '*', allowing any origin to access the "
+            "API. This is fine for public APIs with bearer tokens, but you "
+            "should set explicit origins if serving browser clients."
+        )
+        logger.warning(warning_msg)  # Console via uvicorn
+        loguru_logger.warning(warning_msg)  # File via loguru
+
     redis_client = None
 
     # Test database connection
@@ -161,12 +170,16 @@ app.mount(
 )
 
 # set up CORS
-cors_list = (get_settings().cors_origins).split(",")
+cors_list = [
+    origin.strip()
+    for origin in get_settings().cors_origins.split(",")
+    if origin.strip()
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_list,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

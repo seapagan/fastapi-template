@@ -212,6 +212,32 @@ class TestLifespan:
             for record in caplog.records
         )
 
+    async def test_lifespan_warns_on_cors_wildcard(
+        self, caplog, mocker
+    ) -> None:
+        """Ensure a warning is logged when CORS is set to '*'."""
+        app = FastAPI()
+        mock_session = mocker.patch(self.mock_session)
+        mock_connection = (
+            mock_session.return_value.__aenter__.return_value.connection
+        )
+        mock_connection.return_value = None
+
+        mocker.patch("app.main.cors_list", ["*"])
+        mocker.patch("app.main.get_settings").return_value.cache_enabled = False
+        loguru_warning = mocker.patch("app.main.loguru_logger.warning")
+
+        caplog.set_level(logging.WARNING)
+
+        async with lifespan(app):
+            pass  # NOSONAR
+
+        assert any(
+            "CORS_ORIGINS is set to '*'" in record.message
+            for record in caplog.records
+        )
+        loguru_warning.assert_called_once()
+
     async def test_lifespan_initializes_redis_and_closes_client(
         self, caplog, mocker
     ) -> None:

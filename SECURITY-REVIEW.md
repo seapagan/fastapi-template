@@ -23,6 +23,10 @@
 
 ### 2. CORS Wildcard with Credentials - SEVERE
 
+> [!NOTE]
+> ✅ **Done**: CORS credentials are disabled for the API and startup now warns
+> when `CORS_ORIGINS=*` is used.
+
 **Location**: `app/main.py:169`, `app/config/settings.py:56`
 
 - **Issue**: Default CORS configuration allows ALL origins (`cors_origins="*"`)
