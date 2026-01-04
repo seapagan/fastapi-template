@@ -653,6 +653,11 @@ LOG_CATEGORIES=NONE
 - Case-insensitive: `auth` = `AUTH`
 - Whitespace is trimmed: `AUTH, ERRORS` works fine
 
+!!! note "Request log redaction"
+    Request logs redact sensitive query parameters by name before writing to
+    disk (for example `code` and `token`). To customize the list, update
+    `SENSITIVE_QUERY_KEYS` in `app/middleware/logging_middleware.py`.
+
 ### Log Filename
 
 Custom filename for the log file:

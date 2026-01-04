@@ -460,6 +460,7 @@ class TestLoggingMiddleware:
         mock_request.client = Mock(host="127.0.0.1")
         mock_request.method = "GET"
         mock_request.url.path = "/api/users"
+        mock_request.url.query = ""
 
         mock_response = Mock(spec=Response)
         mock_response.status_code = 200
@@ -512,6 +513,51 @@ class TestLoggingMiddleware:
         assert "GET /api/users?page=2&limit=10" in log_message
         assert "200" in log_message
         assert result == mock_response
+
+    async def test_middleware_redacts_sensitive_query_parameters(
+        self, mocker: MockerFixture
+    ) -> None:
+        """Test middleware redacts sensitive query parameters in logs."""
+        mock_log_config = mocker.patch(
+            "app.middleware.logging_middleware.log_config"
+        )
+        mock_log_config.is_enabled.return_value = True
+
+        mock_logger = mocker.patch("app.middleware.logging_middleware.logger")
+
+        middleware = LoggingMiddleware(app=Mock())
+
+        # Create mock request with sensitive query parameters
+        mock_request = Mock(spec=Request)
+        mock_request.client = Mock(host="127.0.0.1")
+        mock_request.method = "GET"
+        mock_request.url.path = "/api/auth"
+        mock_request.url.query = "page=2&code=secret&token=abc&API_KEY=bad"
+
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 200
+        mock_call_next = AsyncMock(return_value=mock_response)
+
+        result = await middleware.dispatch(mock_request, mock_call_next)
+
+        mock_logger.info.assert_called_once()
+        log_message = mock_logger.info.call_args[0][0]
+        assert "GET /api/auth?page=2" in log_message
+        assert "code=REDACTED" in log_message
+        assert "token=REDACTED" in log_message
+        assert "API_KEY=REDACTED" in log_message
+        assert "secret" not in log_message
+        assert "abc" not in log_message
+        assert "bad" not in log_message
+        assert result == mock_response
+
+    def test_redact_query_returns_empty_for_blank_query(self) -> None:
+        """Test redaction helper returns empty for blank query."""
+        assert LoggingMiddleware._redact_query("") == ""
+
+    def test_redact_query_returns_original_when_no_params(self) -> None:
+        """Test redaction helper keeps original when parse yields no params."""
+        assert LoggingMiddleware._redact_query("&") == "&"
 
     async def test_middleware_logs_without_query_parameters(
         self, mocker: MockerFixture

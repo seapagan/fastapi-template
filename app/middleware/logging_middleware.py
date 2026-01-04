@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 from typing import TYPE_CHECKING
+from urllib.parse import parse_qsl, urlencode
 
 from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -19,6 +20,53 @@ if TYPE_CHECKING:
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     """Log HTTP requests and responses if REQUESTS category is enabled."""
+
+    REDACTED_VALUE = "REDACTED"
+    # Order matters: keep currently used keys early for short-circuit checks.
+    SENSITIVE_QUERY_KEYS = (
+        "code",
+        "token",
+        "reset_token",
+        "verification",
+        "verify",
+        "access_token",
+        "refresh_token",
+        "api_key",
+        "key",
+    )
+
+    @classmethod
+    def _should_redact(cls, key: str) -> bool:
+        """Check if a query parameter name should be redacted."""
+        key_lower = key.lower()
+        for sensitive_key in cls.SENSITIVE_QUERY_KEYS:
+            if key_lower == sensitive_key:
+                return True
+        return False
+
+    @classmethod
+    def _redact_query(cls, query: str) -> str:
+        """Redact sensitive query parameters from a raw query string."""
+        if not query:
+            return ""
+
+        params = parse_qsl(query, keep_blank_values=True)
+        if not params:
+            return query
+
+        redacted = False
+        redacted_params: list[tuple[str, str]] = []
+        for key, value in params:
+            if cls._should_redact(key):
+                redacted = True
+                redacted_params.append((key, cls.REDACTED_VALUE))
+                continue
+            redacted_params.append((key, value))
+
+        if not redacted:
+            return query
+
+        return urlencode(redacted_params)
 
     async def dispatch(
         self,
@@ -42,7 +90,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         # Build full path including query string if present
         path = request.url.path
         if request.url.query:
-            path = f"{path}?{request.url.query}"
+            redacted_query = self._redact_query(request.url.query)
+            path = f"{path}?{redacted_query}"
 
         logger.info(
             f'{client_addr} - "{request.method} {path}" '

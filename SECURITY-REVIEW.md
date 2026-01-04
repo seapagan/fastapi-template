@@ -93,6 +93,9 @@
 
 ### 5. Sensitive Data in Request Logs
 
+> [!NOTE]
+> ✅ **Done**: Request logging now redacts sensitive query parameters by name.
+
 **Location**: `app/middleware/logging_middleware.py:44`
 
 - **Issue**: Logs full query strings including:
@@ -526,12 +529,12 @@
 
 **Total Issues Identified: 33**
 
-| Priority | Count | Must Fix Before Production? |
-|----------|-------|-----------------------------|
-| **CRITICAL** | 5 | ✅ YES - Security vulnerabilities |
-| **High** | 9 | ✅ YES - Important security/quality |
-| **Medium** | 14 | ⚠️ Recommended - Hardening needed |
-| **Low** | 5 | 💡 Optional - Nice to have |
+| Priority     | Count         | Must Fix Before Production?         |
+|--------------|---------------|-------------------------------------|
+| **CRITICAL** | 5 (3 closed)  | ✅ YES - Security vulnerabilities   |
+| **High**     | 9 (0 closed)  | ✅ YES - Important security/quality |
+| **Medium**   | 14 (0 closed) | ⚠️ Recommended - Hardening needed   |
+| **Low**      | 5 (0 closed)  | 💡 Optional - Nice to have          |
 
 **Overall Assessment**: The codebase demonstrates solid security foundations with
 proper JWT authentication, password hashing (bcrypt), and SQL injection protection
@@ -633,19 +636,20 @@ rate limiting, token validation, and API key scope enforcement.
 
 The codebase demonstrates several excellent security practices:
 
-✅ **Strong cryptography**: bcrypt for passwords, HMAC-SHA256 for API keys, proper
-JWT handling
-✅ **SQL injection protection**: SQLAlchemy ORM throughout, no raw SQL
-✅ **Token validation**: Format checking before expensive crypto operations (DoS
-prevention)
-✅ **Secret key validation**: Strong validation at startup, prevents weak keys
-✅ **Email enumeration protection**: Password reset correctly prevents enumeration
-✅ **Self-ban prevention**: User can't ban themselves
-✅ **Last admin protection**: Check in place (though has race condition)
-✅ **Category-based logging**: Excellent separation of concerns for security
-monitoring
-✅ **Proper password hashing**: Automatic salting, modern algorithms
-✅ **Database password validation**: Prevents weak defaults in production
+- ✅ **Strong cryptography**: bcrypt for passwords, HMAC-SHA256 for API keys,
+  proper JWT handling
+- ✅ **SQL injection protection**: SQLAlchemy ORM throughout, no raw SQL
+- ✅ **Token validation**: Format checking before expensive crypto operations
+  (DoS prevention)
+- ✅ **Secret key validation**: Strong validation at startup, prevents weak keys
+- ✅ **Email enumeration protection**: Password reset correctly prevents
+  enumeration
+- ✅ **Self-ban prevention**: User can't ban themselves
+- ✅ **Last admin protection**: Check in place (though has race condition)
+- ✅ **Category-based logging**: Excellent separation of concerns for security
+  monitoring
+- ✅ **Proper password hashing**: Automatic salting, modern algorithms
+- ✅ **Database password validation**: Prevents weak defaults in production
 
 ---
 
