@@ -93,6 +93,9 @@
 
 ### 5. Sensitive Data in Request Logs
 
+> [!NOTE]
+> ✅ **Done**: Request logging now redacts sensitive query parameters by name.
+
 **Location**: `app/middleware/logging_middleware.py:44`
 
 - **Issue**: Logs full query strings including:
