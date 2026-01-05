@@ -17,6 +17,10 @@ Everything in this section will be included in the next official release.
 - Cache Integration ([#116](https://github.com/seapagan/fastapi-template/issues/116)) by [seapagan](https://github.com/seapagan)
 - Metrics and Observability endpoints ([#114](https://github.com/seapagan/fastapi-template/issues/114)) by [seapagan](https://github.com/seapagan)
 
+**Breaking Changes**
+
+- Fix: enforce token type separation and harden CORS defaults ([#804](https://github.com/seapagan/fastapi-template/pull/804)) by [seapagan](https://github.com/seapagan)
+
 **New Features**
 
 - Feat: Add optional Redis caching infrastructure ([#803](https://github.com/seapagan/fastapi-template/pull/803)) by [seapagan](https://github.com/seapagan)
@@ -35,6 +39,7 @@ Everything in this section will be included in the next official release.
 
 **Security**
 
+- Fix(security): redact sensitive query params in request logs ([#805](https://github.com/seapagan/fastapi-template/pull/805)) by [seapagan](https://github.com/seapagan)
 - Fix(security): validate credentials and prevent weak defaults ([#793](https://github.com/seapagan/fastapi-template/pull/793)) by [seapagan](https://github.com/seapagan)
 
 **Bug Fixes**
