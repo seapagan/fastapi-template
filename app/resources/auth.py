@@ -26,6 +26,8 @@ from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
 from app.managers.user import UserManager
 from app.models.user import User
+from app.rate_limit.config import RateLimits
+from app.rate_limit.decorators import rate_limited
 from app.schemas.request.auth import (
     ForgotPasswordRequest,
     ResetPasswordRequest,
@@ -53,7 +55,9 @@ MIN_PASSWORD_LENGTH = 8
     name="register_a_new_user",
     response_model=TokenResponse,
 )
+@rate_limited(RateLimits.REGISTER)
 async def register(
+    request: Request,  # noqa: ARG001 - Required by slowapi decorator
     background_tasks: BackgroundTasks,
     user_data: UserRegisterRequest,
     session: Annotated[AsyncSession, Depends(get_database)],
@@ -83,7 +87,9 @@ async def register(
     response_model=TokenResponse,
     status_code=status.HTTP_200_OK,
 )
+@rate_limited(RateLimits.LOGIN)
 async def login(
+    request: Request,  # noqa: ARG001 - Required by slowapi decorator
     user_data: UserLoginRequest,
     session: Annotated[AsyncSession, Depends(get_database)],
 ) -> dict[str, str]:
@@ -105,7 +111,9 @@ async def login(
     name="refresh_an_expired_token",
     response_model=TokenRefreshResponse,
 )
+@rate_limited(RateLimits.REFRESH)
 async def generate_refresh_token(
+    request: Request,  # noqa: ARG001 - Required by slowapi decorator
     refresh_token: TokenRefreshRequest,
     session: Annotated[AsyncSession, Depends(get_database)],
 ) -> dict[str, str]:
@@ -119,8 +127,11 @@ async def generate_refresh_token(
 
 
 @router.get("/verify/", status_code=status.HTTP_200_OK)
+@rate_limited(RateLimits.VERIFY)
 async def verify(
-    session: Annotated[AsyncSession, Depends(get_database)], code: str = ""
+    request: Request,  # noqa: ARG001 - Required by slowapi decorator
+    session: Annotated[AsyncSession, Depends(get_database)],
+    code: str = "",
 ) -> None:
     """Verify a new user.
 
@@ -138,7 +149,9 @@ async def verify(
     response_model=PasswordResetResponse,
     status_code=status.HTTP_200_OK,
 )
+@rate_limited(RateLimits.FORGOT_PASSWORD)
 async def forgot_password(
+    request: Request,  # noqa: ARG001 - Required by slowapi decorator
     background_tasks: BackgroundTasks,
     request_data: ForgotPasswordRequest,
     session: Annotated[AsyncSession, Depends(get_database)],
@@ -163,6 +176,7 @@ async def forgot_password(
     response_model=None,
     include_in_schema=True,
 )
+@rate_limited(RateLimits.RESET_PASSWORD_GET)
 async def reset_password_form(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_database)],
@@ -235,6 +249,7 @@ async def reset_password_form(
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
+@rate_limited(RateLimits.RESET_PASSWORD_POST)
 async def reset_password(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_database)],
