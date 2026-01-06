@@ -4,6 +4,8 @@
 
 - allow to tag endpoints as belonging to a group so can then have similar auth
   etc.
+- expand the IP-based rate-limiting to allow user-based limiting. this will help
+  to set user-based quotas.
 - add time-limited bans (configurable)
 - Add certain users that will not time-expire (or much longer time) for eg for
   owner or premium access.
