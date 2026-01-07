@@ -51,11 +51,13 @@
 ### 3. No Rate Limiting on Authentication Endpoints
 
 > [!NOTE]
->
-> In the TODO, was waiting until Redis was integrated - it now has been d/t
-> caching implementation.
+> ✅ **Done**: Rate limiting implemented using slowapi with conservative limits
+> on all 7 authentication endpoints. Supports both in-memory (single-instance)
+> and Redis (multi-instance) backends. Disabled by default, opt-in via
+> `RATE_LIMIT_ENABLED=true`. Returns HTTP 429 with Retry-After header when
+> limits exceeded. Violations tracked via Prometheus metrics.
 
-**Location**: All routes in `app/resources/auth.py`, entire codebase
+**Location**: All routes in `app/resources/auth.py`, `app/rate_limit/`
 
 - **Issue**: No rate limiting implementation found anywhere. Vulnerable to:
   - Brute force login attacks (`/login/`)
@@ -65,10 +67,13 @@
 - **Impact**: Attackers can perform unlimited login attempts, spam registration
   emails, and exhaust server resources.
 - **Fix**: Implement rate limiting middleware (e.g., slowapi, fastapi-limiter):
-  - Login: 5 attempts per 15 minutes per IP
-  - Registration: 3 per hour per IP
-  - Password reset: 3 per hour per email
-  - API requests: 100 per minute per user/IP
+  - Login: 5 attempts per 15 minutes per IP ✅
+  - Registration: 3 per hour per IP ✅
+  - Password reset: 3 per hour per email ✅
+  - Email verification: 10 per minute per IP ✅
+  - Token refresh: 20 per minute per IP ✅
+  - Reset password GET: 10 per minute per IP ✅
+  - Reset password POST: 5 per hour per IP ✅
 
 ### 4. API Key Scopes Stored But Never Enforced
 
@@ -509,6 +514,37 @@
 
 ## Feature Ideas (Future Enhancements)
 
+- **User-based rate limiting for authenticated endpoints**: Current IP-based
+  limiting (#3) protects auth endpoints. Next enhancement: add user/API-key based
+  limiting for authenticated API operations. Benefits:
+  - Fair usage across shared IPs (corporate NAT, proxies)
+  - Per-user quotas and tiered limits (free vs premium)
+  - Better tracking of individual user API consumption
+  - Prevent individual account abuse
+
+  Implementation approach:
+  - Create middleware to extract user ID from JWT/API key before rate limiting
+  - Add `user_limiter` alongside existing IP-based `limiter`
+  - Use custom key function: `user:{user_id}` if authenticated, fallback to
+    `ip:{address}` for unauthenticated
+  - Apply to protected endpoints (keep IP-based for auth endpoints)
+  - Support role-based dynamic limits (admins get higher quotas)
+
+  Example usage:
+
+  ```python
+  @router.get("/api/data")
+  @user_rate_limited("500/hour")  # Per user, not per IP
+  async def get_data(user: User = Depends(AuthManager())):
+      pass
+  ```
+
+  Technical considerations:
+  - Middleware runs before dependencies, so need early auth extraction
+  - Reuse existing Redis/in-memory backend
+  - No impact on current auth endpoint protection
+  - Enables per-user analytics and quota enforcement
+
 - **Session management**: list/revoke active refresh tokens per user (ties into
   logout/invalidations and #8 jti claims)
 - **Account security notifications**: email user when password/email changes or
@@ -531,7 +567,7 @@
 
 | Priority     | Count         | Must Fix Before Production?         |
 |--------------|---------------|-------------------------------------|
-| **CRITICAL** | 5 (3 closed)  | ✅ YES - Security vulnerabilities   |
+| **CRITICAL** | 5 (4 closed)  | ✅ YES - Security vulnerabilities   |
 | **High**     | 9 (0 closed)  | ✅ YES - Important security/quality |
 | **Medium**   | 14 (0 closed) | ⚠️ Recommended - Hardening needed   |
 | **Low**      | 5 (0 closed)  | 💡 Optional - Nice to have          |
@@ -556,10 +592,10 @@ rate limiting, token validation, and API key scope enforcement.
 
 ### Sprint 1 - CRITICAL (This Week)
 
-1. **Fix CORS configuration** (#2) - Remove credentials or restrict origins
-2. **Implement rate limiting** (#3) - All auth endpoints
-3. **Add token type validation** (#1) - `get_jwt_user()` enforcement
-4. **Redact sensitive data from logs** (#5) - Query parameter filtering
+1. ✅ **Fix CORS configuration** (#2) - Remove credentials or restrict origins
+2. ✅ **Implement rate limiting** (#3) - All auth endpoints
+3. ✅ **Add token type validation** (#1) - `get_jwt_user()` enforcement
+4. ✅ **Redact sensitive data from logs** (#5) - Query parameter filtering
 5. **Fix API key scope enforcement** (#4) - Add validation logic
 
 ### Sprint 2 - High Priority (Next Week)
@@ -613,7 +649,7 @@ rate limiting, token validation, and API key scope enforcement.
 - `app/managers/api_key.py` - Scope enforcement (#4), last_used_at (#23)
 - `app/managers/user.py` - Timing attacks (#6), email enumeration (#10), race
   condition (#11)
-- **NEW FILE**: `app/middleware/rate_limiting.py` - Rate limiting (#3)
+- ✅ `app/rate_limit/` - Rate limiting implementation (#3)
 
 **High Priority:**
 
