@@ -241,6 +241,7 @@ addopts = [
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:ValidatedEmail.email is deprecated:DeprecationWarning",
+  "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning:slowapi.extension",
 ]
 markers = [
   "unit: Unit tests",
