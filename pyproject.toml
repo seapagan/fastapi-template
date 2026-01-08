@@ -256,6 +256,7 @@ env = [
   "CACHE_ENABLED=true",
   "LOG_FILENAME=test_api.log",
   "METRICS_ENABLED=True",
+  "RATE_LIMIT_ENABLED=false",
 ]
 
 asyncio_default_fixture_loop_scope = "function"
