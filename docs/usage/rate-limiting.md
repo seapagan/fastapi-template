@@ -338,7 +338,8 @@ LOG_CATEGORIES=AUTH,REQUESTS
 Example log output:
 
 ```code
-2026-01-06 14:23:45 | AUTH | Rate limit exceeded for /login/ (5/15minutes) from 192.168.1.100
+2026-01-06 14:23:45 | AUTH | Rate limit exceeded for /login/
+(5/15minutes) from 192.168.1.100
 ```
 
 ### Metrics Integration
@@ -526,11 +527,19 @@ async def public_data(request: Request):
 
 ### Dynamic Rate Limits
 
-For user-tier based limits, consider creating a custom decorator:
+!!! note "Conceptual Pattern"
+    The example below shows the structure for role-based rate limiting
+    but requires additional implementation to integrate with slowapi's
+    limiter. Consider using separate endpoints with different limits
+    or implementing custom middleware for complex dynamic scenarios.
+
+For user-tier based limits, you could structure a custom decorator
+like this:
 
 ```python
 from functools import wraps
 from app.models.enums import Role
+from app.rate_limit import get_limiter
 
 def role_based_rate_limit(
     admin_limit: str,
@@ -541,11 +550,16 @@ def role_based_rate_limit(
         async def wrapper(*args, **kwargs):
             user = kwargs.get("user")
             limit = admin_limit if user.role == Role.ADMIN else user_limit
-            # Apply limit dynamically
+            # Note: Actual dynamic limit application requires custom
+            # slowapi integration - this is a simplified illustration
             return await func(*args, **kwargs)
         return wrapper
     return decorator
 ```
+
+**Alternative approach:** Use separate endpoints for different user
+tiers instead of dynamic limits, which provides better clarity and
+simpler implementation.
 
 ## See Also
 

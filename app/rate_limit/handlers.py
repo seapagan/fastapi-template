@@ -6,6 +6,17 @@ from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 
+# Default Retry-After value in seconds (1 hour)
+DEFAULT_RETRY_AFTER = "3600"
+
+# Unit to seconds mapping
+UNIT_TO_SECONDS = {
+    "second": 1,
+    "minute": 60,
+    "hour": 3600,
+    "day": 86400,
+}
+
 
 def parse_retry_after(limit_str: str) -> str:
     """Parse rate limit string and return Retry-After seconds.
@@ -22,7 +33,7 @@ def parse_retry_after(limit_str: str) -> str:
     # Extract the time period
     parts = limit_str.split("/")
     if len(parts) < 2:  # noqa: PLR2004
-        return "3600"  # Default to 1 hour
+        return DEFAULT_RETRY_AFTER  # Default to 1 hour
 
     period_str = parts[1].strip().lower()
 
@@ -30,22 +41,16 @@ def parse_retry_after(limit_str: str) -> str:
     # Extract number prefix if present (e.g., "15minutes" -> 15)
     match = re.match(r"(\d+)?\s*(\w+)", period_str)
     if not match:
-        return "3600"
+        return DEFAULT_RETRY_AFTER
 
     multiplier_str, unit = match.groups()
     multiplier = int(multiplier_str) if multiplier_str else 1
 
-    # Convert unit to seconds
-    if unit.startswith("second"):
-        seconds = 1
-    elif unit.startswith("minute"):
-        seconds = 60
-    elif unit.startswith("hour"):
-        seconds = 3600
-    elif unit.startswith("day"):
-        seconds = 86400
-    else:
-        seconds = 3600  # Default to hour
+    # Find matching unit (using startswith for flexibility)
+    seconds = next(
+        (v for k, v in UNIT_TO_SECONDS.items() if unit.startswith(k)),
+        int(DEFAULT_RETRY_AFTER),  # Default to hour if no match
+    )
 
     return str(multiplier * seconds)
 
@@ -59,7 +64,7 @@ async def rate_limit_handler(
     Returns a 429 status with Retry-After header.
     """
     # Calculate Retry-After from limit string
-    retry_after = "3600"  # Default to 1 hour
+    retry_after = DEFAULT_RETRY_AFTER  # Default to 1 hour
     if exc.limit is not None:
         limit_str = str(exc.limit.limit)
         retry_after = parse_retry_after(limit_str)
