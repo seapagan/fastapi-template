@@ -479,7 +479,7 @@ tzdata==2025.1
     # via
     #   faker
     #   pendulum
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   pygithub
     #   requests
