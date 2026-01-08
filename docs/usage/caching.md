@@ -212,6 +212,24 @@ async def expensive_query(request: Request, response: Response):
     The `@cached()` decorator MUST be placed AFTER the route decorator
     (`@router.get()`, etc.) to work correctly.
 
+!!! tip "Using with Rate Limiting"
+    When using both `@cached()` and `@rate_limited()` decorators together,
+    place rate limiting first for security. Rate limits should be checked
+    before returning any response (including cached ones):
+
+    ```python
+    from app.cache import cached
+    from app.rate_limit.decorators import rate_limited
+
+    @router.get("/endpoint")
+    @rate_limited("10/minute")  # Check rate limit first
+    @cached(expire=300)         # Then check cache
+    async def handler(request: Request, response: Response):
+        return data
+    ```
+
+    This ensures rate-limited users don't bypass limits via cached responses.
+
 ### With Custom Key Builders
 
 For user-scoped caching, use built-in key builders:

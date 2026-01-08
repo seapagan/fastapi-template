@@ -128,6 +128,12 @@ following advantages to starting your own from scratch :
   collection tracks HTTP performance (requests, latency, in-flight), business
   metrics (auth failures, API key usage, login attempts), and custom
   application metrics. Exposed via `/metrics` endpoint when enabled.
+- **Rate limiting** for authentication endpoints to protect against brute force
+  attacks, spam, and abuse. Disabled by default, supports both in-memory (for
+  single-instance) and Redis (for multi-instance) backends. Conservative limits
+  applied to login (5/15min), registration (3/hour), password recovery (3/hour),
+  and other auth routes. Returns HTTP 429 with `Retry-After` header when limits
+  exceeded. Violations tracked via Prometheus metrics when enabled.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add

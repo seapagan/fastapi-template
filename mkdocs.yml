@@ -79,6 +79,7 @@ nav:
       - API Keys: usage/api-keys.md
       - Admin Panel: usage/admin-panel.md
       - Caching and Performance: usage/caching.md
+      - Rate Limiting and Security: usage/rate-limiting.md
       - Metrics and Observability: usage/metrics.md
   - Customization:
       - Metadata: customization/meta.md

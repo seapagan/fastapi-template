@@ -50,6 +50,8 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   uvicorn
 cryptography==46.0.3
     # via fastapi-mail
+deprecated==1.2.18
+    # via limits
 dnspython==2.7.0
     # via email-validator
 email-validator==2.3.0
@@ -105,6 +107,8 @@ jinja2==3.1.6
     #   sqladmin
 libpass==1.9.0
     # via api-template
+limits==5.6.0
+    # via slowapi
 loguru==0.7.3
     # via api-template
 mako==1.3.9
@@ -118,6 +122,8 @@ markupsafe==3.0.2
     #   wtforms
 mdurl==0.1.2
     # via markdown-it-py
+packaging==24.2
+    # via limits
 pendulum==3.1.0
     # via fastapi-cache2
 prometheus-client==0.23.1
@@ -185,6 +191,8 @@ shellingham==1.5.4
     # via typer
 six==1.17.0
     # via python-dateutil
+slowapi==0.1.9
+    # via api-template
 sniffio==1.3.1
     # via anyio
 sqladmin==0.20.1
@@ -217,6 +225,7 @@ typing-extensions==4.15.0
     #   fastapi-mail
     #   fastapi-pagination
     #   libpass
+    #   limits
     #   pydantic
     #   pydantic-core
     #   pydantic-extra-types
@@ -248,5 +257,7 @@ websockets==15.0
     # via uvicorn
 win32-setctime==1.2.0 ; sys_platform == 'win32'
     # via loguru
+wrapt==1.17.2
+    # via deprecated
 wtforms==3.1.2
     # via sqladmin

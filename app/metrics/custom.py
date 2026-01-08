@@ -29,6 +29,14 @@ login_attempts_total = Counter(
     namespace=METRIC_NAMESPACE,
 )
 
+# Rate limit tracking
+rate_limit_exceeded_total = Counter(
+    "rate_limit_exceeded_total",
+    "Total rate limit violations by endpoint and limit",
+    ["endpoint", "limit"],
+    namespace=METRIC_NAMESPACE,
+)
+
 
 # Helper functions (only increment if metrics enabled)
 def increment_auth_failure(reason: str, method: str) -> None:
@@ -47,3 +55,12 @@ def increment_login_attempt(status: str) -> None:
     """Increment login attempt counter."""
     if get_settings().metrics_enabled:
         login_attempts_total.labels(status=status).inc()
+
+
+def increment_rate_limit_exceeded(endpoint: str, limit: str) -> None:
+    """Increment rate limit exceeded counter."""
+    if get_settings().metrics_enabled:
+        rate_limit_exceeded_total.labels(
+            endpoint=endpoint,
+            limit=limit,
+        ).inc()

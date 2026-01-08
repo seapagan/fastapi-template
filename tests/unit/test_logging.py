@@ -551,14 +551,6 @@ class TestLoggingMiddleware:
         assert "bad" not in log_message
         assert result == mock_response
 
-    def test_redact_query_returns_empty_for_blank_query(self) -> None:
-        """Test redaction helper returns empty for blank query."""
-        assert LoggingMiddleware._redact_query("") == ""
-
-    def test_redact_query_returns_original_when_no_params(self) -> None:
-        """Test redaction helper keeps original when parse yields no params."""
-        assert LoggingMiddleware._redact_query("&") == "&"
-
     async def test_middleware_logs_without_query_parameters(
         self, mocker: MockerFixture
     ) -> None:

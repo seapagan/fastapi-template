@@ -4,7 +4,7 @@ import logging
 import sys
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, cast
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +16,8 @@ from fastapi_pagination import add_pagination
 from loguru import logger as loguru_logger
 from redis import RedisError
 from redis.asyncio import Redis
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.admin import register_admin
@@ -27,6 +29,8 @@ from app.database.db import async_session
 from app.metrics.instrumentator import register_metrics
 from app.middleware.cache_logging import CacheLoggingMiddleware
 from app.middleware.logging_middleware import LoggingMiddleware
+from app.rate_limit import limiter
+from app.rate_limit.handlers import rate_limit_handler
 from app.resources import config_error
 from app.resources.routes import api_router
 
@@ -160,6 +164,13 @@ app = FastAPI(
 # Customize OpenAPI schema for special endpoints
 app.openapi = lambda: custom_openapi(app)  # type: ignore[method-assign]
 
+# Register custom exception handler for rate limits
+app.add_exception_handler(
+    RateLimitExceeded,
+    cast("Any", rate_limit_handler),
+)
+
+
 # register the API routes
 app.include_router(api_router)
 
@@ -189,6 +200,12 @@ app.add_middleware(LoggingMiddleware)
 
 # Add cache logging middleware
 app.add_middleware(CacheLoggingMiddleware)
+
+# Add SlowAPI middleware and state (required for rate limiting)
+# NOTE: app.state.limiter must be set regardless of rate_limit_enabled
+# The limiter itself has enabled=False when rate limiting is disabled
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 # Add pagination support
 add_pagination(app)

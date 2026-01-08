@@ -138,6 +138,11 @@ class Settings(BaseSettings):
     redis_db: int = 0
     cache_default_ttl: int = 300  # 5 minutes
 
+    # Rate limiting settings (opt-in, disabled by default)
+    # Automatically uses Redis when both rate_limit_enabled and
+    # redis_enabled are True
+    rate_limit_enabled: bool = False
+
     # gatekeeper settings!
     # this is to ensure that people read the damn instructions and changelogs
     i_read_the_damn_docs: bool = False
@@ -159,6 +164,21 @@ class Settings(BaseSettings):
                 f"{self.redis_host}:{self.redis_port}/{self.redis_db}"
             )
         return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
+
+    @property
+    def rate_limit_storage_url(self) -> str:
+        """Generate rate limit storage URL.
+
+        Returns Redis URL when both redis_enabled and rate_limit_enabled
+        are True, otherwise returns empty string to trigger in-memory
+        storage.
+
+        Returns:
+            Redis URL for rate limiting or empty string for in-memory.
+        """
+        if self.rate_limit_enabled and self.redis_enabled:
+            return self.redis_url
+        return ""
 
     @field_validator("api_root")
     @classmethod

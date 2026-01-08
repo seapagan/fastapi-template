@@ -34,6 +34,7 @@ dependencies = [
   "fastapi-pagination>=0.12.34",
   "loguru>=0.7.2",
   "fastapi-cache2[redis]>=0.2.2",
+  "slowapi>=0.1.9",
 ]
 
 [project.scripts]
@@ -240,6 +241,7 @@ addopts = [
 filterwarnings = [
   "ignore:'crypt' is deprecated:DeprecationWarning",
   "ignore:ValidatedEmail.email is deprecated:DeprecationWarning",
+  "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning:slowapi.extension",
 ]
 markers = [
   "unit: Unit tests",
@@ -254,6 +256,7 @@ env = [
   "CACHE_ENABLED=true",
   "LOG_FILENAME=test_api.log",
   "METRICS_ENABLED=True",
+  "RATE_LIMIT_ENABLED=false",
 ]
 
 asyncio_default_fixture_loop_scope = "function"
