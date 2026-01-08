@@ -569,7 +569,5 @@ simpler implementation.
   violations
 - [Project Organization](../project-organization.md) - Rate limit
   module structure
-- [Security Best Practices](../security.md) - Comprehensive security
-  guide
-- [Logging Configuration](configuration/environment.md#configure-logging-optional)
-  - Enable rate limit logging
+- [Logging Configuration](configuration/environment.md#configure-logging-optional) -
+  Enable rate limit logging
