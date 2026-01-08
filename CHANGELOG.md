@@ -23,6 +23,7 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Feat: add rate limiting for authentication endpoints ([#807](https://github.com/seapagan/fastapi-template/pull/807)) by [seapagan](https://github.com/seapagan)
 - Feat: Add optional Redis caching infrastructure ([#803](https://github.com/seapagan/fastapi-template/pull/803)) by [seapagan](https://github.com/seapagan)
 - Feat: add optional Prometheus metrics endpoint ([#799](https://github.com/seapagan/fastapi-template/pull/799)) by [seapagan](https://github.com/seapagan)
 - Feat: include query parameters in request logs ([#797](https://github.com/seapagan/fastapi-template/pull/797)) by [seapagan](https://github.com/seapagan)
@@ -39,6 +40,7 @@ Everything in this section will be included in the next official release.
 
 **Security**
 
+- Fix: update dependencies to fix security advisories in 2 third-party libraries ([#809](https://github.com/seapagan/fastapi-template/pull/809)) by [seapagan](https://github.com/seapagan)
 - Fix(security): redact sensitive query params in request logs ([#805](https://github.com/seapagan/fastapi-template/pull/805)) by [seapagan](https://github.com/seapagan)
 - Fix(security): validate credentials and prevent weak defaults ([#793](https://github.com/seapagan/fastapi-template/pull/793)) by [seapagan](https://github.com/seapagan)
 
