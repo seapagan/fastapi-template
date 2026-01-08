@@ -56,7 +56,7 @@ certifi==2025.1.31
     #   httpx
     #   requests
     #   sentry-sdk
-cffi==2.0.0
+cffi==2.0.0 ; platform_python_implementation != 'PyPy'
     # via
     #   cryptography
     #   pynacl
@@ -272,7 +272,7 @@ prometheus-client==0.23.1
     # via prometheus-fastapi-instrumentator
 prometheus-fastapi-instrumentator==7.1.0
     # via api-template
-pycparser==2.22 ; implementation_name != 'PyPy'
+pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
     # via cffi
 pydantic==2.12.5
     # via
@@ -310,7 +310,7 @@ pymdown-extensions==10.19.1
     # via
     #   mkdocs-material
     #   mkdocstrings
-pynacl==1.5.0
+pynacl==1.6.2
     # via pygithub
 pytest==9.0.2
     # via
@@ -487,7 +487,7 @@ tzdata==2025.1
     # via
     #   faker
     #   pendulum
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   pygithub
     #   requests
