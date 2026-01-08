@@ -24,6 +24,7 @@ class TestRateLimitConfig:
             assert "/" in limit
             count, period = limit.split("/")
             assert count.isdigit()
+            assert int(count) > 0, f"Count must be positive: {limit}"
             # Period: [number]unit (second/minute/hour/day + optional 's')
             assert re.match(
                 r"^\d*\s*(seconds?|minutes?|hours?|days?)$", period
