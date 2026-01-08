@@ -59,7 +59,7 @@ def rate_limited(limit: str) -> Callable[..., Any]:
                 )
 
                 client_ip = "unknown"
-                if request and hasattr(request, "client"):
+                if request and hasattr(request, "client") and request.client:
                     client_ip = request.client.host
 
                 category_logger.warning(

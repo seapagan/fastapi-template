@@ -1,5 +1,7 @@
 """Test rate limit configuration."""
 
+import re
+
 from app.rate_limit.config import RateLimits
 
 
@@ -22,14 +24,10 @@ class TestRateLimitConfig:
             assert "/" in limit
             count, period = limit.split("/")
             assert count.isdigit()
-            assert period in [
-                "second",
-                "minute",
-                "hour",
-                "day",
-                "minutes",
-                "hours",
-            ] or period.endswith("minutes")
+            # Period: [number]unit (second/minute/hour/day + optional 's')
+            assert re.match(
+                r"^\d*\s*(seconds?|minutes?|hours?|days?)$", period
+            ), f"Invalid period format: {period}"
 
     def test_conservative_limits(self) -> None:
         """Ensure limits match SECURITY-REVIEW.md requirements."""

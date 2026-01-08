@@ -43,14 +43,8 @@ class TestRateLimitMetrics:
         # Check if metrics endpoint is available
         if metrics_response.status_code == status.HTTP_200_OK:
             metrics_text = metrics_response.text
-            # Check for rate limit metric (may not be present if
-            # metrics were disabled during test setup)
-            # This is a soft check since the metric might not be
-            # visible depending on when metrics were enabled
-            assert (
-                "rate_limit_exceeded_total" in metrics_text
-                or "# HELP" in metrics_text
-            )
+            # Verify rate limit metric was recorded
+            assert "rate_limit_exceeded_total" in metrics_text
 
     @pytest.mark.asyncio
     async def test_metrics_endpoint_available(
