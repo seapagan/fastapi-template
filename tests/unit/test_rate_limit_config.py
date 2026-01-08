@@ -10,14 +10,12 @@ class TestRateLimitConfig:
 
     def test_rate_limit_format(self) -> None:
         """Ensure all rate limits follow correct format."""
+        # Dynamically get all RateLimits string constants
         limits = [
-            RateLimits.REGISTER,
-            RateLimits.LOGIN,
-            RateLimits.FORGOT_PASSWORD,
-            RateLimits.VERIFY,
-            RateLimits.REFRESH,
-            RateLimits.RESET_PASSWORD_GET,
-            RateLimits.RESET_PASSWORD_POST,
+            getattr(RateLimits, attr)
+            for attr in dir(RateLimits)
+            if not attr.startswith("_")
+            and isinstance(getattr(RateLimits, attr), str)
         ]
 
         for limit in limits:
