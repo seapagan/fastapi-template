@@ -288,7 +288,7 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await session.get(User, user_id)
+            user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
                 raise HTTPException(
@@ -426,7 +426,7 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await session.get(User, user_id)
+            user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
                 raise HTTPException(
@@ -534,6 +534,22 @@ async def get_jwt_user(
     """Get user from JWT token."""
     if not credentials:
         return None
+
+    # Validate token format before processing
+    if (
+        not credentials.credentials
+        or len(credentials.credentials) > MAX_JWT_TOKEN_LENGTH
+        or not is_valid_jwt_format(credentials.credentials)
+    ):
+        increment_auth_failure("invalid_token", "jwt")
+        category_logger.warning(
+            "Authentication attempted with invalid token format",
+            LogCategory.AUTH,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ResponseMessages.INVALID_TOKEN,
+        )
 
     try:
         # Decode and validate the token
