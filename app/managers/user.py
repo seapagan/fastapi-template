@@ -28,6 +28,11 @@ from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
 from app.schemas.request.user import SearchField
 
+# Precomputed dummy hash for timing attack mitigation in login
+# This hash is used when a user doesn't exist to ensure password
+# verification always takes the same time regardless of user existence
+DUMMY_PASSWORD_HASH = hash_password("dummy_constant_for_timing_protection")
+
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Sequence
     from typing import Any
@@ -168,9 +173,32 @@ class UserManager:
     async def login(
         user_data: dict[str, str], session: AsyncSession
     ) -> tuple[str, str]:
-        """Log in an existing User."""
+        """Log in an existing User.
+
+        Note: Always performs password verification (even for non-existent
+        users) to prevent timing attacks that could be used for user
+        enumeration. This ensures consistent response times regardless of
+        whether the user exists or not.
+        """
         user_do = await get_user_by_email_(user_data["email"], session)
 
+        # Always verify password to prevent timing attacks
+        # Use dummy hash if user doesn't exist to maintain consistent timing
+        hash_to_verify = (
+            str(user_do.password) if user_do else DUMMY_PASSWORD_HASH
+        )
+
+        try:
+            password_valid = verify_password(
+                user_data["password"], hash_to_verify
+            )
+        except ValueError as err:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                ErrorMessages.PASSWORD_INVALID,
+            ) from err
+
+        # Now check all conditions and provide consistent error messages
         # Check if user exists
         if not user_do:
             increment_login_attempt("not_found")
@@ -184,24 +212,16 @@ class UserManager:
             )
 
         # Check if password is valid
-        try:
-            if not verify_password(
-                user_data["password"], str(user_do.password)
-            ):
-                increment_login_attempt("invalid_password")
-                category_logger.warning(
-                    f"Failed login attempt for email: {user_data['email']} "
-                    "(invalid password)",
-                    LogCategory.AUTH,
-                )
-                raise HTTPException(
-                    status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
-                )
-        except ValueError as err:
+        if not password_valid:
+            increment_login_attempt("invalid_password")
+            category_logger.warning(
+                f"Failed login attempt for email: {user_data['email']} "
+                "(invalid password)",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
-                status.HTTP_400_BAD_REQUEST,
-                ErrorMessages.PASSWORD_INVALID,
-            ) from err
+                status.HTTP_400_BAD_REQUEST, ErrorMessages.AUTH_INVALID
+            )
 
         # Check if user is banned
         if bool(user_do.banned):
