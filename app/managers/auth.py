@@ -191,12 +191,21 @@ class AuthManager:
             )
 
             # Use constant-time comparison to prevent timing attacks
-            if not secrets.compare_digest(payload["typ"], "refresh"):
+            token_type = payload.get("typ")
+            if token_type is None or not secrets.compare_digest(
+                token_type, "refresh"
+            ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await get_user_by_id_(payload["sub"], session)
+            user_id = payload.get("sub")
+            if user_id is None:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
                 raise HTTPException(
@@ -258,7 +267,13 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_data = await session.get(User, payload["sub"])
+            user_id = payload.get("sub")
+            if user_id is None:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await session.get(User, user_id)
 
             if not user_data:
                 raise HTTPException(
@@ -266,7 +281,10 @@ class AuthManager:
                 )
 
             # Use constant-time comparison to prevent timing attacks
-            if not secrets.compare_digest(payload["typ"], "verify"):
+            token_type = payload.get("typ")
+            if token_type is None or not secrets.compare_digest(
+                token_type, "verify"
+            ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -284,7 +302,7 @@ class AuthManager:
 
             await session.execute(
                 update(User)
-                .where(User.id == payload["sub"])
+                .where(User.id == user_id)
                 .values(
                     verified=True,
                 )
@@ -374,7 +392,13 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_data = await session.get(User, payload["sub"])
+            user_id = payload.get("sub")
+            if user_id is None:
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await session.get(User, user_id)
 
             if not user_data:
                 raise HTTPException(
@@ -382,7 +406,10 @@ class AuthManager:
                 )
 
             # Use constant-time comparison to prevent timing attacks
-            if not secrets.compare_digest(payload["typ"], "reset"):
+            token_type = payload.get("typ")
+            if token_type is None or not secrets.compare_digest(
+                token_type, "reset"
+            ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -399,7 +426,7 @@ class AuthManager:
             # Update the user's password
             await session.execute(
                 update(User)
-                .where(User.id == payload["sub"])
+                .where(User.id == user_id)
                 .values(password=hashed_password)
             )
             await session.commit()
@@ -511,7 +538,20 @@ async def get_jwt_user(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=ResponseMessages.INVALID_TOKEN,
             )
-        user_data = await get_user_by_id_(payload["sub"], db)
+
+        user_id = payload.get("sub")
+        if user_id is None:
+            increment_auth_failure("invalid_token", "jwt")
+            category_logger.warning(
+                "Authentication attempted with token missing 'sub' claim",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ResponseMessages.INVALID_TOKEN,
+            )
+
+        user_data = await get_user_by_id_(user_id, db)
 
         # Check user validity - user must exist, be verified, and not banned
         if not user_data:

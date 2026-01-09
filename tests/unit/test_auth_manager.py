@@ -639,3 +639,58 @@ class TestAuthManager:
             await AuthManager.verify(fake_jwt, test_db)
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_refresh_missing_sub_claim(self, test_db) -> None:
+        """Test refresh rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "refresh",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.refresh(
+                TokenRefreshRequest(refresh=token_without_sub), test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_verify_missing_sub_claim(self, test_db) -> None:
+        """Test verify rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "verify",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(token_without_sub, test_db)
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_missing_sub_claim(self, test_db) -> None:
+        """Test reset_password rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "reset",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                token_without_sub, "newpassword123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
