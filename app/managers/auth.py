@@ -1,6 +1,7 @@
 """Define the Autorization Manager."""
 
 import datetime
+import secrets
 
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
@@ -189,7 +190,8 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            if payload["typ"] != "refresh":
+            # Use constant-time comparison to prevent timing attacks
+            if not secrets.compare_digest(payload["typ"], "refresh"):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -263,7 +265,8 @@ class AuthManager:
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
-            if payload["typ"] != "verify":
+            # Use constant-time comparison to prevent timing attacks
+            if not secrets.compare_digest(payload["typ"], "verify"):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -378,7 +381,8 @@ class AuthManager:
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
-            if payload["typ"] != "reset":
+            # Use constant-time comparison to prevent timing attacks
+            if not secrets.compare_digest(payload["typ"], "reset"):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
