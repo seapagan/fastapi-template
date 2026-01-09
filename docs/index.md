@@ -83,6 +83,9 @@ following advantages to starting your own from scratch :
   applied to login (5/15min), registration (3/hour), password recovery (3/hour),
   and other auth routes. Returns HTTP 429 with `Retry-After` header when limits
   exceeded. Violations tracked via Prometheus metrics when enabled.
+- **Timing attack protection** in authentication flows. Login operations use
+  constant-time password verification to prevent user enumeration, and token
+  validation uses constant-time comparisons for defense-in-depth.
 - **A command-line admin tool**. This allows to configure the project metadata
   very easily, add users (and make admin), and run a development server. This
   can easily be modified to add your own functionality (for example bulk add
