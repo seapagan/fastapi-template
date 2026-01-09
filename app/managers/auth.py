@@ -526,7 +526,7 @@ class AuthManager:
 bearer = HTTPBearer(auto_error=False)
 
 
-async def get_jwt_user(
+async def get_jwt_user(  # noqa: C901
     request: Request,
     db: AsyncSession = Depends(get_database),
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
@@ -561,7 +561,7 @@ async def get_jwt_user(
         )
         # Use constant-time comparison to prevent timing attacks
         token_type = payload.get("typ")
-        if token_type is None or not secrets.compare_digest(
+        if not isinstance(token_type, str) or not secrets.compare_digest(
             token_type, "access"
         ):
             increment_auth_failure("invalid_token", "jwt")
@@ -575,10 +575,13 @@ async def get_jwt_user(
             )
 
         user_id = payload.get("sub")
-        if user_id is None:
+        # Accept int-like strings but reject weird types early
+        if isinstance(user_id, str) and user_id.isdigit():
+            user_id = int(user_id)
+        if not isinstance(user_id, int):
             increment_auth_failure("invalid_token", "jwt")
             category_logger.warning(
-                "Authentication attempted with token missing 'sub' claim",
+                "Authentication attempted with invalid 'sub' claim",
                 LogCategory.AUTH,
             )
             raise HTTPException(
