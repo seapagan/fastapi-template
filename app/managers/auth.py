@@ -192,7 +192,7 @@ class AuthManager:
 
             # Use constant-time comparison to prevent timing attacks
             token_type = payload.get("typ")
-            if token_type is None or not secrets.compare_digest(
+            if not isinstance(token_type, str) or not secrets.compare_digest(
                 token_type, "refresh"
             ):
                 raise HTTPException(
@@ -200,7 +200,10 @@ class AuthManager:
                 )
 
             user_id = payload.get("sub")
-            if user_id is None:
+            # Accept int-like strings but reject weird types early
+            if isinstance(user_id, str) and user_id.isdigit():
+                user_id = int(user_id)
+            if not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -267,17 +270,20 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_id = payload.get("sub")
-            if user_id is None:
+            # Use constant-time comparison to prevent timing attacks
+            token_type = payload.get("typ")
+            if not isinstance(token_type, str) or not secrets.compare_digest(
+                token_type, "verify"
+            ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            # Use constant-time comparison to prevent timing attacks
-            token_type = payload.get("typ")
-            if token_type is None or not secrets.compare_digest(
-                token_type, "verify"
-            ):
+            user_id = payload.get("sub")
+            # Accept int-like strings but reject weird types early
+            if isinstance(user_id, str) and user_id.isdigit():
+                user_id = int(user_id)
+            if not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -402,17 +408,20 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_id = payload.get("sub")
-            if user_id is None:
+            # Use constant-time comparison to prevent timing attacks
+            token_type = payload.get("typ")
+            if not isinstance(token_type, str) or not secrets.compare_digest(
+                token_type, "reset"
+            ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            # Use constant-time comparison to prevent timing attacks
-            token_type = payload.get("typ")
-            if token_type is None or not secrets.compare_digest(
-                token_type, "reset"
-            ):
+            user_id = payload.get("sub")
+            # Accept int-like strings but reject weird types early
+            if isinstance(user_id, str) and user_id.isdigit():
+                user_id = int(user_id)
+            if not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
