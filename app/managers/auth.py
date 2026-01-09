@@ -273,13 +273,6 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await session.get(User, user_id)
-
-            if not user_data:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
-                )
-
             # Use constant-time comparison to prevent timing attacks
             token_type = payload.get("typ")
             if token_type is None or not secrets.compare_digest(
@@ -287,6 +280,13 @@ class AuthManager:
             ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await session.get(User, user_id)
+
+            if not user_data:
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             # block a banned user
@@ -384,6 +384,16 @@ class AuthManager:
         code: str, new_password: str, session: AsyncSession
     ) -> None:
         """Reset a user's password using the reset token."""
+        # Validate token format before processing
+        if (
+            not code
+            or len(code) > MAX_JWT_TOKEN_LENGTH
+            or not is_valid_jwt_format(code)
+        ):
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 code,
@@ -398,13 +408,6 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await session.get(User, user_id)
-
-            if not user_data:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
-                )
-
             # Use constant-time comparison to prevent timing attacks
             token_type = payload.get("typ")
             if token_type is None or not secrets.compare_digest(
@@ -412,6 +415,13 @@ class AuthManager:
             ):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await session.get(User, user_id)
+
+            if not user_data:
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             # Block banned users from resetting password
