@@ -106,6 +106,88 @@ class TestJWTAuth:
         assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc.value.detail == ResponseMessages.INVALID_TOKEN
 
+    async def test_jwt_auth_missing_sub_rejected(self, test_db, mocker) -> None:
+        """Test with a token missing sub claim."""
+        await UserManager.register(self.test_user, test_db)
+        token = jwt.encode(
+            {
+                "typ": "access",
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=10),
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {token}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
+
+        with pytest.raises(HTTPException) as exc:
+            await get_jwt_user(
+                request=mock_req, db=test_db, credentials=mock_credentials
+            )
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ResponseMessages.INVALID_TOKEN
+
+    async def test_jwt_auth_string_sub_claim(self, test_db, mocker) -> None:
+        """Test with a token containing string sub claim."""
+        await UserManager.register(self.test_user, test_db)
+        # Create a JWT with string 'sub' instead of int
+        token = jwt.encode(
+            {
+                "typ": "access",
+                "sub": "1",  # String instead of int
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=10),
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {token}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
+
+        result = await get_jwt_user(
+            request=mock_req, db=test_db, credentials=mock_credentials
+        )
+
+        assert isinstance(result, User)
+        assert result.email == self.test_user["email"]
+        assert result.id == 1
+
+    async def test_jwt_auth_wrong_signature(self, test_db, mocker) -> None:
+        """Test with a token with wrong signature."""
+        await UserManager.register(self.test_user, test_db)
+        # Create a JWT with wrong signature
+        token = jwt.encode(
+            {
+                "typ": "access",
+                "sub": 1,
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                + datetime.timedelta(minutes=10),
+            },
+            "wrong_secret_key",
+            algorithm="HS256",
+        )
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"Authorization": f"Bearer {token}"}
+        mock_credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
+
+        with pytest.raises(HTTPException) as exc:
+            await get_jwt_user(
+                request=mock_req, db=test_db, credentials=mock_credentials
+            )
+
+        assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc.value.detail == ResponseMessages.INVALID_TOKEN
+
     async def test_jwt_auth_no_auth_header(self, test_db, mocker) -> None:
         """Test with no authorization header."""
         mock_req = mocker.patch(self.mock_request_path)

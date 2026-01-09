@@ -1,6 +1,7 @@
 """Define the Autorization Manager."""
 
 import datetime
+import secrets
 
 import jwt
 from fastapi import BackgroundTasks, Depends, HTTPException, Request, status
@@ -177,6 +178,11 @@ class AuthManager:
             or len(refresh_token.refresh) > MAX_JWT_TOKEN_LENGTH
             or not is_valid_jwt_format(refresh_token.refresh)
         ):
+            increment_auth_failure("invalid_token", "refresh_token")
+            category_logger.warning(
+                "Refresh attempted with invalid token format",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -189,14 +195,46 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            if payload["typ"] != "refresh":
+            # Use constant-time comparison to prevent timing attacks
+            token_type = payload.get("typ")
+            if not isinstance(token_type, str) or not secrets.compare_digest(
+                token_type, "refresh"
+            ):
+                increment_auth_failure("invalid_token", "refresh_token")
+                category_logger.warning(
+                    "Refresh attempted with invalid or missing token type",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            user_data = await get_user_by_id_(payload["sub"], session)
+            user_id = payload.get("sub")
+            # Accept int-like strings but reject weird types early
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
+                user_id = int(user_id)
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "refresh_token")
+                category_logger.warning(
+                    "Refresh attempted with invalid or missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
+                increment_auth_failure("user_not_found", "refresh_token")
+                category_logger.warning(
+                    f"Refresh attempted with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
@@ -244,6 +282,11 @@ class AuthManager:
             or len(code) > MAX_JWT_TOKEN_LENGTH
             or not is_valid_jwt_format(code)
         ):
+            increment_auth_failure("invalid_token", "verify_email")
+            category_logger.warning(
+                "Email verification with invalid token format",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -256,32 +299,74 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_data = await session.get(User, payload["sub"])
-
-            if not user_data:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
+            # Use constant-time comparison to prevent timing attacks
+            token_type = payload.get("typ")
+            if not isinstance(token_type, str) or not secrets.compare_digest(
+                token_type, "verify"
+            ):
+                increment_auth_failure("invalid_token", "verify_email")
+                category_logger.warning(
+                    "Email verification with invalid/missing token type",
+                    LogCategory.AUTH,
                 )
-
-            if payload["typ"] != "verify":
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
+            user_id = payload.get("sub")
+            # Accept int-like strings but reject weird types early
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
+                user_id = int(user_id)
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "verify_email")
+                category_logger.warning(
+                    "Email verification with invalid/missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await get_user_by_id_(user_id, session)
+
+            if not user_data:
+                increment_auth_failure("user_not_found", "verify_email")
+                category_logger.warning(
+                    f"Email verification with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
+                )
+
             # block a banned user
             if bool(user_data.banned):
+                increment_auth_failure("banned_user", "verify_email")
+                category_logger.warning(
+                    f"Banned user {user_data.id} attempted email verification",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             if bool(user_data.verified):
+                increment_auth_failure("already_verified", "verify_email")
+                category_logger.warning(
+                    f"User {user_data.id} verification when already verified",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             await session.execute(
                 update(User)
-                .where(User.id == payload["sub"])
+                .where(User.id == user_id)
                 .values(
                     verified=True,
                 )
@@ -297,6 +382,7 @@ class AuthManager:
             )
 
         except jwt.ExpiredSignatureError as exc:
+            increment_auth_failure("expired_token", "verify_email")
             category_logger.warning(
                 "Expired verification token used", LogCategory.AUTH
             )
@@ -304,6 +390,7 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            increment_auth_failure("invalid_token", "verify_email")
             category_logger.warning(
                 "Invalid verification token used", LogCategory.AUTH
             )
@@ -363,6 +450,21 @@ class AuthManager:
         code: str, new_password: str, session: AsyncSession
     ) -> None:
         """Reset a user's password using the reset token."""
+        # Validate token format before processing
+        if (
+            not code
+            or len(code) > MAX_JWT_TOKEN_LENGTH
+            or not is_valid_jwt_format(code)
+        ):
+            increment_auth_failure("invalid_token", "password_reset")
+            category_logger.warning(
+                "Password reset with invalid token format",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+            )
+
         try:
             payload = jwt.decode(
                 code,
@@ -371,20 +473,57 @@ class AuthManager:
                 options={"verify_sub": False},
             )
 
-            user_data = await session.get(User, payload["sub"])
-
-            if not user_data:
-                raise HTTPException(
-                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
+            # Use constant-time comparison to prevent timing attacks
+            token_type = payload.get("typ")
+            if not isinstance(token_type, str) or not secrets.compare_digest(
+                token_type, "reset"
+            ):
+                increment_auth_failure("invalid_token", "password_reset")
+                category_logger.warning(
+                    "Password reset with invalid/missing token type",
+                    LogCategory.AUTH,
                 )
-
-            if payload["typ"] != "reset":
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
+            user_id = payload.get("sub")
+            # Accept int-like strings but reject weird types early
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
+                user_id = int(user_id)
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "password_reset")
+                category_logger.warning(
+                    "Password reset with invalid/missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
+                )
+
+            user_data = await get_user_by_id_(user_id, session)
+
+            if not user_data:
+                increment_auth_failure("user_not_found", "password_reset")
+                category_logger.warning(
+                    f"Password reset with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
+                )
+
             # Block banned users from resetting password
             if bool(user_data.banned):
+                increment_auth_failure("banned_user", "password_reset")
+                category_logger.warning(
+                    f"Banned user {user_data.id} attempted password reset",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -395,7 +534,7 @@ class AuthManager:
             # Update the user's password
             await session.execute(
                 update(User)
-                .where(User.id == payload["sub"])
+                .where(User.id == user_id)
                 .values(password=hashed_password)
             )
             await session.commit()
@@ -406,6 +545,7 @@ class AuthManager:
             )
 
         except jwt.ExpiredSignatureError as exc:
+            increment_auth_failure("expired_token", "password_reset")
             category_logger.warning(
                 "Expired password reset token used", LogCategory.AUTH
             )
@@ -413,6 +553,7 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            increment_auth_failure("invalid_token", "password_reset")
             category_logger.warning(
                 "Invalid password reset token used", LogCategory.AUTH
             )
@@ -476,7 +617,7 @@ class AuthManager:
 bearer = HTTPBearer(auto_error=False)
 
 
-async def get_jwt_user(
+async def get_jwt_user(  # noqa: C901
     request: Request,
     db: AsyncSession = Depends(get_database),
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
@@ -484,6 +625,22 @@ async def get_jwt_user(
     """Get user from JWT token."""
     if not credentials:
         return None
+
+    # Validate token format before processing
+    if (
+        not credentials.credentials
+        or len(credentials.credentials) > MAX_JWT_TOKEN_LENGTH
+        or not is_valid_jwt_format(credentials.credentials)
+    ):
+        increment_auth_failure("invalid_token", "jwt")
+        category_logger.warning(
+            "Authentication attempted with invalid token format",
+            LogCategory.AUTH,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=ResponseMessages.INVALID_TOKEN,
+        )
 
     try:
         # Decode and validate the token
@@ -493,7 +650,11 @@ async def get_jwt_user(
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
-        if payload.get("typ") != "access":
+        # Use constant-time comparison to prevent timing attacks
+        token_type = payload.get("typ")
+        if not isinstance(token_type, str) or not secrets.compare_digest(
+            token_type, "access"
+        ):
             increment_auth_failure("invalid_token", "jwt")
             category_logger.warning(
                 "Authentication attempted with non-access token",
@@ -503,10 +664,27 @@ async def get_jwt_user(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=ResponseMessages.INVALID_TOKEN,
             )
-        user_data = await get_user_by_id_(payload["sub"], db)
+
+        user_id = payload.get("sub")
+        # Accept int-like strings but reject weird types early
+        if isinstance(user_id, str) and user_id.isascii() and user_id.isdigit():
+            user_id = int(user_id)
+        if isinstance(user_id, bool) or not isinstance(user_id, int):
+            increment_auth_failure("invalid_token", "jwt")
+            category_logger.warning(
+                "Authentication attempted with invalid 'sub' claim",
+                LogCategory.AUTH,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=ResponseMessages.INVALID_TOKEN,
+            )
+
+        user_data = await get_user_by_id_(user_id, db)
 
         # Check user validity - user must exist, be verified, and not banned
         if not user_data:
+            increment_auth_failure("user_not_found", "jwt")
             category_logger.warning(
                 "Authentication attempted with invalid user token",
                 LogCategory.AUTH,

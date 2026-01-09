@@ -639,3 +639,191 @@ class TestAuthManager:
             await AuthManager.verify(fake_jwt, test_db)
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_valid_format_invalid_signature(
+        self, test_db
+    ) -> None:
+        """Test reset_password rejects JWT with invalid signature."""
+        # Create a JWT-like token with valid format but wrong signature
+        # This should pass format validation but fail cryptographic verification
+        fake_jwt = (
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+            "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0."
+            "invalidSignatureHere123456789012345678901234"
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(fake_jwt, "NewPass123!", test_db)
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_malformed_jwt_wrong_parts(
+        self, test_db
+    ) -> None:
+        """Test reset_password rejects JWT with wrong number of parts."""
+        malformed_tokens = [
+            "only.two",  # Only 2 parts
+            "four.dot.separated.parts",  # 4 parts
+            "justonepart",  # No dots
+        ]
+        for token in malformed_tokens:
+            with pytest.raises(HTTPException) as exc_info:
+                await AuthManager.reset_password(token, "NewPass123!", test_db)
+            assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+            msg = f"Should reject: {token}"
+            assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN, msg
+
+    @pytest.mark.asyncio
+    async def test_reset_password_malformed_jwt_empty_parts(
+        self, test_db
+    ) -> None:
+        """Test reset_password rejects JWT with empty parts."""
+        malformed_tokens = [
+            ".part2.part3",  # Empty first part
+            "part1..part3",  # Empty middle part
+            "part1.part2.",  # Empty last part
+        ]
+        for token in malformed_tokens:
+            with pytest.raises(HTTPException) as exc_info:
+                await AuthManager.reset_password(token, "NewPass123!", test_db)
+            assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+            msg = f"Should reject: {token}"
+            assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN, msg
+
+    @pytest.mark.asyncio
+    async def test_reset_password_oversized_token(self, test_db) -> None:
+        """Test reset_password rejects tokens exceeding max length."""
+        # Create a token longer than MAX_JWT_TOKEN_LENGTH
+        oversized_token = "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c"
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                oversized_token, "NewPass123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_refresh_missing_sub_claim(self, test_db) -> None:
+        """Test refresh rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "refresh",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.refresh(
+                TokenRefreshRequest(refresh=token_without_sub), test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_verify_missing_sub_claim(self, test_db) -> None:
+        """Test verify rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "verify",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(token_without_sub, test_db)
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_reset_password_missing_sub_claim(self, test_db) -> None:
+        """Test reset_password rejects token missing 'sub' claim."""
+        # Create a JWT without the 'sub' claim
+        token_without_sub = jwt.encode(
+            {
+                "typ": "reset",
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(
+                token_without_sub, "newpassword123!", test_db
+            )
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_refresh_string_sub_claim(self, test_db) -> None:
+        """Test refresh accepts string 'sub' claim and converts to int."""
+        await UserManager.register(self.test_user, test_db)
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "refresh",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        # Should succeed because we convert "1" to 1
+        result = await AuthManager.refresh(
+            TokenRefreshRequest(refresh=token_with_string_sub), test_db
+        )
+        assert isinstance(result, str)
+
+    @pytest.mark.asyncio
+    async def test_verify_string_sub_claim(self, test_db) -> None:
+        """Test verify accepts string 'sub' claim and converts to int."""
+        # Create unverified user by passing BackgroundTasks
+        background_tasks = BackgroundTasks()
+        await UserManager.register(
+            self.test_user, test_db, background_tasks=background_tasks
+        )
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "verify",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        # Should succeed because we convert "1" to 1
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(token_with_string_sub, test_db)
+        # Verify it succeeded with HTTP 200
+        assert exc_info.value.status_code == status.HTTP_200_OK
+        # Verify the user was marked as verified
+        user = await UserManager.get_user_by_id(1, test_db)
+        assert user.verified is True
+
+    @pytest.mark.asyncio
+    async def test_reset_password_string_sub_claim(self, test_db) -> None:
+        """Test reset_password accepts string 'sub' and converts to int."""
+        await UserManager.register(self.test_user, test_db)
+
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "reset",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        new_password = "newpassword123!"  # noqa: S105
+        # Should succeed because we convert "1" to 1
+        # If this raises an exception, the test will fail
+        await AuthManager.reset_password(
+            token_with_string_sub, new_password, test_db
+        )
+        # Success - the string "1" was converted to int 1
