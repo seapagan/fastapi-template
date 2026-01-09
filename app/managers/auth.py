@@ -497,7 +497,11 @@ async def get_jwt_user(
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
-        if payload.get("typ") != "access":
+        # Use constant-time comparison to prevent timing attacks
+        token_type = payload.get("typ")
+        if token_type is None or not secrets.compare_digest(
+            token_type, "access"
+        ):
             increment_auth_failure("invalid_token", "jwt")
             category_logger.warning(
                 "Authentication attempted with non-access token",
