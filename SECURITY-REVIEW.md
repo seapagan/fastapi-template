@@ -219,6 +219,12 @@
 
 ### 12. KeyError Throws 500 Instead of 401
 
+> [!NOTE]
+> ✅ **Done**: All JWT claim accesses now use `payload.get()` with explicit
+> None checks in all token validation flows (refresh, verify, reset,
+> get_jwt_user). Malformed tokens missing 'sub' or 'typ' claims now properly
+> return 401 Unauthorized instead of 500 Internal Server Error.
+
 **Location**: `app/managers/auth.py:191, 265, 380`
 
 - **Issue**: `payload["typ"]` / `payload["sub"]` are accessed directly in
@@ -586,7 +592,7 @@
 | Priority     | Count         | Must Fix Before Production?         |
 |--------------|---------------|-------------------------------------|
 | **CRITICAL** | 5 (4 closed)  | ✅ YES - Security vulnerabilities   |
-| **High**     | 9 (2 closed)  | ✅ YES - Important security/quality |
+| **High**     | 9 (3 closed)  | ✅ YES - Important security/quality |
 | **Medium**   | 14 (0 closed) | ⚠️ Recommended - Hardening needed   |
 | **Low**      | 5 (0 closed)  | 💡 Optional - Nice to have          |
 
@@ -623,7 +629,7 @@ rate limiting, token validation, and API key scope enforcement.
 3. **Add database index** (#16) - `api_key.user_id`
 4. **Refactor token encoding** (#15) - Remove code duplication
 5. **Fix password reset reuse** (#9) - One-time tokens
-6. **Add KeyError protection** (#12) - Use `payload.get()`
+6. ✅ **Add KeyError protection** (#12) - Use `payload.get()`
 7. **Add JWT format guards** (#13) - to `get_jwt_user()`
 
 ### Sprint 3 - Hardening (Next 2 Weeks)
