@@ -134,7 +134,7 @@ class TestJWTAuth:
 
     async def test_jwt_auth_string_sub_claim(self, test_db, mocker) -> None:
         """Test with a token containing string sub claim."""
-        token, _ = await UserManager.register(self.test_user, test_db)
+        await UserManager.register(self.test_user, test_db)
         # Create a JWT with string 'sub' instead of int
         token = jwt.encode(
             {

@@ -179,6 +179,10 @@ class AuthManager:
             or not is_valid_jwt_format(refresh_token.refresh)
         ):
             increment_auth_failure("invalid_token", "refresh_token")
+            category_logger.warning(
+                "Refresh attempted with invalid token format",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -226,6 +230,11 @@ class AuthManager:
             user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
+                increment_auth_failure("user_not_found", "refresh_token")
+                category_logger.warning(
+                    f"Refresh attempted with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
@@ -273,6 +282,11 @@ class AuthManager:
             or len(code) > MAX_JWT_TOKEN_LENGTH
             or not is_valid_jwt_format(code)
         ):
+            increment_auth_failure("invalid_token", "verify_email")
+            category_logger.warning(
+                "Email verification with invalid token format",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -320,17 +334,32 @@ class AuthManager:
             user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
+                increment_auth_failure("user_not_found", "verify_email")
+                category_logger.warning(
+                    f"Email verification with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             # block a banned user
             if bool(user_data.banned):
+                increment_auth_failure("banned_user", "verify_email")
+                category_logger.warning(
+                    f"Banned user {user_data.id} attempted email verification",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             if bool(user_data.verified):
+                increment_auth_failure("already_verified", "verify_email")
+                category_logger.warning(
+                    f"User {user_data.id} verification when already verified",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -353,6 +382,7 @@ class AuthManager:
             )
 
         except jwt.ExpiredSignatureError as exc:
+            increment_auth_failure("expired_token", "verify_email")
             category_logger.warning(
                 "Expired verification token used", LogCategory.AUTH
             )
@@ -360,6 +390,7 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            increment_auth_failure("invalid_token", "verify_email")
             category_logger.warning(
                 "Invalid verification token used", LogCategory.AUTH
             )
@@ -425,6 +456,11 @@ class AuthManager:
             or len(code) > MAX_JWT_TOKEN_LENGTH
             or not is_valid_jwt_format(code)
         ):
+            increment_auth_failure("invalid_token", "password_reset")
+            category_logger.warning(
+                "Password reset with invalid token format",
+                LogCategory.AUTH,
+            )
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -472,12 +508,22 @@ class AuthManager:
             user_data = await get_user_by_id_(user_id, session)
 
             if not user_data:
+                increment_auth_failure("user_not_found", "password_reset")
+                category_logger.warning(
+                    f"Password reset with non-existent user ID: {user_id}",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND, ResponseMessages.USER_NOT_FOUND
                 )
 
             # Block banned users from resetting password
             if bool(user_data.banned):
+                increment_auth_failure("banned_user", "password_reset")
+                category_logger.warning(
+                    f"Banned user {user_data.id} attempted password reset",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -499,6 +545,7 @@ class AuthManager:
             )
 
         except jwt.ExpiredSignatureError as exc:
+            increment_auth_failure("expired_token", "password_reset")
             category_logger.warning(
                 "Expired password reset token used", LogCategory.AUTH
             )
@@ -506,6 +553,7 @@ class AuthManager:
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.EXPIRED_TOKEN
             ) from exc
         except jwt.InvalidTokenError as exc:
+            increment_auth_failure("invalid_token", "password_reset")
             category_logger.warning(
                 "Invalid password reset token used", LogCategory.AUTH
             )
@@ -636,6 +684,7 @@ async def get_jwt_user(  # noqa: C901
 
         # Check user validity - user must exist, be verified, and not banned
         if not user_data:
+            increment_auth_failure("user_not_found", "jwt")
             category_logger.warning(
                 "Authentication attempted with invalid user token",
                 LogCategory.AUTH,
