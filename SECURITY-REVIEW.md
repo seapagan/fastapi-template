@@ -457,6 +457,13 @@
 
 ### 30. Timing Attack in API Key Validation
 
+> [!NOTE]
+> **Not fixing**: The prefix (`"fta_"`) is public, documented information that
+> provides no security value. Timing differences (nanoseconds) are completely
+> buried by network jitter. The actual secret (32-byte random key) is compared
+> via HMAC hash lookup in the database. No security benefit from constant-time
+> prefix comparison.
+
 **Location**: `app/managers/api_key.py:136-137`
 
 - **Issue**: String prefix comparison `if not raw_key.startswith(cls.KEY_PREFIX)`
