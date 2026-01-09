@@ -757,3 +757,73 @@ class TestAuthManager:
             )
         assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
         assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+
+    @pytest.mark.asyncio
+    async def test_refresh_string_sub_claim(self, test_db) -> None:
+        """Test refresh accepts string 'sub' claim and converts to int."""
+        await UserManager.register(self.test_user, test_db)
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "refresh",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        # Should succeed because we convert "1" to 1
+        result = await AuthManager.refresh(
+            TokenRefreshRequest(refresh=token_with_string_sub), test_db
+        )
+        assert isinstance(result, str)
+
+    @pytest.mark.asyncio
+    async def test_verify_string_sub_claim(self, test_db) -> None:
+        """Test verify accepts string 'sub' claim and converts to int."""
+        # Create unverified user by passing BackgroundTasks
+        background_tasks = BackgroundTasks()
+        await UserManager.register(
+            self.test_user, test_db, background_tasks=background_tasks
+        )
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "verify",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        # Should succeed because we convert "1" to 1
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.verify(token_with_string_sub, test_db)
+        # Verify it succeeded with HTTP 200
+        assert exc_info.value.status_code == status.HTTP_200_OK
+        # Verify the user was marked as verified
+        user = await UserManager.get_user_by_id(1, test_db)
+        assert user.verified is True
+
+    @pytest.mark.asyncio
+    async def test_reset_password_string_sub_claim(self, test_db) -> None:
+        """Test reset_password accepts string 'sub' and converts to int."""
+        await UserManager.register(self.test_user, test_db)
+
+        # Create a JWT with string 'sub' claim
+        token_with_string_sub = jwt.encode(
+            {
+                "typ": "reset",
+                "sub": "1",  # String instead of int
+                "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
+            },
+            get_settings().secret_key,
+            algorithm="HS256",
+        )
+        new_password = "newpassword123!"  # noqa: S105
+        # Should succeed because we convert "1" to 1
+        # If this raises an exception, the test will fail
+        await AuthManager.reset_password(
+            token_with_string_sub, new_password, test_db
+        )
+        # Success - the string "1" was converted to int 1

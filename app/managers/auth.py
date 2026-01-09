@@ -178,6 +178,7 @@ class AuthManager:
             or len(refresh_token.refresh) > MAX_JWT_TOKEN_LENGTH
             or not is_valid_jwt_format(refresh_token.refresh)
         ):
+            increment_auth_failure("invalid_token", "refresh_token")
             raise HTTPException(
                 status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
             )
@@ -195,15 +196,29 @@ class AuthManager:
             if not isinstance(token_type, str) or not secrets.compare_digest(
                 token_type, "refresh"
             ):
+                increment_auth_failure("invalid_token", "refresh_token")
+                category_logger.warning(
+                    "Refresh attempted with invalid or missing token type",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             user_id = payload.get("sub")
             # Accept int-like strings but reject weird types early
-            if isinstance(user_id, str) and user_id.isdigit():
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
                 user_id = int(user_id)
             if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "refresh_token")
+                category_logger.warning(
+                    "Refresh attempted with invalid or missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -275,15 +290,29 @@ class AuthManager:
             if not isinstance(token_type, str) or not secrets.compare_digest(
                 token_type, "verify"
             ):
+                increment_auth_failure("invalid_token", "verify_email")
+                category_logger.warning(
+                    "Email verification with invalid/missing token type",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             user_id = payload.get("sub")
             # Accept int-like strings but reject weird types early
-            if isinstance(user_id, str) and user_id.isdigit():
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
                 user_id = int(user_id)
             if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "verify_email")
+                category_logger.warning(
+                    "Email verification with invalid/missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -413,15 +442,29 @@ class AuthManager:
             if not isinstance(token_type, str) or not secrets.compare_digest(
                 token_type, "reset"
             ):
+                increment_auth_failure("invalid_token", "password_reset")
+                category_logger.warning(
+                    "Password reset with invalid/missing token type",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
             user_id = payload.get("sub")
             # Accept int-like strings but reject weird types early
-            if isinstance(user_id, str) and user_id.isdigit():
+            if (
+                isinstance(user_id, str)
+                and user_id.isascii()
+                and user_id.isdigit()
+            ):
                 user_id = int(user_id)
             if isinstance(user_id, bool) or not isinstance(user_id, int):
+                increment_auth_failure("invalid_token", "password_reset")
+                category_logger.warning(
+                    "Password reset with invalid/missing 'sub' claim",
+                    LogCategory.AUTH,
+                )
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -576,7 +619,7 @@ async def get_jwt_user(  # noqa: C901
 
         user_id = payload.get("sub")
         # Accept int-like strings but reject weird types early
-        if isinstance(user_id, str) and user_id.isdigit():
+        if isinstance(user_id, str) and user_id.isascii() and user_id.isdigit():
             user_id = int(user_id)
         if isinstance(user_id, bool) or not isinstance(user_id, int):
             increment_auth_failure("invalid_token", "jwt")
