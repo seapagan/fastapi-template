@@ -203,7 +203,7 @@ class AuthManager:
             # Accept int-like strings but reject weird types early
             if isinstance(user_id, str) and user_id.isdigit():
                 user_id = int(user_id)
-            if not isinstance(user_id, int):
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -283,7 +283,7 @@ class AuthManager:
             # Accept int-like strings but reject weird types early
             if isinstance(user_id, str) and user_id.isdigit():
                 user_id = int(user_id)
-            if not isinstance(user_id, int):
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -421,7 +421,7 @@ class AuthManager:
             # Accept int-like strings but reject weird types early
             if isinstance(user_id, str) and user_id.isdigit():
                 user_id = int(user_id)
-            if not isinstance(user_id, int):
+            if isinstance(user_id, bool) or not isinstance(user_id, int):
                 raise HTTPException(
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
@@ -578,7 +578,7 @@ async def get_jwt_user(  # noqa: C901
         # Accept int-like strings but reject weird types early
         if isinstance(user_id, str) and user_id.isdigit():
             user_id = int(user_id)
-        if not isinstance(user_id, int):
+        if isinstance(user_id, bool) or not isinstance(user_id, int):
             increment_auth_failure("invalid_token", "jwt")
             category_logger.warning(
                 "Authentication attempted with invalid 'sub' claim",
