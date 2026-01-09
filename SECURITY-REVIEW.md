@@ -116,6 +116,11 @@
 
 ### 6. Timing Attack in Login - User Enumeration
 
+> [!NOTE]
+> ✅ **Done**: Login now uses a precomputed dummy hash to ensure password
+> verification always occurs, maintaining consistent response times regardless
+> of user existence.
+
 **Location**: `app/managers/user.py:172-199`
 
 - **Issue**: Different execution paths leak information through timing:
@@ -135,6 +140,12 @@
   ```
 
 ### 7. Timing Attack in Token Type Checking
+
+> [!NOTE]
+> ✅ **Done**: Token type comparisons now use `secrets.compare_digest()` for
+> constant-time comparison. Note: The timing difference (nanoseconds) is
+> negligible compared to network jitter (milliseconds), making this purely
+> defense-in-depth rather than addressing a realistic threat vector.
 
 **Location**: `app/managers/auth.py:191, 265, 380`
 
@@ -568,7 +579,7 @@
 | Priority     | Count         | Must Fix Before Production?         |
 |--------------|---------------|-------------------------------------|
 | **CRITICAL** | 5 (4 closed)  | ✅ YES - Security vulnerabilities   |
-| **High**     | 9 (0 closed)  | ✅ YES - Important security/quality |
+| **High**     | 9 (2 closed)  | ✅ YES - Important security/quality |
 | **Medium**   | 14 (0 closed) | ⚠️ Recommended - Hardening needed   |
 | **Low**      | 5 (0 closed)  | 💡 Optional - Nice to have          |
 
@@ -600,7 +611,7 @@ rate limiting, token validation, and API key scope enforcement.
 
 ### Sprint 2 - High Priority (Next Week)
 
-1. **Fix timing attacks** (#6, #7) - Login and token validation
+1. ✅ **Fix timing attacks** (#6, #7) - Login and token validation
 2. **Implement token revocation** (#8) - Add jti claims + blacklist
 3. **Add database index** (#16) - `api_key.user_id`
 4. **Refactor token encoding** (#15) - Remove code duplication
