@@ -102,13 +102,10 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         assert all(command in result.output for command in command_list)
 
     # ----------------------- test the 'init' function ----------------------- #
-    @pytest.mark.xfail
     def test_init_function(self, mocker, fs) -> None:
         """Test that running 'init' should create a default metadata.
 
-        We use 'os.path' to check for the existence of the file, as the
-        filesystem mock does not work with Path objects created outside of
-        the test function (though seems to work in Python >=3.10).
+        We use 'os.path' to check for the existence of the file.
         """
         metadata_file_path = str(self.home_dir / self.metadata_file)
         fs.create_dir(str(self.home_dir))
@@ -124,13 +121,10 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         mock_get_config_path.assert_called_once()
         assert os.path.exists(metadata_file_path)  # noqa: PTH110
 
-    @pytest.mark.xfail
     def test_init_function_with_existing_metadata(self, fs, mocker) -> None:
         """Test that running 'init' should overwrite existing metadata.
 
-        We use 'os.path' to check for the existence of the file, as the
-        filesystem mock does not work with Path objects created outside of
-        the test function (though seems to work in Python >=3.10).
+        We use 'os.path' to check for the existence of the file.
         """
         # Setup
         fs.create_dir(str(self.home_dir))
