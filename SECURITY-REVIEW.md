@@ -237,6 +237,11 @@
 
 ### 13. Missing JWT Format Guards in get_jwt_user
 
+> [!NOTE]
+> ✅ **Done**: JWT format and length guards now applied in `get_jwt_user` before
+> decoding. Tokens exceeding `MAX_JWT_TOKEN_LENGTH` or failing `is_valid_jwt_format`
+> checks are rejected with 401 Unauthorized.
+
 **Location**: `app/managers/auth.py:478-544` (`get_jwt_user`)
 
 - **Issue**: `get_jwt_user` doesn't apply the JWT format/length guard you already
