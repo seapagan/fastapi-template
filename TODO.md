@@ -49,6 +49,12 @@
 - Allow social login (eg Google, Facebook, Twitter, etc), check out
   [fastsapi-sso](https://github.com/tomasvotava/fastapi-sso) for this.
 - Add API key management to the CLI too, working on both user and global scope.
+- Implement password complexity checks (length, character mix, zxcvbn strength).
+  Store password history in a dedicated table (user_password_history) with
+  user_id, password_hash, and created_at fields (hash format identical to the
+  current password). On password change, forbid reuse of the last N passwords
+  (e.g. 3–5) by verifying against recent hashes. Maintain this as a sliding
+  window by pruning older entries so only the most recent N are kept.
 
 ## Testing
 

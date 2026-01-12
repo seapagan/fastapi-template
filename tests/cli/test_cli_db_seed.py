@@ -2,7 +2,6 @@
 
 # ruff: noqa: S105
 import csv
-import sys
 from pathlib import Path
 
 import pytest
@@ -25,10 +24,6 @@ class TestSeedCommand:
     seed_users_path = "app.commands.db._seed_users_from_csv"
     aiorun_path = "app.commands.db.aiorun"
 
-    @pytest.mark.xfail(
-        sys.version_info < (3, 10),
-        reason="Fails under Python <3.10, testing issue not a code issue.",
-    )
     def test_seed_no_force_cancels(self, mocker, tmp_path) -> None:
         """Test that running 'seed' without --force cancels the operation."""
         # Create a dummy CSV file
@@ -65,10 +60,6 @@ class TestSeedCommand:
         # Verify seed function was never called
         seed_mock.assert_not_called()
 
-    @pytest.mark.xfail(
-        sys.version_info < (3, 10),
-        reason="Fails under Python <3.10, testing issue not a code issue.",
-    )
     def test_seed_with_force(self, mocker, tmp_path) -> None:
         """Test that running 'seed' with --force seeds the database."""
         # Create a dummy CSV file
@@ -103,10 +94,6 @@ class TestSeedCommand:
         # Verify seed function was called with correct arguments
         seed_mock.assert_called_once_with(dummy_file)
 
-    @pytest.mark.xfail(
-        sys.version_info < (3, 10),
-        reason="Fails under Python <3.10, testing issue not a code issue.",
-    )
     def test_seed_with_confirmation(self, mocker, tmp_path) -> None:
         """Test that running 'seed' with confirmation seeds the database."""
         # Create a dummy CSV file
@@ -142,10 +129,6 @@ class TestSeedCommand:
         # Verify seed function was called with correct arguments
         seed_mock.assert_called_once_with(dummy_file)
 
-    @pytest.mark.xfail(
-        sys.version_info < (3, 10),
-        reason="Fails under Python <3.10, testing issue not a code issue.",
-    )
     def test_seed_missing_specified_file(self) -> None:
         """Test running 'seed' with a non-existent file fails with an error."""
         # Use a path that definitely doesn't exist
