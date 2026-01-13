@@ -224,6 +224,11 @@ in the version being used.
 >
 > - Section #6 (Timing Attack in Login) - Same lines, part of timing attack fix
 
+> [!NOTE]
+> **Not fixing**: The simplified version exceeds the 80-character line length
+> limit (82 characters). The current formatting with parentheses is the correct
+> approach given the project's line length constraint.
+
 **Issue:** Extraneous parentheses and line break in simple ternary:
 
 ```python
@@ -241,6 +246,10 @@ hash_to_verify = str(user_do.password) if user_do else DUMMY_PASSWORD_HASH
 ---
 
 ### 9. `app/managers/email.py:39` - Path Construction
+
+> [!NOTE]
+> ✅ **Done**: Changed from string-based `".."` to explicit `Path.parent.parent`
+> for better clarity and maintainability.
 
 **Issue:** Awkward `".."` string in path construction:
 

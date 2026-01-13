@@ -26,6 +26,11 @@ from app.models.user import User
 from app.schemas.email import EmailTemplateSchema
 from app.schemas.request.auth import TokenRefreshRequest
 
+# Token expiry constants (in minutes)
+REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30  # 30 days
+VERIFY_TOKEN_EXPIRE_MINUTES = 10  # 10 minutes
+RESET_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
+
 
 class ResponseMessages:
     """Error strings for different circumstances."""
@@ -84,7 +89,7 @@ class AuthManager:
             payload = {
                 "sub": user.id,
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
-                + datetime.timedelta(minutes=60 * 24 * 30),
+                + datetime.timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES),
                 "typ": "refresh",
             }
             token = jwt.encode(
@@ -113,7 +118,7 @@ class AuthManager:
             payload = {
                 "sub": user.id,
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
-                + datetime.timedelta(minutes=10),
+                + datetime.timedelta(minutes=VERIFY_TOKEN_EXPIRE_MINUTES),
                 "typ": "verify",
             }
             token = jwt.encode(
@@ -144,7 +149,7 @@ class AuthManager:
             payload = {
                 "sub": user.id,
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
-                + datetime.timedelta(minutes=30),
+                + datetime.timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES),
                 "typ": "reset",
             }
             token = jwt.encode(

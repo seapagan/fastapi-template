@@ -348,6 +348,12 @@
 
 ### 21. Search Term LIKE Wildcard Issues
 
+> [!NOTE]
+> ✅ **Partially done**: Added `max_length=100` to `search_term` in `UserSearchParams`
+> to prevent DoS via long patterns. The `func.concat` and wildcard escaping
+> improvements will be addressed in a future PR as they require more substantial
+> changes to the query logic.
+
 **Location**: `app/managers/user.py:446-448, 460`
 
 - **Issue**: User input in LIKE queries with f-strings:
@@ -370,6 +376,11 @@
   ```
 
 ### 22. Missing Max Length on Input Fields
+
+> [!NOTE]
+> ✅ **Done**: Added `max_length` constraints to all user request schemas
+> (UserRegisterRequest, UserLoginRequest, UserEditRequest, UserChangePasswordRequest).
+> Values now match database constraints: password=128, first_name=30, last_name=50.
 
 **Location**: `app/schemas/request/user.py:38-39, 57-59`
 
@@ -407,6 +418,11 @@
 
 ### 25. Magic Numbers Without Constants
 
+> [!NOTE]
+> ✅ **Done**: Extracted hardcoded token expiry values to module-level constants
+> (REFRESH_TOKEN_EXPIRE_MINUTES, VERIFY_TOKEN_EXPIRE_MINUTES,
+> RESET_TOKEN_EXPIRE_MINUTES) for better maintainability.
+
 **Location**: `app/managers/auth.py:85, 114, 144`
 
 - **Issue**: Hardcoded expiry times scattered throughout:
@@ -442,6 +458,11 @@
 
 ### 27. Dead Code - get_optional_user
 
+> [!NOTE]
+> **Not fixing**: This is a template project and `get_optional_user` may be useful
+> for users who customize the template for their own use. Keeping it for
+> backwards compatibility and as a convenience for template users.
+
 **Location**: `app/managers/security.py:32-36`
 
 - **Issue**: Function documented to return None if not authenticated, but
@@ -450,6 +471,11 @@
 - **Fix**: Remove this function or fix the dependency to truly be optional.
 
 ### 28. Commented-Out Code
+
+> [!NOTE]
+> **Not fixing**: The commented code (resend verification feature) is preserved
+> as a reference for template users who may want to implement this functionality.
+> It serves as documentation of a potential feature implementation.
 
 **Location**: `app/resources/auth.py:337-346`
 

@@ -36,7 +36,9 @@ class EmailManager:
             MAIL_SSL_TLS=get_settings().mail_ssl_tls,
             USE_CREDENTIALS=get_settings().mail_use_credentials,
             VALIDATE_CERTS=get_settings().mail_validate_certs,
-            TEMPLATE_FOLDER=Path(__file__).parent / ".." / "templates/email",
+            TEMPLATE_FOLDER=(
+                Path(__file__).parent.parent / "templates" / "email"
+            ),
             SUPPRESS_SEND=1 if suppress_send else 0,
         )
 
