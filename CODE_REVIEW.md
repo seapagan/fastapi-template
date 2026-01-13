@@ -247,6 +247,10 @@ hash_to_verify = str(user_do.password) if user_do else DUMMY_PASSWORD_HASH
 
 ### 9. `app/managers/email.py:39` - Path Construction
 
+> [!NOTE]
+> ✅ **Done**: Changed from string-based `".."` to explicit `Path.parent.parent`
+> for better clarity and maintainability.
+
 **Issue:** Awkward `".."` string in path construction:
 
 ```python

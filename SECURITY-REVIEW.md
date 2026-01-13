@@ -371,6 +371,11 @@
 
 ### 22. Missing Max Length on Input Fields
 
+> [!NOTE]
+> ✅ **Done**: Added `max_length` constraints to all user request schemas
+> (UserRegisterRequest, UserLoginRequest, UserEditRequest, UserChangePasswordRequest).
+> Values now match database constraints: password=128, first_name=30, last_name=50.
+
 **Location**: `app/schemas/request/user.py:38-39, 57-59`
 
 - **Issue**: User registration/edit fields lack maximum length validation:
@@ -406,6 +411,11 @@
   Only allow admin password changes without current password.
 
 ### 25. Magic Numbers Without Constants
+
+> [!NOTE]
+> ✅ **Done**: Extracted hardcoded token expiry values to module-level constants
+> (REFRESH_TOKEN_EXPIRE_MINUTES, VERIFY_TOKEN_EXPIRE_MINUTES,
+> RESET_TOKEN_EXPIRE_MINUTES) for better maintainability.
 
 **Location**: `app/managers/auth.py:85, 114, 144`
 
