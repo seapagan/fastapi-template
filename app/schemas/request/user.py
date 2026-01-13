@@ -34,15 +34,15 @@ class UserSearchParams(BaseModel):
 class UserRegisterRequest(UserBase):
     """Request schema for the Register Route."""
 
-    password: str = Field(examples=[ExampleUser.password])
-    first_name: str = Field(examples=[ExampleUser.first_name])
-    last_name: str = Field(examples=[ExampleUser.last_name])
+    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    first_name: str = Field(examples=[ExampleUser.first_name], max_length=30)
+    last_name: str = Field(examples=[ExampleUser.last_name], max_length=50)
 
 
 class UserLoginRequest(UserBase):
     """Request schema for the Login Route."""
 
-    password: str = Field(examples=[ExampleUser.password])
+    password: str = Field(examples=[ExampleUser.password], max_length=128)
 
 
 class UserEditRequest(UserBase):
@@ -54,12 +54,12 @@ class UserEditRequest(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     email: str = Field(examples=[ExampleUser.email])
-    password: str = Field(examples=[ExampleUser.password])
-    first_name: str = Field(examples=[ExampleUser.first_name])
-    last_name: str = Field(examples=[ExampleUser.last_name])
+    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    first_name: str = Field(examples=[ExampleUser.first_name], max_length=30)
+    last_name: str = Field(examples=[ExampleUser.last_name], max_length=50)
 
 
 class UserChangePasswordRequest(BaseModel):
     """Request Schema for changing a user's password."""
 
-    password: str = Field(examples=[ExampleUser.password])
+    password: str = Field(examples=[ExampleUser.password], max_length=128)
