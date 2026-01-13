@@ -442,6 +442,11 @@
 
 ### 27. Dead Code - get_optional_user
 
+> [!NOTE]
+> **Not fixing**: This is a template project and `get_optional_user` may be useful
+> for users who customize the template for their own use. Keeping it for
+> backwards compatibility and as a convenience for template users.
+
 **Location**: `app/managers/security.py:32-36`
 
 - **Issue**: Function documented to return None if not authenticated, but
@@ -450,6 +455,11 @@
 - **Fix**: Remove this function or fix the dependency to truly be optional.
 
 ### 28. Commented-Out Code
+
+> [!NOTE]
+> **Not fixing**: The commented code (resend verification feature) is preserved
+> as a reference for template users who may want to implement this functionality.
+> It serves as documentation of a potential feature implementation.
 
 **Location**: `app/resources/auth.py:337-346`
 
