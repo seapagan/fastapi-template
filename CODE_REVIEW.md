@@ -224,6 +224,11 @@ in the version being used.
 >
 > - Section #6 (Timing Attack in Login) - Same lines, part of timing attack fix
 
+> [!NOTE]
+> **Not fixing**: The simplified version exceeds the 80-character line length
+> limit (82 characters). The current formatting with parentheses is the correct
+> approach given the project's line length constraint.
+
 **Issue:** Extraneous parentheses and line break in simple ternary:
 
 ```python
