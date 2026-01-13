@@ -21,7 +21,7 @@ class UserSearchParams(BaseModel):
     """Parameters for searching users."""
 
     search_term: str = Field(
-        ..., min_length=1, description="Term to search for"
+        ..., min_length=1, max_length=100, description="Term to search for"
     )
     field: SearchField = Field(
         default=SearchField.ALL, description="Field to search in"

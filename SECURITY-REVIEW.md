@@ -348,6 +348,12 @@
 
 ### 21. Search Term LIKE Wildcard Issues
 
+> [!NOTE]
+> ✅ **Partially done**: Added `max_length=100` to `search_term` in `UserSearchParams`
+> to prevent DoS via long patterns. The `func.concat` and wildcard escaping
+> improvements will be addressed in a future PR as they require more substantial
+> changes to the query logic.
+
 **Location**: `app/managers/user.py:446-448, 460`
 
 - **Issue**: User input in LIKE queries with f-strings:
