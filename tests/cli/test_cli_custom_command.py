@@ -39,8 +39,11 @@ class TestCLI:
 
     metadata_file = "metadata.json"
     mock_get_config_path = "app.commands.custom.get_config_path"
-    home_dir = Path("/home/test")
-    metadata_path = home_dir / metadata_file
+
+    # NOTE: Path objects like home_dir are created inside individual test
+    # methods rather than as class attributes to ensure they are created
+    # AFTER the fake filesystem is activated. This avoids pyfakefs issues on
+    # Python 3.10 where Path.open() on pre-existing Path objects fails.
 
     test_data = {
         "title": "Test Title",
@@ -107,12 +110,13 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
 
         We use 'os.path' to check for the existence of the file.
         """
-        metadata_file_path = str(self.home_dir / self.metadata_file)
-        fs.create_dir(str(self.home_dir))
+        home_dir = Path("/home/test")
+        metadata_file_path = str(home_dir / self.metadata_file)
+        fs.create_dir(str(home_dir))
 
         mock_get_config_path = mocker.patch(
             self.mock_get_config_path,
-            return_value=self.home_dir / self.metadata_file,
+            return_value=home_dir / self.metadata_file,
         )
 
         assert not os.path.exists(metadata_file_path)  # noqa: PTH110
@@ -127,13 +131,14 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
         We use 'os.path' to check for the existence of the file.
         """
         # Setup
-        fs.create_dir(str(self.home_dir))
+        home_dir = Path("/home/test")
+        fs.create_dir(str(home_dir))
         metadata_file_path = str(
-            self.home_dir / self.metadata_file
+            home_dir / self.metadata_file
         )  # Use string path
         mocker.patch(
             self.mock_get_config_path,
-            return_value=self.home_dir / self.metadata_file,
+            return_value=home_dir / self.metadata_file,
         )
         original_content = '{"title": "Old Title"}'
 
@@ -161,12 +166,13 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
 
     def test_init_function_fails_write(self, fs, mocker, capsys) -> None:
         """Test that running 'init' should fail if it cannot write."""
+        home_dir = Path("/home/test")
         mocker.patch(
             self.mock_get_config_path,
             side_effect=OSError("File Error"),
         )
 
-        fs.create_dir(self.home_dir)
+        fs.create_dir(str(home_dir))
 
         with pytest.raises(typer.Exit):
             init()
