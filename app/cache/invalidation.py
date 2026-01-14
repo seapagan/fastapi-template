@@ -9,6 +9,8 @@ the app continues functioning (with stale cache) if the cache backend
 fails.
 """
 
+import asyncio
+
 from fastapi_cache import FastAPICache
 from redis.exceptions import RedisError
 
@@ -113,6 +115,33 @@ async def invalidate_api_keys_cache(user_id: int) -> None:
             f"Failed to invalidate API keys cache for user {user_id}: {e}",
             LogCategory.CACHE,
         )
+
+
+async def invalidate_user_related_caches(user_id: int) -> None:
+    """Invalidate all user-related caches in parallel for better performance.
+
+    Clears both user-specific cache entries and the users list cache
+    concurrently using `asyncio.gather()`. This is more efficient than
+    calling the invalidation functions sequentially.
+
+    Args:
+        user_id: The ID of the user whose caches should be cleared.
+
+    Example:
+        ```python
+        # After user edit, delete, or role change
+        await invalidate_user_related_caches(user.id)
+        ```
+
+    Note:
+        Cache failures are logged but don't raise exceptions. Individual
+        cache invalidation failures don't prevent other caches from being
+        cleared. The app continues with stale cache until TTL expires.
+    """
+    await asyncio.gather(
+        invalidate_user_cache(user_id),
+        invalidate_users_list_cache(),
+    )
 
 
 async def invalidate_namespace(namespace: str) -> None:

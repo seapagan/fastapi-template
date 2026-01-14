@@ -8,6 +8,7 @@ from app.cache.invalidation import (
     invalidate_api_keys_cache,
     invalidate_namespace,
     invalidate_user_cache,
+    invalidate_user_related_caches,
     invalidate_users_list_cache,
 )
 from app.cache.key_builders import (
@@ -25,6 +26,7 @@ __all__ = [
     "invalidate_api_keys_cache",
     "invalidate_namespace",
     "invalidate_user_cache",
+    "invalidate_user_related_caches",
     "invalidate_users_list_cache",
     "paginated_key_builder",
     "user_scoped_key_builder",
