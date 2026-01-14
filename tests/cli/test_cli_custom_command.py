@@ -172,7 +172,7 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
             side_effect=OSError("File Error"),
         )
 
-        fs.create_dir(home_dir)
+        fs.create_dir(str(home_dir))
 
         with pytest.raises(typer.Exit):
             init()
