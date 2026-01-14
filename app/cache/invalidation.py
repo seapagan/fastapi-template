@@ -12,6 +12,7 @@ fails.
 from fastapi_cache import FastAPICache
 from redis.exceptions import RedisError
 
+from app.cache.constants import CacheNamespaces
 from app.logs import LogCategory, category_logger
 
 
@@ -36,12 +37,14 @@ async def invalidate_user_cache(user_id: int) -> None:
     """
     try:
         # Clear /users/me style cache (namespace: "user:{user_id}")
-        namespace = f"user:{user_id}"
+        namespace = CacheNamespaces.USER_ME_FORMAT.format(user_id=user_id)
         await FastAPICache.clear(namespace=namespace)
 
         # Clear single user lookup from /users/?user_id=X
         # (namespace: "users:{user_id}")
-        users_namespace = f"users:{user_id}"
+        users_namespace = CacheNamespaces.USERS_SINGLE_FORMAT.format(
+            user_id=user_id
+        )
         await FastAPICache.clear(namespace=users_namespace)
 
         category_logger.info(
@@ -70,7 +73,7 @@ async def invalidate_users_list_cache() -> None:
         Cache failures are logged but don't raise exceptions.
     """
     try:
-        await FastAPICache.clear(namespace="users:list")
+        await FastAPICache.clear(namespace=CacheNamespaces.USERS_LIST)
         category_logger.info("Cleared users list cache", LogCategory.CACHE)
     except (RedisError, OSError, RuntimeError) as e:
         category_logger.error(
@@ -99,7 +102,7 @@ async def invalidate_api_keys_cache(user_id: int) -> None:
         Cache failures are logged but don't raise exceptions.
     """
     try:
-        namespace = f"apikeys:{user_id}"
+        namespace = CacheNamespaces.API_KEYS_LIST_FORMAT.format(user_id=user_id)
         await FastAPICache.clear(namespace=namespace)
         category_logger.info(
             f"Cleared API keys cache for user {user_id}",

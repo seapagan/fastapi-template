@@ -14,6 +14,7 @@ from app.cache import (
     user_scoped_key_builder,
     users_list_key_builder,
 )
+from app.cache.constants import CacheNamespaces
 from app.database.db import get_database
 from app.managers.auth import can_edit_user, is_admin
 from app.managers.security import get_current_user
@@ -72,7 +73,11 @@ PAGINATED_USERS_EXAMPLE = {
         }
     },
 )
-@cached(expire=300, namespace="users", key_builder=users_list_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.USERS_SINGLE,
+    key_builder=users_list_key_builder,
+)
 async def get_users(
     request: Request,  # noqa: ARG001
     response: Response,  # noqa: ARG001
@@ -98,7 +103,11 @@ async def get_users(
     response_model=MyUserResponse,
     name="get_my_user_data",
 )
-@cached(expire=300, namespace="user", key_builder=user_scoped_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.USER_ME,
+    key_builder=user_scoped_key_builder,
+)
 async def get_my_user(
     request: Request,
     response: Response,  # noqa: ARG001

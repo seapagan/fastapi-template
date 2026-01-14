@@ -439,6 +439,11 @@
 
 ### 26. String Duplication in Cache Namespaces
 
+> [!NOTE]
+> ✅ **Done**: Created `app/cache/constants.py` with `CacheNamespaces` class
+> containing all namespace strings and format templates. Updated all cache
+> decorators and invalidation functions to use the centralized constants.
+
 **Location**: `app/cache/invalidation.py:39, 44`, `app/resources/user.py:75`,
 `app/resources/api_key.py:58`
 
