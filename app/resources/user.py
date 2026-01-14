@@ -9,8 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cache import (
     cached,
-    invalidate_user_cache,
-    invalidate_users_list_cache,
+    invalidate_user_related_caches,
     user_scoped_key_builder,
     users_list_key_builder,
 )
@@ -129,8 +128,7 @@ async def make_admin(
     """Make the User with this ID an Admin."""
     await UserManager.change_role(RoleType.admin, user_id, db)
     # Invalidate user cache and users list cache after role change
-    await invalidate_user_cache(user_id)
-    await invalidate_users_list_cache()
+    await invalidate_user_related_caches(user_id)
 
 
 @router.post(
@@ -168,8 +166,7 @@ async def ban_user(
         user_id, request.state.user.id, db, banned=True
     )
     # Invalidate user cache and users list cache after ban
-    await invalidate_user_cache(user_id)
-    await invalidate_users_list_cache()
+    await invalidate_user_related_caches(user_id)
 
 
 @router.post(
@@ -190,8 +187,7 @@ async def unban_user(
         user_id, request.state.user.id, db, banned=False
     )
     # Invalidate user cache and users list cache after unban
-    await invalidate_user_cache(user_id)
-    await invalidate_users_list_cache()
+    await invalidate_user_related_caches(user_id)
 
 
 @router.put(
@@ -211,8 +207,7 @@ async def edit_user(
     """
     await UserManager.update_user(user_id, user_data, db)
     # Invalidate user cache and users list cache after editing
-    await invalidate_user_cache(user_id)
-    await invalidate_users_list_cache()
+    await invalidate_user_related_caches(user_id)
     return await db.get(User, user_id)
 
 
@@ -231,8 +226,7 @@ async def delete_user(
     """
     await UserManager.delete_user(user_id, db)
     # Invalidate user cache and users list cache after deletion
-    await invalidate_user_cache(user_id)
-    await invalidate_users_list_cache()
+    await invalidate_user_related_caches(user_id)
 
 
 @router.get(

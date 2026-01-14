@@ -531,6 +531,12 @@
 
 ### 33. Cache Invalidation Overhead
 
+> [!NOTE]
+> ✅ **Done**: Created `invalidate_user_related_caches()` helper in
+> `app/cache/invalidation.py` that uses `asyncio.gather()` to invalidate
+> user-specific and users-list caches in parallel. Updated all 5 user
+> mutation endpoints to use the new helper.
+
 **Location**: `app/resources/user.py` (lines 123-124, 162-163, 184-185, 205-206,
 225-226)
 

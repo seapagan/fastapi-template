@@ -119,11 +119,24 @@ Cached endpoints automatically:
 
 ### Cache Key Structure
 
-Cache keys are organized by namespace for easy invalidation:
+Cache keys are organized by namespace for easy invalidation. Use the
+`CacheNamespaces` constants from `app.cache.constants` to avoid typos:
 
+```python
+from app.cache.constants import CacheNamespaces
+
+# Available namespaces
+CacheNamespaces.USER_ME  # "user" - User-scoped endpoints
+CacheNamespaces.USERS_SINGLE  # "users" - Base namespace for /users/ endpoint
+CacheNamespaces.USERS_LIST  # "users:list" - Paginated user lists
+CacheNamespaces.API_KEYS_LIST  # "apikeys" - User's API keys list
+CacheNamespaces.API_KEY_SINGLE  # "apikey" - Single API key lookup
+```
+
+Key format patterns:
 - `user:{user_id}` - User-scoped endpoints (/users/me, /users/keys)
 - `users:list` - Paginated user lists
-- `users:{user_id}:single` - Single user lookups
+- `users:{user_id}` - Single user lookups
 - `apikeys:{user_id}` - User's API keys list
 
 ## Configuration
@@ -197,16 +210,22 @@ Use the `@cached()` decorator on route handlers:
 ```python
 from fastapi import APIRouter, Request, Response
 from app.cache import cached
+from app.cache.constants import CacheNamespaces
 
 router = APIRouter()
 
 @router.get("/expensive-query")
-@cached(expire=300, namespace="queries")
+@cached(expire=300, namespace=CacheNamespaces.USER_ME)
 async def expensive_query(request: Request, response: Response):
     # This will be cached for 5 minutes
     result = await perform_expensive_operation()
     return result
 ```
+
+!!! tip "Use Namespace Constants"
+    Always use `CacheNamespaces` constants instead of hardcoded strings
+    to avoid typos and make refactoring easier. See [Cache Key
+    Structure](#cache-key-structure) for available constants.
 
 !!! note "Decorator Order"
     The `@cached()` decorator MUST be placed AFTER the route decorator
@@ -236,12 +255,16 @@ For user-scoped caching, use built-in key builders:
 
 ```python
 from app.cache import cached, user_scoped_key_builder
+from app.cache.constants import CacheNamespaces
 from app.managers.auth import AuthManager
 from app.models.user import User
 
 @router.get("/users/me")
-@cached(expire=300, namespace="user",
-        key_builder=user_scoped_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.USER_ME,
+    key_builder=user_scoped_key_builder,
+)
 async def get_current_user(
     request: Request,
     response: Response,
@@ -267,32 +290,43 @@ The `cached()` decorator accepts these parameters:
 The template provides helper functions to invalidate cache when data
 changes:
 
-### User Cache Invalidation
+### Combined User Cache Invalidation (Recommended)
+
+For user mutations (create, update, delete, ban, role changes), use the
+combined helper that invalidates multiple cache namespaces in parallel:
 
 ```python
-from app.cache import invalidate_user_cache
+from app.cache import invalidate_user_related_caches
 
-# After updating user data
+# After user mutation
 await db.commit()
-await invalidate_user_cache(user.id)
+await invalidate_user_related_caches(user.id)
 ```
 
-This clears:
+This clears both user-specific and list caches concurrently using
+`asyncio.gather()` for better performance:
 
 - User-scoped cache (`user:{user_id}`)
-- Single user lookup (`users:{user_id}:single`)
+- Single user lookup (`users:{user_id}`)
+- Users list cache (`users:list`)
 
-### Users List Cache Invalidation
+### Individual Cache Invalidation
+
+For fine-grained control, you can invalidate specific cache namespaces
+individually:
 
 ```python
-from app.cache import invalidate_users_list_cache
+from app.cache import (
+    invalidate_user_cache,
+    invalidate_users_list_cache,
+)
 
-# After creating/deleting users or changing roles
-await db.commit()
+# Clear user-specific caches only
+await invalidate_user_cache(user.id)
+
+# Clear users list only (after role changes, etc.)
 await invalidate_users_list_cache()
 ```
-
-This clears all paginated user list entries.
 
 ### API Keys Cache Invalidation
 
