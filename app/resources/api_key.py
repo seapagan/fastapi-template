@@ -15,6 +15,7 @@ from app.cache import (
     cached,
     invalidate_api_keys_cache,
 )
+from app.cache.constants import CacheNamespaces
 from app.database.db import get_database
 from app.database.helpers import update_api_key_
 from app.managers.api_key import ApiKeyErrorMessages, ApiKeyManager
@@ -55,7 +56,11 @@ async def create_api_key(
 
 
 @router.get("", summary="List API keys for the authenticated user")
-@cached(expire=300, namespace="apikeys", key_builder=api_keys_list_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.API_KEYS_LIST,
+    key_builder=api_keys_list_key_builder,
+)
 async def list_api_keys(
     request: Request,  # noqa: ARG001
     response: Response,  # noqa: ARG001
@@ -72,7 +77,11 @@ async def list_api_keys(
     summary="List API keys for a specific user (admin only)",
     dependencies=[Depends(get_current_user), Depends(is_admin)],
 )
-@cached(expire=300, namespace="apikeys", key_builder=api_keys_list_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.API_KEYS_LIST,
+    key_builder=api_keys_list_key_builder,
+)
 async def list_user_api_keys(
     request: Request,  # noqa: ARG001
     response: Response,  # noqa: ARG001
@@ -88,7 +97,11 @@ async def list_user_api_keys(
     "/{key_id}",
     summary="Get a specific API key by ID for the authenticated user",
 )
-@cached(expire=300, namespace="apikey", key_builder=api_key_single_key_builder)
+@cached(
+    expire=300,
+    namespace=CacheNamespaces.API_KEY_SINGLE,
+    key_builder=api_key_single_key_builder,
+)
 async def get_api_key(
     request: Request,  # noqa: ARG001
     response: Response,  # noqa: ARG001
@@ -147,7 +160,10 @@ async def _update_api_key_common(
     # Also invalidate the single key cache (uses singular "apikey" namespace)
     # Graceful degradation - cache will expire via TTL if clear fails
     with suppress(RedisError, OSError, RuntimeError):
-        await FastAPICache.clear(namespace=f"apikey:{user_id}:{key_id}")
+        namespace = CacheNamespaces.API_KEY_SINGLE_FORMAT.format(
+            user_id=user_id, key_id=key_id
+        )
+        await FastAPICache.clear(namespace=namespace)
 
     return ApiKeyResponse.model_validate(updated_key.__dict__)
 
@@ -200,7 +216,10 @@ async def _delete_api_key_common(
     # Also invalidate the single key cache (uses singular "apikey" namespace)
     # Graceful degradation - cache will expire via TTL if clear fails
     with suppress(RedisError, OSError, RuntimeError):
-        await FastAPICache.clear(namespace=f"apikey:{user_id}:{key_id}")
+        namespace = CacheNamespaces.API_KEY_SINGLE_FORMAT.format(
+            user_id=user_id, key_id=key_id
+        )
+        await FastAPICache.clear(namespace=namespace)
 
 
 @router.delete(
