@@ -5,6 +5,7 @@ project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
 
 These are the changes that have been merged to the repository since the last
@@ -23,6 +24,8 @@ Everything in this section will be included in the next official release.
 
 **New Features**
 
+- Perf: parallelize cache invalidation for better performance ([#815](https://github.com/seapagan/fastapi-template/pull/815)) by [seapagan](https://github.com/seapagan)
+- Fix: centralize cache namespace strings to prevent typos ([#814](https://github.com/seapagan/fastapi-template/pull/814)) by [seapagan](https://github.com/seapagan)
 - Feat: add rate limiting for authentication endpoints ([#807](https://github.com/seapagan/fastapi-template/pull/807)) by [seapagan](https://github.com/seapagan)
 - Feat: Add optional Redis caching infrastructure ([#803](https://github.com/seapagan/fastapi-template/pull/803)) by [seapagan](https://github.com/seapagan)
 - Feat: add optional Prometheus metrics endpoint ([#799](https://github.com/seapagan/fastapi-template/pull/799)) by [seapagan](https://github.com/seapagan)
@@ -36,10 +39,13 @@ Everything in this section will be included in the next official release.
 
 **Testing**
 
+- Fix(tests): ensure Path objects are created after fake filesystem activation ([#813](https://github.com/seapagan/fastapi-template/pull/813)) by [seapagan](https://github.com/seapagan)
+- Tests: Remove obsolete xfail markers ([#811](https://github.com/seapagan/fastapi-template/pull/811)) by [seapagan](https://github.com/seapagan)
 - Test: add unit tests for metrics and OpenAPI modules ([#801](https://github.com/seapagan/fastapi-template/pull/801)) by [seapagan](https://github.com/seapagan)
 
 **Security**
 
+- Security: fix timing attacks and token validation vulnerabilities ([#810](https://github.com/seapagan/fastapi-template/pull/810)) by [seapagan](https://github.com/seapagan)
 - Fix: update dependencies to fix security advisories in 2 third-party libraries ([#809](https://github.com/seapagan/fastapi-template/pull/809)) by [seapagan](https://github.com/seapagan)
 - Fix(security): redact sensitive query params in request logs ([#805](https://github.com/seapagan/fastapi-template/pull/805)) by [seapagan](https://github.com/seapagan)
 - Fix(security): validate credentials and prevent weak defaults ([#793](https://github.com/seapagan/fastapi-template/pull/793)) by [seapagan](https://github.com/seapagan)
@@ -50,6 +56,7 @@ Everything in this section will be included in the next official release.
 
 **Refactoring**
 
+- Refactor: code quality quick wins ([#812](https://github.com/seapagan/fastapi-template/pull/812)) by [seapagan](https://github.com/seapagan)
 - Fix deprecated HTTP_422_UNPROCESSABLE_ENTITY status code ([#798](https://github.com/seapagan/fastapi-template/pull/798)) by [seapagan](https://github.com/seapagan)
 
 **Documentation**
@@ -190,7 +197,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.4](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.4) (June 18, 2024)
 
-***V0.5.4***
+**_V0.5.4_**
 
 **Security Update**
 
@@ -328,7 +335,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
-***A New Hope***
+**_A New Hope_**
 
 This is the long-delayed release of `0.5.0` :partying_face:
 
@@ -336,12 +343,11 @@ There are many breaking changes; check the documentation, discussions and all th
 
 - Make the API an installable package and CLI command ([#276](https://github.com/seapagan/fastapi-template/pull/276)) by [seapagan](https://github.com/seapagan)
 - Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
-
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
 
 ## [v0.4.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.2) (February 07, 2024)
 
-***The Old Guard***
+**_The Old Guard_**
 
 **Breaking Changes**
 
@@ -545,7 +551,7 @@ tool. See the documentation for more information.
 
 ## [v0.4.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.0) (June 19, 2023)
 
-***Version refactor***
+**_Version refactor_**
 
 **Closed Issues**
 
