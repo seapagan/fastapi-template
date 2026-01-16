@@ -526,12 +526,17 @@
 
 ### 31. Missing Max Length on Token Refresh Schema
 
+> [!NOTE]
+> ✅ **Done**: Added `max_length=1024` to refresh token field, matching
+> MAX_JWT_TOKEN_LENGTH. This provides defense-in-depth validation with
+> Pydantic catching oversized tokens at schema level. See PR #818.
+
 **Location**: `app/schemas/request/auth.py:6-9`
 
-- **Issue**: Refresh token field has no length validation in schema. While the
-  endpoint validates format (auth.py:174-181), the schema itself has no
+- **Issue**: Refresh token field had no length validation in schema. While the
+  endpoint validated format (auth.py:174-181), the schema itself had no
   constraints.
-- **Fix**: Add `max_length` and `min_length` to schema for defense in depth.
+- **Fix**: Add `max_length` to schema for defense in depth.
 
 ### 32. Bcrypt Work Factor Not Configurable
 
