@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import jwt
 import pytest
 from fastapi import BackgroundTasks, HTTPException, status
+from pydantic import ValidationError
 
 from app.config.settings import get_settings
 from app.database.helpers import verify_password
@@ -582,12 +583,11 @@ class TestAuthManager:
         """Test refresh rejects tokens exceeding max length."""
         # Create a token longer than MAX_JWT_TOKEN_LENGTH
         oversized_token = "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c"
-        with pytest.raises(HTTPException) as exc_info:
-            await AuthManager.refresh(
-                TokenRefreshRequest(refresh=oversized_token), test_db
-            )
-        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
-        assert exc_info.value.detail == ResponseMessages.INVALID_TOKEN
+        # Schema validation now catches this before business logic
+        with pytest.raises(ValidationError) as exc_info:
+            TokenRefreshRequest(refresh=oversized_token)
+        # Verify it's a string_too_long error
+        assert "string_too_long" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
     async def test_refresh_url_injection_attempt(self, test_db) -> None:
