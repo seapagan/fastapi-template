@@ -6,7 +6,11 @@ from pydantic import BaseModel, EmailStr, Field
 class TokenRefreshRequest(BaseModel):
     """Request schema for refreshing a JWT token."""
 
-    refresh: str
+    refresh: str = Field(
+        ...,
+        max_length=1024,
+        description="JWT refresh token",
+    )
 
 
 class ForgotPasswordRequest(BaseModel):

@@ -9,7 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
-from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
 from app.managers.user import ErrorMessages as UserErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
@@ -456,12 +455,13 @@ class TestAuthRoutes:
         await test_db.commit()
 
         # Test various malformed JWT formats
+        # Note: Oversized tokens are now rejected at schema validation (422)
+        # rather than JWT format validation (401), so they're tested separately
         malformed_tokens = [
             "not.valid!.jwt",  # Special character
             "only.two",  # Only 2 parts
             "four.dot.separated.parts",  # 4 parts
             "part1.part2&admin=true.part3",  # URL injection attempt
-            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
             ".part2.part3",  # Empty first part
             "part1..part3",  # Empty middle part
             "part1.part2.",  # Empty last part
@@ -482,12 +482,13 @@ class TestAuthRoutes:
         await test_db.commit()
 
         # Test various malformed JWT formats
+        # Note: Oversized tokens are now rejected at schema validation (422)
+        # rather than JWT format validation (401), so they're tested separately
         malformed_tokens = [
             "not.valid!.jwt",  # Special character
             "only.two",  # Only 2 parts
             "four.dot.separated.parts",  # 4 parts
             "part1.part2&admin=true.part3",  # URL injection attempt
-            "a" * (MAX_JWT_TOKEN_LENGTH + 1) + ".b.c",  # Exceeds max length
             ".part2.part3",  # Empty first part
             "part1..part3",  # Empty middle part
             "part1.part2.",  # Empty last part
