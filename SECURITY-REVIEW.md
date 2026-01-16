@@ -271,12 +271,19 @@
 
 ### 16. Missing Database Index on Foreign Key
 
+> [!NOTE]
+> ✅ **Done**: The index already existed in the database (created by the original
+> migration) but wasn't marked in the model. Added `index=True` to match the
+> actual database schema. See PR #816.
+
 **Location**: `app/models/api_key.py:22`
 
-- **Issue**: `user_id` foreign key lacks index. Queries filtering by user_id
-  (like `get_user_api_keys_`) will do full table scans as API key count grows.
-- **Impact**: Performance degradation over time, slow queries.
-- **Fix**: Add `index=True` to `user_id` field:
+- **Issue**: `user_id` foreign key lacks index in the model definition. The
+  index was created by the migration but not reflected in the model, causing
+  a mismatch that could confuse `alembic autogenerate`.
+- **Impact**: Model/database schema mismatch; the index exists in the database
+  but wasn't explicit in the code.
+- **Fix**: Add `index=True` to `user_id` field to match the database schema.
 
   ```python
   user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
