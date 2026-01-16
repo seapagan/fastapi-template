@@ -346,12 +346,17 @@
 
 ### 20. Missing Email Validation on Base Schema
 
+> [!NOTE]
+> ✅ **Done**: Changed email field from `str` to `EmailStr` in the base schema.
+> This provides proper email validation at the Pydantic level for all schemas
+> that inherit from UserBase. See PR #817.
+
 **Location**: `app/schemas/base.py:13`
 
-- **Issue**: Base email field is just `str`, not `EmailStr`. While registration
-  validates email server-side (user.py:106), the schema accepts any string,
+- **Issue**: Base email field was just `str`, not `EmailStr`. While registration
+  validated email server-side, the schema accepted any string,
   potentially allowing malformed emails through validation.
-- **Fix**: Change to `email: EmailStr` for proper Pydantic validation.
+- **Fix**: Changed to `email: EmailStr` for proper Pydantic validation.
 
 ### 21. Search Term LIKE Wildcard Issues
 

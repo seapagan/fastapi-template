@@ -162,8 +162,8 @@ class TestAuthRoutes:
             },
         )
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.json()["detail"] == "This email address is not valid"
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        # EmailStr validation provides a standard Pydantic error message
 
         user_from_db = await test_db.get(User, 1)
         assert user_from_db is None
