@@ -407,14 +407,18 @@
 
 ### 23. API Key last_used_at Never Updated
 
-**Location**: `app/models/api_key.py:26` (field defined),
-`app/managers/api_key.py:155-248` (never updated)
+> [!NOTE]
+> ✅ **Done**: Added `last_used_at` field to ApiKey model and update it in
+> `ApiKeyAuth.__call__()` after successful validation. Field is exposed in
+> `ApiKeyResponse` schema for security auditing.
 
-- **Issue**: The `last_used_at` field exists in the model but is **never
-  maintained**, making it impossible to identify stale/unused API keys for
-  security audits.
-- **Fix**: Update `last_used_at` in `ApiKeyAuth.__call__()` after successful
-  validation.
+**Location**: `app/models/api_key.py:27` (field defined),
+`app/managers/api_key.py:155-254` (updated on successful auth)
+
+- **Issue**: The `last_used_at` field did not exist in the model, making it
+  impossible to identify stale/unused API keys for security audits.
+- **Fix**: Added `last_used_at` field and update it in `ApiKeyAuth.__call__()`
+  after successful validation.
 
 ### 24. No Password Required for Self-Service Password Change
 

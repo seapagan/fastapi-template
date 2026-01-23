@@ -3,6 +3,7 @@
 import hashlib
 import hmac
 import secrets
+from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
@@ -237,6 +238,9 @@ class ApiKeyAuth:
         # Store both user and API key in request state
         request.state.user = user
         request.state.api_key = key
+
+        # Update last_used_at timestamp
+        key.last_used_at = datetime.now(timezone.utc)
 
         increment_api_key_validation("valid")
         category_logger.info(
