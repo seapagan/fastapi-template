@@ -248,3 +248,35 @@ class TestApiKeyAuth:
         result = await auth(request=mock_req, db=test_db)
 
         assert result is None
+
+    async def test_api_key_auth_updates_last_used_at(
+        self, test_db, mocker
+    ) -> None:
+        """Test that last_used_at is updated on successful authentication."""
+        # Create a user and API key
+        _ = await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+        api_key, raw_key = await ApiKeyManager.create_key(
+            user, "Test Key", None, test_db
+        )
+
+        # Verify last_used_at is None initially
+        assert api_key.last_used_at is None
+
+        # Authenticate with the API key
+        mock_req = mocker.patch(self.mock_request_path)
+        mock_req.headers = {"X-API-Key": raw_key}
+
+        auth = ApiKeyAuth()
+        await auth(request=mock_req, db=test_db)
+
+        # Flush to ensure changes are persisted
+        await test_db.flush()
+
+        # Refresh the api_key object from the database
+        await test_db.refresh(api_key)
+
+        # Verify last_used_at is now set
+        assert api_key.last_used_at is not None

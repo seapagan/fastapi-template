@@ -25,6 +25,9 @@ class ApiKey(Base):
         DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, default=None
+    )
     scopes: Mapped[list[str]] = mapped_column(ARRAY(String), nullable=True)
 
     # Relationship to User
