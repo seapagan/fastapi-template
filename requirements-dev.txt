@@ -83,7 +83,7 @@ columnar==1.4.1
     # via pymarkdownlnt
 coverage==7.13.0
     # via pytest-cov
-cryptography==46.0.3
+cryptography==46.0.5
     # via
     #   fastapi-mail
     #   pyjwt
