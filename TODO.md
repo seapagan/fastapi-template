@@ -17,8 +17,10 @@
   their markup to latest best practices.
 - Add an option to the command line to bump the version number in API docs and
   the TOML file.
-- Implement rate-limiting - auto block abusers - would help if `quotas`
-  implemented first (see below).
+- Extend rate limiting with configurable abuse controls (temporary auto-blocks
+  and/or progressive slowdown for repeat offenders).
+- Integrate abuse controls with the future quota system (shared thresholds,
+  per-user/group policy).
 - Users should be able to get others (limited) profile data in some cases -
   public data should be ok (eg in a front-end profile page). Think about how
   this should be implemented. *This may just need to be in derived projects
@@ -77,7 +79,6 @@
 - Add proper documentation with examples showing how to use the User & Auth
   system in custom code, link to example projects and perhaps create a YouTube
   video showing an example custom project based on this template?
-- Add info how to create a temporary database for testing (eg using Docker)
 - Update return status codes and examples in the API documentation to be more
   accurate and useful, some of them have wrong status codes and/or examples. For
   example, the `GET /verify/` endpoint should return a 204 status code, not 200.
@@ -95,7 +96,6 @@ Add Quota functionality.
 
 ## Caching
 
-- ✅ **DONE**: Basic Redis caching implemented using `fastapi-cache2==0.2.2`
 - **Upgrade redis-py client**: Current `fastapi-cache2==0.2.2` (PyPI) requires
   redis-py 4.6.0. The GitHub repo has been updated to support redis-py 5.x+,
   but no new release published. Options to investigate:
