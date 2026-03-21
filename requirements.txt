@@ -5,7 +5,9 @@ aiosmtplib==5.0.0
 alembic==1.17.2
     # via api-template
 annotated-doc==0.0.4
-    # via fastapi
+    # via
+    #   fastapi
+    #   typer
 annotated-types==0.7.0
     # via pydantic
 anyio==4.8.0
@@ -37,7 +39,7 @@ certifi==2025.1.31
     #   sentry-sdk
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
     # via cryptography
-click==8.1.8
+click==8.3.1
     # via
     #   rich-toolkit
     #   typer
@@ -210,7 +212,7 @@ starlette==0.50.0
     #   sqladmin
 tomli==2.2.1 ; python_full_version < '3.11'
     # via alembic
-typer==0.16.0
+typer==0.24.1
     # via
     #   api-template
     #   fastapi-cli
@@ -232,7 +234,6 @@ typing-extensions==4.15.0
     #   rich-toolkit
     #   sqlalchemy
     #   starlette
-    #   typer
     #   typing-inspection
     #   uvicorn
 typing-inspection==0.4.2
