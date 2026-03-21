@@ -105,6 +105,10 @@ following advantages to starting your own from scratch :
   custom frontends. Supports both JSON API and form-based submissions. The
   system protects against email enumeration attacks and includes URL encoding
   and token validation for security.
+- Passwords must be at least 8 characters and no more than 72 bytes when
+  UTF-8 encoded. On older installations upgraded to `bcrypt` 5, users whose
+  existing password exceeded that limit must reset their password before they
+  can log in again.
 - `API Keys` are fully implemented and can be used by registered users instead
   of the JWT. These will **not expire** at present though adding expiry is a
   future plan. API keys are passed using the `X-API-Key` header.

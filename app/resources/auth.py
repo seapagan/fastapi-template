@@ -263,7 +263,8 @@ async def reset_password(
     The reset token is sent to the user's email via the forgot-password
     endpoint. The token expires after 30 minutes.
 
-    The new password must be at least 8 characters long.
+    The new password must be at least 8 characters long and no more than 72
+    bytes when UTF-8 encoded.
 
     Accepts both JSON (for API clients) and form data (from HTML form).
     """
