@@ -6,7 +6,11 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.base import UserBase
 from app.schemas.examples import ExampleUser
-from app.schemas.password import PASSWORD_DESCRIPTION, BcryptPasswordStr
+from app.schemas.password import (
+    PASSWORD_DESCRIPTION,
+    BcryptPasswordStr,
+    LoginPasswordStr,
+)
 
 
 class SearchField(str, Enum):
@@ -46,7 +50,7 @@ class UserRegisterRequest(UserBase):
 class UserLoginRequest(UserBase):
     """Request schema for the Login Route."""
 
-    password: BcryptPasswordStr = Field(
+    password: LoginPasswordStr = Field(
         examples=[ExampleUser.password],
         description=PASSWORD_DESCRIPTION,
     )

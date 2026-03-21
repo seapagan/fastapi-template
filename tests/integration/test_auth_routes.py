@@ -13,6 +13,7 @@ from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
 from app.managers.user import ErrorMessages as UserErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
+from app.schemas.password import LOGIN_PASSWORD_MAX_BYTES_ERROR
 
 logging.basicConfig(
     format="%(levelname)s [%(asctime)s] %(name)s - %(message)s",
@@ -302,6 +303,10 @@ class TestAuthRoutes:
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         assert response.json()["detail"][0]["loc"] == ["body", "password"]
+        assert (
+            response.json()["detail"][0]["msg"]
+            == f"Value error, {LOGIN_PASSWORD_MAX_BYTES_ERROR}"
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
