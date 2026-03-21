@@ -245,6 +245,29 @@ class TestAuthRoutes:
         assert user_from_db is None
         mock_send.assert_not_called()
 
+    @pytest.mark.asyncio
+    async def test_register_new_user_with_short_password(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Ensure register rejects passwords shorter than 8 characters."""
+        mock_send = mocker.patch(self.email_fn_to_patch)
+
+        response = await client.post(
+            self.register_path,
+            json={
+                "email": "shortpw@testuser.com",
+                "first_name": "Test",
+                "last_name": "User",
+                "password": "short7!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
+        user_from_db = await test_db.get(User, 1)
+        assert user_from_db is None
+        mock_send.assert_not_called()
+
     # ------------------------------------------------------------------------ #
     #                            test '/login' route                           #
     # ------------------------------------------------------------------------ #

@@ -41,6 +41,7 @@ class UserRegisterRequest(UserBase):
 
     password: BcryptPasswordStr = Field(
         examples=[ExampleUser.password],
+        min_length=8,
         description=PASSWORD_DESCRIPTION,
     )
     first_name: str = Field(examples=[ExampleUser.first_name], max_length=30)
