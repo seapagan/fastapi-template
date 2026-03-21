@@ -1,7 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "lockFileMaintenance": {
-    "enabled": true
+    // this creates too much noise and failed PR tests by trying to update too
+    // much, ie even internal packages dependencies. Nice idea, but better to do
+    // by hand.
+    "enabled": false
   },
   "extends": [
     "config:recommended"
@@ -17,7 +20,5 @@
     "pep621",
     "github-actions"
   ],
-  "ignoreDeps": [
-    "pytest-asyncio"
-  ]
+  "ignoreDeps": []
 }
