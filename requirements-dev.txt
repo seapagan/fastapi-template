@@ -110,7 +110,7 @@ exceptiongroup==1.2.2 ; python_full_version < '3.11'
     #   anyio
     #   pytest
 faker==36.1.1
-fastapi==0.126.0
+fastapi==0.135.1
     # via
     #   api-template
     #   fastapi-cache2
@@ -483,7 +483,9 @@ typing-extensions==4.15.0
     #   typing-inspection
     #   uvicorn
 typing-inspection==0.4.2
-    # via pydantic
+    # via
+    #   fastapi
+    #   pydantic
 tzdata==2025.1
     # via
     #   faker
