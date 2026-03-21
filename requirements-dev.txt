@@ -44,7 +44,7 @@ backports-asyncio-runner==1.2.0 ; python_full_version < '3.11'
     # via pytest-asyncio
 backrefs==6.2
     # via mkdocs-material
-bcrypt==4.2.1
+bcrypt==5.0.0
     # via
     #   api-template
     #   libpass
