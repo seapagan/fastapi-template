@@ -65,6 +65,8 @@
 - check 'test_admin_pages_disabled' test since there is potentally a bug in
   the test using the `path` of a BaseRoute which does not exist, and the test
   may be invalid.
+- Update the JWT wrong-signature test to use a 32+ byte secret so PyJWT does
+  not emit `InsecureKeyLengthWarning` during the test run.
 
 ## CLI
 
