@@ -29,7 +29,7 @@ class TestCLI:
 
     def test_init_no_force_cancels(self) -> None:
         """Test that running 'init' without --force cancels the operation."""
-        result = CliRunner().invoke(app, ["db", "init"])
+        result = CliRunner().invoke(app, ["db", "init"], input="n\n")
         assert result.exit_code == 0
         assert "Cancelled" in result.output
 
@@ -46,7 +46,7 @@ class TestCLI:
 
     def test_drop_no_force_cancels(self) -> None:
         """Test that running 'drop' without --force cancels the operation."""
-        result = CliRunner().invoke(app, ["db", "drop"])
+        result = CliRunner().invoke(app, ["db", "drop"], input="n\n")
         assert result.exit_code == 0
         assert "Cancelled" in result.output
 

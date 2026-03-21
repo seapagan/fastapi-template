@@ -882,6 +882,7 @@ class TestCLI:
                 "--password",
                 faker.password(),
             ],
+            input="n\n",
         )
         assert result.exit_code == 1
         assert "Database has not been initialized" in result.output
