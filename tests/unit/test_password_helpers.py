@@ -4,6 +4,10 @@
 import pytest
 
 from app.database.helpers import hash_password, verify_password
+from app.managers.helpers import (
+    BCRYPT_PASSWORD_MAX_BYTES,
+    PASSWORD_MAX_BYTES_ERROR,
+)
 
 
 @pytest.mark.unit
@@ -39,11 +43,25 @@ class TestPasswordHelpers:
         hashed = hash_password(password)
         assert verify_password(password, hashed)
 
-    def test_long_password(self) -> None:
-        """Test handling of very long passwords."""
-        password = "x" * 1000  # 1000 character password
+    def test_password_at_bcrypt_byte_limit(self) -> None:
+        """Test passwords at bcrypt's byte limit still work."""
+        password = "x" * BCRYPT_PASSWORD_MAX_BYTES
         hashed = hash_password(password)
         assert verify_password(password, hashed)
+
+    def test_password_over_bcrypt_byte_limit(self) -> None:
+        """Test passwords over bcrypt's byte limit are rejected."""
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        with pytest.raises(ValueError, match=PASSWORD_MAX_BYTES_ERROR):
+            hash_password(password)
+
+    def test_unicode_password_over_bcrypt_byte_limit(self) -> None:
+        """Test UTF-8 byte length, not character count, is enforced."""
+        password = "測" * 25  # 75 UTF-8 bytes
+
+        with pytest.raises(ValueError, match=PASSWORD_MAX_BYTES_ERROR):
+            hash_password(password)
 
     def test_special_chars_password(self) -> None:
         """Test handling of passwords with special characters."""
@@ -80,6 +98,14 @@ class TestPasswordHelpers:
         """Test verification with malformed hash."""
         with pytest.raises(ValueError, match="Invalid hash format"):
             verify_password("test12345!", "not_a_valid_hash")
+
+    def test_verify_password_over_bcrypt_byte_limit(self) -> None:
+        """Test verification rejects passwords over bcrypt's byte limit."""
+        hashed = hash_password("test12345!")
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        with pytest.raises(ValueError, match=PASSWORD_MAX_BYTES_ERROR):
+            verify_password(password, hashed)
 
     def test_whitespace_password(self) -> None:
         """Test handling of passwords with whitespace."""

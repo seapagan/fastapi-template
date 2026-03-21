@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
+from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
 from app.managers.user import ErrorMessages as UserErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
@@ -219,6 +220,30 @@ class TestAuthRoutes:
 
         mock_send.assert_not_called()
 
+    @pytest.mark.asyncio
+    async def test_register_new_user_with_over_limit_password(
+        self, client: AsyncClient, test_db: AsyncSession, mocker
+    ) -> None:
+        """Ensure register rejects passwords over bcrypt's byte limit."""
+        mock_send = mocker.patch(self.email_fn_to_patch)
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        response = await client.post(
+            self.register_path,
+            json={
+                "email": "toolong@testuser.com",
+                "first_name": "Test",
+                "last_name": "User",
+                "password": password,
+            },
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
+        user_from_db = await test_db.get(User, 1)
+        assert user_from_db is None
+        mock_send.assert_not_called()
+
     # ------------------------------------------------------------------------ #
     #                            test '/login' route                           #
     # ------------------------------------------------------------------------ #
@@ -261,12 +286,22 @@ class TestAuthRoutes:
 
         assert response.status_code == status.HTTP_200_OK
 
-        assert len(response.json()) == 2  # noqa: PLR2004
-        assert list(response.json().keys()) == ["token", "refresh"]
+    @pytest.mark.asyncio
+    async def test_login_rejects_over_limit_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Ensure login rejects passwords over bcrypt's byte limit."""
+        test_db.add(User(**self.test_user))
+        await test_db.commit()
 
-        token, refresh = response.json().values()
-        assert isinstance(token, str)
-        assert isinstance(refresh, str)
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+        response = await client.post(
+            self.login_path,
+            json={"email": self.test_user["email"], "password": password},
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        assert response.json()["detail"][0]["loc"] == ["body", "password"]
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(

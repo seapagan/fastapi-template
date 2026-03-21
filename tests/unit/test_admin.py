@@ -10,6 +10,7 @@ from app.admin.admin import register_admin
 from app.admin.auth import AdminAuth
 from app.admin.models import UserAdmin
 from app.database.helpers import hash_password, verify_password
+from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
 from app.models.enums import RoleType
 from app.models.user import User
 
@@ -196,3 +197,21 @@ class TestAdminAuth:
 
         # Test None user
         assert auth_backend._validate_user("any_password", None) is False
+
+    def test_validate_user_with_over_limit_password(
+        self, auth_backend: AdminAuth
+    ) -> None:
+        """Test over-limit admin passwords fail cleanly."""
+        admin_user = User(
+            id=1,
+            email="admin@test.com",
+            password=hash_password("password123"),
+            role=RoleType.admin,
+            banned=False,
+            first_name="Admin",
+            last_name="User",
+        )
+
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        assert auth_backend._validate_user(password, admin_user) is False
