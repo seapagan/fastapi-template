@@ -55,6 +55,7 @@ class TestCLI:
                 "--password",
                 fake_user_data["password"],
             ],
+            input="n\n",
         )
         assert result.exit_code == 0
         assert "added successfully" in result.output
@@ -112,6 +113,7 @@ class TestCLI:
                 "--password",
                 fake_user_data["password"],
             ],
+            input="n\n",
         )
         assert result.exit_code == 1
         assert "ERROR adding User" in result.output
@@ -139,6 +141,7 @@ class TestCLI:
                 "--password",
                 fake_user_data["password"],
             ],
+            input="n\n",
         )
         assert result.exit_code == 1
         assert "ERROR adding User" in result.output
@@ -150,7 +153,7 @@ class TestCLI:
         user_input = (
             f"{fake_user_data['email']}\n{fake_user_data['first_name']}\n"
             f"{fake_user_data['last_name']}\n{fake_user_data['password']}\n"
-            f"{fake_user_data['password']}\n"
+            f"{fake_user_data['password']}\nNo\n"
         )
 
         mock_register = mocker.patch(

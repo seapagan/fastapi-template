@@ -12,6 +12,7 @@ from app.managers.user import ErrorMessages
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.request.user import SearchField
+from tests._constants import CLICK_NO_ARGS_HELP_EXIT_CODE
 
 
 @pytest.fixture(scope="module")
@@ -92,7 +93,7 @@ class TestCLI:
     def test_no_command_should_give_help(self, runner: CliRunner) -> None:
         """Test that running with no command should give help."""
         result = runner.invoke(app, ["user"])
-        assert result.exit_code == 0
+        assert result.exit_code == CLICK_NO_ARGS_HELP_EXIT_CODE
 
         command_list = [
             "admin",
@@ -881,6 +882,7 @@ class TestCLI:
                 "--password",
                 faker.password(),
             ],
+            input="n\n",
         )
         assert result.exit_code == 1
         assert "Database has not been initialized" in result.output
