@@ -36,6 +36,7 @@ Creates a new user account and returns JWT and refresh tokens.
 
 - Email must be valid format
 - Password must be at least 8 characters
+- Password must be 72 bytes or fewer when UTF-8 encoded
 - A verification email will be sent to the user's email address
 - User must verify their email before accessing protected endpoints
 - JWT token expires after 120 minutes
@@ -71,6 +72,14 @@ Authenticates an existing user and returns JWT and refresh tokens.
 
 - `400 Bad Request`: Invalid credentials
 - `401 Unauthorized`: User is banned or not verified
+- `422 Validation Error`: Request data is invalid, including passwords longer
+  than 72 UTF-8 bytes
+
+**Notes:**
+
+- Passwords must be 72 bytes or fewer when UTF-8 encoded
+- On older installations upgraded to `bcrypt` 5, users with a previously
+  longer password must reset their password before logging in again
 
 ---
 
@@ -317,19 +326,22 @@ Returns an HTML success page when using form data submission.
 **Validation:**
 
 - New password must be at least 8 characters
+- New password must be 72 bytes or fewer when UTF-8 encoded
 
 **Error Responses:**
 
 - `401 Unauthorized`: Invalid, expired, or wrong token type
 - `401 Unauthorized`: User is banned
 - `404 Not Found`: User not found
-- `422 Validation Error`: Password too short or invalid request data
+- `422 Validation Error`: Password too short, exceeds 72 UTF-8 bytes, or
+  request data is otherwise invalid
 
 **Notes:**
 
 - Token must be of type "reset" (verification tokens won't work)
 - Banned users cannot reset their password
 - After successful reset, users can login with the new password
+- This is the recovery path for users affected by the 72-byte `bcrypt` limit
 - JSON requests return JSON responses
 - Form data requests return HTML pages
 
@@ -504,6 +516,7 @@ Change the password for the specified user.
 
 - Users can change their own password
 - Admins can change any user's password
+- Password must be 72 bytes or fewer when UTF-8 encoded
 
 ---
 

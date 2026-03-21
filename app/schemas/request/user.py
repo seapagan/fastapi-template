@@ -6,6 +6,11 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.base import UserBase
 from app.schemas.examples import ExampleUser
+from app.schemas.password import (
+    PASSWORD_DESCRIPTION,
+    BcryptPasswordStr,
+    LoginPasswordStr,
+)
 
 
 class SearchField(str, Enum):
@@ -34,7 +39,11 @@ class UserSearchParams(BaseModel):
 class UserRegisterRequest(UserBase):
     """Request schema for the Register Route."""
 
-    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    password: BcryptPasswordStr = Field(
+        examples=[ExampleUser.password],
+        min_length=8,
+        description=PASSWORD_DESCRIPTION,
+    )
     first_name: str = Field(examples=[ExampleUser.first_name], max_length=30)
     last_name: str = Field(examples=[ExampleUser.last_name], max_length=50)
 
@@ -42,7 +51,10 @@ class UserRegisterRequest(UserBase):
 class UserLoginRequest(UserBase):
     """Request schema for the Login Route."""
 
-    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    password: LoginPasswordStr = Field(
+        examples=[ExampleUser.password],
+        description=PASSWORD_DESCRIPTION,
+    )
 
 
 class UserEditRequest(UserBase):
@@ -54,7 +66,10 @@ class UserEditRequest(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     email: str = Field(examples=[ExampleUser.email])
-    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    password: BcryptPasswordStr = Field(
+        examples=[ExampleUser.password],
+        description=PASSWORD_DESCRIPTION,
+    )
     first_name: str = Field(examples=[ExampleUser.first_name], max_length=30)
     last_name: str = Field(examples=[ExampleUser.last_name], max_length=50)
 
@@ -62,4 +77,7 @@ class UserEditRequest(UserBase):
 class UserChangePasswordRequest(BaseModel):
     """Request Schema for changing a user's password."""
 
-    password: str = Field(examples=[ExampleUser.password], max_length=128)
+    password: BcryptPasswordStr = Field(
+        examples=[ExampleUser.password],
+        description=PASSWORD_DESCRIPTION,
+    )

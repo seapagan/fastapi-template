@@ -13,7 +13,11 @@ from app.database.helpers import (
     hash_password,
 )
 from app.managers.auth import AuthManager, ResponseMessages
-from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
+from app.managers.helpers import (
+    BCRYPT_PASSWORD_MAX_BYTES,
+    MAX_JWT_TOKEN_LENGTH,
+    PASSWORD_MAX_BYTES_ERROR,
+)
 from app.models.user import User
 
 
@@ -225,6 +229,24 @@ class TestPasswordRecovery:
         assert (
             response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         )  # Validation error
+
+    async def test_reset_password_over_limit_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test reset password rejects passwords over bcrypt's byte limit."""
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        reset_token = AuthManager.encode_reset_token(user)
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+        response = await client.post(
+            "/reset-password/",
+            json={"code": reset_token, "new_password": password},
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     async def test_forgot_password_banned_user(
         self, client: AsyncClient, test_db: AsyncSession, mocker
@@ -614,6 +636,29 @@ class TestPasswordRecovery:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "text/html" in response.headers["content-type"]
         assert b"at least 8 characters" in response.content
+
+    async def test_reset_password_post_form_data_over_limit_password(
+        self, client: AsyncClient, test_db: AsyncSession
+    ) -> None:
+        """Test POST /reset-password/ rejects over-limit passwords."""
+        user = User(**self.test_user)
+        test_db.add(user)
+        await test_db.flush()
+        await test_db.commit()
+
+        reset_token = AuthManager.encode_reset_token(user)
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        response = await client.post(
+            "/reset-password/",
+            data={"code": reset_token, "new_password": password},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            follow_redirects=False,
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "text/html" in response.headers["content-type"]
+        assert PASSWORD_MAX_BYTES_ERROR.encode() in response.content
 
     async def test_reset_password_post_form_data_missing_fields(
         self, client: AsyncClient

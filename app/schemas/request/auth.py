@@ -3,6 +3,10 @@
 from pydantic import BaseModel, EmailStr, Field
 
 from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
+from app.schemas.password import (
+    RESET_PASSWORD_DESCRIPTION,
+    BcryptPasswordStr,
+)
 
 
 class TokenRefreshRequest(BaseModel):
@@ -25,6 +29,8 @@ class ResetPasswordRequest(BaseModel):
     """Request schema for reset password endpoint."""
 
     code: str = Field(..., description="Password reset token from email")
-    new_password: str = Field(
-        ..., min_length=8, description="New password (minimum 8 characters)"
+    new_password: BcryptPasswordStr = Field(
+        ...,
+        min_length=8,
+        description=RESET_PASSWORD_DESCRIPTION,
     )

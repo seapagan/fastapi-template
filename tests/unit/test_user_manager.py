@@ -4,6 +4,7 @@ import pytest
 from fastapi import BackgroundTasks, HTTPException, status
 
 from app.database.helpers import verify_password
+from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
 from app.managers.user import ErrorMessages, UserManager
 from app.models.enums import RoleType
 from app.models.user import User
@@ -503,6 +504,17 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
         assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
 
+    async def test_register_with_over_limit_password(self, test_db) -> None:
+        """Test registering with a password over bcrypt's byte limit."""
+        test_data = self.test_user.copy()
+        test_data["password"] = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.register(test_data, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
     async def test_register_with_none_password(self, test_db) -> None:
         """Test registering with a None password."""
         test_data = self.test_user.copy()
@@ -577,6 +589,22 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         with pytest.raises(HTTPException) as exc_info:
             await UserManager.login(
                 {"email": self.test_user["email"], "password": ""}, test_db
+            )
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ErrorMessages.PASSWORD_INVALID
+
+    async def test_login_with_over_limit_password(self, test_db) -> None:
+        """Test login with password over bcrypt's byte limit."""
+        await UserManager.register(self.test_user, test_db)
+
+        with pytest.raises(HTTPException) as exc_info:
+            await UserManager.login(
+                {
+                    "email": self.test_user["email"],
+                    "password": "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1),
+                },
+                test_db,
             )
 
         assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST

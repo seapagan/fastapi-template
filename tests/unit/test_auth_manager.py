@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from app.config.settings import get_settings
 from app.database.helpers import verify_password
 from app.managers.auth import AuthManager, ResponseMessages
-from app.managers.helpers import MAX_JWT_TOKEN_LENGTH
+from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES, MAX_JWT_TOKEN_LENGTH
 from app.managers.user import UserManager
 from app.models.user import User
 from app.schemas.request.auth import TokenRefreshRequest
@@ -528,6 +528,19 @@ class TestAuthManager:
         assert not verify_password(
             self.test_user["password"], user_after.password
         )
+
+    @pytest.mark.asyncio
+    async def test_reset_password_over_limit_password(self, test_db) -> None:
+        """Test reset_password rejects passwords over bcrypt's byte limit."""
+        await UserManager.register(self.test_user, test_db)
+        reset_token = AuthManager.encode_reset_token(User(id=1))
+        password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
+
+        with pytest.raises(HTTPException) as exc_info:
+            await AuthManager.reset_password(reset_token, password, test_db)
+
+        assert exc_info.value.status_code == status.HTTP_400_BAD_REQUEST
+        assert exc_info.value.detail == ResponseMessages.PASSWORD_INVALID
 
     # ------------------------------------------------------------------------ #
     #                     test JWT format validation                           #

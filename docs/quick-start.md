@@ -85,7 +85,7 @@ api-admin user create --admin
 
 # You'll be prompted for:
 # - Email address
-# - Password (minimum 8 characters)
+# - Password (minimum 8 characters, maximum 72 UTF-8 bytes)
 # - First name
 # - Last name
 ```
@@ -96,6 +96,12 @@ api-admin user create --admin
     - Access the admin panel at `/admin`
     - Use admin-only API endpoints
     - Authenticate in the Swagger docs
+
+!!! note "Password Limit"
+    Passwords are limited to 72 bytes when encoded as UTF-8 because of
+    `bcrypt`. If you are upgrading an older installation and a user previously
+    had a longer password, that user must use the password reset flow before
+    logging in again.
 
 ## 5. Run the Server (30 seconds)
 

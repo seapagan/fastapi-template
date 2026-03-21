@@ -47,6 +47,7 @@ class ResponseMessages:
     VALIDATION_RESENT = "Validation email re-sent"
     RESET_EMAIL_SENT = "Password reset email sent if user exists"
     PASSWORD_RESET_SUCCESS = "Password successfully reset"  # noqa: S105
+    PASSWORD_INVALID = "Invalid password format"  # noqa: S105
 
 
 class AuthManager:
@@ -533,8 +534,14 @@ class AuthManager:
                     status.HTTP_401_UNAUTHORIZED, ResponseMessages.INVALID_TOKEN
                 )
 
-            # Hash the new password
-            hashed_password = hash_password(new_password)
+            try:
+                # Hash the new password
+                hashed_password = hash_password(new_password)
+            except ValueError as exc:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    ResponseMessages.PASSWORD_INVALID,
+                ) from exc
 
             # Update the user's password
             await session.execute(
