@@ -3,6 +3,7 @@
 import pytest
 
 from app.api_admin import app, cli_header
+from tests._constants import CLICK_NO_ARGS_HELP_EXIT_CODE
 
 
 class TestCLI:
@@ -38,7 +39,7 @@ class TestCLI:
     def test_no_command_should_give_help(self, runner) -> None:
         """Test that running with no command should give help."""
         result = runner.invoke(app, [])
-        assert result.exit_code == 0
+        assert result.exit_code == CLICK_NO_ARGS_HELP_EXIT_CODE
 
         command_list = ["custom", "db", "docs", "serve", "test", "user"]
 

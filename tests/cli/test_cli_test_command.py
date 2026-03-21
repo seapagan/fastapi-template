@@ -7,6 +7,7 @@ from typer.testing import CliRunner
 
 from app.api_admin import app
 from app.database.db import Base
+from tests._constants import CLICK_NO_ARGS_HELP_EXIT_CODE
 
 
 class TestCLI:
@@ -15,7 +16,7 @@ class TestCLI:
     def test_no_command_should_give_help(self, runner: CliRunner) -> None:
         """Test that running with no command should give help."""
         result = runner.invoke(app, ["test"])
-        assert result.exit_code == 0
+        assert result.exit_code == CLICK_NO_ARGS_HELP_EXIT_CODE
 
         command_list = ["setup"]
 

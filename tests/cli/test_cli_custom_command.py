@@ -21,6 +21,7 @@ from app.commands.custom import (
     init,
 )
 from app.config.helpers import LICENCES
+from tests._constants import CLICK_NO_ARGS_HELP_EXIT_CODE
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -96,7 +97,7 @@ authors = [{name='Old Author',email='oldauthor@example.com'}]""",
     def test_no_command_should_give_help(self, runner: CliRunner) -> None:
         """Test that running with no command should give help."""
         result = runner.invoke(app, ["custom"])
-        assert result.exit_code == 0
+        assert result.exit_code == CLICK_NO_ARGS_HELP_EXIT_CODE
 
         command_list = ["metadata"]
 
