@@ -9,6 +9,7 @@ from sqlalchemy import insert, select, text, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.managers.helpers import validate_password_max_bytes
 from app.models.api_key import ApiKey
 from app.models.user import User
 
@@ -25,12 +26,13 @@ def hash_password(password: str) -> str:
         str: The hashed password
 
     Raises:
-        ValueError: If password is empty
+        ValueError: If password is empty or exceeds bcrypt's byte limit
     """
     value_error = "Password cannot be empty"
 
     if not password:
         raise ValueError(value_error)
+    validate_password_max_bytes(password)
     return pwd_context.hash(password)
 
 
@@ -45,13 +47,15 @@ def verify_password(password: str, hashed_password: str) -> bool:
         bool: True if password matches, False otherwise
 
     Raises:
-        ValueError: If password or hash is empty
+        ValueError: If password or hash is empty, or if password exceeds
+            bcrypt's byte limit
     """
     error_empty = "Password and hash cannot be empty"
     error_invalid = "Invalid hash format"
 
     if not password or not hashed_password:
         raise ValueError(error_empty)
+    validate_password_max_bytes(password)
     try:
         return pwd_context.verify(password, hashed_password)
     except Exception as exc:

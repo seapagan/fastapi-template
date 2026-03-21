@@ -23,7 +23,11 @@ from app.config.helpers import get_project_root
 from app.config.settings import get_settings
 from app.database.db import get_database
 from app.managers.auth import AuthManager, ResponseMessages
-from app.managers.helpers import MAX_JWT_TOKEN_LENGTH, is_valid_jwt_format
+from app.managers.helpers import (
+    MAX_JWT_TOKEN_LENGTH,
+    is_valid_jwt_format,
+    validate_password_max_bytes,
+)
 from app.managers.user import UserManager
 from app.models.user import User
 from app.rate_limit.config import RateLimits
@@ -296,6 +300,21 @@ async def reset_password(
                 "application": get_settings().api_title,
                 "reset_token": code,
                 "error": "Password must be at least 8 characters long",
+            }
+            return templates.TemplateResponse(
+                request=request,
+                name="password_reset_form.html",
+                context=context,
+                status_code=400,
+            )
+
+        try:
+            validate_password_max_bytes(new_password)
+        except ValueError as exc:
+            context = {
+                "application": get_settings().api_title,
+                "reset_token": code,
+                "error": str(exc),
             }
             return templates.TemplateResponse(
                 request=request,

@@ -96,11 +96,16 @@ class AdminAuth(AuthenticationBackend):
         Returns:
             bool: True if user is valid admin and not banned, False otherwise
         """
+        if not user:
+            return False
+
+        try:
+            password_valid = verify_password(password, user.password)
+        except ValueError:
+            return False
+
         return not (
-            not user
-            or not verify_password(password, user.password)
-            or user.role != RoleType.admin
-            or user.banned
+            not password_valid or user.role != RoleType.admin or user.banned
         )
 
     async def logout(self, request: Request) -> bool:
