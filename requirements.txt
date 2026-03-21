@@ -152,7 +152,7 @@ pydantic-settings==2.7.1
     #   fastapi-mail
 pygments==2.19.1
     # via rich
-pyjwt==2.10.1
+pyjwt==2.12.1
     # via api-template
 python-dateutil==2.9.0.post0
     # via pendulum
@@ -229,6 +229,7 @@ typing-extensions==4.15.0
     #   pydantic
     #   pydantic-core
     #   pydantic-extra-types
+    #   pyjwt
     #   rich
     #   rich-toolkit
     #   sqlalchemy
