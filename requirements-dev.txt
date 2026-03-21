@@ -42,6 +42,8 @@ babel==2.17.0
     #   mkdocs-material
 backports-asyncio-runner==1.2.0 ; python_full_version < '3.11'
     # via pytest-asyncio
+backrefs==6.2
+    # via mkdocs-material
 bcrypt==4.2.1
     # via
     #   api-template
@@ -109,8 +111,8 @@ exceptiongroup==1.2.2 ; python_full_version < '3.11'
     # via
     #   anyio
     #   pytest
-faker==36.1.1
-fastapi==0.126.0
+faker==40.11.0
+fastapi==0.135.1
     # via
     #   api-template
     #   fastapi-cache2
@@ -123,13 +125,13 @@ fastapi-cloud-cli==0.1.5
     # via fastapi-cli
 fastapi-mail==1.6.1
     # via api-template
-fastapi-pagination==0.15.4
+fastapi-pagination==0.15.11
     # via api-template
 ghp-import==2.1.0
     # via mkdocs
 gitdb==4.0.12
     # via gitpython
-github-changelog-md==0.9.6
+github-changelog-md==0.9.8
 gitpython==3.1.44
     # via
     #   mkdocs-git-revision-date-localized-plugin
@@ -177,7 +179,7 @@ jiter==0.12.0
     # via openai
 jsmin==3.0.1
     # via mkdocs-minify-plugin
-libpass==1.9.0
+libpass==1.9.3
     # via api-template
 librt==0.7.4 ; platform_python_implementation != 'PyPy'
     # via mypy
@@ -229,7 +231,7 @@ mkdocs-get-deps==0.2.0
     #   mkdocstrings
 mkdocs-git-revision-date-localized-plugin==1.3.0
 mkdocs-latest-git-tag-plugin==0.1.2
-mkdocs-material==9.6.4
+mkdocs-material==9.7.6
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
 mkdocs-minify-plugin==0.8.0
@@ -264,10 +266,10 @@ platformdirs==4.3.6
     # via mkdocs-get-deps
 pluggy==1.5.0
     # via pytest
-poethepoet==0.32.2
+poethepoet==0.42.1
 pprintpp==0.4.0
     # via pytest-clarity
-prek==0.2.24
+prek==0.3.6
 prometheus-client==0.23.1
     # via prometheus-fastapi-instrumentator
 prometheus-fastapi-instrumentator==7.1.0
@@ -293,7 +295,7 @@ pydantic-settings==2.7.1
     #   api-template
     #   fastapi
     #   fastapi-mail
-pyfakefs==6.0.0
+pyfakefs==6.1.6
 pygithub==2.6.1
     # via github-changelog-md
 pygments==2.19.1
@@ -348,7 +350,7 @@ python-multipart==0.0.22
     #   sqladmin
 pytz==2025.1
     # via mkdocs-git-revision-date-localized-plugin
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   application-properties
     #   mkdocs
@@ -362,14 +364,12 @@ pyyaml-env-tag==0.1
 redis==4.6.0
     # via fastapi-cache2
 regex==2025.11.3
-    # via
-    #   fastapi-mail
-    #   mkdocs-material
+    # via fastapi-mail
 requests==2.32.4
     # via
     #   mkdocs-material
     #   pygithub
-rich==13.9.4
+rich==14.3.3
     # via
     #   api-template
     #   github-changelog-md
@@ -387,7 +387,7 @@ rtoml==0.13.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.14.10
+ruff==0.15.7
 sentry-sdk==2.34.1
     # via fastapi-cloud-cli
 shellingham==1.5.4
@@ -408,7 +408,7 @@ soupsieve==2.6
     # via beautifulsoup4
 sqladmin==0.20.1
     # via api-template
-sqlalchemy==2.0.45
+sqlalchemy==2.0.48
     # via
     #   alembic
     #   api-template
@@ -435,7 +435,7 @@ toolz==1.0.0
     # via columnar
 tqdm==4.67.1
     # via openai
-ty==0.0.5
+ty==0.0.24
 typer==0.16.0
     # via
     #   api-template
@@ -463,7 +463,6 @@ typing-extensions==4.15.0
     #   fastapi-cache2
     #   fastapi-mail
     #   fastapi-pagination
-    #   libpass
     #   limits
     #   mkdocstrings-python
     #   mypy
@@ -475,7 +474,6 @@ typing-extensions==4.15.0
     #   pyjwt
     #   pymarkdownlnt
     #   pytest-asyncio
-    #   rich
     #   rich-toolkit
     #   sqlalchemy
     #   starlette
@@ -483,7 +481,9 @@ typing-extensions==4.15.0
     #   typing-inspection
     #   uvicorn
 typing-inspection==0.4.2
-    # via pydantic
+    # via
+    #   fastapi
+    #   pydantic
 tzdata==2025.1
     # via
     #   faker
@@ -493,7 +493,7 @@ urllib3==2.6.3
     #   pygithub
     #   requests
     #   sentry-sdk
-uvicorn==0.40.0
+uvicorn==0.42.0
     # via
     #   api-template
     #   fastapi
