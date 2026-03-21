@@ -267,7 +267,7 @@ pluggy==1.5.0
 poethepoet==0.32.2
 pprintpp==0.4.0
     # via pytest-clarity
-prek==0.2.24
+prek==0.3.6
 prometheus-client==0.23.1
     # via prometheus-fastapi-instrumentator
 prometheus-fastapi-instrumentator==7.1.0
@@ -387,7 +387,7 @@ rtoml==0.13.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.14.10
+ruff==0.15.7
 sentry-sdk==2.34.1
     # via fastapi-cloud-cli
 shellingham==1.5.4
