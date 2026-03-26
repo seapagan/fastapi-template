@@ -367,7 +367,7 @@ redis==4.6.0
     # via fastapi-cache2
 regex==2025.11.3
     # via fastapi-mail
-requests==2.32.4
+requests==2.33.0
     # via
     #   mkdocs-material
     #   pygithub
