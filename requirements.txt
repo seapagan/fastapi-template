@@ -152,7 +152,7 @@ pydantic-settings==2.7.1
     #   api-template
     #   fastapi
     #   fastapi-mail
-pygments==2.19.1
+pygments==2.20.0
     # via rich
 pyjwt==2.12.1
     # via api-template
