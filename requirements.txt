@@ -50,7 +50,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   click
     #   loguru
     #   uvicorn
-cryptography==46.0.5
+cryptography==46.0.7
     # via fastapi-mail
 deprecated==1.2.18
     # via limits
