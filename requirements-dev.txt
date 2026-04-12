@@ -87,7 +87,7 @@ columnar==1.4.1
     # via pymarkdownlnt
 coverage==7.13.0
     # via pytest-cov
-cryptography==46.0.5
+cryptography==46.0.7
     # via
     #   fastapi-mail
     #   pyjwt
@@ -300,7 +300,7 @@ pydantic-settings==2.7.1
 pyfakefs==6.1.6
 pygithub==2.6.1
     # via github-changelog-md
-pygments==2.19.1
+pygments==2.20.0
     # via
     #   mkdocs-material
     #   pytest
@@ -310,7 +310,7 @@ pyjwt==2.12.1
     #   api-template
     #   pygithub
 pymarkdownlnt==0.9.28
-pymdown-extensions==10.19.1
+pymdown-extensions==10.21.2
     # via
     #   mkdocs-material
     #   mkdocstrings
@@ -367,7 +367,7 @@ redis==4.6.0
     # via fastapi-cache2
 regex==2025.11.3
     # via fastapi-mail
-requests==2.32.4
+requests==2.33.1
     # via
     #   mkdocs-material
     #   pygithub

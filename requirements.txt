@@ -50,7 +50,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   click
     #   loguru
     #   uvicorn
-cryptography==46.0.5
+cryptography==46.0.7
     # via fastapi-mail
 deprecated==1.2.18
     # via limits
@@ -152,7 +152,7 @@ pydantic-settings==2.7.1
     #   api-template
     #   fastapi
     #   fastapi-mail
-pygments==2.19.1
+pygments==2.20.0
     # via rich
 pyjwt==2.12.1
     # via api-template
