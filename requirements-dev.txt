@@ -87,7 +87,7 @@ columnar==1.4.1
     # via pymarkdownlnt
 coverage==7.13.0
     # via pytest-cov
-cryptography==46.0.5
+cryptography==46.0.7
     # via
     #   fastapi-mail
     #   pyjwt
@@ -183,7 +183,7 @@ jsmin==3.0.1
     # via mkdocs-minify-plugin
 libpass==1.9.3
     # via api-template
-librt==0.7.4 ; platform_python_implementation != 'PyPy'
+librt==0.9.0 ; platform_python_implementation != 'PyPy'
     # via mypy
 limits==5.6.0
     # via slowapi
@@ -243,7 +243,7 @@ mkdocstrings==0.28.1
 mkdocstrings-python==1.16.0
     # via mkdocstrings
 mock==5.2.0
-mypy==1.19.1
+mypy==1.20.0
 mypy-extensions==1.0.0
     # via mypy
 openai==2.14.0
@@ -258,7 +258,7 @@ paginate==0.5.7
     # via mkdocs-material
 pastel==0.2.1
     # via poethepoet
-pathspec==0.12.1
+pathspec==1.0.4
     # via
     #   mkdocs
     #   mypy
@@ -271,7 +271,7 @@ pluggy==1.5.0
 poethepoet==0.42.1
 pprintpp==0.4.0
     # via pytest-clarity
-prek==0.3.6
+prek==0.3.8
 prometheus-client==0.23.1
     # via prometheus-fastapi-instrumentator
 prometheus-fastapi-instrumentator==7.1.0
@@ -300,7 +300,7 @@ pydantic-settings==2.7.1
 pyfakefs==6.1.6
 pygithub==2.6.1
     # via github-changelog-md
-pygments==2.19.1
+pygments==2.20.0
     # via
     #   mkdocs-material
     #   pytest
@@ -310,7 +310,7 @@ pyjwt==2.12.1
     #   api-template
     #   pygithub
 pymarkdownlnt==0.9.28
-pymdown-extensions==10.19.1
+pymdown-extensions==10.21.2
     # via
     #   mkdocs-material
     #   mkdocstrings
@@ -367,7 +367,7 @@ redis==4.6.0
     # via fastapi-cache2
 regex==2025.11.3
     # via fastapi-mail
-requests==2.32.4
+requests==2.33.1
     # via
     #   mkdocs-material
     #   pygithub
@@ -389,7 +389,7 @@ rtoml==0.13.0
     #   api-template
     #   github-changelog-md
     #   simple-toml-settings
-ruff==0.15.7
+ruff==0.15.10
 sentry-sdk==2.34.1
     # via fastapi-cloud-cli
 shellingham==1.5.4
