@@ -346,7 +346,7 @@ python-dotenv==1.0.1
     #   mkdoc
     #   pydantic-settings
     #   uvicorn
-python-multipart==0.0.22
+python-multipart==0.0.26
     # via
     #   fastapi
     #   sqladmin
