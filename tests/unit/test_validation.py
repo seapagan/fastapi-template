@@ -310,12 +310,27 @@ class TestSettingsSources:
     """Test settings source precedence and secrets-dir support."""
 
     @staticmethod
+    def clear_settings_env(monkeypatch: pytest.MonkeyPatch) -> None:
+        """Clear ambient env vars that would override test-specific sources."""
+        for env_name in (
+            "DB_USER",
+            "DB_PASSWORD",
+            "TEST_DB_PASSWORD",
+            "SECRET_KEY",
+            "SECRETS_DIR",
+        ):
+            monkeypatch.delenv(env_name, raising=False)
+
+    @staticmethod
     def write_secret(secret_dir: Path, name: str, value: str) -> None:
         """Write one secret file using Pydantic's file-secret format."""
         (secret_dir / name).write_text(value, encoding="utf-8")
 
-    def test_settings_load_from_secrets_dir(self, tmp_path: Path) -> None:
+    def test_settings_load_from_secrets_dir(
+        self, monkeypatch, tmp_path: Path
+    ) -> None:
         """Settings should load required values from a secrets directory."""
+        self.clear_settings_env(monkeypatch)
         self.write_secret(tmp_path, "DB_USER", "secret_user")
         self.write_secret(tmp_path, "DB_PASSWORD", "SecretsPassword123!")
         self.write_secret(tmp_path, "TEST_DB_PASSWORD", "TestSecretsPass123!")
@@ -334,8 +349,11 @@ class TestSettingsSources:
         assert unwrap_secret(settings.db_password) == "SecretsPassword123!"
         assert unwrap_secret(settings.test_db_password) == "TestSecretsPass123!"
 
-    def test_dotenv_overrides_secrets_dir(self, tmp_path: Path) -> None:
+    def test_dotenv_overrides_secrets_dir(
+        self, monkeypatch, tmp_path: Path
+    ) -> None:
         """Dotenv values should override secret-file values."""
+        self.clear_settings_env(monkeypatch)
         secrets_dir = tmp_path / "secrets"
         secrets_dir.mkdir()
         env_file = tmp_path / ".env"
@@ -417,9 +435,10 @@ class TestSettingsSources:
         get_settings.cache_clear()
 
     def test_weak_secret_key_from_secrets_dir_rejected(
-        self, tmp_path: Path
+        self, monkeypatch, tmp_path: Path
     ) -> None:
         """Weak secret keys from file secrets should still be rejected."""
+        self.clear_settings_env(monkeypatch)
         self.write_secret(tmp_path, "DB_USER", "secret_user")
         self.write_secret(tmp_path, "DB_PASSWORD", "SecretsPassword123!")
         self.write_secret(tmp_path, "SECRET_KEY", "secret")
@@ -431,9 +450,10 @@ class TestSettingsSources:
             build_settings(_env_file=None, _secrets_dir=tmp_path)
 
     def test_weak_test_db_password_from_secrets_dir_rejected(
-        self, tmp_path: Path
+        self, monkeypatch, tmp_path: Path
     ) -> None:
         """Weak TEST_DB_PASSWORD values from file secrets should be rejected."""
+        self.clear_settings_env(monkeypatch)
         self.write_secret(tmp_path, "DB_USER", "secret_user")
         self.write_secret(tmp_path, "DB_PASSWORD", "SecretsPassword123!")
         self.write_secret(
