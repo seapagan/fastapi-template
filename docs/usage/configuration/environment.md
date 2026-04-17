@@ -17,13 +17,24 @@ Configuration precedence is:
 2. `.env`
 3. `SECRETS_DIR`
 
-If `SECRETS_DIR` is set, each file in that directory should be named after the
-setting, and the file contents should be the value. For example:
+If `SECRETS_DIR` is set, it should point to a directory containing one file per
+secret. Each filename should match a setting name, and the file contents should
+be the value. This is useful for production deployments where you prefer
+OS-managed secret files instead of storing sensitive values in a `.env` file.
+Common locations include `/etc/myapp/secrets` on Linux servers,
+`/run/secrets` in containers, `./secrets` for local testing, or a custom path
+on Windows. For example:
 
 ```text
 /run/secrets/DB_PASSWORD
 /run/secrets/SECRET_KEY
 ```
+
+The directory should be readable only by the account running the application
+and protected with appropriate filesystem permissions. This improves separation
+of secrets from source code and deployment files, but it does not replace
+proper host security: an attacker with full system access may still be able to
+obtain them.
 
 !!! info
     The Database (and test database if you are running the tests) and User must
