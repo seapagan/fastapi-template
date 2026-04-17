@@ -9,7 +9,7 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.db import get_database
 from app.database.helpers import (
     add_new_api_key_,
@@ -50,7 +50,7 @@ class ApiKeyManager:
         them is computationally infeasible. HMAC also prevents
         length-extension attacks possible with raw SHA256 hashing.
         """
-        secret_key = get_settings().secret_key.encode()
+        secret_key = unwrap_secret(get_settings().secret_key).encode()
         return hmac.new(secret_key, key.encode(), hashlib.sha256).hexdigest()
 
     @classmethod

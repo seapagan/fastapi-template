@@ -4,6 +4,7 @@ import contextlib
 import os
 
 import pytest
+from pydantic import SecretStr
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 
@@ -220,7 +221,7 @@ class TestDatabase:
         mock_settings = mocker.patch("app.database.db.get_settings")
         mock_settings.return_value = Settings(
             db_user="test_user",
-            db_password="test_password",  # noqa: S106
+            db_password=SecretStr("test_password"),
             db_address="test_host",
             db_port="5432",
             db_name="test_db",

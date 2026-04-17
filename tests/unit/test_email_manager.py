@@ -7,7 +7,7 @@ import pytest
 from fastapi import status
 from pydantic import NameEmail
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.schemas.email import EmailSchema, EmailTemplateSchema
 
 
@@ -41,7 +41,7 @@ class TestEmailManager:
         """Test the EmailManager constructor."""
         assert get_settings().mail_username == email_manager.conf.MAIL_USERNAME
         assert (
-            get_settings().mail_password
+            unwrap_secret(get_settings().mail_password)
             == email_manager.conf.MAIL_PASSWORD.get_secret_value()
         )
         assert get_settings().mail_from == email_manager.conf.MAIL_FROM

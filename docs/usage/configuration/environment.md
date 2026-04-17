@@ -6,6 +6,25 @@ Database (and other) settings can be read from environment variables or from a
 `.env` file in the project root. See the `.env.example` file for how to use, in
 fact you can just copy this file to `.env` and edit the settings as required.
 
+For local development, `.env` is the normal workflow. For production,
+environment variables are preferred. You can also optionally set
+`SECRETS_DIR` to a directory of files so settings can fall back to file-based
+secrets when they are not present in the environment or `.env`.
+
+Configuration precedence is:
+
+1. Environment variables
+2. `.env`
+3. `SECRETS_DIR`
+
+If `SECRETS_DIR` is set, each file in that directory should be named after the
+setting, and the file contents should be the value. For example:
+
+```text
+/run/secrets/DB_PASSWORD
+/run/secrets/SECRET_KEY
+```
+
 !!! info
     The Database (and test database if you are running the tests) and User must
     already exist in your Postgres system!

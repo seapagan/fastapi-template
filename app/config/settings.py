@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from functools import lru_cache
 from pathlib import Path  # noqa: TC003
+from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
 from cryptography.fernet import Fernet
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.config.helpers import get_project_root
 from app.logs import logger
+
+if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
 
 try:
     from .metadata import custom_metadata
@@ -27,6 +32,13 @@ except ModuleNotFoundError:  # pragma: no cover
 MIN_SECRET_KEY_LENGTH = 32
 
 
+def unwrap_secret(value: SecretStr | str) -> str:
+    """Return the raw value from either a SecretStr or plain string."""
+    if isinstance(value, SecretStr):
+        return value.get_secret_value()
+    return value
+
+
 class Settings(BaseSettings):
     """Main Settings class.
 
@@ -34,11 +46,12 @@ class Settings(BaseSettings):
     file if it exists.
 
     SECURITY WARNING: Critical settings (SECRET_KEY, DB_PASSWORD, DB_USER)
-    MUST be set in your .env file. The application will fail to start if
-    these are not properly configured with secure values.
+    MUST be configured via environment variables, a .env file, or an optional
+    secrets directory. The application will fail to start if these are not
+    properly configured with secure values.
 
-    Do NOT put real passwords in this file - use the .env file instead
-    (it's in .gitignore and won't be stored in Git).
+    Do NOT put real passwords in this file. For local development, use the
+    .env file instead (it's in .gitignore and won't be stored in Git).
 
     To get started, copy .env.example to .env and update the values.
     """
@@ -58,7 +71,7 @@ class Settings(BaseSettings):
     # Setup the Postgresql database.
     # IMPORTANT: Set DB_USER and DB_PASSWORD in your .env file!
     db_user: str = "CHANGE_ME_IN_ENV_FILE"
-    db_password: str = "CHANGE_ME_IN_ENV_FILE"  # noqa: S105
+    db_password: SecretStr = SecretStr("CHANGE_ME_IN_ENV_FILE")
     db_address: str = "localhost"
     db_port: str = "5432"
     db_name: str = "api-template"
@@ -68,7 +81,7 @@ class Settings(BaseSettings):
     # Setup the TEST Postgresql database.
     # Note: Safe defaults for local/CI testing only
     test_db_user: str = "test_user"
-    test_db_password: str = "test_password_local_only"  # noqa: S105
+    test_db_password: SecretStr = SecretStr("test_password_local_only")
     test_db_address: str = "localhost"
     test_db_port: str = "5432"
     test_db_name: str = "api-template-test"
@@ -77,7 +90,7 @@ class Settings(BaseSettings):
     # Generate with: openssl rand -hex 32
     # Or Python: import secrets; secrets.token_hex(32)
     # Set SECRET_KEY in your .env file!
-    secret_key: str = "CHANGE_ME_IN_ENV_FILE"  # noqa: S105
+    secret_key: SecretStr = SecretStr("CHANGE_ME_IN_ENV_FILE")
     access_token_expire_minutes: int = 120
 
     # Custom Metadata
@@ -92,7 +105,7 @@ class Settings(BaseSettings):
     # Note: Set these in .env for production email functionality
     # Email features will fail gracefully if not configured
     mail_username: str = ""
-    mail_password: str = ""
+    mail_password: SecretStr = SecretStr("")
     mail_from: str = ""
     mail_port: int = 587
     mail_server: str = "mail.server.com"
@@ -106,8 +119,8 @@ class Settings(BaseSettings):
     admin_pages_enabled: bool = False
     admin_pages_route: str = "/admin"
     admin_pages_title: str = "API Administration"
-    admin_pages_encryption_key: str = Field(
-        default_factory=lambda: Fernet.generate_key().decode(),
+    admin_pages_encryption_key: SecretStr = Field(
+        default_factory=lambda: SecretStr(Fernet.generate_key().decode()),
         description="Encryption key for admin session tokens",
     )
     admin_pages_timeout: int = 86400
@@ -134,7 +147,7 @@ class Settings(BaseSettings):
     redis_enabled: bool = False
     redis_host: str = "localhost"
     redis_port: int = 6379
-    redis_password: str = ""
+    redis_password: SecretStr = SecretStr("")
     redis_db: int = 0
     cache_default_ttl: int = 300  # 5 minutes
 
@@ -157,8 +170,9 @@ class Settings(BaseSettings):
         Note:
             Password is URL-encoded to handle special characters safely.
         """
-        if self.redis_password:
-            encoded_password = quote(self.redis_password, safe="")
+        redis_password = unwrap_secret(self.redis_password)
+        if redis_password:
+            encoded_password = quote(redis_password, safe="")
             return (
                 f"redis://:{encoded_password}@"
                 f"{self.redis_host}:{self.redis_port}/{self.redis_db}"
@@ -190,8 +204,9 @@ class Settings(BaseSettings):
 
     @field_validator("secret_key")
     @classmethod
-    def validate_secret_key(cls: type[Settings], value: str) -> str:
+    def validate_secret_key(cls: type[Settings], value: SecretStr) -> SecretStr:
         """Ensure secret key is not a weak or default value."""
+        raw_value = unwrap_secret(value)
         weak_keys = [
             "CHANGE_ME_IN_ENV_FILE",
             "32DigitsofSecretNumbers",
@@ -199,7 +214,7 @@ class Settings(BaseSettings):
             "secret",
             "secretkey",
         ]
-        if value.lower() in [k.lower() for k in weak_keys]:
+        if raw_value.lower() in [k.lower() for k in weak_keys]:
             msg = (
                 "\n"
                 "=" * 70 + "\n"
@@ -208,23 +223,28 @@ class Settings(BaseSettings):
                 "Generate a strong key with one of these commands:\n"
                 "  openssl rand -hex 32\n"
                 "  python -c 'import secrets; print(secrets.token_hex(32))'\n\n"
-                "Then add it to your .env file:\n"
+                "Then configure it via environment, .env, or secrets dir:\n"
                 "  SECRET_KEY=your_generated_key_here\n"
                 "=" * 70
             )
             raise ValueError(msg)
-        if len(value) < MIN_SECRET_KEY_LENGTH:
+        if len(raw_value) < MIN_SECRET_KEY_LENGTH:
             msg = (
                 f"SECRET_KEY must be at least {MIN_SECRET_KEY_LENGTH} "
-                f"characters for security. Current length: {len(value)}"
+                f"characters for security. Current length: {len(raw_value)}"
             )
             raise ValueError(msg)
         return value
 
-    @field_validator("db_password")
+    @field_validator("db_password", "test_db_password")
     @classmethod
-    def validate_db_password(cls: type[Settings], value: str) -> str:
+    def validate_db_password(
+        cls: type[Settings],
+        value: SecretStr,
+        info: ValidationInfo,
+    ) -> SecretStr:
         """Ensure database password is not a weak or default value."""
+        raw_value = unwrap_secret(value)
         weak_passwords = [
             "CHANGE_ME_IN_ENV_FILE",
             "Sup3rS3cr3tP455w0rd",
@@ -232,14 +252,16 @@ class Settings(BaseSettings):
             "password",
             "admin",
         ]
-        if value in weak_passwords:
+        if raw_value in weak_passwords:
+            field_name = (info.field_name or "db_password").upper()
             msg = (
                 "\n"
                 "=" * 70 + "\n"
-                "SECURITY ERROR: DB_PASSWORD is using a weak/default value!\n"
+                f"SECURITY ERROR: {field_name} is using a weak/default value!\n"
                 "=" * 70 + "\n"
-                "Set a strong database password in your .env file:\n"
-                "  DB_PASSWORD=your_secure_password_here\n"
+                "Set a strong database password via environment, .env, "
+                "or secrets dir:\n"
+                f"  {field_name}=your_secure_password_here\n"
                 "=" * 70
             )
             raise ValueError(msg)
@@ -255,7 +277,8 @@ class Settings(BaseSettings):
                 "=" * 70 + "\n"
                 "CONFIGURATION ERROR: DB_USER is not set!\n"
                 "=" * 70 + "\n"
-                "Set your database username in your .env file:\n"
+                "Set your database username via environment, .env, "
+                "or secrets dir:\n"
                 "  DB_USER=your_database_username\n"
                 "=" * 70
             )
@@ -266,4 +289,8 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     """Return the current settings."""
-    return Settings()
+    secrets_dir = os.getenv("SECRETS_DIR")
+    settings_factory = cast("Callable[..., Settings]", Settings)
+    if secrets_dir and secrets_dir.strip():
+        return settings_factory(_secrets_dir=secrets_dir)
+    return settings_factory()

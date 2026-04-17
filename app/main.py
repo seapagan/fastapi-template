@@ -24,7 +24,7 @@ from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.log_config import get_log_config
 from app.config.openapi import custom_openapi
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.db import async_session
 from app.metrics.instrumentator import register_metrics
 from app.middleware.cache_logging import CacheLoggingMiddleware
@@ -100,7 +100,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     if get_settings().cache_enabled:
         if get_settings().redis_enabled:
             # Warn about missing authentication
-            if not get_settings().redis_password:
+            if not unwrap_secret(get_settings().redis_password):
                 warning_msg = (
                     "Redis is enabled without authentication "
                     "(REDIS_PASSWORD is empty). Ensure Redis is secured "

@@ -10,7 +10,7 @@ from pydantic import NameEmail
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.db import get_database
 from app.database.helpers import (
     get_user_by_email_,
@@ -66,7 +66,9 @@ class AuthManager:
                 ),
             }
             token = jwt.encode(
-                payload, get_settings().secret_key, algorithm="HS256"
+                payload,
+                unwrap_secret(get_settings().secret_key),
+                algorithm="HS256",
             )
         except (jwt.PyJWTError, AttributeError) as exc:
             user_id = getattr(user, "id", "unknown")
@@ -94,7 +96,9 @@ class AuthManager:
                 "typ": "refresh",
             }
             token = jwt.encode(
-                payload, get_settings().secret_key, algorithm="HS256"
+                payload,
+                unwrap_secret(get_settings().secret_key),
+                algorithm="HS256",
             )
         except (jwt.PyJWTError, AttributeError) as exc:
             user_id = getattr(user, "id", "unknown")
@@ -123,7 +127,9 @@ class AuthManager:
                 "typ": "verify",
             }
             token = jwt.encode(
-                payload, get_settings().secret_key, algorithm="HS256"
+                payload,
+                unwrap_secret(get_settings().secret_key),
+                algorithm="HS256",
             )
         except (jwt.PyJWTError, AttributeError) as exc:
             user_id = getattr(user, "id", "unknown")
@@ -154,7 +160,9 @@ class AuthManager:
                 "typ": "reset",
             }
             token = jwt.encode(
-                payload, get_settings().secret_key, algorithm="HS256"
+                payload,
+                unwrap_secret(get_settings().secret_key),
+                algorithm="HS256",
             )
         except (jwt.PyJWTError, AttributeError) as exc:
             user_id = getattr(user, "id", "unknown")
@@ -196,7 +204,7 @@ class AuthManager:
         try:
             payload = jwt.decode(
                 refresh_token.refresh,
-                get_settings().secret_key,
+                unwrap_secret(get_settings().secret_key),
                 algorithms=["HS256"],
                 options={"verify_sub": False},
             )
@@ -300,7 +308,7 @@ class AuthManager:
         try:
             payload = jwt.decode(
                 code,
-                get_settings().secret_key,
+                unwrap_secret(get_settings().secret_key),
                 algorithms=["HS256"],
                 options={"verify_sub": False},
             )
@@ -474,7 +482,7 @@ class AuthManager:
         try:
             payload = jwt.decode(
                 code,
-                get_settings().secret_key,
+                unwrap_secret(get_settings().secret_key),
                 algorithms=["HS256"],
                 options={"verify_sub": False},
             )
@@ -658,7 +666,7 @@ async def get_jwt_user(  # noqa: C901
         # Decode and validate the token
         payload = jwt.decode(
             credentials.credentials,
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithms=["HS256"],
             options={"verify_sub": False},
         )

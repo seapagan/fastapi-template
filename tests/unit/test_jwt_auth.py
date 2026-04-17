@@ -7,7 +7,7 @@ import pytest
 from fastapi import BackgroundTasks, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.managers.auth import ResponseMessages, get_jwt_user
 from app.managers.user import UserManager
 from app.models.user import User
@@ -89,7 +89,7 @@ class TestJWTAuth:
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(minutes=10),
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         mock_req = mocker.patch(self.mock_request_path)
@@ -115,7 +115,7 @@ class TestJWTAuth:
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(minutes=10),
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         mock_req = mocker.patch(self.mock_request_path)
@@ -143,7 +143,7 @@ class TestJWTAuth:
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(minutes=10),
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         mock_req = mocker.patch(self.mock_request_path)

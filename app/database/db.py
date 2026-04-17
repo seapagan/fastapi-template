@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 
 
 def get_database_url(*, use_test_db: bool = False) -> str:
@@ -32,7 +32,7 @@ def get_database_url(*, use_test_db: bool = False) -> str:
 
     return (
         "postgresql+asyncpg://"
-        f"{settings.db_user}:{settings.db_password}@"
+        f"{settings.db_user}:{unwrap_secret(settings.db_password)}@"
         f"{settings.db_address}:{settings.db_port}/"
         f"{db_name}"
     )

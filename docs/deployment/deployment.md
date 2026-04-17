@@ -102,9 +102,10 @@ using Uvicorn, Gunicorn and Containers.
 
 !!! info "Environment Setup"
     Whichever method you choose, you still need to set up a virtual environment,
-    install all the dependencies, setup your `.env` file (or use Environment
-    variables if your hosting provider uses these - for example Railway or Heroku)
-    and set up and migrate your Database.
+    install all the dependencies, and configure your settings. In production,
+    prefer environment variables. A `.env` file is mainly for local development,
+    and `SECRETS_DIR` is available as an optional file-secret fallback. You
+    still need to set up and migrate your Database.
 
 ## Database Migration Strategy
 
