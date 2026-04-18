@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import sys
 from functools import lru_cache
-from pathlib import Path  # noqa: TC003
+from pathlib import Path
 from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
@@ -300,11 +300,39 @@ class Settings(BaseSettings):
         return value
 
 
+def check_secrets_dir() -> list[str]:
+    """Validate SECRETS_DIR and return warning messages.
+
+    Returns a list of warning strings (empty if no issues found).
+    Intended to be called from the application lifespan, after
+    logging is configured.
+    """
+    warnings: list[str] = []
+    secrets_dir = os.getenv("SECRETS_DIR", "").strip()
+    if not secrets_dir:
+        return warnings
+
+    secrets_path = Path(secrets_dir)
+    if not secrets_path.is_dir():
+        warnings.append(
+            f"SECRETS_DIR '{secrets_dir}' does not exist or is "
+            f"not a directory. File-based secrets will not be "
+            f"loaded."
+        )
+    elif os.access(secrets_path, os.W_OK):
+        warnings.append(
+            f"SECRETS_DIR '{secrets_dir}' is writable by the "
+            f"current process. For best security, this "
+            f"directory should be read-only."
+        )
+    return warnings
+
+
 @lru_cache
 def get_settings() -> Settings:
     """Return the current settings."""
-    secrets_dir = os.getenv("SECRETS_DIR")
+    secrets_dir = os.getenv("SECRETS_DIR", "").strip()
     settings_factory = cast("Callable[..., Settings]", Settings)
-    if secrets_dir and secrets_dir.strip():
+    if secrets_dir and Path(secrets_dir).is_dir():
         return settings_factory(_secrets_dir=secrets_dir)
     return settings_factory()

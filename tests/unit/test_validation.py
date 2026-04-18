@@ -11,7 +11,12 @@ import pytest
 from cryptography.fernet import Fernet
 from pydantic import SecretStr
 
-from app.config.settings import Settings, get_settings, unwrap_secret
+from app.config.settings import (
+    Settings,
+    check_secrets_dir,
+    get_settings,
+    unwrap_secret,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -446,6 +451,7 @@ class TestSettingsSources:
         mock_settings = mocker.patch("app.config.settings.Settings")
         secrets_dir = "/var/run/app-secrets"
         monkeypatch.setenv("SECRETS_DIR", secrets_dir)
+        mocker.patch("app.config.settings.Path.is_dir", return_value=True)
         get_settings.cache_clear()
 
         settings = get_settings()
@@ -491,3 +497,31 @@ class TestSettingsSources:
             ),
         ):
             build_settings(_env_file=None, _secrets_dir=tmp_path)
+
+    def test_secrets_dir_warns_when_not_found(self, monkeypatch) -> None:
+        """check_secrets_dir returns warning when path does not exist."""
+        monkeypatch.setenv("SECRETS_DIR", "/no/such/secrets/dir")
+
+        warnings = check_secrets_dir()
+
+        assert len(warnings) == 1
+        assert "does not exist" in warnings[0]
+
+    def test_secrets_dir_warns_when_writable(
+        self, monkeypatch, tmp_path: Path
+    ) -> None:
+        """check_secrets_dir returns warning when dir is writable."""
+        monkeypatch.setenv("SECRETS_DIR", str(tmp_path))
+
+        warnings = check_secrets_dir()
+
+        assert len(warnings) == 1
+        assert "writable" in warnings[0]
+
+    def test_secrets_dir_no_warnings_when_unset(self, monkeypatch) -> None:
+        """check_secrets_dir returns empty list when SECRETS_DIR unset."""
+        monkeypatch.delenv("SECRETS_DIR", raising=False)
+
+        warnings = check_secrets_dir()
+
+        assert warnings == []
