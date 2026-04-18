@@ -236,6 +236,20 @@ class Settings(BaseSettings):
             raise ValueError(msg)
         return value
 
+    @field_validator("admin_pages_encryption_key", mode="before")
+    @classmethod
+    def validate_admin_pages_encryption_key(
+        cls: type[Settings], value: SecretStr | str | None
+    ) -> SecretStr | str:
+        """Generate admin encryption key when configured value is empty."""
+        if value is None:
+            return SecretStr(Fernet.generate_key().decode())
+
+        if not unwrap_secret(value):
+            return SecretStr(Fernet.generate_key().decode())
+
+        return value
+
     @field_validator("db_password", "test_db_password")
     @classmethod
     def validate_db_password(

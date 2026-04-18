@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import pytest
+from cryptography.fernet import Fernet
 from pydantic import SecretStr
 
 from app.config.settings import Settings, get_settings, unwrap_secret
@@ -317,6 +318,7 @@ class TestSettingsSources:
             "DB_PASSWORD",
             "TEST_DB_PASSWORD",
             "SECRET_KEY",
+            "ADMIN_PAGES_ENCRYPTION_KEY",
             "SECRETS_DIR",
         ):
             monkeypatch.delenv(env_name, raising=False)
@@ -418,6 +420,23 @@ class TestSettingsSources:
             unwrap_secret(settings.secret_key)
             == "feedfacefeedfacefeedfacefeedface"
         )
+
+    def test_empty_admin_encryption_key_generates_default(
+        self, monkeypatch
+    ) -> None:
+        """Empty admin encryption key env value should generate a key."""
+        self.clear_settings_env(monkeypatch)
+        monkeypatch.setenv("DB_USER", "env_user")
+        monkeypatch.setenv("DB_PASSWORD", "EnvPassword123!")
+        monkeypatch.setenv("SECRET_KEY", "feedfacefeedfacefeedfacefeedface")
+        monkeypatch.setenv("ADMIN_PAGES_ENCRYPTION_KEY", "")
+
+        settings = Settings()
+        encryption_key = unwrap_secret(settings.admin_pages_encryption_key)
+
+        assert isinstance(settings.admin_pages_encryption_key, SecretStr)
+        assert encryption_key
+        assert Fernet(encryption_key.encode())
 
     def test_get_settings_uses_secrets_dir_env_var(
         self, monkeypatch, mocker
