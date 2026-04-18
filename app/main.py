@@ -24,7 +24,7 @@ from app.admin import register_admin
 from app.config.helpers import get_api_version, get_project_root
 from app.config.log_config import get_log_config
 from app.config.openapi import custom_openapi
-from app.config.settings import get_settings
+from app.config.settings import check_secrets_dir, get_settings, unwrap_secret
 from app.database.db import async_session
 from app.metrics.instrumentator import register_metrics
 from app.middleware.cache_logging import CacheLoggingMiddleware
@@ -73,6 +73,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     # Initialize loguru logging within the server process.
     get_log_config()
 
+    # Validate SECRETS_DIR configuration if set.
+    for warning_msg in check_secrets_dir():
+        logger.warning(warning_msg)
+        loguru_logger.warning(warning_msg)
+
     if "*" in cors_list:
         warning_msg = (
             "CORS_ORIGINS is set to '*', allowing any origin to access the "
@@ -100,7 +105,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
     if get_settings().cache_enabled:
         if get_settings().redis_enabled:
             # Warn about missing authentication
-            if not get_settings().redis_password:
+            if not unwrap_secret(get_settings().redis_password):
                 warning_msg = (
                     "Redis is enabled without authentication "
                     "(REDIS_PASSWORD is empty). Ensure Redis is secured "

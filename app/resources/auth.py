@@ -20,7 +20,7 @@ from starlette.templating import _TemplateResponse
 
 from app.cache import invalidate_users_list_cache
 from app.config.helpers import get_project_root
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.db import get_database
 from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.helpers import (
@@ -216,7 +216,7 @@ async def reset_password_form(
         try:
             payload = jwt.decode(
                 code,
-                get_settings().secret_key,
+                unwrap_secret(get_settings().secret_key),
                 algorithms=["HS256"],
                 options={"verify_sub": False},
             )

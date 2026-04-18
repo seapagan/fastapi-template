@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from cryptography.fernet import Fernet, InvalidToken
 from sqladmin.authentication import AuthenticationBackend
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.db import async_session
 from app.database.helpers import (
     get_user_by_email_,
@@ -31,7 +31,10 @@ class AdminAuth(AuthenticationBackend):
         """Initialize the auth backend with encryption key."""
         super().__init__(secret_key)
         # Use the configured encryption key
-        self.fernet = Fernet(get_settings().admin_pages_encryption_key.encode())
+        encryption_key = unwrap_secret(
+            get_settings().admin_pages_encryption_key
+        )
+        self.fernet = Fernet(encryption_key.encode())
         self._timeout = get_settings().admin_pages_timeout
 
     def _create_token(self, user_id: int) -> str:

@@ -2,7 +2,7 @@
 
 import jwt
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 
 
 def get_token(sub: int, exp: float, typ: str) -> str:
@@ -13,6 +13,6 @@ def get_token(sub: int, exp: float, typ: str) -> str:
             "exp": exp,
             "typ": typ,
         },
-        get_settings().secret_key,
+        unwrap_secret(get_settings().secret_key),
         algorithm="HS256",
     )

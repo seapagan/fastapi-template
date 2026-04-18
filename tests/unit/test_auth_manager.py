@@ -7,7 +7,7 @@ import pytest
 from fastapi import BackgroundTasks, HTTPException, status
 from pydantic import ValidationError
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.helpers import verify_password
 from app.managers.auth import AuthManager, ResponseMessages
 from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES, MAX_JWT_TOKEN_LENGTH
@@ -38,7 +38,7 @@ class TestAuthManager:
 
         payload = jwt.decode(
             token,
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
@@ -64,7 +64,7 @@ class TestAuthManager:
 
         payload = jwt.decode(
             refresh_token,
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
@@ -91,7 +91,7 @@ class TestAuthManager:
 
         payload = jwt.decode(
             verify_token,
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
@@ -118,7 +118,7 @@ class TestAuthManager:
 
         payload = jwt.decode(
             reset_token,
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithms=["HS256"],
             options={"verify_sub": False},
         )
@@ -725,7 +725,7 @@ class TestAuthManager:
                 "typ": "refresh",
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         with pytest.raises(HTTPException) as exc_info:
@@ -744,7 +744,7 @@ class TestAuthManager:
                 "typ": "verify",
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         with pytest.raises(HTTPException) as exc_info:
@@ -761,7 +761,7 @@ class TestAuthManager:
                 "typ": "reset",
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         with pytest.raises(HTTPException) as exc_info:
@@ -782,7 +782,7 @@ class TestAuthManager:
                 "sub": "1",  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         # Should succeed because we convert "1" to 1
@@ -806,7 +806,7 @@ class TestAuthManager:
                 "sub": "1",  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         # Should succeed because we convert "1" to 1
@@ -830,7 +830,7 @@ class TestAuthManager:
                 "sub": "1",  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
         new_password = "newpassword123!"  # noqa: S105

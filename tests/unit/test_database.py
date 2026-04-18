@@ -4,6 +4,7 @@ import contextlib
 import os
 
 import pytest
+from pydantic import SecretStr
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 
@@ -220,7 +221,7 @@ class TestDatabase:
         mock_settings = mocker.patch("app.database.db.get_settings")
         mock_settings.return_value = Settings(
             db_user="test_user",
-            db_password="test_password",  # noqa: S106
+            db_password=SecretStr("p@ss:word/with#chars"),
             db_address="test_host",
             db_port="5432",
             db_name="test_db",
@@ -230,15 +231,37 @@ class TestDatabase:
         # Test normal database URL
         url = db.get_database_url()
         assert url == (
-            "postgresql+asyncpg://test_user:test_password"
+            "postgresql+asyncpg://test_user:p%40ss%3Aword%2Fwith%23chars"
             "@test_host:5432/test_db"
         )
 
         # Test test database URL
         url = db.get_database_url(use_test_db=True)
         assert url == (
-            "postgresql+asyncpg://test_user:test_password"
+            "postgresql+asyncpg://test_user:p%40ss%3Aword%2Fwith%23chars"
             "@test_host:5432/test_db_test"
+        )
+
+    def test_get_database_url_encodes_password(
+        self, mocker, monkeypatch
+    ) -> None:
+        """Test database URL encodes reserved characters in password."""
+        monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+        mock_settings = mocker.patch("app.database.db.get_settings")
+        mock_settings.return_value = Settings(
+            db_user="test_user",
+            db_password=SecretStr("p@ss:w0rd/#%"),
+            db_address="test_host",
+            db_port="5432",
+            db_name="test_db",
+            test_db_name="test_db_test",
+        )
+
+        url = db.get_database_url()
+
+        assert url == (
+            "postgresql+asyncpg://test_user:p%40ss%3Aw0rd%2F%23%25"
+            "@test_host:5432/test_db"
         )
 
     def test_get_database_url_github_actions(self, mocker) -> None:

@@ -6,7 +6,7 @@ import jwt
 import pytest
 from fastapi import status
 
-from app.config.settings import get_settings
+from app.config.settings import get_settings, unwrap_secret
 from app.database.helpers import hash_password
 from app.managers.auth import AuthManager
 from app.models.user import User
@@ -112,7 +112,7 @@ class TestProtectedUserRoutes:
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(minutes=10),
             },
-            get_settings().secret_key,
+            unwrap_secret(get_settings().secret_key),
             algorithm="HS256",
         )
 
