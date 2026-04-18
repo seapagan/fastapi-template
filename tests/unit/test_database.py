@@ -221,7 +221,7 @@ class TestDatabase:
         mock_settings = mocker.patch("app.database.db.get_settings")
         mock_settings.return_value = Settings(
             db_user="test_user",
-            db_password=SecretStr("test_password"),
+            db_password=SecretStr("p@ss:word/with#chars"),
             db_address="test_host",
             db_port="5432",
             db_name="test_db",
@@ -231,14 +231,14 @@ class TestDatabase:
         # Test normal database URL
         url = db.get_database_url()
         assert url == (
-            "postgresql+asyncpg://test_user:test_password"
+            "postgresql+asyncpg://test_user:p%40ss%3Aword%2Fwith%23chars"
             "@test_host:5432/test_db"
         )
 
         # Test test database URL
         url = db.get_database_url(use_test_db=True)
         assert url == (
-            "postgresql+asyncpg://test_user:test_password"
+            "postgresql+asyncpg://test_user:p%40ss%3Aword%2Fwith%23chars"
             "@test_host:5432/test_db_test"
         )
 
