@@ -389,6 +389,7 @@ class TestSettingsSources:
         self, monkeypatch, tmp_path: Path
     ) -> None:
         """Environment variables should have highest precedence."""
+        self.clear_settings_env(monkeypatch)
         secrets_dir = tmp_path / "secrets"
         secrets_dir.mkdir()
         env_file = tmp_path / ".env"
