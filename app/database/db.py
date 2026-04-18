@@ -3,6 +3,7 @@
 import os
 from collections.abc import AsyncGenerator
 from typing import Any
+from urllib.parse import quote
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
@@ -32,7 +33,8 @@ def get_database_url(*, use_test_db: bool = False) -> str:
 
     return (
         "postgresql+asyncpg://"
-        f"{settings.db_user}:{unwrap_secret(settings.db_password)}@"
+        f"{settings.db_user}:"
+        f"{quote(unwrap_secret(settings.db_password), safe='')}@"
         f"{settings.db_address}:{settings.db_port}/"
         f"{db_name}"
     )

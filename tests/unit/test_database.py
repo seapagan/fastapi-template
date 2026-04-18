@@ -242,6 +242,28 @@ class TestDatabase:
             "@test_host:5432/test_db_test"
         )
 
+    def test_get_database_url_encodes_password(
+        self, mocker, monkeypatch
+    ) -> None:
+        """Test database URL encodes reserved characters in password."""
+        monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+        mock_settings = mocker.patch("app.database.db.get_settings")
+        mock_settings.return_value = Settings(
+            db_user="test_user",
+            db_password=SecretStr("p@ss:w0rd/#%"),
+            db_address="test_host",
+            db_port="5432",
+            db_name="test_db",
+            test_db_name="test_db_test",
+        )
+
+        url = db.get_database_url()
+
+        assert url == (
+            "postgresql+asyncpg://test_user:p%40ss%3Aw0rd%2F%23%25"
+            "@test_host:5432/test_db"
+        )
+
     def test_get_database_url_github_actions(self, mocker) -> None:
         """Test get_database_url() returns the correct URL in GitHub Actions."""
         mocker.patch.dict(os.environ, {"GITHUB_ACTIONS": "true"})
