@@ -170,6 +170,43 @@ class TestDbPasswordValidator:
         ):
             Settings()
 
+    def test_empty_db_password_rejected(self, monkeypatch) -> None:
+        """Test that an empty DB_PASSWORD is rejected."""
+        monkeypatch.setenv("DB_USER", "testuser")
+        monkeypatch.setenv("SECRET_KEY", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6")
+        monkeypatch.setenv("DB_PASSWORD", "")
+
+        with pytest.raises(
+            ValueError,
+            match=r"SECURITY ERROR: DB_PASSWORD must not be empty!",
+        ):
+            Settings()
+
+    def test_whitespace_db_password_rejected(self, monkeypatch) -> None:
+        """Test that a whitespace-only DB_PASSWORD is rejected."""
+        monkeypatch.setenv("DB_USER", "testuser")
+        monkeypatch.setenv("SECRET_KEY", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6")
+        monkeypatch.setenv("DB_PASSWORD", "   ")
+
+        with pytest.raises(
+            ValueError,
+            match=r"SECURITY ERROR: DB_PASSWORD must not be empty!",
+        ):
+            Settings()
+
+    def test_empty_test_db_password_rejected(self, monkeypatch) -> None:
+        """Test that an empty TEST_DB_PASSWORD is rejected."""
+        monkeypatch.setenv("DB_USER", "testuser")
+        monkeypatch.setenv("SECRET_KEY", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6")
+        monkeypatch.setenv("DB_PASSWORD", "ValidPassword123!")
+        monkeypatch.setenv("TEST_DB_PASSWORD", "")
+
+        with pytest.raises(
+            ValueError,
+            match=(r"SECURITY ERROR: TEST_DB_PASSWORD must not be empty!"),
+        ):
+            Settings()
+
 
 class TestDbUserValidator:
     """Test the DB_USER validator."""

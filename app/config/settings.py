@@ -259,6 +259,19 @@ class Settings(BaseSettings):
     ) -> SecretStr:
         """Ensure database password is not a weak or default value."""
         raw_value = unwrap_secret(value)
+        field_name = (info.field_name or "db_password").upper()
+        if not raw_value.strip():
+            msg = (
+                "\n"
+                "=" * 70 + "\n"
+                f"SECURITY ERROR: {field_name} must not be empty!\n"
+                "=" * 70 + "\n"
+                "Set a strong database password via environment, .env, "
+                "or secrets dir:\n"
+                f"  {field_name}=your_secure_password_here\n"
+                "=" * 70
+            )
+            raise ValueError(msg)
         weak_passwords = [
             "CHANGE_ME_IN_ENV_FILE",
             "Sup3rS3cr3tP455w0rd",
@@ -267,7 +280,6 @@ class Settings(BaseSettings):
             "admin",
         ]
         if raw_value in weak_passwords:
-            field_name = (info.field_name or "db_password").upper()
             msg = (
                 "\n"
                 "=" * 70 + "\n"
