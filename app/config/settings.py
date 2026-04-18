@@ -315,15 +315,13 @@ def check_secrets_dir() -> list[str]:
     secrets_path = Path(secrets_dir)
     if not secrets_path.is_dir():
         warnings.append(
-            f"SECRETS_DIR '{secrets_dir}' does not exist or is "
-            f"not a directory. File-based secrets will not be "
-            f"loaded."
+            "SECRETS_DIR is set but does not exist or is not a "
+            "directory. File-based secrets will not be loaded."
         )
     elif os.access(secrets_path, os.W_OK):
         warnings.append(
-            f"SECRETS_DIR '{secrets_dir}' is writable by the "
-            f"current process. For best security, this "
-            f"directory should be read-only."
+            "SECRETS_DIR is writable by the current process. "
+            "For best security, this directory should be read-only."
         )
     return warnings
 
