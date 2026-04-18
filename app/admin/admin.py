@@ -17,12 +17,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 def register_admin(app: FastAPI) -> None:
     """Register the admin views."""
+    if not get_settings().admin_pages_enabled:
+        return
+
     authentication_backend = AdminAuth(
         secret_key=unwrap_secret(get_settings().secret_key)
     )
-
-    if not get_settings().admin_pages_enabled:
-        return
 
     admin = Admin(
         app,
