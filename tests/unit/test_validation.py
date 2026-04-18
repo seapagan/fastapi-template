@@ -481,6 +481,13 @@ class TestSettingsSources:
         assert encryption_key
         assert Fernet(encryption_key.encode())
 
+    def test_none_admin_encryption_key_generates_default(self) -> None:
+        """None admin encryption key should generate a valid key."""
+        result = Settings.validate_admin_pages_encryption_key(None)
+
+        assert isinstance(result, SecretStr)
+        assert Fernet(unwrap_secret(result).encode())
+
     def test_get_settings_uses_secrets_dir_env_var(
         self, monkeypatch, mocker
     ) -> None:

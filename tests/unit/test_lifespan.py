@@ -238,6 +238,36 @@ class TestLifespan:
         )
         loguru_warning.assert_called_once()
 
+    async def test_lifespan_warns_on_secrets_dir_issues(
+        self, caplog, mocker
+    ) -> None:
+        """Ensure warnings are logged when SECRETS_DIR has issues."""
+        app = FastAPI()
+        mock_session = mocker.patch(self.mock_session)
+        mock_connection = (
+            mock_session.return_value.__aenter__.return_value.connection
+        )
+        mock_connection.return_value = None
+
+        mocker.patch("app.main.get_settings").return_value.cache_enabled = False
+        mocker.patch("app.main.cors_list", ["https://example.com"])
+        mocker.patch(
+            "app.main.check_secrets_dir",
+            return_value=["SECRETS_DIR is writable by the current process."],
+        )
+        loguru_warning = mocker.patch("app.main.loguru_logger.warning")
+
+        caplog.set_level(logging.WARNING)
+
+        async with lifespan(app):
+            pass  # NOSONAR
+
+        assert any(
+            "SECRETS_DIR is writable" in record.message
+            for record in caplog.records
+        )
+        loguru_warning.assert_called_once()
+
     async def test_lifespan_initializes_redis_and_closes_client(
         self, caplog, mocker
     ) -> None:
