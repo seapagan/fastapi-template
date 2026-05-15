@@ -220,10 +220,11 @@ logs/
 *.log.*
 
 # AI Agent stuff
+AGENTS.md
 CLAUDE.md
 .clinerules
 .cursorrules
 .windsurfrules
 NOTES.md
-AGENTS.md
 .claude/
+.codex/
