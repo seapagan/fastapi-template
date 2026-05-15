@@ -2,7 +2,7 @@
 #    uv export --no-hashes --no-dev --no-emit-project --output-file=requirements.txt
 aiosmtplib==5.0.0
     # via fastapi-mail
-alembic==1.17.2
+alembic==1.18.4
     # via api-template
 annotated-doc==0.0.4
     # via
@@ -10,7 +10,7 @@ annotated-doc==0.0.4
     #   typer
 annotated-types==0.7.0
     # via pydantic
-anyio==4.8.0
+anyio==4.13.0
     # via
     #   api-template
     #   asyncclick
@@ -64,7 +64,7 @@ email-validator==2.3.0
     #   pydantic
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
     # via anyio
-fastapi==0.135.1
+fastapi==0.136.1
     # via
     #   api-template
     #   fastapi-cache2
@@ -77,8 +77,10 @@ fastapi-cloud-cli==0.1.5
     # via fastapi-cli
 fastapi-mail==1.6.1
     # via api-template
-fastapi-pagination==0.15.11
+fastapi-pagination==0.15.12
     # via api-template
+fastar==0.11.0
+    # via fastapi
 greenlet==3.3.0
     # via sqlalchemy
 h11==0.16.0
@@ -134,7 +136,7 @@ prometheus-fastapi-instrumentator==7.1.0
     # via api-template
 pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
     # via cffi
-pydantic==2.12.5
+pydantic==2.13.4
     # via
     #   api-template
     #   fastapi
@@ -143,11 +145,11 @@ pydantic==2.12.5
     #   fastapi-pagination
     #   pydantic-extra-types
     #   pydantic-settings
-pydantic-core==2.41.5
+pydantic-core==2.46.4
     # via pydantic
 pydantic-extra-types==2.10.6
     # via fastapi
-pydantic-settings==2.7.1
+pydantic-settings==2.14.1
     # via
     #   api-template
     #   fastapi
@@ -174,7 +176,7 @@ redis==4.6.0
     # via fastapi-cache2
 regex==2025.11.3
     # via fastapi-mail
-rich==14.3.3
+rich==15.0.0
     # via
     #   api-template
     #   rich-toolkit
@@ -195,11 +197,9 @@ six==1.17.0
     # via python-dateutil
 slowapi==0.1.9
     # via api-template
-sniffio==1.3.1
-    # via anyio
-sqladmin==0.20.1
+sqladmin==0.25.0
     # via api-template
-sqlalchemy==2.0.48
+sqlalchemy==2.0.49
     # via
     #   alembic
     #   api-template
@@ -212,7 +212,7 @@ starlette==0.50.0
     #   sqladmin
 tomli==2.2.1 ; python_full_version < '3.11'
     # via alembic
-typer==0.24.1
+typer==0.25.1
     # via
     #   api-template
     #   fastapi-cli
@@ -240,11 +240,12 @@ typing-inspection==0.4.2
     # via
     #   fastapi
     #   pydantic
+    #   pydantic-settings
 tzdata==2025.1
     # via pendulum
 urllib3==2.7.0
     # via sentry-sdk
-uvicorn==0.42.0
+uvicorn==0.47.0
     # via
     #   api-template
     #   fastapi
