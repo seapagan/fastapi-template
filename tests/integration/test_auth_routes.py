@@ -11,6 +11,7 @@ from app.database.helpers import hash_password, verify_password
 from app.managers.auth import AuthManager
 from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
 from app.managers.user import ErrorMessages as UserErrorMessages
+from app.managers.user import UserManager
 from app.models.enums import RoleType
 from app.models.user import User
 from app.schemas.password import LOGIN_PASSWORD_MAX_BYTES_ERROR
@@ -79,7 +80,9 @@ class TestAuthRoutes:
         assert isinstance(response.json()["token"], str)
         assert isinstance(response.json()["refresh"], str)
 
-        user_from_db = await test_db.get(User, 1)
+        user_from_db = await UserManager.get_user_by_email(
+            post_body["email"], test_db
+        )
 
         if user_from_db is None:
             pytest.fail("User was not added to the database")
@@ -140,7 +143,9 @@ class TestAuthRoutes:
             json=post_body,
         )
 
-        user_from_db = await test_db.get(User, 1)
+        user_from_db = await UserManager.get_user_by_email(
+            post_body["email"], test_db
+        )
 
         assert user_from_db.password != post_body["password"]
         assert verify_password(post_body["password"], user_from_db.password)
@@ -480,10 +485,14 @@ class TestAuthRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test we can verify a user."""
-        test_db.add(User(**self.test_unverified_user))
+        test_user = User(**self.test_unverified_user)
+        test_db.add(test_user)
+        await test_db.flush()
         await test_db.commit()
 
-        verification_token = AuthManager.encode_verify_token(User(id=1))
+        verification_token = AuthManager.encode_verify_token(
+            User(id=test_user.id)
+        )
 
         response = await client.get(
             "/verify/", params={"code": verification_token}

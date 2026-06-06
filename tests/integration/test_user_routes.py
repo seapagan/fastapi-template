@@ -39,6 +39,14 @@ class TestUserRoutes:
             "role": RoleType.admin if admin else RoleType.user,
         }
 
+    async def add_users(
+        self, test_db: AsyncSession, *users: User
+    ) -> tuple[User, ...]:
+        """Add users to the test session and populate generated IDs."""
+        test_db.add_all(users)
+        await test_db.flush()
+        return users
+
     # ------------------------------------------------------------------------ #
     #                            test profile route                            #
     # ------------------------------------------------------------------------ #
@@ -108,36 +116,42 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin user can get one users."""
+        users: list[User] = []
         for i in range(3):
             user_data = self.get_test_user()
             if i > 0:
                 user_data["email"] = f"user{i}@test.com"
             test_user = User(**user_data)
-            test_db.add(test_user)
+            users.append(test_user)
 
         admin_user = User(**self.get_test_user(admin=True))
-        test_db.add(admin_user)
+        test_db.add_all([*users, admin_user])
+        await test_db.flush()
         await test_db.commit()
         token = AuthManager.encode_token(admin_user)
 
         response = await client.get(
-            "/users/?user_id=3", headers={"Authorization": f"Bearer {token}"}
+            f"/users/?user_id={users[2].id}",
+            headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()["id"] == 3  # noqa: PLR2004
+        assert response.json()["id"] == users[2].id
 
     async def test_user_cant_get_all_users(
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test we can't get all users if not admin."""
+        users: list[User] = []
         for i in range(3):
             user_data = self.get_test_user()
             if i > 0:
                 user_data["email"] = f"user{i}@test.com"
             test_user = User(**user_data)
-            test_db.add(test_user)
-        token = AuthManager.encode_token(User(id=1))
+            users.append(test_user)
+        test_db.add_all(users)
+        await test_db.flush()
+        token = AuthManager.encode_token(User(id=users[0].id))
 
         await test_db.commit()
 
@@ -152,18 +166,22 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test we can't get all users if not admin."""
+        users: list[User] = []
         for i in range(3):
             user_data = self.get_test_user()
             if i > 0:
                 user_data["email"] = f"user{i}@test.com"
             test_user = User(**user_data)
-            test_db.add(test_user)
-        token = AuthManager.encode_token(User(id=1))
+            users.append(test_user)
+        test_db.add_all(users)
+        await test_db.flush()
+        token = AuthManager.encode_token(User(id=users[0].id))
 
         await test_db.commit()
 
         response = await client.get(
-            "/users/?user_id=2", headers={"Authorization": f"Bearer {token}"}
+            f"/users/?user_id={users[1].id}",
+            headers={"Authorization": f"Bearer {token}"},
         )
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -179,18 +197,19 @@ class TestUserRoutes:
         normal_user = self.get_test_user()
         admin_user = self.get_test_user(admin=True)
 
-        test_db.add(User(**normal_user))
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=2))
+        normal_model, admin_model = await self.add_users(
+            test_db, User(**normal_user), User(**admin_user)
+        )
+        token = AuthManager.encode_token(User(id=admin_model.id))
 
         await test_db.commit()
 
         upgrade_user = await client.post(
-            "/users/1/make-admin",
+            f"/users/{normal_model.id}/make-admin",
             headers={"Authorization": f"Bearer {token}"},
         )
         new_admin = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={normal_model.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -206,19 +225,20 @@ class TestUserRoutes:
         normal_user_2 = self.get_test_user()
         normal_user_2["email"] = "user2@test.com"
 
-        test_db.add(User(**normal_user))
-        test_db.add(User(**normal_user_2))
-        token = AuthManager.encode_token(User(id=1))
+        user1, user2 = await self.add_users(
+            test_db, User(**normal_user), User(**normal_user_2)
+        )
+        token = AuthManager.encode_token(User(id=user1.id))
 
         await test_db.commit()
 
         upgrade_user = await client.post(
-            "/users/2/make-admin",
+            f"/users/{user2.id}/make-admin",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         new_admin = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={user2.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -235,19 +255,20 @@ class TestUserRoutes:
         normal_user = self.get_test_user()
         admin_user = self.get_test_user(admin=True)
 
-        test_db.add(User(**normal_user))
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=2))
+        normal_model, admin_model = await self.add_users(
+            test_db, User(**normal_user), User(**admin_user)
+        )
+        token = AuthManager.encode_token(User(id=admin_model.id))
 
         await test_db.commit()
 
         banned_response = await client.post(
-            "/users/1/ban",
+            f"/users/{normal_model.id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         banned_user = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={normal_model.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -292,21 +313,21 @@ class TestUserRoutes:
         user3 = self.get_test_user(admin=True)
         user2["email"] = "user2@test.com"
         user3["email"] = "admin@test.com"
-        test_db.add(User(**user1))
-        test_db.add(User(**user2))
-        test_db.add(User(**user3))
-        token = AuthManager.encode_token(User(id=1))
-        admin_token = AuthManager.encode_token(User(id=3))
+        user1_model, user2_model, user3_model = await self.add_users(
+            test_db, User(**user1), User(**user2), User(**user3)
+        )
+        token = AuthManager.encode_token(User(id=user1_model.id))
+        admin_token = AuthManager.encode_token(User(id=user3_model.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/2/ban",
+            f"/users/{user2_model.id}/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         banned_user = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={user2_model.id}",
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -318,8 +339,10 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin cant unban user that does not exist."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=1))
+        (admin_user,) = await self.add_users(
+            test_db, User(**self.get_test_user(admin=True))
+        )
+        token = AuthManager.encode_token(User(id=admin_user.id))
 
         await test_db.commit()
 
@@ -341,18 +364,19 @@ class TestUserRoutes:
         normal_user = {**self.get_test_user(), "banned": True}
         admin_user = self.get_test_user(admin=True)
 
-        test_db.add(User(**normal_user))
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=2))
+        normal_model, admin_model = await self.add_users(
+            test_db, User(**normal_user), User(**admin_user)
+        )
+        token = AuthManager.encode_token(User(id=admin_model.id))
 
         await test_db.commit()
 
         unban_response = await client.post(
-            "/users/1/unban",
+            f"/users/{normal_model.id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
         banned_user = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={normal_model.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -365,13 +389,13 @@ class TestUserRoutes:
     ) -> None:
         """Ensure an admin cant unban self."""
         admin_user = {**self.get_test_user(admin=True), "banned": True}
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=1))
+        (admin_model,) = await self.add_users(test_db, User(**admin_user))
+        token = AuthManager.encode_token(User(id=admin_model.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/1/unban",
+            f"/users/{admin_model.id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -381,8 +405,10 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin cant unban user that does not exist."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=1))
+        (admin_user,) = await self.add_users(
+            test_db, User(**self.get_test_user(admin=True))
+        )
+        token = AuthManager.encode_token(User(id=admin_user.id))
 
         await test_db.commit()
 
@@ -398,14 +424,17 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure a non-admin cant unban another user."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**{**self.get_test_user(), "banned": True}))
-        token = AuthManager.encode_token(User(id=1))
+        user1, user2 = await self.add_users(
+            test_db,
+            User(**self.get_test_user()),
+            User(**{**self.get_test_user(), "banned": True}),
+        )
+        token = AuthManager.encode_token(User(id=user1.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/2/unban",
+            f"/users/{user2.id}/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -418,19 +447,22 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test that an admin can delete a user."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=2))
+        user, admin = await self.add_users(
+            test_db,
+            User(**self.get_test_user()),
+            User(**self.get_test_user(admin=True)),
+        )
+        token = AuthManager.encode_token(User(id=admin.id))
 
         await test_db.commit()
 
         await client.delete(
-            "/users/1",
+            f"/users/{user.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         response = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={user.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -445,21 +477,21 @@ class TestUserRoutes:
         user3 = self.get_test_user(admin=True)
         user2["email"] = "user2@test.com"
         user3["email"] = "admin@test.com"
-        test_db.add(User(**user1))
-        test_db.add(User(**user2))
-        test_db.add(User(**user3))
-        token = AuthManager.encode_token(User(id=1))
-        admin_token = AuthManager.encode_token(User(id=3))
+        user1_model, user2_model, user3_model = await self.add_users(
+            test_db, User(**user1), User(**user2), User(**user3)
+        )
+        token = AuthManager.encode_token(User(id=user1_model.id))
+        admin_token = AuthManager.encode_token(User(id=user3_model.id))
 
         await test_db.commit()
 
         response = await client.delete(
-            "/users/2",
+            f"/users/{user2_model.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
         not_deleted_user = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={user2_model.id}",
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -470,8 +502,10 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test deleting a non-existing user."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=1))
+        (admin_user,) = await self.add_users(
+            test_db, User(**self.get_test_user(admin=True))
+        )
+        token = AuthManager.encode_token(User(id=admin_user.id))
 
         await test_db.commit()
 
@@ -487,13 +521,17 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test that the only admin cannot delete themselves."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+        (admin_user,) = await self.add_users(
+            test_db, User(**self.get_test_user(admin=True))
+        )
+        token = AuthManager.encode_token(
+            User(id=admin_user.id, role=RoleType.admin)
+        )
 
         await test_db.commit()
 
         response = await client.delete(
-            "/users/1",
+            f"/users/{admin_user.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -503,7 +541,7 @@ class TestUserRoutes:
 
         # Verify user still exists
         check_user = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={admin_user.id}",
             headers={"Authorization": f"Bearer {token}"},
         )
         assert check_user.status_code == status.HTTP_200_OK
@@ -515,16 +553,21 @@ class TestUserRoutes:
         user1 = self.get_test_user(admin=True)
         user2 = self.get_test_user(admin=True)
         user2["email"] = "admin2@test.com"
-        test_db.add(User(**user1))
-        test_db.add(User(**user2))
-        token1 = AuthManager.encode_token(User(id=1, role=RoleType.admin))
-        token2 = AuthManager.encode_token(User(id=2, role=RoleType.admin))
+        admin1, admin2 = await self.add_users(
+            test_db, User(**user1), User(**user2)
+        )
+        token1 = AuthManager.encode_token(
+            User(id=admin1.id, role=RoleType.admin)
+        )
+        token2 = AuthManager.encode_token(
+            User(id=admin2.id, role=RoleType.admin)
+        )
 
         await test_db.commit()
 
         # Admin 1 deletes themselves
         response = await client.delete(
-            "/users/1",
+            f"/users/{admin1.id}",
             headers={"Authorization": f"Bearer {token1}"},
         )
 
@@ -533,14 +576,14 @@ class TestUserRoutes:
 
         # Verify admin 1 no longer exists
         check_deleted = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={admin1.id}",
             headers={"Authorization": f"Bearer {token2}"},
         )
         assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
 
         # Verify admin 2 still exists
         check_remaining = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={admin2.id}",
             headers={"Authorization": f"Bearer {token2}"},
         )
         assert check_remaining.status_code == status.HTTP_200_OK
@@ -549,15 +592,20 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Test that the only admin can delete regular users."""
-        test_db.add(User(**self.get_test_user(admin=True)))
-        test_db.add(User(**self.get_test_user(admin=False)))
-        admin_token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+        admin_user, regular_user = await self.add_users(
+            test_db,
+            User(**self.get_test_user(admin=True)),
+            User(**self.get_test_user(admin=False)),
+        )
+        admin_token = AuthManager.encode_token(
+            User(id=admin_user.id, role=RoleType.admin)
+        )
 
         await test_db.commit()
 
         # Admin deletes regular user
         response = await client.delete(
-            "/users/2",
+            f"/users/{regular_user.id}",
             headers={"Authorization": f"Bearer {admin_token}"},
         )
 
@@ -566,7 +614,7 @@ class TestUserRoutes:
 
         # Verify user no longer exists
         check_deleted = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={regular_user.id}",
             headers={"Authorization": f"Bearer {admin_token}"},
         )
         assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
@@ -578,15 +626,18 @@ class TestUserRoutes:
         user1 = self.get_test_user(admin=True)
         user2 = self.get_test_user(admin=True)
         user2["email"] = "admin2@test.com"
-        test_db.add(User(**user1))
-        test_db.add(User(**user2))
-        admin1_token = AuthManager.encode_token(User(id=1, role=RoleType.admin))
+        admin1, admin2 = await self.add_users(
+            test_db, User(**user1), User(**user2)
+        )
+        admin1_token = AuthManager.encode_token(
+            User(id=admin1.id, role=RoleType.admin)
+        )
 
         await test_db.commit()
 
         # Admin 1 deletes Admin 2 (cross-admin deletion)
         response = await client.delete(
-            "/users/2",
+            f"/users/{admin2.id}",
             headers={"Authorization": f"Bearer {admin1_token}"},
         )
 
@@ -595,14 +646,14 @@ class TestUserRoutes:
 
         # Verify admin 2 no longer exists
         check_deleted = await client.get(
-            "/users/?user_id=2",
+            f"/users/?user_id={admin2.id}",
             headers={"Authorization": f"Bearer {admin1_token}"},
         )
         assert check_deleted.status_code == status.HTTP_404_NOT_FOUND
 
         # Verify admin 1 still exists (use own token since admin2 is gone)
         check_remaining = await client.get(
-            "/users/?user_id=1",
+            f"/users/?user_id={admin1.id}",
             headers={"Authorization": f"Bearer {admin1_token}"},
         )
         assert check_remaining.status_code == status.HTTP_200_OK
@@ -658,8 +709,8 @@ class TestUserRoutes:
     ) -> None:
         """Test that a non-admin user cannot search users."""
         # Create regular user
-        test_db.add(User(**self.get_test_user()))
-        token = AuthManager.encode_token(User(id=1))
+        (user,) = await self.add_users(test_db, User(**self.get_test_user()))
+        token = AuthManager.encode_token(User(id=user.id))
 
         await test_db.commit()
 
@@ -794,13 +845,13 @@ class TestUserRoutes:
     ) -> None:
         """Ensure a user can change their own password."""
         user = self.get_test_user()
-        test_db.add(User(**user))
-        token = AuthManager.encode_token(User(id=1))
+        (user_model,) = await self.add_users(test_db, User(**user))
+        token = AuthManager.encode_token(User(id=user_model.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/1/password",
+            f"/users/{user_model.id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -821,14 +872,15 @@ class TestUserRoutes:
         user2 = self.get_test_user()
         user2["email"] = "user2@test.com"
 
-        test_db.add(User(**user1))
-        test_db.add(User(**user2))
-        token = AuthManager.encode_token(User(id=1))
+        user1_model, user2_model = await self.add_users(
+            test_db, User(**user1), User(**user2)
+        )
+        token = AuthManager.encode_token(User(id=user1_model.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/2/password",
+            f"/users/{user2_model.id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -847,14 +899,15 @@ class TestUserRoutes:
         """Ensure an admin user can change any user password."""
         normal_user = self.get_test_user()
         admin_user = self.get_test_user(admin=True)
-        test_db.add(User(**normal_user))
-        test_db.add(User(**admin_user))
-        token = AuthManager.encode_token(User(id=2))
+        normal_model, admin_model = await self.add_users(
+            test_db, User(**normal_user), User(**admin_user)
+        )
+        token = AuthManager.encode_token(User(id=admin_model.id))
 
         await test_db.commit()
 
         response = await client.post(
-            "/users/1/password",
+            f"/users/{normal_model.id}/password",
             json={"password": "new_password"},
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -875,13 +928,13 @@ class TestUserRoutes:
     ) -> None:
         """Ensure a user can change their own details."""
         normal_user = self.get_test_user()
-        test_db.add(User(**normal_user))
-        token = AuthManager.encode_token(User(id=1))
+        (normal_model,) = await self.add_users(test_db, User(**normal_user))
+        token = AuthManager.encode_token(User(id=normal_model.id))
 
         await test_db.commit()
 
         response = await client.put(
-            "/users/1",
+            f"/users/{normal_model.id}",
             json={
                 "email": "new@example.com",
                 "password": "new_password",
@@ -902,14 +955,15 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure a user cant change other user password."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user()))
-        token = AuthManager.encode_token(User(id=1))
+        user1, user2 = await self.add_users(
+            test_db, User(**self.get_test_user()), User(**self.get_test_user())
+        )
+        token = AuthManager.encode_token(User(id=user1.id))
 
         await test_db.commit()
 
         response = await client.put(
-            "/users/2",
+            f"/users/{user2.id}",
             json={
                 "email": "new@example.com",
                 "password": hash_password("new_password"),
@@ -925,14 +979,17 @@ class TestUserRoutes:
         self, client: AsyncClient, test_db: AsyncSession
     ) -> None:
         """Ensure an admin user can change any user password."""
-        test_db.add(User(**self.get_test_user()))
-        test_db.add(User(**self.get_test_user(admin=True)))
-        token = AuthManager.encode_token(User(id=2))
+        user, admin = await self.add_users(
+            test_db,
+            User(**self.get_test_user()),
+            User(**self.get_test_user(admin=True)),
+        )
+        token = AuthManager.encode_token(User(id=admin.id))
 
         await test_db.commit()
 
         response = await client.put(
-            "/users/1",
+            f"/users/{user.id}",
             json={
                 "email": "new@example.com",
                 "password": "new_password",

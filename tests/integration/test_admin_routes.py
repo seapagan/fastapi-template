@@ -11,7 +11,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.helpers import hash_password
 from app.models.enums import RoleType
 from app.models.user import User
-from tests.conftest import async_test_session
 
 
 @pytest.mark.asyncio
@@ -120,19 +119,9 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        # create a new db session and add the admin user again because the
-        # session is closed and obviously rolled back after the first request.
-        # This is annoying and need to find a better way to handle this.
-        async with async_test_session() as new_session:
-            new_session.begin()
-            new_session.add(admin_user)
-            await new_session.flush()
-
-            mocker.patch(
-                "app.admin.auth.async_session", return_value=new_session
-            )
-            client.cookies = cookies
-            response = await client.get(route, follow_redirects=True)
+        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        client.cookies = cookies
+        response = await client.get(route, follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
         assert route in str(response.url)
@@ -159,23 +148,13 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        async with async_test_session() as new_session:
-            new_session.begin()
-            new_session.add(admin_user)
-            await new_session.flush()
+        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.AdminAuth._decode_token", return_value=False
+        )
 
-            mocker.patch(
-                "app.admin.auth.async_session", return_value=new_session
-            )
-
-            mocker.patch(
-                "app.admin.auth.AdminAuth._decode_token", return_value=False
-            )
-
-            client.cookies = cookies
-            response = await client.get(
-                "/admin/user/list", follow_redirects=True
-            )
+        client.cookies = cookies
+        response = await client.get("/admin/user/list", follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
         assert "admin/login" in str(response.url)
@@ -202,23 +181,13 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        # bit of a bodge here, but we need to update the user to be a normal
-        # user and keep the same id as in the session.
-        async with async_test_session() as new_session:
-            new_session.begin()
-            user = User(**self.get_test_user(admin=False))
-            user.id = admin_user.id
-            new_session.add(user)
-            await new_session.flush()
+        admin_user.role = RoleType.user
+        await test_db.flush()
 
-            mocker.patch(
-                "app.admin.auth.async_session", return_value=new_session
-            )
+        mocker.patch("app.admin.auth.async_session", return_value=test_db)
 
-            client.cookies = cookies
-            response = await client.get(
-                "/admin/user/list", follow_redirects=True
-            )
+        client.cookies = cookies
+        response = await client.get("/admin/user/list", follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
         assert "admin/login" in str(response.url)
@@ -245,24 +214,13 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        # bit of a bodge here, but we need to update the user to be banned
-        # user and keep the same id as in the session.
-        async with async_test_session() as new_session:
-            new_session.begin()
-            user = User(**self.get_test_user(admin=True))
-            user.banned = True
-            user.id = admin_user.id
-            new_session.add(user)
-            await new_session.flush()
+        admin_user.banned = True
+        await test_db.flush()
 
-            mocker.patch(
-                "app.admin.auth.async_session", return_value=new_session
-            )
+        mocker.patch("app.admin.auth.async_session", return_value=test_db)
 
-            client.cookies = cookies
-            response = await client.get(
-                "/admin/user/list", follow_redirects=True
-            )
+        client.cookies = cookies
+        response = await client.get("/admin/user/list", follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
         assert "admin/login" in str(response.url)
