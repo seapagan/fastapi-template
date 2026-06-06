@@ -46,7 +46,7 @@ $ uv sync
 
     If your project needs immediate access to newly released packages, remove
     the `exclude-newer` setting from the `[tool.uv]` section in `pyproject.toml`
-    and run `uv lock` again.
+    and run `poe pre` to update the lock file and generated requirements files.
 
 If you do not (or cannot) have `uv` installed, I have provided an
 auto-generated`requirements.txt` in the project root which you can use as

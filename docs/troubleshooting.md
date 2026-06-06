@@ -270,7 +270,7 @@ Restart the application.
    git commit --no-verify
    ```
 
-### uv or prek Will Not Pick Up the Latest Package
+### uv or prek Will Not Pick Up New Package Releases
 
 This template sets `exclude-newer = "7 days"` in `pyproject.toml`, so `uv`
 ignores packages uploaded in the last seven days. The `prek` dependency hooks use
