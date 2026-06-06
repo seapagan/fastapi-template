@@ -462,6 +462,7 @@ typer==0.25.1
     #   github-changelog-md
 types-cffi==1.17.0.20250915
     # via types-pyopenssl
+types-markdown==3.10.2.20260518
 types-passlib==1.7.7.20241221
 types-pyopenssl==24.1.0.20240722
     # via types-redis

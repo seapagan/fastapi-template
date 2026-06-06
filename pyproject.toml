@@ -89,6 +89,7 @@ dev = [
   "prek>=0.2.24",
   "types-redis>=4.6.0.20241004",
   "pytest-xdist>=3.8.0",
+  "types-markdown>=3.10.2.20260518",
 ]
 
 [tool.uv.sources]
@@ -221,7 +222,7 @@ keep-runtime-typing = true
 
 [tool.mypy]
 python_version = "3.10"
-exclude = ["app/migrations/"]
+exclude = ["app/migrations/", "site/"]
 
 [[tool.mypy.overrides]]
 disable_error_code = ["method-assign", "no-untyped-def", "attr-defined"]
