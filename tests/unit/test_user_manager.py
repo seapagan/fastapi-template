@@ -2,7 +2,6 @@
 
 import pytest
 from fastapi import BackgroundTasks, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.helpers import verify_password
 from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES
@@ -14,6 +13,7 @@ from app.schemas.request.user import (
     UserChangePasswordRequest,
     UserEditRequest,
 )
+from tests.helpers import register_and_get_user
 
 
 @pytest.mark.unit
@@ -28,23 +28,10 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         "last_name": "User",
     }
 
-    async def registered_user(
-        self,
-        test_db: AsyncSession,
-        user_data: dict[str, str] | None = None,
-        background_tasks: BackgroundTasks | None = None,
-    ) -> User:
-        """Register a user and return the persisted model."""
-        data = user_data or self.test_user
-        await UserManager.register(
-            data, test_db, background_tasks=background_tasks
-        )
-        return await UserManager.get_user_by_email(data["email"], test_db)
-
     # ------------------------- Test register method ------------------------- #
     async def test_create_user(self, test_db) -> None:
         """Test creating a user."""
-        new_user = await self.registered_user(test_db)
+        new_user = await register_and_get_user(test_db, self.test_user)
 
         assert new_user.email == self.test_user["email"]
         assert new_user.first_name == self.test_user["first_name"]
@@ -134,7 +121,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         self, test_db
     ) -> None:
         """Test user is automatically verified when no 'background_tasks'."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
 
         assert user.verified is True
 
@@ -144,8 +131,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     ) -> None:
         """Test user is not verified when 'background_tasks' IS provided."""
         background_tasks = BackgroundTasks()
-        user = await self.registered_user(
-            test_db, background_tasks=background_tasks
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
         )
 
         assert user.verified is False
@@ -191,7 +178,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
     async def test_login_user_banned(self, test_db) -> None:
         """Test logging in a user that is banned."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
         with pytest.raises(HTTPException, match=ErrorMessages.AUTH_INVALID):
             await UserManager.login(self.test_user, test_db)
@@ -199,7 +186,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # -------------------------- test delete method -------------------------- #
     async def test_delete_user(self, test_db) -> None:
         """Test deleting a user."""
-        new_user = await self.registered_user(test_db)
+        new_user = await register_and_get_user(test_db, self.test_user)
         await UserManager.delete_user(new_user.id, test_db)
 
         user = await test_db.get(User, new_user.id)
@@ -214,7 +201,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         """Test that the last admin cannot be deleted."""
         # Register an admin user
         admin_user = self.test_user.copy()
-        user = await self.registered_user(test_db, admin_user)
+        user = await register_and_get_user(test_db, admin_user)
         # Make them an admin
         await UserManager.change_role(RoleType.admin, user.id, test_db)
 
@@ -237,8 +224,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         admin_user2 = self.test_user.copy()
         admin_user2["email"] = "admin2@test.com"
 
-        user1 = await self.registered_user(test_db, admin_user1)
-        user2 = await self.registered_user(test_db, admin_user2)
+        user1 = await register_and_get_user(test_db, admin_user1)
+        user2 = await register_and_get_user(test_db, admin_user2)
 
         # Make both admins
         await UserManager.change_role(RoleType.admin, user1.id, test_db)
@@ -263,8 +250,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         regular_user = self.test_user.copy()
         regular_user["email"] = "regular@test.com"
 
-        admin = await self.registered_user(test_db, admin_user)
-        regular = await self.registered_user(test_db, regular_user)
+        admin = await register_and_get_user(test_db, admin_user)
+        regular = await register_and_get_user(test_db, regular_user)
 
         # Make first user admin
         await UserManager.change_role(RoleType.admin, admin.id, test_db)
@@ -290,8 +277,8 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
         admin_user2 = self.test_user.copy()
         admin_user2["email"] = "admin2@test.com"
 
-        admin1 = await self.registered_user(test_db, admin_user1)
-        admin2 = await self.registered_user(test_db, admin_user2)
+        admin1 = await register_and_get_user(test_db, admin_user1)
+        admin2 = await register_and_get_user(test_db, admin_user2)
 
         # Make both admins
         await UserManager.change_role(RoleType.admin, admin1.id, test_db)
@@ -312,7 +299,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # -------------------------- test update method -------------------------- #
     async def test_update_user(self, test_db) -> None:
         """Test updating a user."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         edited_user = self.test_user.copy()
         edited_user["first_name"] = "Edited"
 
@@ -380,7 +367,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # ------------------------ test changing password ------------------------ #
     async def test_change_password(self, test_db) -> None:
         """Test changing a user's password."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         await UserManager.change_password(
             user.id,
             UserChangePasswordRequest(password="updated_password"),  # noqa: S106
@@ -402,7 +389,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # -------------------------- test set ban status ------------------------- #
     async def test_ban_user(self, test_db) -> None:
         """Test we can ban or unban a user."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
 
         banned_user = await test_db.get(User, user.id)
@@ -410,7 +397,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
     async def test_unban_user(self, test_db) -> None:
         """Test we can ban or unban a user."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         # set this user as banned
         await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
 
@@ -427,7 +414,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     @pytest.mark.parametrize("state", [True, False])
     async def test_cant_ban_user_already_banned(self, test_db, state) -> None:
         """Test we can't ban a user that is already banned/unbanned."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         if state:
             await UserManager.set_ban_status(
                 user.id, 666, test_db, banned=state
@@ -442,7 +429,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
     async def test_cant_ban_self(self, test_db) -> None:
         """Test we can't ban ourselves."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         with pytest.raises(HTTPException, match=ErrorMessages.CANT_SELF_BAN):
             await UserManager.set_ban_status(
                 user.id, user.id, test_db, banned=True
@@ -451,7 +438,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # ------------------------- test change user role ------------------------ #
     async def test_change_user_role_to_admin(self, test_db) -> None:
         """Test we can change a user's role to admin."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         await UserManager.change_role(RoleType.admin, user.id, test_db)
 
         user_data = await test_db.get(User, user.id)
@@ -461,7 +448,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
     # ----------------------- test the helper functions ---------------------- #
     async def test_get_user_by_id(self, test_db) -> None:
         """Ensure we can get a user by their id."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         user_data = await UserManager.get_user_by_id(user.id, test_db)
 
         assert user_data is not None
@@ -572,7 +559,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
     async def test_change_password_with_invalid_format(self, test_db) -> None:
         """Test changing password with an invalid format."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
 
         with pytest.raises(HTTPException) as exc_info:
             await UserManager.change_password(
@@ -586,7 +573,7 @@ class TestUserManager:  # pylint: disable=too-many-public-methods
 
     async def test_change_password_with_none_password(self, test_db) -> None:
         """Test changing password with a None value."""
-        user = await self.registered_user(test_db)
+        user = await register_and_get_user(test_db, self.test_user)
 
         # Create request without password to simulate None
         request = UserChangePasswordRequest.model_construct()
