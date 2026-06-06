@@ -228,3 +228,5 @@ CLAUDE.md
 NOTES.md
 .claude/
 .codex/
+.agents/
+.codegraph/
