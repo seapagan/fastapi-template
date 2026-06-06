@@ -64,7 +64,7 @@ email-validator==2.3.0
     #   pydantic
 exceptiongroup==1.2.2 ; python_full_version < '3.11'
     # via anyio
-fastapi==0.136.1
+fastapi==0.136.3
     # via
     #   api-template
     #   fastapi-cache2
@@ -245,7 +245,7 @@ tzdata==2025.1
     # via pendulum
 urllib3==2.7.0
     # via sentry-sdk
-uvicorn==0.47.0
+uvicorn==0.48.0
     # via
     #   api-template
     #   fastapi
