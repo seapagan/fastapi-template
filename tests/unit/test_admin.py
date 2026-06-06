@@ -240,6 +240,9 @@ class TestAdminAuth:
         mocker.patch(
             "app.admin.auth.async_session", return_value=session_context
         )
-        mocker.patch("app.admin.auth.get_user_by_id_", return_value=admin_user)
+        get_user_by_id_mock = mocker.patch(
+            "app.admin.auth.get_user_by_id_", return_value=admin_user
+        )
 
         assert await auth_backend.authenticate(request) is True
+        get_user_by_id_mock.assert_awaited_once_with(admin_user.id, session)

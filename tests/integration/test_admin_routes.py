@@ -69,14 +69,21 @@ class TestAdminAuth:
         assert "Password" in response.text
 
     async def test_admin_login_ok(
-        self, client: AsyncClient, test_db: AsyncSession, mocker
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
     ) -> None:
         """Test that the admin login page works with valid credentials."""
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         route = "/admin/login"
         data = {"username": admin_user.email, "password": "test12345!"}
@@ -98,14 +105,22 @@ class TestAdminAuth:
         ],
     )
     async def test_authenticated_user_access_admin_routes(
-        self, client: AsyncClient, test_db: AsyncSession, mocker, route
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
+        route,
     ) -> None:
         """Test that the admin login page works with valid credentials."""
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         # login the user first
         data = {"username": admin_user.email, "password": "test12345!"}
@@ -119,7 +134,6 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
         client.cookies = cookies
         response = await client.get(route, follow_redirects=True)
 
@@ -127,14 +141,21 @@ class TestAdminAuth:
         assert route in str(response.url)
 
     async def test_bad_token_in_session_redirects_to_login(
-        self, client: AsyncClient, test_db: AsyncSession, mocker
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
     ) -> None:
         """Test that a bad token in the session redirects to login."""
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         # login the user first
         data = {"username": admin_user.email, "password": "test12345!"}
@@ -148,7 +169,6 @@ class TestAdminAuth:
         assert response.cookies.get("session") is not None
         cookies = response.cookies
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
         mocker.patch(
             "app.admin.auth.AdminAuth._decode_token", return_value=False
         )
@@ -160,14 +180,21 @@ class TestAdminAuth:
         assert "admin/login" in str(response.url)
 
     async def test_downgraded_admin_redirects_to_login(
-        self, client: AsyncClient, test_db: AsyncSession, mocker
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
     ) -> None:
         """Test if a valid admin is downgraded, it redirects to login."""
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         # login the user first
         data = {"username": admin_user.email, "password": "test12345!"}
@@ -182,9 +209,7 @@ class TestAdminAuth:
         cookies = response.cookies
 
         admin_user.role = RoleType.user
-        await test_db.flush()
-
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        await test_db.commit()
 
         client.cookies = cookies
         response = await client.get("/admin/user/list", follow_redirects=True)
@@ -193,14 +218,21 @@ class TestAdminAuth:
         assert "admin/login" in str(response.url)
 
     async def test_banned_admin_redirects_to_login(
-        self, client: AsyncClient, test_db: AsyncSession, mocker
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
     ) -> None:
         """Test if a valid admin is downgraded, it redirects to login."""
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         # login the user first
         data = {"username": admin_user.email, "password": "test12345!"}
@@ -215,9 +247,7 @@ class TestAdminAuth:
         cookies = response.cookies
 
         admin_user.banned = True
-        await test_db.flush()
-
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        await test_db.commit()
 
         client.cookies = cookies
         response = await client.get("/admin/user/list", follow_redirects=True)
@@ -226,17 +256,24 @@ class TestAdminAuth:
         assert "admin/login" in str(response.url)
 
     async def test_non_admin_login_fails(
-        self, client: AsyncClient, test_db: AsyncSession, mocker
+        self,
+        client: AsyncClient,
+        test_db: AsyncSession,
+        test_sessionmaker,
+        mocker,
     ) -> None:
         """Test that a non-admin user cannot login to the admin interface."""
         plain_user = User(**self.get_test_user())
         test_db.add(plain_user)
 
-        await test_db.flush()
+        await test_db.commit()
 
         data = {"username": plain_user.email, "password": "test12345!"}
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         route = "/admin/login"
         response = await client.post(
@@ -261,6 +298,7 @@ class TestAdminAuth:
         self,
         client: AsyncClient,
         test_db: AsyncSession,
+        test_sessionmaker,
         mocker,
         credentials,
     ) -> None:
@@ -269,9 +307,12 @@ class TestAdminAuth:
 
         admin_user = User(**self.get_test_user(admin=True))
         test_db.add(admin_user)
-        await test_db.flush()
+        await test_db.commit()
 
-        mocker.patch("app.admin.auth.async_session", return_value=test_db)
+        mocker.patch(
+            "app.admin.auth.async_session",
+            side_effect=test_sessionmaker,
+        )
 
         route = "/admin/login"
         data = {"username": username, "password": password}

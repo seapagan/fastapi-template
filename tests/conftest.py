@@ -12,6 +12,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
@@ -31,8 +32,13 @@ if TYPE_CHECKING:
     from pyfakefs.fake_filesystem import FakeFilesystem
 
 
+def _is_xdist_worker(config: pytest.Config) -> bool:
+    """Return whether this process is an xdist worker."""
+    return hasattr(config, "workerinput")
+
+
 @pytest.hookimpl(tryfirst=True)
-def pytest_configure(config) -> None:
+def pytest_configure(config: pytest.Config) -> None:
     """Clear the screen before running tests."""
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
 
@@ -63,12 +69,7 @@ def create_test_engine() -> AsyncEngine:
     )
 
 
-def _is_xdist_worker(config) -> bool:
-    """Return whether this process is an xdist worker."""
-    return hasattr(config, "workerinput")
-
-
-def pytest_sessionstart(session) -> None:
+def pytest_sessionstart(session: pytest.Session) -> None:
     """Create the test schema before tests run."""
     if _is_xdist_worker(session.config):
         return
@@ -76,7 +77,7 @@ def pytest_sessionstart(session) -> None:
     asyncio.run(_create_test_schema())
 
 
-def pytest_sessionfinish(session, exitstatus) -> None:
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     """Drop the test schema after tests finish."""
     if _is_xdist_worker(session.config):
         return
@@ -114,36 +115,50 @@ async def test_engine() -> AsyncGenerator[AsyncEngine, Any]:
 
 
 @pytest_asyncio.fixture()
-async def test_db(
+async def test_connection(
     test_engine: AsyncEngine,
-) -> AsyncGenerator[AsyncSession, Any]:
-    """Fixture to yield a database connection for testing."""
+) -> AsyncGenerator[AsyncConnection, Any]:
+    """Return a rollback-only test database connection."""
     async with test_engine.connect() as connection:
         transaction = await connection.begin()
-        test_session = async_sessionmaker(
-            bind=connection,
-            expire_on_commit=False,
-            join_transaction_mode="create_savepoint",
-        )
-        session = test_session()
-
         try:
-            yield session
+            yield connection
         finally:
-            await session.close()
             if transaction.is_active:
                 await transaction.rollback()
 
 
 @pytest_asyncio.fixture()
+async def test_sessionmaker(
+    test_connection: AsyncConnection,
+) -> async_sessionmaker[AsyncSession]:
+    """Return a session maker bound to the test connection."""
+    return async_sessionmaker(
+        bind=test_connection,
+        expire_on_commit=False,
+        join_transaction_mode="create_savepoint",
+    )
+
+
+@pytest_asyncio.fixture()
+async def test_db(
+    test_sessionmaker: async_sessionmaker[AsyncSession],
+) -> AsyncGenerator[AsyncSession, Any]:
+    """Fixture to yield a database connection for testing."""
+    async with test_sessionmaker() as session:
+        yield session
+
+
+@pytest_asyncio.fixture()
 async def client(
-    test_db: AsyncSession,
+    test_sessionmaker: async_sessionmaker[AsyncSession],
 ) -> AsyncGenerator[AsyncClient, Any]:
     """Fixture to yield a test client for the app."""
 
     async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
         """Return the database connection for testing."""
-        yield test_db
+        async with test_sessionmaker() as session, session.begin():
+            yield session
 
     app.dependency_overrides[get_database] = get_database_override
 
