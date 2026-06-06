@@ -166,7 +166,7 @@ httpx==0.28.1
     #   fastapi
     #   fastapi-cloud-cli
     #   openai
-idna==3.10
+idna==3.17
     # via
     #   anyio
     #   email-validator
@@ -324,7 +324,7 @@ pyjwt==2.12.1
     #   api-template
     #   pygithub
 pymarkdownlnt==0.9.37
-pymdown-extensions==10.21.2
+pymdown-extensions==10.21.3
     # via
     #   mkdocs-material
     #   mkdocstrings
@@ -424,14 +424,14 @@ sniffio==1.3.1
     # via openai
 soupsieve==2.6
     # via beautifulsoup4
-sqladmin==0.25.0
+sqladmin==0.27.0
     # via api-template
 sqlalchemy==2.0.49
     # via
     #   alembic
     #   api-template
     #   sqladmin
-starlette==0.50.0
+starlette==0.52.1
     # via
     #   fastapi
     #   fastapi-mail

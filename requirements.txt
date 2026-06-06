@@ -96,7 +96,7 @@ httpx==0.28.1
     #   api-template
     #   fastapi
     #   fastapi-cloud-cli
-idna==3.10
+idna==3.17
     # via
     #   anyio
     #   email-validator
@@ -197,14 +197,14 @@ six==1.17.0
     # via python-dateutil
 slowapi==0.1.9
     # via api-template
-sqladmin==0.25.0
+sqladmin==0.27.0
     # via api-template
 sqlalchemy==2.0.49
     # via
     #   alembic
     #   api-template
     #   sqladmin
-starlette==0.50.0
+starlette==0.52.1
     # via
     #   fastapi
     #   fastapi-mail
