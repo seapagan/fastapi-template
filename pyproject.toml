@@ -49,6 +49,9 @@ build-backend = "uv_build"
 module-root = ""
 module-name = "app"
 
+[tool.uv]
+exclude-newer = "7 days"
+
 [dependency-groups]
 dev = [
   "aiosmtpd>=1.4.6",
