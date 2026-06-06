@@ -170,8 +170,10 @@ async def client(
         headers={"Content-Type": "application/json"},
         timeout=10,
     ) as client:
-        yield client
-    app.dependency_overrides = {}
+        try:
+            yield client
+        finally:
+            app.dependency_overrides = {}
 
 
 @pytest.fixture(scope="module")
