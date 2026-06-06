@@ -232,6 +232,8 @@ module = "decouple.*"
 addopts = [
   "-m",
   "not rewrite",  # mark tests 'rewrite' that need work, and they wont be run
+  "-n",
+  "logical",
   "--cov",
   "--cov-report",
   "term-missing",
