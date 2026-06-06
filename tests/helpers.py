@@ -30,5 +30,7 @@ async def register_and_get_user(
     background_tasks: BackgroundTasks | None = None,
 ) -> User:
     """Register a user and return the persisted model."""
-    await UserManager.register(user_data, test_db, background_tasks)
+    await UserManager.register(
+        user_data, test_db, background_tasks=background_tasks
+    )
     return await UserManager.get_user_by_email(user_data["email"], test_db)
