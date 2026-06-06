@@ -36,6 +36,18 @@ all that is needed.
 $ uv sync
 ```
 
+!!! note "Dependency update cooldown"
+
+    This template sets `exclude-newer = "7 days"` in `pyproject.toml`. This
+    tells `uv` to ignore packages uploaded in the last seven days, which gives
+    newly published releases a short settling period before they can enter your
+    lock file or generated requirements files. This helps reduce exposure to
+    compromised, yanked, or accidentally broken package releases.
+
+    If your project needs immediate access to newly released packages, remove
+    the `exclude-newer` setting from the `[tool.uv]` section in `pyproject.toml`
+    and run `uv lock` again.
+
 If you do not (or cannot) have `uv` installed, I have provided an
 auto-generated`requirements.txt` in the project root which you can use as
 normal:
