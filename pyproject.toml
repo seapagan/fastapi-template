@@ -85,6 +85,7 @@ dev = [
   "ty>=0.0.5",
   "prek>=0.2.24",
   "types-redis>=4.6.0.20241004",
+  "pytest-xdist>=3.8.0",
 ]
 
 [tool.uv.sources]
@@ -231,6 +232,8 @@ module = "decouple.*"
 addopts = [
   "-m",
   "not rewrite",  # mark tests 'rewrite' that need work, and they wont be run
+  "-n",
+  "logical",
   "--cov",
   "--cov-report",
   "term-missing",

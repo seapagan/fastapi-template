@@ -43,7 +43,7 @@ class TestApiKeyAuth:
 
         assert isinstance(result, User)
         assert result.email == self.test_user["email"]
-        assert result.id == 1
+        assert result.id == user.id
 
     async def test_api_key_auth_invalid_key(self, test_db, mocker) -> None:
         """Test with an invalid API key."""

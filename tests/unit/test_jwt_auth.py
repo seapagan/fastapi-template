@@ -43,7 +43,10 @@ class TestJWTAuth:
 
         assert isinstance(result, User)
         assert result.email == self.test_user["email"]
-        assert result.id == 1
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+        assert result.id == user.id
 
     async def test_jwt_auth_invalid_token(self, test_db, mocker) -> None:
         """Test with an invalid token."""
@@ -135,11 +138,14 @@ class TestJWTAuth:
     async def test_jwt_auth_string_sub_claim(self, test_db, mocker) -> None:
         """Test with a token containing string sub claim."""
         await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
         # Create a JWT with string 'sub' instead of int
         token = jwt.encode(
             {
                 "typ": "access",
-                "sub": "1",  # String instead of int
+                "sub": str(user.id),  # String instead of int
                 "exp": datetime.datetime.now(tz=datetime.timezone.utc)
                 + datetime.timedelta(minutes=10),
             },
@@ -158,7 +164,7 @@ class TestJWTAuth:
 
         assert isinstance(result, User)
         assert result.email == self.test_user["email"]
-        assert result.id == 1
+        assert result.id == user.id
 
     async def test_jwt_auth_wrong_signature(self, test_db, mocker) -> None:
         """Test with a token with wrong signature."""
@@ -201,7 +207,10 @@ class TestJWTAuth:
     async def test_jwt_auth_banned_user(self, test_db, mocker) -> None:
         """Test with a banned user."""
         token, _ = await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+        await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
 
         mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
@@ -223,7 +232,10 @@ class TestJWTAuth:
         token, _ = await UserManager.register(
             self.test_user, test_db, background_tasks=background_tasks
         )
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
+        await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
 
         mock_req = mocker.patch(self.mock_request_path)
         mock_req.headers = {"Authorization": f"Bearer {token}"}
@@ -265,9 +277,12 @@ class TestJWTAuth:
         """Test with a deleted user but valid token."""
         # Create user and get token
         token, _ = await UserManager.register(self.test_user, test_db)
+        user = await UserManager.get_user_by_email(
+            self.test_user["email"], test_db
+        )
 
         # Delete the user
-        await UserManager.delete_user(1, test_db)
+        await UserManager.delete_user(user.id, test_db)
         await test_db.flush()
 
         # Try to authenticate with the token

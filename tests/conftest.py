@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -10,10 +11,18 @@ import pytest_asyncio
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.pool import NullPool
 from typer.testing import CliRunner
 
 from app.config.helpers import get_project_root
-from app.database.db import Base, create_session_maker, get_database
+from app.database.db import Base, get_database, get_database_url
 from app.main import app
 from app.managers.email import EmailManager
 
@@ -21,21 +30,59 @@ if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
     from pyfakefs.fake_filesystem import FakeFilesystem
-    from sqlalchemy.ext.asyncio import (
-        AsyncSession,
-    )
 
 
-# Create session maker using the function that handles environment detection
-# Pass use_test_db=True to ensure we use the test database
-async_test_session = create_session_maker(use_test_db=True)
-async_engine = async_test_session.kw["bind"]
+def _is_xdist_worker(config: pytest.Config) -> bool:
+    """Return whether this process is an xdist worker."""
+    return hasattr(config, "workerinput")
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_configure(config) -> None:
+def pytest_configure(config: pytest.Config) -> None:
     """Clear the screen before running tests."""
     os.system("cls" if os.name == "nt" else "clear")  # noqa: S605
+
+
+async def _create_test_schema() -> None:
+    """Create the test database schema."""
+    engine = create_test_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+    await engine.dispose()
+
+
+async def _drop_test_schema() -> None:
+    """Drop the test database schema."""
+    engine = create_test_engine()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+    await engine.dispose()
+
+
+def create_test_engine() -> AsyncEngine:
+    """Create an async engine for the test database."""
+    return create_async_engine(
+        get_database_url(use_test_db=True),
+        echo=False,
+        poolclass=NullPool,
+    )
+
+
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Create the test schema before tests run."""
+    if _is_xdist_worker(session.config):
+        return
+
+    asyncio.run(_create_test_schema())
+
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    """Drop the test schema after tests finish."""
+    if _is_xdist_worker(session.config):
+        return
+
+    asyncio.run(_drop_test_schema())
 
 
 # Initialize cache backend if needed and clear before each test
@@ -57,36 +104,62 @@ async def init_and_clear_cache() -> None:
     await FastAPICache.clear()
 
 
-# reset the database before each test
-@pytest_asyncio.fixture(autouse=True, scope="function")
-async def reset_db() -> None:
-    """Reset the database."""
-    # Close any existing connections
-    await async_engine.dispose()
-
-    # Recreate all tables
-    async with async_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-
-
-# Override the database connection to use the test database
-async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
-    """Return the database connection for testing."""
-    async with async_test_session() as session, session.begin():
-        yield session
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
+async def test_engine() -> AsyncGenerator[AsyncEngine, Any]:
+    """Return the test database engine."""
+    engine = create_test_engine()
+    try:
+        yield engine
+    finally:
+        await engine.dispose()
 
 
 @pytest_asyncio.fixture()
-async def test_db() -> AsyncGenerator[AsyncSession, Any]:
+async def test_connection(
+    test_engine: AsyncEngine,
+) -> AsyncGenerator[AsyncConnection, Any]:
+    """Return a rollback-only test database connection."""
+    async with test_engine.connect() as connection:
+        transaction = await connection.begin()
+        try:
+            yield connection
+        finally:
+            if transaction.is_active:
+                await transaction.rollback()
+
+
+@pytest_asyncio.fixture()
+async def test_sessionmaker(
+    test_connection: AsyncConnection,
+) -> async_sessionmaker[AsyncSession]:
+    """Return a session maker bound to the test connection."""
+    return async_sessionmaker(
+        bind=test_connection,
+        expire_on_commit=False,
+        join_transaction_mode="create_savepoint",
+    )
+
+
+@pytest_asyncio.fixture()
+async def test_db(
+    test_sessionmaker: async_sessionmaker[AsyncSession],
+) -> AsyncGenerator[AsyncSession, Any]:
     """Fixture to yield a database connection for testing."""
-    async with async_test_session() as session, session.begin():
+    async with test_sessionmaker() as session:
         yield session
 
 
 @pytest_asyncio.fixture()
-async def client() -> AsyncGenerator[AsyncClient, Any]:
+async def client(
+    test_sessionmaker: async_sessionmaker[AsyncSession],
+) -> AsyncGenerator[AsyncClient, Any]:
     """Fixture to yield a test client for the app."""
+
+    async def get_database_override() -> AsyncGenerator[AsyncSession, Any]:
+        """Return the database connection for testing."""
+        async with test_sessionmaker() as session, session.begin():
+            yield session
+
     app.dependency_overrides[get_database] = get_database_override
 
     transport = ASGITransport(app=app)
@@ -97,8 +170,10 @@ async def client() -> AsyncGenerator[AsyncClient, Any]:
         headers={"Content-Type": "application/json"},
         timeout=10,
     ) as client:
-        yield client
-    app.dependency_overrides = {}
+        try:
+            yield client
+        finally:
+            app.dependency_overrides = {}
 
 
 @pytest.fixture(scope="module")

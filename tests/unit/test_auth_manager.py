@@ -14,7 +14,7 @@ from app.managers.helpers import BCRYPT_PASSWORD_MAX_BYTES, MAX_JWT_TOKEN_LENGTH
 from app.managers.user import UserManager
 from app.models.user import User
 from app.schemas.request.auth import TokenRefreshRequest
-from tests.helpers import get_token
+from tests.helpers import get_token, register_and_get_user
 
 
 @pytest.mark.unit
@@ -226,9 +226,9 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_refresh_banned_user(self, test_db) -> None:
         """Test the refresh method with a banned user."""
-        await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
-        banned_user_refresh = AuthManager.encode_refresh_token(User(id=1))
+        user = await register_and_get_user(test_db, self.test_user)
+        await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
+        banned_user_refresh = AuthManager.encode_refresh_token(User(id=user.id))
         new_token = None
         with pytest.raises(HTTPException) as exc_info:
             new_token = await AuthManager.refresh(
@@ -245,14 +245,16 @@ class TestAuthManager:
     async def test_verify(self, test_db) -> None:
         """Test the verify method."""
         background_tasks = BackgroundTasks()
-        await UserManager.register(self.test_user, test_db, background_tasks)
-        verify_token = AuthManager.encode_verify_token(User(id=1))
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
+        )
+        verify_token = AuthManager.encode_verify_token(User(id=user.id))
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, test_db)
         assert exc_info.value.status_code == status.HTTP_200_OK
         assert exc_info.value.detail == ResponseMessages.VERIFICATION_SUCCESS
 
-        user_data = await UserManager.get_user_by_id(1, test_db)
+        user_data = await UserManager.get_user_by_id(user.id, test_db)
         assert user_data.verified is True
 
     @pytest.mark.asyncio
@@ -268,9 +270,11 @@ class TestAuthManager:
     async def test_verify_wrong_token(self, test_db) -> None:
         """Test the verify method with a bad token type."""
         background_tasks = BackgroundTasks()
-        await UserManager.register(self.test_user, test_db, background_tasks)
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
+        )
         wrong_token = get_token(
-            sub=1,
+            sub=user.id,
             exp=datetime.now(tz=timezone.utc).timestamp() + 10000,
             typ="refresh",
         )
@@ -283,10 +287,12 @@ class TestAuthManager:
     async def test_verify_banned_user(self, test_db) -> None:
         """Test the verify method with a banned user."""
         background_tasks = BackgroundTasks()
-        await UserManager.register(self.test_user, test_db, background_tasks)
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
+        )
+        await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
         verify_token = get_token(
-            sub=1,
+            sub=user.id,
             exp=datetime.now(tz=timezone.utc).timestamp() + 10000,
             typ="verify",
         )
@@ -298,9 +304,9 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_verify_user_already_verified(self, test_db) -> None:
         """Test the verify method with a banned user."""
-        await UserManager.register(self.test_user, test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         verify_token = get_token(
-            sub=1,
+            sub=user.id,
             exp=datetime.now(tz=timezone.utc).timestamp() + 10000,
             typ="verify",
         )
@@ -338,21 +344,23 @@ class TestAuthManager:
         """Test that verify() successfully updates the database."""
         # Register a new user (defaults to verified=False)
         background_tasks = BackgroundTasks()
-        await UserManager.register(self.test_user, test_db, background_tasks)
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
+        )
 
         # Get initial user state and verify it's not verified
-        user_before = await UserManager.get_user_by_id(1, test_db)
+        user_before = await UserManager.get_user_by_id(user.id, test_db)
         assert user_before.verified is False
 
         # Create and use a verification token
-        verify_token = AuthManager.encode_verify_token(User(id=1))
+        verify_token = AuthManager.encode_verify_token(User(id=user.id))
         with pytest.raises(HTTPException) as exc_info:
             await AuthManager.verify(verify_token, test_db)
         assert exc_info.value.status_code == status.HTTP_200_OK
         assert exc_info.value.detail == ResponseMessages.VERIFICATION_SUCCESS
 
         # Get updated user state and verify the field was updated
-        user_after = await UserManager.get_user_by_id(1, test_db)
+        user_after = await UserManager.get_user_by_id(user.id, test_db)
         assert user_after.verified is True
 
     # ------------------------------------------------------------------------ #
@@ -406,8 +414,8 @@ class TestAuthManager:
         )
 
         # Create and ban a user
-        await UserManager.register(self.test_user, test_db)
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+        user = await register_and_get_user(test_db, self.test_user)
+        await UserManager.set_ban_status(user.id, 666, test_db, banned=True)
 
         # Request password reset
         background_tasks = BackgroundTasks()
@@ -422,8 +430,7 @@ class TestAuthManager:
     async def test_reset_password(self, test_db) -> None:
         """Test successful password reset."""
         # Create a user
-        await UserManager.register(self.test_user, test_db)
-        user_data = await UserManager.get_user_by_id(1, test_db)
+        user_data = await register_and_get_user(test_db, self.test_user)
 
         # Generate reset token
         reset_token = AuthManager.encode_reset_token(user_data)
@@ -433,7 +440,7 @@ class TestAuthManager:
         await AuthManager.reset_password(reset_token, new_password, test_db)
 
         # Verify password was changed
-        updated_user = await UserManager.get_user_by_id(1, test_db)
+        updated_user = await UserManager.get_user_by_id(user_data.id, test_db)
         assert verify_password(new_password, updated_user.password)
 
     @pytest.mark.asyncio
@@ -491,14 +498,15 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_reset_password_banned_user(self, test_db) -> None:
         """Test reset_password blocks banned users."""
-        await UserManager.register(self.test_user, test_db)
-        user_data = await UserManager.get_user_by_id(1, test_db)
+        user_data = await register_and_get_user(test_db, self.test_user)
 
         # Generate reset token before banning
         reset_token = AuthManager.encode_reset_token(user_data)
 
         # Ban the user
-        await UserManager.set_ban_status(1, 666, test_db, banned=True)
+        await UserManager.set_ban_status(
+            user_data.id, 666, test_db, banned=True
+        )
 
         # Try to reset password
         with pytest.raises(HTTPException) as exc_info:
@@ -512,8 +520,7 @@ class TestAuthManager:
     async def test_reset_password_updates_database(self, test_db) -> None:
         """Test that reset_password actually updates the password."""
         # Create a user
-        await UserManager.register(self.test_user, test_db)
-        user_before = await UserManager.get_user_by_id(1, test_db)
+        user_before = await register_and_get_user(test_db, self.test_user)
         old_password_hash = user_before.password
 
         # Generate reset token and reset password
@@ -522,7 +529,7 @@ class TestAuthManager:
         await AuthManager.reset_password(reset_token, new_password, test_db)
 
         # Verify password was actually changed in database
-        user_after = await UserManager.get_user_by_id(1, test_db)
+        user_after = await UserManager.get_user_by_id(user_before.id, test_db)
         assert user_after.password != old_password_hash
         assert verify_password(new_password, user_after.password)
         assert not verify_password(
@@ -532,8 +539,8 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_reset_password_over_limit_password(self, test_db) -> None:
         """Test reset_password rejects passwords over bcrypt's byte limit."""
-        await UserManager.register(self.test_user, test_db)
-        reset_token = AuthManager.encode_reset_token(User(id=1))
+        user = await register_and_get_user(test_db, self.test_user)
+        reset_token = AuthManager.encode_reset_token(User(id=user.id))
         password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
 
         with pytest.raises(HTTPException) as exc_info:
@@ -774,12 +781,12 @@ class TestAuthManager:
     @pytest.mark.asyncio
     async def test_refresh_string_sub_claim(self, test_db) -> None:
         """Test refresh accepts string 'sub' claim and converts to int."""
-        await UserManager.register(self.test_user, test_db)
+        user = await register_and_get_user(test_db, self.test_user)
         # Create a JWT with string 'sub' claim
         token_with_string_sub = jwt.encode(
             {
                 "typ": "refresh",
-                "sub": "1",  # String instead of int
+                "sub": str(user.id),  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 3600,
             },
             unwrap_secret(get_settings().secret_key),
@@ -796,14 +803,14 @@ class TestAuthManager:
         """Test verify accepts string 'sub' claim and converts to int."""
         # Create unverified user by passing BackgroundTasks
         background_tasks = BackgroundTasks()
-        await UserManager.register(
-            self.test_user, test_db, background_tasks=background_tasks
+        user = await register_and_get_user(
+            test_db, self.test_user, background_tasks
         )
         # Create a JWT with string 'sub' claim
         token_with_string_sub = jwt.encode(
             {
                 "typ": "verify",
-                "sub": "1",  # String instead of int
+                "sub": str(user.id),  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 600,
             },
             unwrap_secret(get_settings().secret_key),
@@ -815,19 +822,19 @@ class TestAuthManager:
         # Verify it succeeded with HTTP 200
         assert exc_info.value.status_code == status.HTTP_200_OK
         # Verify the user was marked as verified
-        user = await UserManager.get_user_by_id(1, test_db)
+        user = await UserManager.get_user_by_id(user.id, test_db)
         assert user.verified is True
 
     @pytest.mark.asyncio
     async def test_reset_password_string_sub_claim(self, test_db) -> None:
         """Test reset_password accepts string 'sub' and converts to int."""
-        await UserManager.register(self.test_user, test_db)
+        user = await register_and_get_user(test_db, self.test_user)
 
         # Create a JWT with string 'sub' claim
         token_with_string_sub = jwt.encode(
             {
                 "typ": "reset",
-                "sub": "1",  # String instead of int
+                "sub": str(user.id),  # String instead of int
                 "exp": datetime.now(tz=timezone.utc).timestamp() + 1800,
             },
             unwrap_secret(get_settings().secret_key),
