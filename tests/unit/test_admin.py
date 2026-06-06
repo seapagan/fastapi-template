@@ -215,3 +215,31 @@ class TestAdminAuth:
         password = "x" * (BCRYPT_PASSWORD_MAX_BYTES + 1)
 
         assert auth_backend._validate_user(password, admin_user) is False
+
+    @pytest.mark.asyncio
+    async def test_authenticate_valid_admin_token(
+        self, auth_backend: AdminAuth, mocker
+    ) -> None:
+        """Test a valid admin session token authenticates successfully."""
+        admin_user = User(
+            id=1,
+            email="admin@test.com",
+            password=hash_password("password123"),
+            role=RoleType.admin,
+            banned=False,
+            first_name="Admin",
+            last_name="User",
+        )
+        token = auth_backend._create_token(admin_user.id)
+        request = mocker.Mock()
+        request.session = {"token": token}
+        session = mocker.Mock()
+        session_context = mocker.AsyncMock()
+        session_context.__aenter__.return_value = session
+
+        mocker.patch(
+            "app.admin.auth.async_session", return_value=session_context
+        )
+        mocker.patch("app.admin.auth.get_user_by_id_", return_value=admin_user)
+
+        assert await auth_backend.authenticate(request) is True
