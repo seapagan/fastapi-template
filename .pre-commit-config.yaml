@@ -35,13 +35,16 @@ repos:
     rev: 0.11.14
     hooks:
       # Update the uv lockfile
-      - id: uv-lock
+      # - id: uv-lock
       - id: uv-export
         name: "Export dependencies to 'requirements.txt'"
         args:
           [
+            "--frozen",
             "--no-hashes",
             "--no-dev",
+            "--no-header",
+            "--no-annotate",
             "--no-emit-project",
             "--output-file=requirements.txt",
           ]
@@ -49,7 +52,10 @@ repos:
         name: "Export dev dependencies to 'requirements-dev.txt'"
         args:
           [
+            "--frozen",
             "--no-hashes",
+            "--no-header",
+            "--no-annotate",
             "--no-emit-project",
             "--output-file=requirements-dev.txt",
           ]

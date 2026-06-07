@@ -1,5 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "minimumReleaseAge": "7 days",
   "lockFileMaintenance": {
     // this creates too much noise and failed PR tests by trying to update too
     // much, ie even internal packages dependencies. Nice idea, but better to do
