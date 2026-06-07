@@ -108,7 +108,7 @@ pyfakefs==6.2.0
 pygithub==2.6.1
 pygments==2.20.0
 pyjson5==2.0.1
-pyjwt==2.12.1
+pyjwt==2.13.0
 pymarkdownlnt==0.9.37
 pymdown-extensions==10.21.3
 pynacl==1.6.2
