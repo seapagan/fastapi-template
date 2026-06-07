@@ -102,6 +102,15 @@ Run the following command to install the required dependencies:
 uv sync
 ```
 
+> [!NOTE]
+> The project sets `exclude-newer = "7 days"` for `uv` in `pyproject.toml`.
+> This intentionally ignores packages uploaded in the last seven days, giving
+> new releases a short settling period before they can enter the lock file or
+> generated requirements files. This reduces the chance of pulling in a
+> compromised, yanked, or accidentally broken release. If your project needs
+> immediate dependency updates, remove the `exclude-newer` setting from
+> `[tool.uv]` and regenerate the lock and requirements files.
+
 You then need to activate the virtual environment:
 
 ```terminal
@@ -151,6 +160,9 @@ This will ensure that all code meets the required linting standard before being
 committed. It will also automatically generate updated `requirements.txt` and
 `requirements-dev.txt` files if required. Note that generating these files will
 cause the commit to fail, so you can add the new files to your git stage.
+
+The `uv-lock` and `uv-export` hooks use the same project-level `uv` cooldown
+described in [Install Dependencies](#install-dependencies).
 
 !!! important
 

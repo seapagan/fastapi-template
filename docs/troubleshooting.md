@@ -270,6 +270,25 @@ Restart the application.
    git commit --no-verify
    ```
 
+### uv or prek Will Not Pick Up New Package Releases
+
+This template sets `exclude-newer = "7 days"` in `pyproject.toml`, so `uv`
+ignores packages uploaded in the last seven days. The `prek` dependency hooks use
+the same project setting when they update `uv.lock`, `requirements.txt`, and
+`requirements-dev.txt`.
+
+This is intentional: it gives newly published packages a short settling period
+before they are allowed into the project, reducing the risk from compromised,
+yanked, or accidentally broken releases.
+
+If you need the newest packages immediately, remove the `exclude-newer` setting
+from the `[tool.uv]` section in `pyproject.toml`, then run:
+
+```bash
+uv lock
+poe pre
+```
+
 ## Still Having Issues?
 
 If your problem isn't listed here:
