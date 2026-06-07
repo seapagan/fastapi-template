@@ -12,7 +12,7 @@ certifi==2025.1.31
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
 click==8.3.1
 colorama==0.4.6 ; sys_platform == 'win32'
-cryptography==46.0.7
+cryptography==47.0.0
 deprecated==1.2.18
 dnspython==2.7.0
 email-validator==2.3.0
@@ -21,7 +21,7 @@ fastapi==0.136.3
 fastapi-cache2==0.2.2
 fastapi-cli==0.0.8
 fastapi-cloud-cli==0.1.5
-fastapi-mail==1.6.1
+fastapi-mail==1.6.4
 fastapi-pagination==0.15.12
 fastar==0.11.0
 greenlet==3.3.0
@@ -42,7 +42,7 @@ mdurl==0.1.2
 packaging==24.2
 pendulum==3.1.0
 prometheus-client==0.23.1
-prometheus-fastapi-instrumentator==7.1.0
+prometheus-fastapi-instrumentator==8.0.0
 pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
 pydantic==2.13.4
 pydantic-core==2.46.4
@@ -67,7 +67,7 @@ six==1.17.0
 slowapi==0.1.9
 sqladmin==0.27.0
 sqlalchemy==2.0.49
-starlette==0.52.1
+starlette==1.2.1
 tomli==2.2.1 ; python_full_version < '3.11'
 typer==0.25.1
 typing-extensions==4.15.0
