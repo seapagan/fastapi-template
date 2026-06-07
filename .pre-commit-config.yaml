@@ -11,7 +11,7 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.13
+    rev: v0.15.16
     hooks:
       - id: ruff
         args: ["--output-format=concise"]
@@ -32,16 +32,19 @@ repos:
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.11.14
+    rev: 0.11.19
     hooks:
       # Update the uv lockfile
-      - id: uv-lock
+      # - id: uv-lock
       - id: uv-export
         name: "Export dependencies to 'requirements.txt'"
         args:
           [
+            "--frozen",
             "--no-hashes",
             "--no-dev",
+            "--no-header",
+            "--no-annotate",
             "--no-emit-project",
             "--output-file=requirements.txt",
           ]
@@ -49,7 +52,10 @@ repos:
         name: "Export dev dependencies to 'requirements-dev.txt'"
         args:
           [
+            "--frozen",
             "--no-hashes",
+            "--no-header",
+            "--no-annotate",
             "--no-emit-project",
             "--output-file=requirements-dev.txt",
           ]
