@@ -6,7 +6,7 @@ authors = [{ name = "Grant Ramsay", email = "seapagan@gmail.com" }]
 license = "MIT"
 license-files = ["LICENSE.txt"]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.15"
 classifiers = ["Private :: Do Not Upload"]
 dependencies = [
   "alembic>=1.14.0",
