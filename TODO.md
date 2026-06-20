@@ -37,7 +37,9 @@
 
 ## Bugs/Annoyances
 
-- None known at this time.
+- Password reset token appears in browser URL (redirect query string). Consider
+  fragment-based redirect or POST-only flow to avoid token exposure in browser
+  history, referrer headers, and server access logs.
 
 ## Auth
 
@@ -67,6 +69,9 @@
   may be invalid.
 - Update the JWT wrong-signature test to use a 32+ byte secret so PyJWT does
   not emit `InsecureKeyLengthWarning` during the test run.
+- Re-evaluate `ty` type checker (v0.0.5, beta) in the lint chain — currently
+  in `lint.sequence` but produces false positives. Consider removing from the
+  default lint path until a stable release.
 
 ## CLI
 
