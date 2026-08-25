@@ -134,6 +134,7 @@ CacheNamespaces.API_KEY_SINGLE  # "apikey" - Single API key lookup
 ```
 
 Key format patterns:
+
 - `user:{user_id}` - User-scoped endpoints (/users/me, /users/keys)
 - `users:list` - Paginated user lists
 - `users:{user_id}` - Single user lookups
@@ -214,6 +215,7 @@ from app.cache.constants import CacheNamespaces
 
 router = APIRouter()
 
+
 @router.get("/expensive-query")
 @cached(expire=300, namespace=CacheNamespaces.USER_ME)
 async def expensive_query(request: Request, response: Response):
@@ -240,9 +242,10 @@ async def expensive_query(request: Request, response: Response):
     from app.cache import cached
     from app.rate_limit.decorators import rate_limited
 
+
     @router.get("/endpoint")
     @rate_limited("10/minute")  # Check rate limit first
-    @cached(expire=300)         # Then check cache
+    @cached(expire=300)  # Then check cache
     async def handler(request: Request, response: Response):
         return data
     ```
@@ -259,6 +262,7 @@ from app.cache.constants import CacheNamespaces
 from app.managers.auth import AuthManager
 from app.models.user import User
 
+
 @router.get("/users/me")
 @cached(
     expire=300,
@@ -266,9 +270,7 @@ from app.models.user import User
     key_builder=user_scoped_key_builder,
 )
 async def get_current_user(
-    request: Request,
-    response: Response,
-    user: User = Depends(AuthManager())
+    request: Request, response: Response, user: User = Depends(AuthManager())
 ):
     # Cached per user, automatically invalidated on user updates
     return user
@@ -365,6 +367,7 @@ Generates keys per authenticated user:
 ```python
 from app.cache import cached, user_scoped_key_builder
 
+
 @router.get("/dashboard")
 @cached(namespace="dashboard", key_builder=user_scoped_key_builder)
 async def get_dashboard(user: User = Depends(AuthManager())):
@@ -396,6 +399,7 @@ from typing import Any
 
 from fastapi import Request, Response
 
+
 def custom_key_builder(
     func: Callable[..., Any],
     namespace: str,
@@ -409,12 +413,11 @@ def custom_key_builder(
     category = request.query_params.get("category", "all")
     return f"{namespace}:{func.__name__}:{category}"
 
+
 @router.get("/products")
 @cached(namespace="products", key_builder=custom_key_builder)
 async def list_products(
-    request: Request,
-    response: Response,
-    category: str | None = None
+    request: Request, response: Response, category: str | None = None
 ):
     return await fetch_products(category)
 ```

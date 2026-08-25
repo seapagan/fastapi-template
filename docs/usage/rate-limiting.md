@@ -203,11 +203,12 @@ from app.rate_limit.decorators import rate_limited
 
 router = APIRouter()
 
+
 @router.post("/sensitive-operation")
 @rate_limited("10/minute")
 async def sensitive_operation(
     request: Request,  # Required by slowapi
-    data: dict
+    data: dict,
 ):
     # This endpoint is limited to 10 requests per minute per IP
     return {"status": "success"}
@@ -228,9 +229,10 @@ async def sensitive_operation(
     from app.cache import cached
     from app.rate_limit.decorators import rate_limited
 
+
     @router.get("/endpoint")
     @rate_limited("10/minute")  # Check rate limit first
-    @cached(expire=300)         # Then check cache
+    @cached(expire=300)  # Then check cache
     async def handler(request: Request, response: Response):
         return data
     ```
@@ -247,6 +249,7 @@ The template provides conservative default limits in
 ```python
 from app.rate_limit.config import RateLimits
 from app.rate_limit.decorators import rate_limited
+
 
 @router.post("/api/v1/data")
 @rate_limited(RateLimits.LOGIN)  # Reuse login limit (5/15minutes)
@@ -314,6 +317,7 @@ To modify the default limits, edit
 
 ```python
 from typing import ClassVar
+
 
 class RateLimits:
     """Conservative rate limits for authentication endpoints."""
@@ -509,14 +513,15 @@ Create endpoint-specific rate limiting:
 ```python
 from app.rate_limit.decorators import rate_limited
 
+
 # High-value operation with strict limit
 @router.post("/api/premium-feature")
 @rate_limited("1/minute")
 async def premium_feature(
-    request: Request,
-    user: User = Depends(AuthManager())
+    request: Request, user: User = Depends(AuthManager())
 ):
     return await expensive_operation()
+
 
 # Public endpoint with generous limit
 @router.get("/api/public-data")
@@ -541,10 +546,8 @@ from functools import wraps
 from app.models.enums import Role
 from app.rate_limit import get_limiter
 
-def role_based_rate_limit(
-    admin_limit: str,
-    user_limit: str
-):
+
+def role_based_rate_limit(admin_limit: str, user_limit: str):
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -553,7 +556,9 @@ def role_based_rate_limit(
             # Note: Actual dynamic limit application requires custom
             # slowapi integration - this is a simplified illustration
             return await func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 ```
 

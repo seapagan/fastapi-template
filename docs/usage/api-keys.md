@@ -34,8 +34,11 @@ from app.managers.security import get_current_user
 
 router = APIRouter()
 
+
 @router.get("/protected-endpoint")
-async def protected_endpoint(current_user: Annotated[User,Depends(get_current_user)]):
+async def protected_endpoint(
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     return {"message": "Hello World"}
 ```
 
