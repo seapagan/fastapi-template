@@ -1,5 +1,5 @@
 aiosmtpd==1.4.6
-aiosmtplib==5.0.0
+aiosmtplib==5.1.2
 aiosqlite==0.21.0
 alembic==1.18.4
 annotated-doc==0.0.4
@@ -46,7 +46,7 @@ fastar==0.11.0
 ghp-import==2.1.0
 gitdb==4.0.12
 github-changelog-md==0.9.9
-gitpython==3.1.50
+gitpython==3.1.59
 greenlet==3.3.0
 griffe==1.5.7
 h11==0.16.0
@@ -103,14 +103,14 @@ pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementati
 pydantic==2.13.4
 pydantic-core==2.46.4
 pydantic-extra-types==2.10.6
-pydantic-settings==2.14.1
+pydantic-settings==2.15.0
 pyfakefs==6.2.0
 pygithub==2.6.1
 pygments==2.20.0
 pyjson5==2.0.1
 pyjwt==2.13.0
 pymarkdownlnt==0.9.37
-pymdown-extensions==10.21.3
+pymdown-extensions==11.0.1
 pynacl==1.6.2
 pytest==9.0.3
 pytest-asyncio==1.3.0
@@ -146,7 +146,7 @@ slowapi==0.1.9
 sly==0.5
 smmap==5.0.2
 sniffio==1.3.1
-soupsieve==2.6
+soupsieve==2.9.2
 sqladmin==0.27.0
 sqlalchemy==2.0.49
 starlette==1.3.1

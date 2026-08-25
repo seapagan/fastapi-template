@@ -1,4 +1,4 @@
-aiosmtplib==5.0.0
+aiosmtplib==5.1.2
 alembic==1.18.4
 annotated-doc==0.0.4
 annotated-types==0.7.0
@@ -47,7 +47,7 @@ pycparser==2.22 ; implementation_name != 'PyPy' and platform_python_implementati
 pydantic==2.13.4
 pydantic-core==2.46.4
 pydantic-extra-types==2.10.6
-pydantic-settings==2.14.1
+pydantic-settings==2.15.0
 pygments==2.20.0
 pyjwt==2.13.0
 python-dateutil==2.9.0.post0
