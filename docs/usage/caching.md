@@ -391,15 +391,19 @@ Generates keys for single API key lookups.
 Create your own key builder:
 
 ```python
+from collections.abc import Callable
+from typing import Any
+
 from fastapi import Request, Response
 
 def custom_key_builder(
-    func,
+    func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
-    *args,
-    **kwargs
+    args: tuple[Any, ...],
+    kwargs: dict[str, Any],
 ) -> str:
     """Build cache key based on query parameters."""
     category = request.query_params.get("category", "all")
@@ -414,6 +418,10 @@ async def list_products(
 ):
     return await fetch_products(category)
 ```
+
+The caching backend supplies `func` and `namespace` positionally. The
+`request`, `response`, `args`, and `kwargs` context parameters are keyword-only,
+matching the `fastapi-cache2` callback contract.
 
 ## Monitoring Cache Performance
 
