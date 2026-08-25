@@ -1,5 +1,7 @@
 """Unit tests for cache module (decorators, key builders, invalidation)."""
 
+from collections.abc import Callable
+from inspect import Parameter, signature
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -74,6 +76,28 @@ class TestCachedDecorator:
 @pytest.mark.unit
 class TestKeyBuilders:
     """Test cache key builder functions."""
+
+    @pytest.mark.parametrize(
+        "key_builder",
+        [
+            user_scoped_key_builder,
+            paginated_key_builder,
+            users_list_key_builder,
+            user_paginated_key_builder,
+            api_keys_list_key_builder,
+            api_key_single_key_builder,
+        ],
+    )
+    def test_context_parameters_are_keyword_only(
+        self, key_builder: Callable[..., str]
+    ) -> None:
+        """Require cache context parameters to be passed by keyword."""
+        parameters = tuple(signature(key_builder).parameters.values())
+
+        assert all(
+            parameter.kind is Parameter.KEYWORD_ONLY
+            for parameter in parameters[2:]
+        )
 
     def test_user_scoped_key_builder_with_user(self) -> None:
         """Test key builder with authenticated user."""

@@ -13,6 +13,7 @@ from app.logs import LogCategory, category_logger
 def user_scoped_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
@@ -53,6 +54,7 @@ def user_scoped_key_builder(
 def paginated_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
@@ -84,6 +86,7 @@ def paginated_key_builder(
 def users_list_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
@@ -122,6 +125,7 @@ def users_list_key_builder(
 def user_paginated_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
@@ -158,6 +162,7 @@ def user_paginated_key_builder(
 def api_keys_list_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
@@ -205,6 +210,7 @@ def api_keys_list_key_builder(
 def api_key_single_key_builder(
     func: Callable[..., Any],
     namespace: str,
+    *,
     request: Request,
     response: Response,
     args: tuple[Any, ...],
