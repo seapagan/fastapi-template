@@ -180,6 +180,7 @@ extend-ignore = [
   "COM812", # ignored for ruff formatting
   "ISC001", # ignored for ruff formatting
   "T201",   # temporary ignore for now, will remove when migrate to logging
+  "CPY001", # file license headers are overkill for an O/S project
 ]
 
 [tool.ruff.lint.pep8-naming]
