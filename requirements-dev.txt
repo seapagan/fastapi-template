@@ -9,7 +9,6 @@ application-file-scanner==0.6.4
 application-properties==0.9.3
 ast-serialize==0.8.0
 async-timeout==5.0.1 ; python_full_version < '3.12'
-asyncclick==8.1.8
 asyncpg==0.31.0
 asyncpg-stubs==0.31.3
 atpublic==5.1
@@ -23,7 +22,7 @@ blinker==1.9.0
 certifi==2025.1.31
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
 charset-normalizer==3.4.1
-click==8.3.1
+click==8.4.2
 colorama==0.4.6
 columnar==1.4.1
 coverage==7.13.0
@@ -154,7 +153,7 @@ tomli==2.4.1
 toolz==1.0.0
 tqdm==4.67.1
 ty==0.0.74
-typer==0.25.1
+typer==0.27.1
 types-cffi==1.17.0.20250915
 types-markdown==3.10.2.20260712
 types-passlib==1.7.7.20260211
