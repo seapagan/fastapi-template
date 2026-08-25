@@ -47,7 +47,7 @@ requires = ["uv_build>=0.11.14,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.uv]
-exclude-newer = "7 days"
+exclude-newer = "3 days"
 
 [tool.uv.build-backend]
 module-root = ""
