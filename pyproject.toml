@@ -15,10 +15,10 @@ dependencies = [
   "async-timeout==5.0.1 ; python_version < '3.12'",
   "asyncpg>=0.31.0",
   "email-validator>=2.3.0",
-  "fastapi[standard]>=0.115.4",
+  "fastapi[standard]>=0.141.1",
   "pydantic>=2.13.4",
   "pydantic-settings>=2.15.0",
-  "prometheus-fastapi-instrumentator>=7.0.0",
+  "prometheus-fastapi-instrumentator>=8.1.0",
   "pyjwt>=2.13.0",
   "python-decouple>=3.8",
   "rich>=15.0.0",
@@ -32,11 +32,11 @@ dependencies = [
   "libpass[bcrypt]>=1.9.3",
   "bcrypt>=5.0.0",
   "sqladmin[full]>=0.31.0",
-  "fastapi-pagination>=0.12.34",
+  "fastapi-pagination>=0.15.16",
   "loguru>=0.7.3",
   "fastapi-cache2[redis]>=0.2.2",
   "slowapi>=0.1.10",
-  "starlette>=1.2.1",
+  "starlette>=1.6.0",
 ]
 
 [project.scripts]
