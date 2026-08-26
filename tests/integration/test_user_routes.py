@@ -347,7 +347,7 @@ class TestUserRoutes:
         await test_db.commit()
 
         response = await client.post(
-            "/users/66/ban",
+            "/users/0/ban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -413,7 +413,7 @@ class TestUserRoutes:
         await test_db.commit()
 
         response = await client.post(
-            "/users/66/unban",
+            "/users/0/unban",
             headers={"Authorization": f"Bearer {token}"},
         )
 
@@ -510,7 +510,7 @@ class TestUserRoutes:
         await test_db.commit()
 
         response = await client.delete(
-            "/users/66",
+            "/users/0",
             headers={"Authorization": f"Bearer {token}"},
         )
 

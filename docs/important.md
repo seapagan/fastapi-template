@@ -13,6 +13,32 @@ cookie-based auth from browser clients, you must switch to Bearer tokens or
 explicitly re-enable credentials and restrict `CORS_ORIGINS` to your frontend
 domains.
 
+### Cache key builder context parameters are keyword-only
+
+The built-in cache key builders now require `request`, `response`, `args`, and
+`kwargs` to be passed by keyword, matching the `fastapi-cache2` callback
+contract. The `func` and `namespace` parameters continue to accept positional
+arguments.
+
+Direct callers must change positional context arguments:
+
+```python
+user_scoped_key_builder(func, namespace, request, response, args, kwargs)
+```
+
+to keyword arguments:
+
+```python
+user_scoped_key_builder(
+    func,
+    namespace,
+    request=request,
+    response=response,
+    args=args,
+    kwargs=kwargs,
+)
+```
+
 ## Breaking Changes in `0.8.0`
 
 ### Drop support for Python 3.9

@@ -6,7 +6,7 @@ import datetime
 import sys
 from typing import Any, Literal
 
-import asyncclick as click
+import click
 import rtoml
 import typer
 from jinja2 import Template

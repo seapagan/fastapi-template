@@ -142,18 +142,17 @@ class TestSeedCommand:
         assert "Error: File" in result.output
         assert "does not exist" in result.output
 
-    def test_seed_missing_default_file(self) -> None:
+    def test_seed_missing_default_file(self, tmp_path, monkeypatch) -> None:
         """Test that running 'seed' with the default file missing fails."""
         # Run the command without specifying a file (will use default
         # 'users.seed')
-        with CliRunner().isolated_filesystem():
-            # Make sure the default file doesn't exist in the isolated fs
-            result = CliRunner().invoke(app, ["db", "seed"])
+        monkeypatch.chdir(tmp_path)
+        result = CliRunner().invoke(app, ["db", "seed"])
 
-            # Verify output and failure
-            assert result.exit_code == 1
-            assert "Error: File" in result.output
-            assert "does not exist" in result.output
+        # Verify output and failure
+        assert result.exit_code == 1
+        assert "Error: File" in result.output
+        assert "does not exist" in result.output
 
     def test_seed_database_not_initialized(self, mocker, tmp_path) -> None:
         """Test seed command shows error when database not initialized."""

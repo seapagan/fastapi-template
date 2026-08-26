@@ -384,7 +384,8 @@
 
   ```python
   from sqlalchemy import func
-  User.email.ilike(func.concat('%', search_term, '%'))
+
+  User.email.ilike(func.concat("%", search_term, "%"))
   ```
 
 ### 22. Missing Max Length on Input Fields
@@ -574,8 +575,7 @@
   ```python
   async def invalidate_user_related_caches(user_id: int) -> None:
       await asyncio.gather(
-          invalidate_user_cache(user_id),
-          invalidate_users_list_cache()
+          invalidate_user_cache(user_id), invalidate_users_list_cache()
       )
   ```
 

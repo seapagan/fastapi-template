@@ -3,10 +3,10 @@
 import logging
 
 import pytest
-from fastapi import FastAPI
-from fastapi.routing import APIRoute
+from fastapi import FastAPI, status
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.main import lifespan
@@ -97,17 +97,39 @@ class TestLifespan:
     ) -> None:
         """Ensure the lifespan clears routes and enables error on fail."""
         app = FastAPI()
+
+        @app.get("/sentinel")
+        def sentinel() -> dict[str, bool]:
+            """Return a sentinel response from the original router."""
+            return {"served": True}
+
         mock_session = mocker.patch(self.mock_session)
         mock_session.return_value.__aenter__.side_effect = SQLAlchemyError
-        async with lifespan(app):
-            pass  # NOSONAR
+        async with (
+            lifespan(app),
+            AsyncClient(
+                transport=ASGITransport(app=app),
+                base_url="http://test",
+            ) as client,
+        ):
+            root_response = await client.get("/")
+            sentinel_response = await client.get("/sentinel")
 
-        assert len(app.routes) == 2  # noqa: PLR2004
-
-        assert any(
-            isinstance(route, APIRoute) and route.name == "catch_all"
-            for route in app.routes
+        expected_error = {
+            "detail": (
+                "ERROR: Cannot connect to the database! "
+                "Have you set it up properly?"
+            )
+        }
+        assert (
+            root_response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        assert root_response.json() == expected_error
+        assert (
+            sentinel_response.status_code
+            == status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+        assert sentinel_response.json() == expected_error
 
     async def test_lifespan_falls_back_to_in_memory_cache(
         self, caplog, mocker
