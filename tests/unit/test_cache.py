@@ -95,6 +95,10 @@ class TestKeyBuilders:
         parameters = tuple(signature(key_builder).parameters.values())
 
         assert all(
+            parameter.kind is Parameter.POSITIONAL_OR_KEYWORD
+            for parameter in parameters[:2]
+        )
+        assert all(
             parameter.kind is Parameter.KEYWORD_ONLY
             for parameter in parameters[2:]
         )
