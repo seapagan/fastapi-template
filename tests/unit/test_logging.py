@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock
@@ -339,16 +340,12 @@ class TestLogConfig:
 
         mock_logger_add = mocker.patch("app.config.log_config.logger.add")
         mocker.patch("app.config.log_config.logger.remove")
-        mock_uvicorn_logger = mocker.Mock()
-        mock_get_logger = mocker.patch(
-            "app.config.log_config.logging.getLogger",
-            return_value=mock_uvicorn_logger,
-        )
+        uvicorn_logger = logging.getLogger("uvicorn")
+        mock_uvicorn_info = mocker.patch.object(uvicorn_logger, "info")
 
         setup_logging()
 
-        mock_get_logger.assert_called_once_with("uvicorn")
-        mock_uvicorn_logger.info.assert_called_once_with(
+        mock_uvicorn_info.assert_called_once_with(
             "Loguru enqueue disabled because uvicorn reload is enabled."
         )
         assert mock_logger_add.call_count == 1
