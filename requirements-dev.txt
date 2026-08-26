@@ -111,7 +111,7 @@ pyjwt==2.13.0
 pymarkdownlnt==0.9.39
 pymdown-extensions==11.0.1
 pynacl==1.6.2
-pytest==9.0.3
+pytest==9.1.1
 pytest-asyncio==1.4.0
 pytest-clarity==1.0.1
 pytest-cov==7.1.0
