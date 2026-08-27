@@ -86,6 +86,7 @@ nav:
       - Metadata: customization/meta.md
       - Templates: customization/templates.md
   - Development and Testing:
+      - Continuous Integration: development/ci.md
       - With a Local Server: development/local.md
       - With Docker: development/docker.md
       - Documentation: development/documentation.md

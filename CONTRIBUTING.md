@@ -192,11 +192,14 @@ As before, this will generate updated `requirements.txt` and
     regularly to ensure the dependency files are updated and that the linters all
     pass.
 
-#### GitHub CI Action
+#### GitHub CI checks
 
 The checks in this pre-commit hook are also automatically run for each commit
 pushed to GitHub and for Pull Requests. This is controlled by the
-`~/.github/workflows/prek.yml` configuration file.
+`.github/workflows/prek.yml` configuration file. GitHub Actions also runs the
+test suite, type checking, and security checks. See the
+[Continuous Integration](https://fastapi-template.seapagan.net/development/ci/)
+guide for the corresponding local commands and Zizmor configuration.
 
 ## Testing
 
