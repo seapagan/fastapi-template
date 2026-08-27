@@ -7,8 +7,16 @@ on:
     branches: ["main", "develop"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   test:
+    name: Python tests
     runs-on: ubuntu-latest
     env:
       SKIP_COVERAGE_UPLOAD: false
@@ -46,11 +54,15 @@ jobs:
           cache-dependency-glob: "uv.lock"
 
       - name: Set up Python ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: uv python install "$PYTHON_VERSION"
 
       - name: Run tests
         # For example, using `pytest`
-        run: uv run --all-extras -p ${{ matrix.python-version }} pytest tests
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: uv run --all-extras -p "$PYTHON_VERSION" pytest tests
           --cov-report=xml
 
       - name: Run codacy-coverage-reporter

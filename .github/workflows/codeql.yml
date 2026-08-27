@@ -20,14 +20,20 @@ on:
   schedule:
     - cron: '29 12 * * 1'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
-      actions: read
+      actions: read # Read workflow metadata required by CodeQL.
       contents: read
-      security-events: write
+      security-events: write # Upload CodeQL analysis results.
 
     strategy:
       fail-fast: false

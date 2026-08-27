@@ -2,6 +2,13 @@ name: Type Checking
 
 on: [push, pull_request, workflow_dispatch]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   mypy:
     # uncomment the line before to disable this job if needed.

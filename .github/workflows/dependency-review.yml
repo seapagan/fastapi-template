@@ -7,11 +7,16 @@
 name: 'Dependency Review'
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   dependency-review:
+    name: Dependency review
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
