@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import pytest
@@ -30,6 +31,16 @@ if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
     from pyfakefs.fake_filesystem import FakeFilesystem
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_unconfigure(config: pytest.Config) -> None:
+    """Remove redundant parallel coverage files after pytest-cov completes."""
+    if hasattr(config, "workerinput"):
+        return
+
+    for coverage_file in Path.cwd().glob(".coverage.*"):
+        coverage_file.unlink(missing_ok=True)
 
 
 def _is_xdist_worker(config: pytest.Config) -> bool:
