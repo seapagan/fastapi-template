@@ -49,6 +49,8 @@ jobs:
 
       - name: Prepare experimental Python 3.15 environment
         if: matrix.python-version == '3.15'
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: "1"
         run: |
           uv venv --python 3.15 --no-project
           uv pip install -r pyproject.toml --all-extras --group dev
