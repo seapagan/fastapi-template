@@ -47,10 +47,20 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
+      - name: Prepare experimental Python 3.15 environment
+        if: matrix.python-version == '3.15'
+        run: |
+          uv venv --python 3.15 --no-project
+          uv pip install -r pyproject.toml --all-extras --group dev
+
       - name: Run tests
-        # For example, using `pytest`
+        if: matrix.python-version != '3.15'
         run: uv run --all-extras -p ${{ matrix.python-version }} pytest tests
           --cov-report=xml
+
+      - name: Run tests on experimental Python
+        if: matrix.python-version == '3.15'
+        run: .venv/bin/python -m pytest tests --cov-report=xml
 
       - name: Run codacy-coverage-reporter
         env:
