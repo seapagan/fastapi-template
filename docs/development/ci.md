@@ -24,12 +24,10 @@ equivalent.
 ## Audit GitHub Actions with Zizmor
 
 [Zizmor](https://docs.zizmor.sh/){:target="_blank"} audits GitHub Actions
-workflows and action definitions for security issues. Install it as a standalone
-tool if it is not already available:
-
-```console
-$ uv tool install zizmor
-```
+workflows and action definitions for security issues. Zizmor is pinned as a
+development dependency so that local and hosted audits use the same version. It
+is installed by either `uv sync` or `pip install -r requirements-dev.txt`; no
+separate tool installation is required.
 
 Run the repository's configured audit with:
 

@@ -173,3 +173,4 @@ websockets==15.0
 win32-setctime==1.2.0 ; sys_platform == 'win32'
 wrapt==1.17.2
 wtforms==3.1.2
+zizmor==1.29.0
