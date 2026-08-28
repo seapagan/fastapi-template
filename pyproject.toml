@@ -63,7 +63,7 @@ dev = [
   "poethepoet>=0.48.0",
   "pyfakefs>=6.2.0",
   "pymarkdownlnt>=0.9.39",
-    "pytest==9.1.1",
+  "pytest==9.1.1",
   "pytest-asyncio>=1.4.0",
   "pytest-clarity>=1.0.1",
   "pytest-cov>=7.1.0",
@@ -91,6 +91,7 @@ dev = [
   "types-redis>=4.6.0.20241004",
   "pytest-xdist>=3.8.0",
   "types-markdown>=3.10.2.20260712",
+  "zizmor==1.29.0", # Keep in sync with .github/workflows/zizmor.yml.
 ]
 
 [tool.uv.sources]
@@ -119,6 +120,12 @@ test.cmd = "pytest"
 "test:integration".cmd = "pytest -m integration"
 "test:skipped".cmd = "pytest --quiet --collect-only -m skip --no-cov"
 "test:skipped".help = "Show skipped tests without running all tests"
+
+# zizmor task to check github actions
+# currently the deafult invocation fails d/t our prek config. We ignore the prek
+# config check for now until the fixed version is released.
+zizmor.help = "Check all GitHub actions using 'zizmor'"
+zizmor.cmd = "zizmor --persona=pedantic --collect=workflows,actions ."
 
 # Add 'ty' type checker - this is still beta software and has false positives
 # compared to 'mypy', but suspect it will exentually replace it.
