@@ -1,1 +1,97 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+
+# Virtual environments
 .venv
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.hypothesis/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+.installed.cfg
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+.ionide
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+.env
+.envrc
+.venv
+
+# Docker support files
+docker-compose.yml
+docker-compose*.yml
+docker_support/
+Dockerfile
+.dockerignore
+
+# Project docs (not needed at runtime)
+docs/
+mkdocs.yml
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+SECURITY-REVIEW.md
+TODO.md
+
+# Tests (not needed at runtime)
+tests/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+nosetests.xml
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Runtime data
+data/
+volumes/
+redis/
+prometheus-test/
+
+# Config files
+.pre-commit-config.yaml
+.pylintrc
+.markdownlint.json
+alembic_scripting.ini
+
+# Static analysis
+mypy_report/
+
+
