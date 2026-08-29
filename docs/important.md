@@ -6,6 +6,10 @@ API.
 
 ## Breaking Changes in `HEAD`
 
+None.
+
+## Breaking Changes in `0.9.0`
+
 ### CORS credentials disabled by default
 
 Credentialed CORS requests are now disabled for the API. If you relied on

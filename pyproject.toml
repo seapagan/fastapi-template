@@ -1,6 +1,6 @@
 [project]
 name = "api-template"
-version = "0.8.0"
+version = "0.9.0"
 description = "Run 'api-admin custom metadata' to change this information."
 authors = [{ name = "Grant Ramsay", email = "seapagan@gmail.com" }]
 license = "MIT"
@@ -91,7 +91,7 @@ dev = [
   "types-redis>=4.6.0.20241004",
   "pytest-xdist>=3.8.0",
   "types-markdown>=3.10.2.20260712",
-  "zizmor==1.29.0", # Keep in sync with .github/workflows/zizmor.yml.
+  "zizmor==1.29.0",                                   # Keep in sync with .github/workflows/zizmor.yml.
 ]
 
 [tool.uv.sources]

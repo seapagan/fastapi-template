@@ -5,13 +5,7 @@ project since the first release, with the latest changes at the top.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## [Unreleased](https://github.com/seapagan/fastapi-template/tree/HEAD)
-
-These are the changes that have been merged to the repository since the last
-release.
-
-Everything in this section will be included in the next official release.
+## [v0.9.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.9.0) (August 29, 2026)
 
 **Closed Issues**
 
@@ -20,10 +14,16 @@ Everything in this section will be included in the next official release.
 
 **Breaking Changes**
 
+- Feat: refresh dependencies and cache builder API ([#867](https://github.com/seapagan/fastapi-template/pull/867)) by [seapagan](https://github.com/seapagan)
+- Fix: upgrade bcrypt to 5.0.0 and enforce password byte limit ([#833](https://github.com/seapagan/fastapi-template/pull/833)) by [seapagan](https://github.com/seapagan)
 - Fix: enforce token type separation and harden CORS defaults ([#804](https://github.com/seapagan/fastapi-template/pull/804)) by [seapagan](https://github.com/seapagan)
 
 **New Features**
 
+- Set uv dependency cooldown ([#855](https://github.com/seapagan/fastapi-template/pull/855)) by [seapagan](https://github.com/seapagan)
+- Add optional secrets dir support for settings ([#842](https://github.com/seapagan/fastapi-template/pull/842)) by [seapagan](https://github.com/seapagan)
+- Feat: track API key last usage timestamp ([#819](https://github.com/seapagan/fastapi-template/pull/819)) by [seapagan](https://github.com/seapagan)
+- Fix: add EmailStr validation to base schema ([#817](https://github.com/seapagan/fastapi-template/pull/817)) by [seapagan](https://github.com/seapagan)
 - Perf: parallelize cache invalidation for better performance ([#815](https://github.com/seapagan/fastapi-template/pull/815)) by [seapagan](https://github.com/seapagan)
 - Fix: centralize cache namespace strings to prevent typos ([#814](https://github.com/seapagan/fastapi-template/pull/814)) by [seapagan](https://github.com/seapagan)
 - Feat: add rate limiting for authentication endpoints ([#807](https://github.com/seapagan/fastapi-template/pull/807)) by [seapagan](https://github.com/seapagan)
@@ -39,19 +39,34 @@ Everything in this section will be included in the next official release.
 
 **Testing**
 
+- Deps: upgrade pytest to 9.1.1 ([#869](https://github.com/seapagan/fastapi-template/pull/869)) by [seapagan](https://github.com/seapagan)
+- Test: add xdist and transactional database fixtures ([#854](https://github.com/seapagan/fastapi-template/pull/854)) by [seapagan](https://github.com/seapagan)
+- Test: return to 100% app coverage ([#843](https://github.com/seapagan/fastapi-template/pull/843)) by [seapagan](https://github.com/seapagan)
 - Fix(tests): ensure Path objects are created after fake filesystem activation ([#813](https://github.com/seapagan/fastapi-template/pull/813)) by [seapagan](https://github.com/seapagan)
 - Tests: Remove obsolete xfail markers ([#811](https://github.com/seapagan/fastapi-template/pull/811)) by [seapagan](https://github.com/seapagan)
 - Test: add unit tests for metrics and OpenAPI modules ([#801](https://github.com/seapagan/fastapi-template/pull/801)) by [seapagan](https://github.com/seapagan)
 
 **Security**
 
+- Update some deps for security and others to latest versions ([#853](https://github.com/seapagan/fastapi-template/pull/853)) by [seapagan](https://github.com/seapagan)
+- Update `mako` package to fix security alert ([#844](https://github.com/seapagan/fastapi-template/pull/844)) by [seapagan](https://github.com/seapagan)
+- Fix some security alerts and update linters ([#840](https://github.com/seapagan/fastapi-template/pull/840)) by [seapagan](https://github.com/seapagan)
+- Update `cryptography` package to close security alerts ([#823](https://github.com/seapagan/fastapi-template/pull/823)) by [seapagan](https://github.com/seapagan)
+- Update python-multipart to fix security alert ([#821](https://github.com/seapagan/fastapi-template/pull/821)) by [seapagan](https://github.com/seapagan)
+- Fix: add max_length constraint to refresh token schema ([#818](https://github.com/seapagan/fastapi-template/pull/818)) by [seapagan](https://github.com/seapagan)
 - Security: fix timing attacks and token validation vulnerabilities ([#810](https://github.com/seapagan/fastapi-template/pull/810)) by [seapagan](https://github.com/seapagan)
 - Fix: update dependencies to fix security advisories in 2 third-party libraries ([#809](https://github.com/seapagan/fastapi-template/pull/809)) by [seapagan](https://github.com/seapagan)
 - Fix(security): redact sensitive query params in request logs ([#805](https://github.com/seapagan/fastapi-template/pull/805)) by [seapagan](https://github.com/seapagan)
 - Fix(security): validate credentials and prevent weak defaults ([#793](https://github.com/seapagan/fastapi-template/pull/793)) by [seapagan](https://github.com/seapagan)
 
+**CI / CD Pipeline**
+
+- Ci: harden GitHub Actions workflows ([#871](https://github.com/seapagan/fastapi-template/pull/871)) by [seapagan](https://github.com/seapagan)
+- Modify renovate-bot config slightly ([#831](https://github.com/seapagan/fastapi-template/pull/831)) by [seapagan](https://github.com/seapagan)
+
 **Bug Fixes**
 
+- Fix: make api_keys.user_id index explicit in model ([#816](https://github.com/seapagan/fastapi-template/pull/816)) by [seapagan](https://github.com/seapagan)
 - Fix CLI crash when database not initialized ([#791](https://github.com/seapagan/fastapi-template/pull/791)) by [seapagan](https://github.com/seapagan)
 
 **Refactoring**
@@ -66,9 +81,19 @@ Everything in this section will be included in the next official release.
 
 **Dependency Updates**
 
-- Update postgres Docker tag to v18 ([#789](https://github.com/seapagan/fastapi-template/pull/789)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update astral-sh/setup-uv action to v10 ([#866](https://github.com/seapagan/fastapi-template/pull/866)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update j178/prek-action action to v3 ([#865](https://github.com/seapagan/fastapi-template/pull/865)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update astral-sh/ruff-action action to v4.1.0 ([#860](https://github.com/seapagan/fastapi-template/pull/860)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update actions/checkout action to v7 ([#858](https://github.com/seapagan/fastapi-template/pull/858)) by [renovate[bot]](https://github.com/apps/renovate)
+- Security - update starlette and python-multipart for security alerts ([#857](https://github.com/seapagan/fastapi-template/pull/857)) by [seapagan](https://github.com/seapagan)
+- Chore(deps): update astral-sh/setup-uv action to v8.2.0 ([#851](https://github.com/seapagan/fastapi-template/pull/851)) by [renovate[bot]](https://github.com/apps/renovate)
+- Update dependencies and build metadata ([#848](https://github.com/seapagan/fastapi-template/pull/848)) by [seapagan](https://github.com/seapagan)
+- Chore(deps): update actions/dependency-review-action action to v5 ([#847](https://github.com/seapagan/fastapi-template/pull/847)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update astral-sh/setup-uv action to v8 ([#846](https://github.com/seapagan/fastapi-template/pull/846)) by [renovate[bot]](https://github.com/apps/renovate)
+- Chore(deps): update astral-sh/ruff-action action to v4 ([#845](https://github.com/seapagan/fastapi-template/pull/845)) by [renovate[bot]](https://github.com/apps/renovate)
+- *and 7 more dependency updates*
 
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...HEAD.patch)
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...v0.9.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...v0.9.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.8.0...v0.9.0.patch)
 
 ## [v0.8.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.8.0) (December 25, 2025)
 
@@ -197,7 +222,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.4](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.4) (June 18, 2024)
 
-**_V0.5.4_**
+***V0.5.4***
 
 **Security Update**
 
@@ -335,7 +360,7 @@ Everything in this section will be included in the next official release.
 
 ## [v0.5.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.5.0) (February 07, 2024)
 
-**_A New Hope_**
+***A New Hope***
 
 This is the long-delayed release of `0.5.0` :partying_face:
 
@@ -343,11 +368,12 @@ There are many breaking changes; check the documentation, discussions and all th
 
 - Make the API an installable package and CLI command ([#276](https://github.com/seapagan/fastapi-template/pull/276)) by [seapagan](https://github.com/seapagan)
 - Convert db to sqlalchemy 2 ([#140](https://github.com/seapagan/fastapi-template/pull/140)) by [seapagan](https://github.com/seapagan)
-[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
+
+[`Full Changelog`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0) | [`Diff`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.diff) | [`Patch`](https://github.com/seapagan/fastapi-template/compare/v0.4.2...v0.5.0.patch)
 
 ## [v0.4.2](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.2) (February 07, 2024)
 
-**_The Old Guard_**
+***The Old Guard***
 
 **Breaking Changes**
 
@@ -551,7 +577,7 @@ tool. See the documentation for more information.
 
 ## [v0.4.0](https://github.com/seapagan/fastapi-template/releases/tag/v0.4.0) (June 19, 2023)
 
-**_Version refactor_**
+***Version refactor***
 
 **Closed Issues**
 
